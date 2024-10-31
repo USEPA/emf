@@ -12,21 +12,21 @@ import gov.epa.emissions.framework.services.cost.controlStrategy.DatasetCreator;
 import gov.epa.emissions.framework.services.cost.controlStrategy.FileFormatFactory;
 import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyResultType;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class StrategyLoader extends AbstractStrategyLoader {
     
     public StrategyLoader(User user, DbServerFactory dbServerFactory, 
-            HibernateSessionFactory sessionFactory, ControlStrategy controlStrategy) throws EmfException {
+            EntityManagerFactory entityManagerFactory, ControlStrategy controlStrategy) throws EmfException {
         super(user, dbServerFactory, 
-                sessionFactory, controlStrategy);
+                entityManagerFactory, controlStrategy);
     }
 
     public ControlStrategyResult loadStrategyResult(ControlStrategyInputDataset controlStrategyInputDataset) throws Exception {
@@ -79,7 +79,7 @@ public class StrategyLoader extends AbstractStrategyLoader {
         result.setRunStatus("Start processing annotated inventory result");
 
         //persist result
-        saveControlStrategyResult(result);
+        addControlStrategyResult(result);
 
         return result;
     }
@@ -95,13 +95,13 @@ public class StrategyLoader extends AbstractStrategyLoader {
 
     private StrategyResultType getAnnotatedInventoryResultType() throws EmfException {
         StrategyResultType resultType = null;
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            resultType = new ControlStrategyDAO().getStrategyResultType(StrategyResultType.annotatedInventory, session);
+            resultType = new ControlStrategyDAO().getStrategyResultType(StrategyResultType.annotatedInventory, entityManager);
         } catch (RuntimeException e) {
             throw new EmfException("Could not get detailed strategy result type");
         } finally {
-            session.close();
+            entityManager.close();
         }
         return resultType;
     }

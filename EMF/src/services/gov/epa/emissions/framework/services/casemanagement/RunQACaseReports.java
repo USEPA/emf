@@ -10,7 +10,6 @@ import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.io.BufferedReader;
@@ -25,14 +24,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class RunQACaseReports implements Runnable {
 
     private StatusDAO statusDao;
     private User user;
-    private HibernateSessionFactory sessionFactory;
-    private Session session;
+    private EntityManagerFactory entityManagerFactory;
+    private EntityManager entityManager;
   
     private String exportDir;
    
@@ -43,15 +43,15 @@ public class RunQACaseReports implements Runnable {
     private PostgresCOPYExport postgresCOPYExport;
 
     public RunQACaseReports(User user, DbServerFactory dbFactory, CaseDAO dao,
-            HibernateSessionFactory sessionFactory,  String exportDir) {
+            EntityManagerFactory entityManagerFactory,  String exportDir) {
         this.dao = dao;
         this.user = user;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.dbServer = dbFactory.getDbServer();
         this.datasource = dbServer.getEmissionsDatasource();
         this.exportDir = exportDir;
-        this.statusDao = new StatusDAO(sessionFactory);
-        this.session = sessionFactory.getSession();
+        this.statusDao = new StatusDAO(entityManagerFactory);
+        this.entityManager = entityManagerFactory.createEntityManager();
         this.postgresCOPYExport = new PostgresCOPYExport(dbServer);
     }
 
@@ -99,10 +99,10 @@ public class RunQACaseReports implements Runnable {
 
             for ( int i =0; i<caseIds.length; i++) {
                 // 1. Get sectorList table name and dataset version
-                Case caseQa = dao.getCase(caseIds[i], session);
+                Case caseQa = dao.getCase(caseIds[i], entityManager);
                 String caseAbbrev = caseQa.getAbbreviation().getName();
-                String sectorListSql = new SQLAnnualReportQuery(sessionFactory).getSectorListTableQuery(caseIds[i], gridName);
-                //String allRegionSectorListSql = new SQLAnnualReportQuery(sessionFactory).getSectorListTableQuery(caseIds[i], "");
+                String sectorListSql = new SQLAnnualReportQuery(entityManagerFactory).getSectorListTableQuery(caseIds[i], gridName);
+                //String allRegionSectorListSql = new SQLAnnualReportQuery(entityManagerFactory).getSectorListTableQuery(caseIds[i], "");
                 ResultSet rs = null;
                 String tableName = "";
                 Integer dsId;
@@ -130,8 +130,8 @@ public class RunQACaseReports implements Runnable {
                     infoString += caseAbbrev + ": \"" + regName + "\"\n";
                 } catch (Exception e) {
                     e.printStackTrace();
-                    if (session != null && session.isConnected())
-                        session.close();  
+                    if (entityManager != null)
+                        entityManager.close();  
                     setStatus("Error getting sectorlist table: '" +caseAbbrev + "'" + e.getMessage());
                     throw new EmfException("Error getting sectorlist table: '" +caseAbbrev + "'" + e.getMessage() );
                 } finally {
@@ -149,7 +149,7 @@ public class RunQACaseReports implements Runnable {
                 HashMap<String, String> mapSectorCase = new HashMap<String, String>();
 
                 try {
-                    sectorMergeSql = new SQLAnnualReportQuery(sessionFactory).getSectorsCasesQuery(tableName, dsId, version);
+                    sectorMergeSql = new SQLAnnualReportQuery(entityManagerFactory).getSectorsCasesQuery(tableName, dsId, version);
                     if (DebugLevels.DEBUG_0())
                         System.out.println("Getting sectors to cases mappings from sectorlist table: '" 
                                 +caseAbbrev + "'" +sectorMergeSql);
@@ -189,9 +189,9 @@ public class RunQACaseReports implements Runnable {
                     String sectorName = sectors[j].getName();
                     String secCaseAbbrev = mapSectorCase.get(sectorName);
                     if ( secCaseAbbrev != null ){
-                        reportTableSql = new SQLAnnualReportQuery(sessionFactory).getReportTableQuery(sectorName, 
+                        reportTableSql = new SQLAnnualReportQuery(entityManagerFactory).getReportTableQuery(sectorName, 
                                 secCaseAbbrev, gridName, useCounty);
-                        noRegReportTableSql = new SQLAnnualReportQuery(sessionFactory).getReportTableQuery(sectorName, 
+                        noRegReportTableSql = new SQLAnnualReportQuery(entityManagerFactory).getReportTableQuery(sectorName, 
                                 secCaseAbbrev, "", useCounty);
                         if (DebugLevels.DEBUG_0())
                             System.out.println("Get report tables by sectors: " + reportTableSql);
@@ -222,8 +222,8 @@ public class RunQACaseReports implements Runnable {
                                 }
                             }            
                         } catch (SQLException e) {
-                            if (session != null && session.isConnected())
-                                session.close();  
+                            if (entityManager != null)
+                                entityManager.close();  
                             e.printStackTrace();
                             setStatus("Error getting report table for case '" + caseAbbrev + "', sector '"+ sectorName + "'. " + e.getMessage());
                             throw new EmfException("Error getting report table for case '" 
@@ -242,7 +242,7 @@ public class RunQACaseReports implements Runnable {
                 }
                 //4. Extract info from Annual Report Dataset table
 
-                String annualReportSql = new SQLAnnualReportQuery(sessionFactory).getSectorsReportsQuery(sectorTables, 
+                String annualReportSql = new SQLAnnualReportQuery(entityManagerFactory).getSectorsReportsQuery(sectorTables, 
                         dsIds, dsVers, caseAbbrev, whereSql, useCounty );
                 //System.out.println("annual Query -- " + annualReportSql);
                 if ( ! annualReportSql.trim().isEmpty()) {

@@ -12,20 +12,20 @@ import gov.epa.emissions.framework.services.basic.FileDownloadDAO;
 import gov.epa.emissions.framework.services.data.DataServiceImpl;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import gov.epa.emissions.framework.services.persistence.JpaEntityManagerFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.util.Date;
 
-import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
     private static int svcCount = 0;
 
     private String svcLabel = null;
     
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     public String myTag() {
         if (svcLabel == null) {
@@ -43,7 +43,7 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
     private FileDownloadDAO fileDownloadDAO;
     
     public ExImServiceImpl() throws Exception {
-        this(DbServerFactory.get(), HibernateSessionFactory.get());
+        this(DbServerFactory.get(), JpaEntityManagerFactory.get());
     }
 
     protected void finalize() throws Throwable {
@@ -53,26 +53,26 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
         super.finalize();
     }
 
-    public ExImServiceImpl(DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory) throws Exception {
+    public ExImServiceImpl(DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory) throws Exception {
         if (DebugLevels.DEBUG_4())
             System.out.println(myTag());
-        init(dbServerFactory, sessionFactory);
+        init(dbServerFactory, entityManagerFactory);
         myTag();
     }
 
-    private void init(DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory) {
-        setProperties(sessionFactory);
+    private void init(DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory) {
+        setProperties(entityManagerFactory);
         this.fileDownloadDAO = new FileDownloadDAO();
-        exportService = new ManagedExportService(dbServerFactory, sessionFactory);
-        managedImportService = new ManagedImportService(dbServerFactory, sessionFactory);
-        this.sessionFactory = sessionFactory;
+        exportService = new ManagedExportService(dbServerFactory, entityManagerFactory);
+        managedImportService = new ManagedImportService(dbServerFactory, entityManagerFactory);
+        this.entityManagerFactory = entityManagerFactory;
     }
 
-    private void setProperties(HibernateSessionFactory sessionFactory) {
-        Session session = sessionFactory.getSession();
+    private void setProperties(EntityManagerFactory entityManagerFactory) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            EmfProperty batchSize = new EmfPropertiesDAO().getProperty("export-batch-size", session);
-            EmfProperty eximTempDir = new EmfPropertiesDAO().getProperty("ImportExportTempDir", session);
+            EmfProperty batchSize = new EmfPropertiesDAO().getProperty("export-batch-size", entityManager);
+            EmfProperty eximTempDir = new EmfPropertiesDAO().getProperty("ImportExportTempDir", entityManager);
 
             if (eximTempDir != null)
                 System.setProperty("IMPORT_EXPORT_TEMP_DIR", eximTempDir.getValue());
@@ -80,7 +80,7 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
             if (batchSize != null)
                 System.setProperty("EXPORT_BATCH_SIZE", batchSize.getValue());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -133,12 +133,12 @@ public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
             boolean overwrite, String rowFilters, EmfDataset filterDataset,
             Version filterDatasetVersion, String filterDatasetJoinCondition, String colOrders, String purpose,
             String[] dsExportPrefs, boolean concat) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         String dirName;
         try {
-            dirName = this.fileDownloadDAO.getDownloadExportFolder(session) + "/" + user.getUsername() + "/";
+            dirName = this.fileDownloadDAO.getDownloadExportFolder(entityManager) + "/" + user.getUsername() + "/";
         } finally {
-            session.close();
+            entityManager.close();
         }
         if (DebugLevels.DEBUG_4())
             System.out.println(">>## calling export datasets in eximSvcImp: " + myTag() + " for datasets: "

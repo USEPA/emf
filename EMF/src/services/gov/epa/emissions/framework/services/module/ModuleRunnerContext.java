@@ -1,12 +1,5 @@
 package gov.epa.emissions.framework.services.module;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.sql.Connection;
-import java.util.Date;
-
-import org.hibernate.Session;
-
 import gov.epa.emissions.commons.db.Datasource;
 import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.security.User;
@@ -15,7 +8,14 @@ import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.sql.Connection;
+import java.util.Date;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 class ModuleRunnerContext {
     
@@ -52,7 +52,7 @@ class ModuleRunnerContext {
         Date stopDate = new Date();
         long durationSeconds = (stopDate.getTime() - startDate.getTime() + 999) / 1000 + 1;
         history.setDurationSeconds((int)durationSeconds);
-        history = getModulesDAO().updateHistory(history, getSession());
+        history = getModulesDAO().updateHistory(history, getEntityManager());
     }
     
     protected void createHistory() throws EmfException {
@@ -66,7 +66,7 @@ class ModuleRunnerContext {
         } else {
             history.setRunId(1);
         }
-        getModulesDAO().add(history, getSession());
+        getModulesDAO().add(history, getEntityManager());
     }
     
     // public accessors
@@ -91,12 +91,12 @@ class ModuleRunnerContext {
         return task.getModulesDAO();
     }
     
-    public HibernateSessionFactory getHibernateSessionFactory() {
-        return task.getHibernateSessionFactory();
+    public EntityManagerFactory getEntityManagerFactory() {
+        return task.getEntityManagerFactory();
     }
 
-    public Session getSession() {
-        return task.getSession();
+    public EntityManager getEntityManager() {
+        return task.getEntityManager();
     }
 
     public DbServerFactory getDbServerFactory() {

@@ -6,13 +6,14 @@ import gov.epa.emissions.commons.io.VersionedQuery;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.QAStep;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
+
+import javax.persistence.EntityManagerFactory;
 
 public class SQLAnnualStateSummariesCrosstabQuery extends SQLQAProgramQuery{
     
@@ -28,10 +29,10 @@ public class SQLAnnualStateSummariesCrosstabQuery extends SQLQAProgramQuery{
 
     public static final String sortPollTag = "-sortpoll";
 
-    public SQLAnnualStateSummariesCrosstabQuery(HibernateSessionFactory sessionFactory, DbServer dbServer, 
+    public SQLAnnualStateSummariesCrosstabQuery(EntityManagerFactory entityManagerFactory, DbServer dbServer, 
             String emissioDatasourceName, String tableName, 
             QAStep qaStep) {
-        super(sessionFactory,emissioDatasourceName,tableName,qaStep);
+        super(entityManagerFactory,emissioDatasourceName,tableName,qaStep);
     }
 
     private String[] parseSwitchArguments(String programSwitches, int beginIndex, int endIndex) {
@@ -248,7 +249,7 @@ public class SQLAnnualStateSummariesCrosstabQuery extends SQLQAProgramQuery{
 
     protected String query(String partialQuery, boolean createClause) throws EmfException {
 
-        SQLQueryParser parser = new SQLQueryParser(sessionFactory, emissionDatasourceName, tableName );
+        SQLQueryParser parser = new SQLQueryParser(entityManagerFactory, emissionDatasourceName, tableName );
         return parser.parse(partialQuery, createClause);
     }
 

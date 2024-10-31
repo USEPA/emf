@@ -2,20 +2,21 @@ package gov.epa.emissions.framework.services.data;
 
 import gov.epa.emissions.commons.data.InternalSource;
 import gov.epa.emissions.commons.db.DbServer;
-import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
 import gov.epa.emissions.framework.services.db.PostgresDump;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+
+import java.io.File;
+import java.util.Date;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
-
-import java.io.*;
-import java.util.Date;
 
 public class ArchiveDatasetTask implements Runnable {
 
@@ -23,7 +24,7 @@ public class ArchiveDatasetTask implements Runnable {
 
     private boolean windowsOS = false;
     private DbServerFactory dbServerFactory;
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
     private DatasetDAO datasetDAO;
     private Integer datasetId;
     private EmfPropertiesDAO propertyDao;
@@ -36,42 +37,42 @@ public class ArchiveDatasetTask implements Runnable {
     }
 
     public ArchiveDatasetTask(DbServerFactory dbServerFactory,
-                              HibernateSessionFactory sessionFactory,
+                              EntityManagerFactory entityManagerFactory,
                               Integer datasetId,
                               String username) {
         this();
         this.dbServerFactory = dbServerFactory;
-        this.sessionFactory =sessionFactory;
+        this.entityManagerFactory =entityManagerFactory;
         this.datasetDAO = new DatasetDAO(dbServerFactory);
         this.propertyDao = new EmfPropertiesDAO();
         this.datasetId = datasetId;
-        this.statusDAO = new StatusDAO(sessionFactory);
+        this.statusDAO = new StatusDAO(entityManagerFactory);
         this.username = username;
     }
 
     private EmfDataset getDataset() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            EmfDataset dataset = this.datasetDAO.getDataset(session, datasetId.intValue());
+            EmfDataset dataset = this.datasetDAO.getDataset(entityManager, datasetId.intValue());
             return dataset;
         } catch (RuntimeException e) {
             log.error("Could not get dataset with id=" + datasetId.intValue(), e);
             throw new EmfException("Could not get dataset with id=" + datasetId.intValue());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private String getProperty(String name) {
-        Session session = null;
+        EntityManager entityManager = null;
         try {
-            session = sessionFactory.getSession();
-            return propertyDao.getProperty(name, session).getValue();
+            entityManager = entityManagerFactory.createEntityManager();
+            return propertyDao.getProperty(name, entityManager).getValue();
         } catch (Exception e) {
             e.printStackTrace();
 //            throw new EmfException(e.getMessage());
         } finally {
-            if (session != null) session.close();
+            if (entityManager != null) entityManager.close();
         }
         return null;
     }
@@ -88,11 +89,11 @@ public class ArchiveDatasetTask implements Runnable {
 
     public void run() {
         DbServer dbServer = null;
-        Session session = null;
+        EntityManager entityManager = null;
         try {
 
             dbServer = dbServerFactory.getDbServer();
-            session = sessionFactory.getSession();
+            entityManager = entityManagerFactory.createEntityManager();
 
             //stop consolidated from being archived at this point, maybe in the future
             EmfDataset dataset = getDataset();
@@ -137,8 +138,8 @@ public class ArchiveDatasetTask implements Runnable {
 
             //set dataset Status to "Archived"
             dataset.setStatus("Archived");
-            session.clear();
-            this.datasetDAO.updateDSPropNoLocking(dataset, session);
+            entityManager.clear();
+            this.datasetDAO.updateDSPropNoLocking(dataset, entityManager);
 
             setStatus("Completed archiving dataset, " + dataset.getName() + ".");
 
@@ -147,7 +148,7 @@ public class ArchiveDatasetTask implements Runnable {
             e.printStackTrace();
 //            throw new EmfException(e.getMessage());
         } finally {
-            if (session != null) session.close();
+            if (entityManager != null) entityManager.close();
             try {
                 if (dbServer != null && dbServer.isConnected())
                     dbServer.disconnect();

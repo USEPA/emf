@@ -1,35 +1,19 @@
 package gov.epa.emissions.framework.services.casemanagement;
 
-import gov.epa.emissions.commons.data.Dataset;
-import gov.epa.emissions.commons.data.DatasetType;
-import gov.epa.emissions.commons.data.InternalSource;
-import gov.epa.emissions.commons.data.Sector;
-import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.db.version.Versions;
 import gov.epa.emissions.commons.io.VersionedQuery;
-import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.basic.DateUtil;
-import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.data.QAStep;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.StringTokenizer;
-
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class SQLAnnualReportQuery {
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
     
-    public SQLAnnualReportQuery(HibernateSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public SQLAnnualReportQuery(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
     }
     
     public String getSectorListTableQuery(int caseId, String gridName) {
@@ -59,9 +43,9 @@ public class SQLAnnualReportQuery {
     
     public String getSectorsCasesQuery(String tableName, Integer dsId, Integer versionId) throws EmfException {
         StringBuilder sql = new StringBuilder();
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         
-        Version version = version(session, dsId, versionId );
+        Version version = version(entityManager, dsId, versionId );
         String datasetVersionedQuery = new VersionedQuery(version).query();
 //        for (int i = 0; i < caseIds.length; ++i) {
 //            if ( i > 0 ) sql.append( " union all " );
@@ -120,7 +104,7 @@ public class SQLAnnualReportQuery {
     public String getSectorsReportsQuery(String[] tableNames, Integer[] dsIds, 
             Integer[] dsVers, String caseAbbrev, String whereClause, Boolean useCounty ) throws EmfException {
         StringBuilder sql = new StringBuilder();
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         String colString = "";
         if ( useCounty )
             colString = " select fips, state, county, sector, species, ann_emis as \"" + caseAbbrev + "\"";
@@ -129,7 +113,7 @@ public class SQLAnnualReportQuery {
         for (int i = 0; i < tableNames.length; i++) {
             // skip the loop if a sector is not in the current case
             if ( tableNames[i] != null && dsIds[i] !=null) {
-                Version version = version(session, dsIds[i], dsVers[i] );            
+                Version version = version(entityManager, dsIds[i], dsVers[i] );            
                 String datasetVersionedQuery = new VersionedQuery(version).query();
                 if ( sql.toString().contains("select")) sql.append( " union all " );
                 sql.append(colString);
@@ -160,30 +144,30 @@ public class SQLAnnualReportQuery {
     }
 
 //    private Case getCase(int caseId) throws EmfException {
-//        Session session = sessionFactory.getSession();
+//        EntityManager entityManager = entityManagerFactory.createEntityManager();
 //        try {
-//            return new CaseDAO().getCase(caseId, session);
+//            return new CaseDAO().getCase(caseId, entityManager);
 //        } catch (RuntimeException e) {
 //            throw new EmfException("Could not get Case, id = " + caseId);
 //        } finally {
-//            if (session != null && session.isConnected())
-//                session.close();
+//            if (entityManager != null)
+//                entityManager.close();
 //        }
 //    }
     
     private Version version(int datasetId, int version) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             Versions versions = new Versions();
-            return versions.get(datasetId, version, session);
+            return versions.get(datasetId, version, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
-    private Version version(Session session, int datasetId, int version) {
+    private Version version(EntityManager entityManager, int datasetId, int version) {
         Versions versions = new Versions();
-        return versions.get(datasetId, version, session);
+        return versions.get(datasetId, version, entityManager);
     }
     
     private String qualifiedName(String table) throws EmfException {

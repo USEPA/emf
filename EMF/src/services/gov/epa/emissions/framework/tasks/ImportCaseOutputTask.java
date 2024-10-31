@@ -20,14 +20,15 @@ import gov.epa.emissions.framework.services.data.DataServiceImpl;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.exim.ImporterFactory;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.io.File;
 import java.util.Date;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 public class ImportCaseOutputTask extends Task {
 
@@ -54,7 +55,7 @@ public class ImportCaseOutputTask extends Task {
 
     protected ExternalSource[] extSrcs;
 
-    protected HibernateSessionFactory sessionFactory;
+    protected EntityManagerFactory entityManagerFactory;
 
     protected double numSeconds;
 
@@ -69,7 +70,7 @@ public class ImportCaseOutputTask extends Task {
     private boolean useTaskManager;
 
     public ImportCaseOutputTask(CaseOutput output, EmfDataset dataset, String[] files, File path, User user,
-            Services services, DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory,
+            Services services, DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory,
             boolean useTaskManager) {
         super();
         createId();
@@ -85,9 +86,9 @@ public class ImportCaseOutputTask extends Task {
         this.useTaskManager = useTaskManager;
         this.statusServices = services.getStatus();
         this.dbServerFactory = dbServerFactory;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.datasetDao = new DatasetDAO(dbServerFactory);
-        this.caseDao = new CaseDAO(sessionFactory);
+        this.caseDao = new CaseDAO(entityManagerFactory);
     }
 
     public void run() {
@@ -149,16 +150,16 @@ public class ImportCaseOutputTask extends Task {
 
             removeDataset(dataset);
 
-            Session session = sessionFactory.getSession();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
 
             try {
-                caseDao.removeCaseOutputs(user, new CaseOutput[] { output }, true, session);
+                caseDao.removeCaseOutputs(user, new CaseOutput[] { output }, true, entityManager);
             } catch (EmfException e1) {
                 errorMsg += System.getProperty("line.separator") + e1.getMessage();
                 log.error(errorMsg, e1);
             } finally {
-                if (session != null && session.isConnected())
-                    session.close();
+                if (entityManager != null)
+                    entityManager.close();
             }
         } finally {
             try {
@@ -182,22 +183,22 @@ public class ImportCaseOutputTask extends Task {
     private void prepare(DbServer dbServer) throws Exception {
         addStartStatus();
 
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         CaseOutput existedOutput = null;
 
         try {
-            existedOutput = caseDao.getCaseOutput(output, session);
+            existedOutput = caseDao.getCaseOutput(output, entityManager);
 
             if (existedOutput != null) {
-                EmfDataset dataset = datasetDao.getDataset(session, existedOutput.getDatasetId());
-                datasetDao.deleteDatasets(new EmfDataset[] { dataset }, dbServer, session);
+                EmfDataset dataset = datasetDao.getDataset(entityManager, existedOutput.getDatasetId());
+                datasetDao.deleteDatasets(new EmfDataset[] { dataset }, dbServer, entityManager);
             }
         } catch (Exception e) {
             log.error("Error deleting dataset - " + e.getMessage());
         } finally {
             try {
                 if (existedOutput != null)
-                    caseDao.removeCaseOutputs(new CaseOutput[] { existedOutput }, session);
+                    caseDao.removeCaseOutputs(new CaseOutput[] { existedOutput }, entityManager);
                 caseDao.add(output);
                 dataset.setStatus("Started import");
                 addDataset();
@@ -205,8 +206,8 @@ public class ImportCaseOutputTask extends Task {
                 log.error("Error deleting dataset.", e);
                 throw e;
             } finally {
-                if (session != null && session.isConnected())
-                    session.close();
+                if (entityManager != null)
+                    entityManager.close();
             }
         }
     }
@@ -220,17 +221,17 @@ public class ImportCaseOutputTask extends Task {
     }
 
     private void updateOutput(String status, String message) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            output.setDatasetId(datasetDao.getDataset(session, dataset.getName()).getId());
+            output.setDatasetId(datasetDao.getDataset(entityManager, dataset.getName()).getId());
             output.setStatus(status);
             output.setMessage(message);
-            caseDao.updateCaseOutput(output, session);
+            caseDao.updateCaseOutput(output, entityManager);
         } catch (Exception e) {
             log.error("Error updating case output " + output.getName() + ". ", e);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -249,7 +250,7 @@ public class ImportCaseOutputTask extends Task {
     }
 
     protected void addDataset() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         String name = dataset.getName(); // TODO: JIZHEN1
         
         String newName = name;
@@ -261,7 +262,7 @@ public class ImportCaseOutputTask extends Task {
         dataset.setName(newName);
 
         try {
-            if (datasetDao.datasetNameUsed(name, session)) {
+            if (datasetDao.datasetNameUsed(name, entityManager)) {
                 name += "_" + CustomDateFormat.format_yyyy_MM_dd_HHmmssSS(new Date());
                 
                 newName = name;
@@ -273,46 +274,46 @@ public class ImportCaseOutputTask extends Task {
                 dataset.setName(newName);
             }
 
-            session.clear();
-            datasetDao.add(dataset, session);
+            entityManager.clear();
+            datasetDao.add(dataset, entityManager);
         } catch (Exception e) {
             log.error("Error adding new dataset: " + name, e);
             throw new EmfException(e.getMessage() == null ? "" : e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     protected void updateDataset(EmfDataset dataset) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
             if (dataset.isExternal() && extSrcs != null && extSrcs.length > 0) {
                 for (int i = 0; i < extSrcs.length; i++)
                     extSrcs[i].setDatasetId(dataset.getId());
 
-                datasetDao.addExternalSources(extSrcs, session);
+                datasetDao.addExternalSources(extSrcs, entityManager);
             }
 
-            datasetDao.updateWithoutLocking(dataset, session);
+            datasetDao.updateWithoutLocking(dataset, entityManager);
         } catch (Exception e) {
             logError("Could not update Dataset - " + dataset.getName(), e);
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     protected void removeDataset(EmfDataset dataset) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            datasetDao.remove(dataset, session);
+            datasetDao.remove(dataset, entityManager);
         } catch (Exception e) {
             logError("Could not get remove Dataset - " + dataset.getName(), e);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -365,21 +366,21 @@ public class ImportCaseOutputTask extends Task {
     }
     
     private Version version(int datasetId, int versionNumber) throws EmfException {
-        DataServiceImpl dataServiceImpl = new DataServiceImpl(dbServerFactory, sessionFactory);
-        Session session = sessionFactory.getSession();
+        DataServiceImpl dataServiceImpl = new DataServiceImpl(dbServerFactory, entityManagerFactory);
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             Versions versions = new Versions();
-            Version version = versions.get(datasetId, versionNumber, session);
+            Version version = versions.get(datasetId, versionNumber, entityManager);
             version = dataServiceImpl.obtainedLockOnVersion(user, version.getId());
             return version;
 
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private void updateVersionNReleaseLock(Version locked) throws EmfException {
-        DataServiceImpl dataServiceImpl = new DataServiceImpl(dbServerFactory, sessionFactory);
+        DataServiceImpl dataServiceImpl = new DataServiceImpl(dbServerFactory, entityManagerFactory);
         try {
             dataServiceImpl.updateVersionNReleaseLock(locked);
         } catch (Exception e) {
@@ -390,7 +391,7 @@ public class ImportCaseOutputTask extends Task {
     }
     
     public synchronized int getNumOfRecords(EmfDataset dataset, Version version) throws EmfException {
-        DataServiceImpl dataServiceImpl = new DataServiceImpl(dbServerFactory, sessionFactory);
+        DataServiceImpl dataServiceImpl = new DataServiceImpl(dbServerFactory, entityManagerFactory);
         try {
             InternalSource[] internalSources = dataset.getInternalSources();
             

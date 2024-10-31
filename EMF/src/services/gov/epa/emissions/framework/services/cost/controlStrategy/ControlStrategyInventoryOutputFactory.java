@@ -5,7 +5,8 @@ import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.cost.ControlStrategy;
 import gov.epa.emissions.framework.services.cost.StrategyType;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+
+import javax.persistence.EntityManagerFactory;
 
 public class ControlStrategyInventoryOutputFactory {
 
@@ -13,18 +14,18 @@ public class ControlStrategyInventoryOutputFactory {
 
     private User user;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private DbServerFactory dbServerFactory;
 
     private String namePrefix;
 
     public ControlStrategyInventoryOutputFactory(User user, ControlStrategy controlStrategy,
-            String namePrefix, HibernateSessionFactory sessionFactory, 
+            String namePrefix, EntityManagerFactory entityManagerFactory, 
             DbServerFactory dbServerFactory) throws Exception {
         this.controlStrategy = controlStrategy;
         this.user = user;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.dbServerFactory = dbServerFactory;
         this.namePrefix = namePrefix;
     }
@@ -33,22 +34,22 @@ public class ControlStrategyInventoryOutputFactory {
         if (controlStrategy.getStrategyType().getName().equals(StrategyType.applyMeasuresInSeries)) 
             return new ApplyMeasureInSeriesControlStrategyInventoryOutput(user, controlStrategy, 
                     controlStrategyResult, namePrefix,
-                    sessionFactory, dbServerFactory);
+                    entityManagerFactory, dbServerFactory);
         if (controlStrategy.getStrategyType().getName().equals(StrategyType.projectFutureYearInventory)) 
             return new ProjectFutureYearInventoryControlStrategyInventoryOutput(user, controlStrategy, 
                     controlStrategyResult, namePrefix,
-                    sessionFactory, dbServerFactory);
+                    entityManagerFactory, dbServerFactory);
         if (controlStrategy.getStrategyType().getName().equals(StrategyType.annotateInventory)) 
             return new AnnotatedControlStrategyInventoryOutput(user, controlStrategy, 
                     controlStrategyResult, namePrefix, 
-                    sessionFactory, dbServerFactory);
+                    entityManagerFactory, dbServerFactory);
         if (controlStrategyResult.getInputDataset().getDatasetType().getName().equals(DatasetType.orlMergedInventory) ||
             controlStrategyResult.getInputDataset().getDatasetType().getName().equals(DatasetType.ff10MergedInventory))
             return new MergedControlStrategyInventoryOutput(user, controlStrategy, 
                     controlStrategyResult, namePrefix,
-                    sessionFactory, dbServerFactory);
+                    entityManagerFactory, dbServerFactory);
         return new AbstractControlStrategyInventoryOutput(user, controlStrategy, 
                 controlStrategyResult, namePrefix,
-                sessionFactory, dbServerFactory);
+                entityManagerFactory, dbServerFactory);
     }
 }

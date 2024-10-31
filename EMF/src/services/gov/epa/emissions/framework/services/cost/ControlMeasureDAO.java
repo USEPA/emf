@@ -1,19 +1,5 @@
 package gov.epa.emissions.framework.services.cost;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.hibernate.query.Query;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
 import gov.epa.emissions.commons.CoSTConstants;
 import gov.epa.emissions.commons.data.Pollutant;
 import gov.epa.emissions.commons.data.Reference;
@@ -26,9 +12,22 @@ import gov.epa.emissions.framework.services.cost.controlmeasure.Scc;
 import gov.epa.emissions.framework.services.cost.data.EfficiencyRecord;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
 import gov.epa.emissions.framework.tasks.DebugLevels;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 public class ControlMeasureDAO {
     private LockingScheme lockingScheme;
@@ -52,55 +51,55 @@ public class ControlMeasureDAO {
 //        this.dbServer = dbServer;
 //    }
 
-    public boolean exists(int id, Session session) {
-        return hibernateFacade.exists(id, ControlMeasure.class, session);
+    public boolean exists(int id, EntityManager entityManager) {
+        return hibernateFacade.exists(id, ControlMeasure.class, entityManager);
     }
 
-    public <C> boolean exists(CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Predicate[] predicates, Session session) {
-        return hibernateFacade.exists(criteriaBuilderQueryRoot, predicates, session);
+    public <C> boolean exists(CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Predicate[] predicates, EntityManager entityManager) {
+        return hibernateFacade.exists(criteriaBuilderQueryRoot, predicates, entityManager);
     }
 
-    public ControlMeasure current(int id, Session session) {
-        return hibernateFacade.current(id, ControlMeasure.class, session);
+    public ControlMeasure current(int id, EntityManager entityManager) {
+        return hibernateFacade.current(id, ControlMeasure.class, entityManager);
     }
 
-    public boolean canUpdate(ControlMeasure measure, Session session) {
-        if (!exists(measure.getId(), session)) {
+    public boolean canUpdate(ControlMeasure measure, EntityManager entityManager) {
+        if (!exists(measure.getId(), entityManager)) {
             return false;
         }
 
-        ControlMeasure current = current(measure.getId(), session);
-        session.clear();// clear to flush current
+        ControlMeasure current = current(measure.getId(), entityManager);
+        entityManager.clear();// clear to flush current
         if (current.getName().equals(measure.getName()))
             return true;
 
-        return !nameUsed(measure.getName(), session);
+        return !nameUsed(measure.getName(), entityManager);
     }
 
     /*
      * Return true if the name is already used
      */
-    private boolean nameUsed(String name, Session session) {
-        return hibernateFacade.nameUsed(name, ControlMeasure.class, session);
+    private boolean nameUsed(String name, EntityManager entityManager) {
+        return hibernateFacade.nameUsed(name, ControlMeasure.class, entityManager);
     }
 
-    public boolean exists(String name, Session session) {
-        return hibernateFacade.exists(name, ControlMeasure.class, session);
+    public boolean exists(String name, EntityManager entityManager) {
+        return hibernateFacade.exists(name, ControlMeasure.class, entityManager);
     }
 
-    public List all(Session session) {
-        CriteriaBuilderQueryRoot<ControlMeasure> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlMeasure.class, session);
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, session);
+    public List all(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<ControlMeasure> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlMeasure.class, entityManager);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, entityManager);
     }
 
-    public List getControlMeasures(Pollutant poll, Session session) {
-        CriteriaBuilderQueryRoot<ControlMeasure> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlMeasure.class, session);
-        return hibernateFacade.get(session, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("majorPollutant"), poll));
+    public List getControlMeasures(Pollutant poll, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<ControlMeasure> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlMeasure.class, entityManager);
+        return hibernateFacade.get(entityManager, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("majorPollutant"), poll));
     }
 
     // NOTE: it't not happening in one transaction. modify?
     //No, there is situations where there is too much data and transaction would cause to much overhead
-    public int add(ControlMeasure measure, Scc[] sccs, Session session) throws EmfException {
+    public int add(ControlMeasure measure, Scc[] sccs, EntityManager entityManager) throws EmfException {
         //Validate control measure
         //make sure abbreviation is not 
         if (measure.getAbbreviation().trim().length() == 0) {
@@ -115,20 +114,20 @@ public class ControlMeasureDAO {
             throw new EmfException("An abbreviation can not contain a space");
         }
 
-        checkForConstraints(measure, session);
-        updateReferenceIds(measure, session);
-        int cmId = (Integer)hibernateFacade.add(measure, session);
+        checkForConstraints(measure, entityManager);
+        updateReferenceIds(measure, entityManager);
+        int cmId = hibernateFacade.add(measure, entityManager);
         measure.setId(cmId);
-//        int cmId = controlMeasureIds(measure, sccs, session);
+//        int cmId = controlMeasureIds(measure, sccs, entityManager);
         for (int i = 0; i < sccs.length; i++) {
             sccs[i].setControlMeasureId(cmId);
         }
-        hibernateFacade.add(sccs, session);
+        hibernateFacade.add(sccs, entityManager);
         return cmId;
     }
 
-    private int controlMeasureIds(ControlMeasure measure, Scc[] sccs, Session session) {
-        ControlMeasure cm = hibernateFacade.load(ControlMeasure.class, "name", measure.getName(), session);
+    private int controlMeasureIds(ControlMeasure measure, Scc[] sccs, EntityManager entityManager) {
+        ControlMeasure cm = hibernateFacade.load(ControlMeasure.class, "name", measure.getName(), entityManager);
         int cmId = cm.getId();
         for (int i = 0; i < sccs.length; i++) {
             sccs[i].setControlMeasureId(cmId);
@@ -136,23 +135,24 @@ public class ControlMeasureDAO {
         return cmId;
     }
 
-    public void remove(int controlMeasureId, Session session) {
-        removeSccs(controlMeasureId, session);
-        hibernateFacade.remove(current(controlMeasureId, session), session);
+    public void remove(int controlMeasureId, EntityManager entityManager) {
+        removeSccs(controlMeasureId, entityManager);
+        hibernateFacade.remove(current(controlMeasureId, entityManager), entityManager);
     }
 
-    public void remove(int[] sectorIds, HibernateSessionFactory sessionFactory, DbServer dbServer) throws EmfException {
-        Session session = sessionFactory.getSession();
+    public void remove(int[] sectorIds, EntityManagerFactory entityManagerFactory, DbServer dbServer) throws EmfException {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        final EntityTransaction tx = entityManager.getTransaction();
         try {
-            Transaction tx = session.beginTransaction();
-            removeSccs(sectorIds, session);
+            tx.begin();
+            removeSccs(sectorIds, entityManager);
             
             AggregateEfficiencyRecordDAO aerDAO = new AggregateEfficiencyRecordDAO();
             aerDAO.removeAggregateEfficiencyRecords(sectorIds, dbServer);
             
-            removeEfficiencyRecords(sectorIds, session);
+            removeEfficiencyRecords(sectorIds, entityManager);
             
-            List<ControlMeasure> lstCM = getControlMeasureBySectors(sectorIds, true, session);
+            List<ControlMeasure> lstCM = getControlMeasureBySectors(sectorIds, true, entityManager);
             int [] cmIDs = new int[lstCM.size()];
             for ( int i=0; i<lstCM.size(); i++) {
                 cmIDs[i] = lstCM.get(i).getId();
@@ -171,35 +171,36 @@ public class ControlMeasureDAO {
                             ? "inner join icm.sectors AS s "
                               + "WHERE s.id in (" + idList + ") " 
                             : "");
-            List<ControlMeasure> controlMeasures  = session.createQuery( hqlSelect ).list();
+            List<ControlMeasure> controlMeasures  = entityManager.createQuery( hqlSelect ).getResultList();
             for (ControlMeasure controlMeasure : controlMeasures) {
-                session.delete(controlMeasure);
+                entityManager.remove(controlMeasure);
             }
             
-//            session.createSQLQuery("").executeUpdate();
-            tx.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
+//            entityManager.createSQLQuery("").executeUpdate();
+            tx.commit(); 
+        }
+        catch (RuntimeException e) {
+            tx.rollback();
             throw new EmfException(e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
 
         //      LOG.error("remove EfficiencyRecords");
-      //removeEfficiencyRecords(cmId, session);
+      //removeEfficiencyRecords(cmId, entityManager);
         
 //        AggregateEfficiencyRecordDAO aerDAO = new AggregateEfficiencyRecordDAO();
 //        aerDAO.removeAggregateEfficiencyRecords(sectorIds, dbServer);
 
-//        session = sessionFactory.getSession();
+//        entityManager = entityManagerFactory.createEntityManager();
 //        try {
-//            Transaction tx = session.beginTransaction();
-//            removeEfficiencyRecords(sectorIds, session);
+//            Transaction tx = entityManager.beginTransaction();
+//            removeEfficiencyRecords(sectorIds, entityManager);
 //            tx.commit();
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        } finally {
-//            session.close();
+//            entityManager.close();
 //        }
         
         
@@ -214,50 +215,50 @@ public class ControlMeasureDAO {
 //                        ? "inner join icm.sectors AS s "
 //                          + "WHERE s.id in (" + idList + ") " 
 //                        : "");
-//        session = sessionFactory.getSession();
+//        entityManager = entityManagerFactory.createEntityManager();
 //        try {
-//            List<ControlMeasure> controlMeasures  = session.createQuery( hqlSelect ).list();
-//            Transaction tx = session.beginTransaction();
+//            List<ControlMeasure> controlMeasures  = entityManager.createQuery( hqlSelect ).list();
+//            Transaction tx = entityManager.beginTransaction();
 //            for (ControlMeasure controlMeasure : controlMeasures) {
-//                session.delete(controlMeasure);
+//                entityManager.delete(controlMeasure);
 //            }
 //            tx.commit();
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        } finally {
-//            session.close();
+//            entityManager.close();
 //        }
 
-//doesn;t work, need to load full object then call session.delete(ControlMeasure);
+//doesn;t work, need to load full object then call entityManager.delete(ControlMeasure);
 //      String hqlDelete = "delete ControlMeasure cm where cm.id IN (select icm.id "
 //          + "FROM ControlMeasure AS icm "
 //          + (sectorIds != null && sectorIds.length > 0 
 //                  ? "inner join icm.sectors AS s "
 //                    + "WHERE s.id in (" + idList + ") " 
 //                  : "") + ")";
-//        session.createQuery( hqlDelete ).executeUpdate();
+//        entityManager.createQuery( hqlDelete ).executeUpdate();
 
         
-//        session.flush();
+//        entityManager.flush();
     }
 
-    public int copy(int controlMeasureId, User creator, Session session, DbServer dbServer) throws EmfException {
-        ControlMeasure cm = current(controlMeasureId, session);
-        session.clear();//must do this
+    public int copy(int controlMeasureId, User creator, EntityManager entityManager, DbServer dbServer) throws EmfException {
+        ControlMeasure cm = current(controlMeasureId, entityManager);
+        entityManager.clear();//must do this
         
         //set the name and give a random abbrev...
         cm.setName("Copy of " + cm.getName() + " " + creator.getName() + " " + CustomDateFormat.format_HHMM(new Date()));
         cm.setAbbreviation(CustomDateFormat.format_YYDDHHMMSS(new Date()));
         
-        CriteriaBuilderQueryRoot<ControlMeasure> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlMeasure.class, session);
+        CriteriaBuilderQueryRoot<ControlMeasure> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlMeasure.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<ControlMeasure> root = criteriaBuilderQueryRoot.getRoot();
 
         //make sure the name and abbrev are unique
 //        Criterion name = Restrictions.eq("name", cm.getName());
         Predicate abbrev = builder.equal(root.get("abbreviation"), cm.getAbbreviation());
-        boolean abbrExist = abbrExist(criteriaBuilderQueryRoot, new Predicate[] { abbrev }, session);
-        boolean nameExist = nameExist(cm.getName(), session);
+        boolean abbrExist = abbrExist(criteriaBuilderQueryRoot, new Predicate[] { abbrev }, entityManager);
+        boolean nameExist = nameExist(cm.getName(), entityManager);
 
         if (abbrExist || nameExist)
             throw new EmfException("A control measure with the same name or abbreviation already exists.");
@@ -268,19 +269,19 @@ public class ControlMeasureDAO {
         cm.setLastModifiedBy(creator.getName());
 
         //create new measure, get its id
-        int cmId = (Integer)hibernateFacade.add(cm, session);
+        int cmId = hibernateFacade.add(cm, entityManager);
 
         //copy measure SCCs
-        Scc[] sccs = getSccs(controlMeasureId, session);
-        session.clear();//must do this
+        Scc[] sccs = getSccs(controlMeasureId, entityManager);
+        entityManager.clear();//must do this
         updateSccsControlMeasureIds(sccs, cmId);
-        hibernateFacade.add(sccs, session);
+        hibernateFacade.add(sccs, entityManager);
         
         //copy measure Efficiecny Records
-        EfficiencyRecord[] records = (EfficiencyRecord[]) getEfficiencyRecords(controlMeasureId, session).toArray(new EfficiencyRecord[0]);
-        session.clear();//must do this
+        EfficiencyRecord[] records = (EfficiencyRecord[]) getEfficiencyRecords(controlMeasureId, entityManager).toArray(new EfficiencyRecord[0]);
+        entityManager.clear();//must do this
         updateEfficiencyRecordControlMeasureIds(records, cmId);
-        hibernateFacade.add(records, session);
+        hibernateFacade.add(records, entityManager);
         
         //populate aggregate Efficiecny Records
         updateAggregateEfficiencyRecords(cmId, dbServer);
@@ -288,26 +289,30 @@ public class ControlMeasureDAO {
         return cmId;
     }
 
-    private void removeSccs(int controlMeasureId, Session session) {
+    private void removeSccs(int controlMeasureId, EntityManager entityManager) {
         String hqlDelete = "delete Scc scc where scc.controlMeasureId = :controlMeasureId";
-        Transaction tx = null;
+
+        final EntityTransaction tx = entityManager.getTransaction();
         try {
-            tx = session.beginTransaction();
-            session.createQuery( hqlDelete )
-                .setInteger("controlMeasureId", controlMeasureId)
+            tx.begin();
+            entityManager.createQuery( hqlDelete )
+                .setParameter("controlMeasureId", controlMeasureId)
                 .executeUpdate();
-            tx.commit();
-        } catch (RuntimeException e) {
+            tx.commit(); 
+        }
+        catch (RuntimeException e) {
             tx.rollback();
             throw e;
+        } finally {
+            //
         }
-//        Scc[] sccs = getSccs(controlMeasureId, session);
+//        Scc[] sccs = getSccs(controlMeasureId, entityManager);
 //        for (int i = 0; i < sccs.length; i++) {
-//            hibernateFacade.remove(sccs[i], session);
+//            hibernateFacade.remove(sccs[i], entityManager);
 //        }
     }
 
-    private void removeSccs(int[] sectorIds, Session session) {
+    private void removeSccs(int[] sectorIds, EntityManager entityManager) {
         
         String idList = "";
         for (int i = 0; i < sectorIds.length; ++i) {
@@ -321,36 +326,36 @@ public class ControlMeasureDAO {
                           + "WHERE s.id in (" + idList + ") " 
                         : "") + ")";
         try {
-            session.createQuery( hqlDelete ).executeUpdate();
+            entityManager.createQuery( hqlDelete ).executeUpdate();
         } catch (RuntimeException e) {
             throw e;
         }
     }
 
-    public ControlMeasure grabLocked(User user, int controlMeasureId, Session session) {
-        ControlMeasure controlMeasure = current(controlMeasureId, session);
-        lockingScheme.grabLock(user, controlMeasure, session);
+    public ControlMeasure grabLocked(User user, int controlMeasureId, EntityManager entityManager) {
+        ControlMeasure controlMeasure = current(controlMeasureId, entityManager);
+        lockingScheme.grabLock(user, controlMeasure, entityManager);
         return controlMeasure;
     }
 
-    public ControlMeasure obtainLocked(User user, int controlMeasureId, Session session) {
-        return (ControlMeasure) lockingScheme.getLocked(user, current(controlMeasureId, session), session);
+    public ControlMeasure obtainLocked(User user, int controlMeasureId, EntityManager entityManager) {
+        return (ControlMeasure) lockingScheme.getLocked(user, current(controlMeasureId, entityManager), entityManager);
     }
 
-//    private ControlMeasure current(ControlMeasure measure, Session session) {
-//        return current(measure.getId(), ControlMeasure.class, session);
+//    private ControlMeasure current(ControlMeasure measure, EntityManager entityManager) {
+//        return current(measure.getId(), ControlMeasure.class, entityManager);
 //    }
 
-    public void releaseLocked(User user, int controlMeasureId, Session session) {
-        ControlMeasure cm = current(controlMeasureId, session);
-        lockingScheme.releaseLock(user, cm, session);
+    public void releaseLocked(User user, int controlMeasureId, EntityManager entityManager) {
+        ControlMeasure cm = current(controlMeasureId, entityManager);
+        lockingScheme.releaseLock(user, cm, entityManager);
     }
     
-    public ControlMeasure update(ControlMeasure locked, Scc[] sccs, Session session) throws EmfException {
-        return update(locked, sccs, session, true);
+    public ControlMeasure update(ControlMeasure locked, Scc[] sccs, EntityManager entityManager) throws EmfException {
+        return update(locked, sccs, entityManager, true);
     }
 
-    public ControlMeasure update(ControlMeasure locked, Scc[] sccs, Session session, boolean releaseLock) throws EmfException {
+    public ControlMeasure update(ControlMeasure locked, Scc[] sccs, EntityManager entityManager, boolean releaseLock) throws EmfException {
         // Validate control measure
         // make sure abbreviation is not
         if (locked.getAbbreviation().trim().length() == 0) {
@@ -365,19 +370,19 @@ public class ControlMeasureDAO {
             throw new EmfException("An abbreviation can not contain a space");
         }
 
-        checkForConstraints(locked, session);
-        updateReferenceIds(locked, session);
+        checkForConstraints(locked, entityManager);
+        updateReferenceIds(locked, entityManager);
         
         ControlMeasure updatedControlMeasure = null;
         if (releaseLock) {
             updatedControlMeasure = (ControlMeasure) lockingScheme.releaseLockOnUpdate(locked, current(locked.getId(),
-                    session), session);
+                    entityManager), entityManager);
         } else {
             updatedControlMeasure = (ControlMeasure) lockingScheme.renewLockOnUpdate(locked, current(locked.getId(),
-                    session), session);
+                    entityManager), entityManager);
         }
         
-        updateSccs(sccs, locked.getId(), session);
+        updateSccs(sccs, locked.getId(), entityManager);
         return updatedControlMeasure;
     }
 
@@ -385,11 +390,11 @@ public class ControlMeasureDAO {
      * Checks for references with the same description in the db. If one is found, the object reference is updated to
      * the existing one.
      */
-    private void updateReferenceIds(ControlMeasure controlMeasure, Session session) {
+    private void updateReferenceIds(ControlMeasure controlMeasure, EntityManager entityManager) {
 
         Reference[] newReferences = controlMeasure.getReferences();
 
-        List<Reference> existingReferences = this.referencesDAO.getReferences(session);
+        List<Reference> existingReferences = this.referencesDAO.getReferences(entityManager);
 
         for (int i = 0; i < newReferences.length; i++) {
 
@@ -408,15 +413,15 @@ public class ControlMeasureDAO {
         }
     }
 
-    private void updateSccs(Scc[] sccs, int controlMeasureId, Session session) {
+    private void updateSccs(Scc[] sccs, int controlMeasureId, EntityManager entityManager) {
         updateSccsControlMeasureIds(sccs, controlMeasureId);
-        Scc[] existingSccs = getSccs(controlMeasureId, session);
+        Scc[] existingSccs = getSccs(controlMeasureId, entityManager);
         List removeList = new ArrayList(Arrays.asList(existingSccs));
         List newSccList = new ArrayList();
         processSccsList(sccs, newSccList, removeList);
 
-        hibernateFacade.remove(removeList.toArray(new Scc[0]), session);
-        hibernateFacade.add(newSccList.toArray(new Scc[0]), session);
+        hibernateFacade.remove(removeList.toArray(new Scc[0]), entityManager);
+        hibernateFacade.add(newSccList.toArray(new Scc[0]), entityManager);
 
     }
 
@@ -453,13 +458,13 @@ public class ControlMeasureDAO {
         }
     }
 
-    public Scc[] getSccs(int controlMeasureId, Session session) {
-        CriteriaBuilderQueryRoot<Scc> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Scc.class, session);
+    public Scc[] getSccs(int controlMeasureId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<Scc> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Scc.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<Scc> root = criteriaBuilderQueryRoot.getRoot();
 
         Predicate id = builder.equal(root.get("controlMeasureId"), Integer.valueOf(controlMeasureId));
-        List<Scc> list = hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { id }, session);
+        List<Scc> list = hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { id }, entityManager);
         return list.toArray(new Scc[0]);
     }
 
@@ -472,8 +477,8 @@ public class ControlMeasureDAO {
         }
     }
 
-    public void checkForConstraints(ControlMeasure controlMeasure, Session session) throws EmfException {
-        CriteriaBuilderQueryRoot<ControlMeasure> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlMeasure.class, session);
+    public void checkForConstraints(ControlMeasure controlMeasure, EntityManager entityManager) throws EmfException {
+        CriteriaBuilderQueryRoot<ControlMeasure> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlMeasure.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<ControlMeasure> root = criteriaBuilderQueryRoot.getRoot();
 
@@ -481,112 +486,113 @@ public class ControlMeasureDAO {
         Predicate name = builder.equal(root.get("name"), controlMeasure.getName());
         Predicate abbrev = builder.equal(root.get("abbreviation"), controlMeasure.getAbbreviation());
 
-//        if (nameExist(new Criterion[] { id, name }, session))
+//        if (nameExist(new Criterion[] { id, name }, entityManager))
 //            throw new EmfException("The Control Measure name is already in use: " + controlMeasure.getName());
 
-        if (abbrExist(criteriaBuilderQueryRoot, new Predicate[] { id, abbrev }, session))
+        if (abbrExist(criteriaBuilderQueryRoot, new Predicate[] { id, abbrev }, entityManager))
             throw new EmfException("This control measure abbreviation is already in use: "
                     + controlMeasure.getAbbreviation());
     }
 
-    private boolean nameExist(String name, Session session) {
-        Long count = (Long)session.createQuery("select count(cM) from ControlMeasure cM where trim(cM.name) =  '" + name.replaceAll("'", "''") + "'").uniqueResult();
+    private boolean nameExist(String name, EntityManager entityManager) {
+        Long count = (Long)entityManager.createQuery("select count(cM) from ControlMeasure cM where trim(cM.name) =  '" + name.replaceAll("'", "''") + "'").getSingleResult();
         
         return count > 0 ? true : false;
     }
 
-    private boolean abbrExist(CriteriaBuilderQueryRoot<ControlMeasure> criteriaBuilderQueryRoot, Predicate[] predicates, Session session) {
-        return exists(criteriaBuilderQueryRoot, predicates, session);
+    private boolean abbrExist(CriteriaBuilderQueryRoot<ControlMeasure> criteriaBuilderQueryRoot, Predicate[] predicates, EntityManager entityManager) {
+        return exists(criteriaBuilderQueryRoot, predicates, entityManager);
     }
 
-    public ControlMeasure load(ControlMeasure measure, Session session) {
-        return hibernateFacade.load(ControlMeasure.class, "name", measure.getName(), session);
+    public ControlMeasure load(ControlMeasure measure, EntityManager entityManager) {
+        return hibernateFacade.load(ControlMeasure.class, "name", measure.getName(), entityManager);
     }
 
-    public int addFromImporter(ControlMeasure measure, Scc[] sccs, User user, Session session, DbServer dbServer) throws EmfException {
+    public int addFromImporter(ControlMeasure measure, Scc[] sccs, User user, EntityManager entityManager, DbServer dbServer) throws EmfException {
         int cmId = 0;
 //        Criterion name = Restrictions.eq("name", measure.getName());
-        CriteriaBuilderQueryRoot<ControlMeasure> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlMeasure.class, session);
+        CriteriaBuilderQueryRoot<ControlMeasure> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlMeasure.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<ControlMeasure> root = criteriaBuilderQueryRoot.getRoot();
         Predicate abbrev = builder.equal(root.get("abbreviation"), measure.getAbbreviation());
-        boolean abbrExist = abbrExist(criteriaBuilderQueryRoot, new Predicate[] { abbrev }, session);
-        boolean nameExist = nameExist(measure.getName(), session);
+        boolean abbrExist = abbrExist(criteriaBuilderQueryRoot, new Predicate[] { abbrev }, entityManager);
+        boolean nameExist = nameExist(measure.getName(), entityManager);
 
         if (abbrExist) {// overwrite based on the UNIQUE control measure abbreviation
-            cmId = getControlMeasureIdByAbbreviation(measure.getAbbreviation(), session);
+            cmId = getControlMeasureIdByAbbreviation(measure.getAbbreviation(), entityManager);
             measure.setId(cmId);
-            ControlMeasure obtainLocked = grabLocked(user, cmId, session);
+            ControlMeasure obtainLocked = grabLocked(user, cmId, entityManager);
             if (obtainLocked == null)
                 throw new EmfException("Could not obtain the lock to update: " + measure.getName());
             measure.setLockDate(obtainLocked.getLockDate());
             measure.setLockOwner(obtainLocked.getLockOwner());
 //            LOG.error("remove Sccs");
-            removeSccs(cmId, session);
+            removeSccs(cmId, entityManager);
 //            LOG.error("remove EfficiencyRecords");
-            //removeEfficiencyRecords(cmId, session);
+            //removeEfficiencyRecords(cmId, entityManager);
             removeEfficiencyRecords(cmId, dbServer);
 //            LOG.error("remove AggregateEfficiencyRecords");
             AggregateEfficiencyRecordDAO aerDAO = new AggregateEfficiencyRecordDAO();
             aerDAO.removeAggregateEfficiencyRecords(cmId, dbServer);
 //            LOG.error("update measure and sccs");
-            update(measure, sccs, session);
+            update(measure, sccs, entityManager);
 //        } else if (abbrExist) {
 //            throw new EmfException("This control measure abbreviation is already in use: " + measure.getAbbreviation());
         } else {
-            cmId = add(measure, sccs, session);
+            cmId = add(measure, sccs, entityManager);
         }
         return cmId;
     }
 
     
     // use only after confirming measure is exist
-    private int getControlMeasureIdByAbbreviation(String abbreviation, Session session) {
-        int id = (Integer)session.createQuery("select cM.id from ControlMeasure cM where cM.abbreviation =  :abbreviation")
-            .setParameter("abbreviation", abbreviation)
-            .uniqueResult();
+    private int getControlMeasureIdByAbbreviation(String abbreviation, EntityManager entityManager) {
+        int id = entityManager
+                    .createQuery("select cM.id from ControlMeasure cM where cM.abbreviation =  :abbreviation", Integer.class)
+                    .setParameter("abbreviation", abbreviation)
+                    .getSingleResult();
         
         return id;
     }
 
-    public void removeMeasureEquationType(int controlMeasureEquationTypeId, Session session) {
+    public void removeMeasureEquationType(int controlMeasureEquationTypeId, EntityManager entityManager) {
         String hqlDelete = "delete ControlMeasureEquationType et where et.id = :controlMeasureEquationTypeId";
-        Transaction tx = null;
+
+        final EntityTransaction tx = entityManager.getTransaction();
         try {
-            tx = session.beginTransaction();
-            session.createQuery( hqlDelete )
-                .setInteger("controlMeasureEquationTypeId", controlMeasureEquationTypeId)
+            tx.begin();
+            entityManager
+                .createQuery( hqlDelete )
+                .setParameter("controlMeasureEquationTypeId", controlMeasureEquationTypeId)
                 .executeUpdate();
-            tx.commit();
-        } catch (RuntimeException e) {
+            tx.commit(); 
+        }
+        catch (RuntimeException e) {
             tx.rollback();
             throw e;
+        } finally {
+            //
         }
-//        Criterion c = Restrictions.eq("controlMeasureId", Integer.valueOf(controlMeasureId));
-//        List list = hibernateFacade.get(EfficiencyRecord.class, c, session);
-//        for (int i = 0; i < list.size(); i++) {
-//            hibernateFacade.remove(list.get(i), session);
-//        }
     }
 
-    public void removeEfficiencyRecords(int controlMeasureId, Session session) {
+    public void removeEfficiencyRecords(int controlMeasureId, EntityManager entityManager) {
         String hqlDelete = "delete EfficiencyRecord er where er.controlMeasureId = :controlMeasureId";
-        Transaction tx = null;
+
+        final EntityTransaction tx = entityManager.getTransaction();
         try {
-            tx = session.beginTransaction();
-            session.createQuery( hqlDelete )
-                .setInteger("controlMeasureId", controlMeasureId)
+            tx.begin();
+            entityManager
+                .createQuery( hqlDelete )
+                .setParameter("controlMeasureId", controlMeasureId)
                 .executeUpdate();
-            tx.commit();
-        } catch (RuntimeException e) {
+            tx.commit(); 
+        }
+        catch (RuntimeException e) {
             tx.rollback();
             throw e;
+        } finally {
+            //
         }
-//        Criterion c = Restrictions.eq("controlMeasureId", Integer.valueOf(controlMeasureId));
-//        List list = hibernateFacade.get(EfficiencyRecord.class, c, session);
-//        for (int i = 0; i < list.size(); i++) {
-//            hibernateFacade.remove(list.get(i), session);
-//        }
     }
     
     public void removeProgramMeasures(int[] cmIds, DbServer dbServer) throws EmfException {
@@ -644,7 +650,7 @@ public class ControlMeasureDAO {
 
     }
 
-    public void removeEfficiencyRecords(int[] sectorIds, Session session) {
+    public void removeEfficiencyRecords(int[] sectorIds, EntityManager entityManager) {
         
         String idList = "";
         for (int i = 0; i < sectorIds.length; ++i) {
@@ -658,7 +664,7 @@ public class ControlMeasureDAO {
                           + "WHERE s.id in (" + idList + ") " 
                         : "") + ")";
         try {
-            session.createQuery( hqlDelete ).executeUpdate();
+            entityManager.createQuery( hqlDelete ).executeUpdate();
         } catch (RuntimeException e) {
             throw e;
         }
@@ -673,39 +679,40 @@ public class ControlMeasureDAO {
             }
     }
 
-    public List allCMClasses(Session session) {
-        CriteriaBuilderQueryRoot<ControlMeasureClass> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlMeasureClass.class, session);
+    public List allCMClasses(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<ControlMeasureClass> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlMeasureClass.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<ControlMeasureClass> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public ControlMeasureClass getCMClass(Session session, String name) {
-        return hibernateFacade.load(ControlMeasureClass.class, "name", name, session);
+    public ControlMeasureClass getCMClass(EntityManager entityManager, String name) {
+        return hibernateFacade.load(ControlMeasureClass.class, "name", name, entityManager);
     }
 
-    public List<LightControlMeasure> getLightControlMeasures(Session session) {
-        CriteriaBuilderQueryRoot<LightControlMeasure> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(LightControlMeasure.class, session);
+    public List<LightControlMeasure> getLightControlMeasures(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<LightControlMeasure> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(LightControlMeasure.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<LightControlMeasure> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public List<EfficiencyRecord> getEfficiencyRecords(int controlMeasureId, Session session) {
-        CriteriaBuilderQueryRoot<EfficiencyRecord> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EfficiencyRecord.class, session);
-        return hibernateFacade.get(session, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("controlMeasureId"), Integer.valueOf(controlMeasureId)));
+    public List<EfficiencyRecord> getEfficiencyRecords(int controlMeasureId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<EfficiencyRecord> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EfficiencyRecord.class, entityManager);
+        return hibernateFacade.get(entityManager, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("controlMeasureId"), Integer.valueOf(controlMeasureId)));
     }
 
-    public long getEfficiencyRecordCount(int controlMeasureId, Session session) {
-        return (Long) session.createQuery(
-                "select count(EF) from EfficiencyRecord as EF where EF.controlMeasureId =  :controlMeasureId").setInteger(
-                "controlMeasureId", controlMeasureId).uniqueResult();
+    public long getEfficiencyRecordCount(int controlMeasureId, EntityManager entityManager) {
+        return entityManager
+                    .createQuery("select count(EF) from EfficiencyRecord as EF where EF.controlMeasureId =  :controlMeasureId", Long.class)
+                    .setParameter("controlMeasureId", controlMeasureId)
+                    .getSingleResult();
     }
 
     public List<EfficiencyRecord> getEfficiencyRecords(int controlMeasureId, int inventoryYear, 
-            String[] pollutants, Session session) {
+            String[] pollutants, EntityManager entityManager) {
         String sql = "from EfficiencyRecord as e where e.controlMeasureId = :controlMeasureId and coalesce(date_part('year', e.effectiveDate), :inventoryYear) <= :inventoryYear";
         if (pollutants.length> 0) {
             sql += " and e.pollutant.name in (";
@@ -715,11 +722,12 @@ public class ControlMeasureDAO {
             sql += ")";
         }
 //        System.out.println(sql);
-        Query<EfficiencyRecord> query = session.createQuery(sql, EfficiencyRecord.class)
-            .setParameter("controlMeasureId", Integer.valueOf(controlMeasureId))
-            .setParameter("inventoryYear", Integer.valueOf(inventoryYear));
-        query.setCacheable(true);
-        return query.list();
+        TypedQuery<EfficiencyRecord> query = 
+            entityManager
+                .createQuery(sql, EfficiencyRecord.class)
+                .setParameter("controlMeasureId", Integer.valueOf(controlMeasureId))
+                .setParameter("inventoryYear", Integer.valueOf(inventoryYear));
+        return query.getResultList();
     }
 
     public EfficiencyRecord[] getEfficiencyRecords(int controlMeasureId, int recordLimit, String filter, DbServer dbServer) throws EmfException {
@@ -731,22 +739,22 @@ public class ControlMeasureDAO {
         }
     }
 
-    public int addEfficiencyRecord(EfficiencyRecord efficiencyRecord, Session session, DbServer dbServer) throws EmfException {
-        checkForDuplicateEfficiencyRecord(efficiencyRecord, session);
-        hibernateFacade.add(efficiencyRecord, session);
+    public int addEfficiencyRecord(EfficiencyRecord efficiencyRecord, EntityManager entityManager, DbServer dbServer) throws EmfException {
+        checkForDuplicateEfficiencyRecord(efficiencyRecord, entityManager);
+        hibernateFacade.add(efficiencyRecord, entityManager);
         updateAggregateEfficiencyRecords(efficiencyRecord.getControlMeasureId(), dbServer);
         return efficiencyRecord.getId();
     }
 
-//    public int addEfficiencyRecord(EfficiencyRecord efficiencyRecord, StatelessSession session) throws EmfException {
-//        checkForDuplicateEfficiencyRecord(efficiencyRecord, session);
-//        session.insert(efficiencyRecord);
-////        hibernateFacade.add(efficiencyRecord, session);
+//    public int addEfficiencyRecord(EfficiencyRecord efficiencyRecord, StatelessSession entityManager) throws EmfException {
+//        checkForDuplicateEfficiencyRecord(efficiencyRecord, entityManager);
+//        entityManager.insert(efficiencyRecord);
+////        hibernateFacade.add(efficiencyRecord, entityManager);
 //        return efficiencyRecord.getId();
 //    }
 
-    public void checkForDuplicateEfficiencyRecord(EfficiencyRecord record, Session session) throws EmfException {
-        CriteriaBuilderQueryRoot<EfficiencyRecord> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EfficiencyRecord.class, session);
+    public void checkForDuplicateEfficiencyRecord(EfficiencyRecord record, EntityManager entityManager) throws EmfException {
+        CriteriaBuilderQueryRoot<EfficiencyRecord> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EfficiencyRecord.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<EfficiencyRecord> root = criteriaBuilderQueryRoot.getRoot();
 
@@ -761,7 +769,7 @@ public class ControlMeasureDAO {
         Predicate minEmis = record.getMinEmis() == null ? builder.isNull(root.get("minEmis")) : builder.equal(root.get("minEmis"), record.getMinEmis());
         Predicate maxEmis = record.getMaxEmis() == null ? builder.isNull(root.get("maxEmis")) : builder.equal(root.get("maxEmis"), record.getMaxEmis());
 
-        if (exists(criteriaBuilderQueryRoot, new Predicate[] {id, measureId, locale, pollutant, existingMeasureAbbr, existingDevCode, effectiveDate, minEmis, maxEmis}, session)) {
+        if (exists(criteriaBuilderQueryRoot, new Predicate[] {id, measureId, locale, pollutant, existingMeasureAbbr, existingDevCode, effectiveDate, minEmis, maxEmis}, entityManager)) {
             throw new EmfException("Duplicate Record: The combination of 'Pollutant', 'Locale', 'Effective Date', 'Existing Measure', 'Existing Dev Code', 'Minimum Emission' and 'Maximum Emission' should be unique - Locale = " + record.getLocale()
                 + " Pollutant = " + record.getPollutant().getName()
                 + " ExistingMeasureAbbr = " + record.getExistingMeasureAbbr()
@@ -772,8 +780,8 @@ public class ControlMeasureDAO {
         }
     }
 
-//    public void checkForDuplicateEfficiencyRecord(EfficiencyRecord record, StatelessSession session) throws EmfException {
-//        CriteriaBuilderQueryRoot<EfficiencyRecord> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EfficiencyRecord.class, session);
+//    public void checkForDuplicateEfficiencyRecord(EfficiencyRecord record, StatelessSession entityManager) throws EmfException {
+//        CriteriaBuilderQueryRoot<EfficiencyRecord> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EfficiencyRecord.class, entityManager);
 //        CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
 //        Root<EfficiencyRecord> root = criteriaBuilderQueryRoot.getRoot();
 //
@@ -784,7 +792,7 @@ public class ControlMeasureDAO {
 //        Criterion existingMeasureAbbr = record.getExistingMeasureAbbr() == null ? Restrictions.isNull("existingMeasureAbbr") : Restrictions.eq("existingMeasureAbbr", record.getExistingMeasureAbbr());
 //        Criterion effectiveDate = record.getEffectiveDate() == null ? Restrictions.isNull("effectiveDate") : Restrictions.eq("effectiveDate", record.getEffectiveDate());
 //
-//        if (exists(EfficiencyRecord.class, new Criterion[] {id, measureId, locale, pollutant, existingMeasureAbbr, effectiveDate}, session)) {
+//        if (exists(EfficiencyRecord.class, new Criterion[] {id, measureId, locale, pollutant, existingMeasureAbbr, effectiveDate}, entityManager)) {
 //            throw new EmfException("Duplicate Record: The combination of 'Pollutant', 'Locale', 'Effective Date' and 'Existing Measure' should be unique - Locale = " + record.getLocale()
 //                + " Pollutant = " + record.getPollutant().getName()
 //                + " ExistingMeasureAbbr = " + record.getExistingMeasureAbbr()
@@ -792,16 +800,16 @@ public class ControlMeasureDAO {
 //        }
 //    }
 //
-    public void removeEfficiencyRecord(int efficiencyRecordId, Session session, DbServer dbServer) throws EmfException {
-        EfficiencyRecord er = hibernateFacade.current(efficiencyRecordId, EfficiencyRecord.class, session);
+    public void removeEfficiencyRecord(int efficiencyRecordId, EntityManager entityManager, DbServer dbServer) throws EmfException {
+        EfficiencyRecord er = hibernateFacade.current(efficiencyRecordId, EfficiencyRecord.class, entityManager);
         int cmId = er.getControlMeasureId();
-        hibernateFacade.remove(hibernateFacade.current(efficiencyRecordId, EfficiencyRecord.class, session), session);
+        hibernateFacade.remove(hibernateFacade.current(efficiencyRecordId, EfficiencyRecord.class, entityManager), entityManager);
         updateAggregateEfficiencyRecords(cmId, dbServer);
     }
 
-    public void updateEfficiencyRecord(EfficiencyRecord efficiencyRecord, Session session, DbServer dbServer) throws EmfException {
-        checkForDuplicateEfficiencyRecord(efficiencyRecord, session);
-        hibernateFacade.saveOrUpdate(efficiencyRecord, session);
+    public void updateEfficiencyRecord(EfficiencyRecord efficiencyRecord, EntityManager entityManager, DbServer dbServer) throws EmfException {
+        checkForDuplicateEfficiencyRecord(efficiencyRecord, entityManager);
+        hibernateFacade.saveOrUpdate(efficiencyRecord, entityManager);
         updateAggregateEfficiencyRecords(efficiencyRecord.getControlMeasureId(), dbServer);
     }
 
@@ -863,25 +871,28 @@ public class ControlMeasureDAO {
         }
     }
 
-    public List<EquationType> getEquationTypes(Session session) {
-        Query<EquationType> query = session.createQuery("from EquationType as e order by e.name", EquationType.class);
-        query.setCacheable(true);
-        return query.list();//hibernateFacade.getAll(EquationType.class, Order.asc("name"), session);
+    public List<EquationType> getEquationTypes(EntityManager entityManager) {
+        TypedQuery<EquationType> query = 
+            entityManager
+                .createQuery("from EquationType as e order by e.name", EquationType.class);
+        return query.getResultList();
     }
 
-    public List<ControlMeasurePropertyCategory> getPropertyCategories(Session session) {
-        Query<ControlMeasurePropertyCategory> query = session.createQuery("from ControlMeasurePropertyCategory as e order by e.name", ControlMeasurePropertyCategory.class);
-        query.setCacheable(true);
-        return query.list();
+    public List<ControlMeasurePropertyCategory> getPropertyCategories(EntityManager entityManager) {
+        TypedQuery<ControlMeasurePropertyCategory> query = 
+            entityManager
+                .createQuery("from ControlMeasurePropertyCategory as e order by e.name", ControlMeasurePropertyCategory.class);
+        return query.getResultList();
     }
 
-    public List<Sector> getDistinctControlMeasureSectors(Session session) {
-        Query<Sector> query = session.createQuery("select distinct s FROM ControlMeasure AS cm inner join cm.sectors AS s order by s.name", Sector.class);
-        query.setCacheable(true);
-        return query.list();
+    public List<Sector> getDistinctControlMeasureSectors(EntityManager entityManager) {
+        TypedQuery<Sector> query = 
+            entityManager
+                .createQuery("select distinct s FROM ControlMeasure AS cm inner join cm.sectors AS s order by s.name", Sector.class);
+        return query.getResultList();
     }
 
-    public List<ControlMeasure> getControlMeasureBySectors(int[] sectorIds, boolean allClasses, Session session) {
+    public List<ControlMeasure> getControlMeasureBySectors(int[] sectorIds, boolean allClasses, EntityManager entityManager) {
         String idList = "";
         for (int i = 0; i < sectorIds.length; ++i) {
             idList += (i > 0 ? ","  : "") + sectorIds[i];
@@ -889,14 +900,15 @@ public class ControlMeasureDAO {
         
         String join = (sectorIds.length > 0 ? "inner join cm.sectors AS s " : "") +
                       (!allClasses ? "inner join cm.cmClass AS cl " : "");
-        Query<ControlMeasure> query = session.createQuery("select new ControlMeasure(cm.id, cm.name, cm.abbreviation) "
-                + "FROM ControlMeasure AS cm "
-                + join
-                + "WHERE 1 = 1 "
-                + (sectorIds.length > 0 ? "AND s.id IN (" + idList + ") " : "")
-                + (!allClasses ? "AND cl.name NOT IN ('Obsolete', 'Temporary') " : "")
-                + "order by cm.name", ControlMeasure.class);
-        query.setCacheable(true);
-        return query.list();
+        TypedQuery<ControlMeasure> query = 
+            entityManager
+                .createQuery("select new ControlMeasure(cm.id, cm.name, cm.abbreviation) "
+                    + "FROM ControlMeasure AS cm "
+                    + join
+                    + "WHERE 1 = 1 "
+                    + (sectorIds.length > 0 ? "AND s.id IN (" + idList + ") " : "")
+                    + (!allClasses ? "AND cl.name NOT IN ('Obsolete', 'Temporary') " : "")
+                    + "order by cm.name", ControlMeasure.class);
+        return query.getResultList();
     }
 }

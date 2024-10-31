@@ -3,39 +3,38 @@ package gov.epa.emissions.framework.services.cost.controlmeasure.io;
 import gov.epa.emissions.framework.services.cost.data.ControlTechnology;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Root;
 
-import org.hibernate.Session;
-
 public class ControlTechnologies {
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private HibernateFacade facade;
 
-    private List controlTechnologiesList;
+    private List<ControlTechnology> controlTechnologiesList;
 
-    public ControlTechnologies(HibernateSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public ControlTechnologies(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
         this.facade = new HibernateFacade();
-        controlTechnologiesList = controlTechnologies(sessionFactory);
+        controlTechnologiesList = controlTechnologies(entityManagerFactory);
     }
 
-    private List<ControlTechnology> controlTechnologies(HibernateSessionFactory sessionFactory) {
-        Session session = sessionFactory.getSession();
+    private List<ControlTechnology> controlTechnologies(EntityManagerFactory entityManagerFactory) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            CriteriaBuilderQueryRoot<ControlTechnology> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(ControlTechnology.class, session);
+            CriteriaBuilderQueryRoot<ControlTechnology> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(ControlTechnology.class, entityManager);
             CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
             Root<ControlTechnology> root = criteriaBuilderQueryRoot.getRoot();
 
-            return facade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+            return facade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -62,20 +61,20 @@ public class ControlTechnologies {
     }
 
     private void save(ControlTechnology controlTechnology) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            facade.add(controlTechnology, session);
+            facade.add(controlTechnology, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private ControlTechnology load(String name) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return (ControlTechnology) facade.load(ControlTechnology.class, "name", name, session);
+            return (ControlTechnology) facade.load(ControlTechnology.class, "name", name, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 

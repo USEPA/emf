@@ -5,7 +5,7 @@ import java.util.List;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Root;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
 
 import gov.epa.emissions.commons.data.SourceGroup;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
@@ -19,39 +19,39 @@ public class SourceGroupsDAO {
         hibernateFacade = new HibernateFacade();
     }
 
-    public List<SourceGroup> getAll(Session session) {
-        CriteriaBuilderQueryRoot<SourceGroup> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(SourceGroup.class, session);
+    public List<SourceGroup> getAll(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<SourceGroup> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(SourceGroup.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<SourceGroup> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public boolean canUpdate(SourceGroup sourcegrp, Session session) {
-        if (!exists(sourcegrp.getId(), session)) {
+    public boolean canUpdate(SourceGroup sourcegrp, EntityManager entityManager) {
+        if (!exists(sourcegrp.getId(), entityManager)) {
             return false;
         }
 
-        SourceGroup current = current(sourcegrp.getId(), session);
-        // The current object is saved in the session. Hibernate cannot persist our
+        SourceGroup current = current(sourcegrp.getId(), entityManager);
+        // The current object is saved in the entityManager. Hibernate cannot persist our
         // object with the same id.
-        session.clear();
+        entityManager.clear();
         if (current.getName().equals(sourcegrp.getName()))
             return true;
 
-        return !nameUsed(sourcegrp.getName(), session);
+        return !nameUsed(sourcegrp.getName(), entityManager);
     }
 
-    private boolean nameUsed(String name, Session session) {
-        return hibernateFacade.nameUsed(name, SourceGroup.class, session);
+    private boolean nameUsed(String name, EntityManager entityManager) {
+        return hibernateFacade.nameUsed(name, SourceGroup.class, entityManager);
     }
 
-    private SourceGroup current(int id, Session session) {
-        return hibernateFacade.current(id, SourceGroup.class, session);
+    private SourceGroup current(int id, EntityManager entityManager) {
+        return hibernateFacade.current(id, SourceGroup.class, entityManager);
     }
 
-    private boolean exists(int id, Session session) {
-        return hibernateFacade.exists(id, SourceGroup.class, session);
+    private boolean exists(int id, EntityManager entityManager) {
+        return hibernateFacade.exists(id, SourceGroup.class, entityManager);
     }
 
 }

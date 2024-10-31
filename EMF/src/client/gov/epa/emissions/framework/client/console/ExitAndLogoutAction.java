@@ -3,6 +3,7 @@ package gov.epa.emissions.framework.client.console;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.client.EmfSession;
 import gov.epa.emissions.framework.client.Label;
+import gov.epa.emissions.framework.client.transport.UserClient;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.UserService;
 import gov.epa.emissions.framework.services.module.ModuleService;
@@ -47,7 +48,7 @@ public class ExitAndLogoutAction {
         User user = session.user();
         try {
             if (user.isLoggedIn()) {
-                user = userService.obtainLocked(session.user(), session.user());
+                user = userService.obtainLocked(session.user(), userService.getUser(user.getUsername()));
     
                 if (user != null) { //Let it be silent if lock cannot be obtained.
                     user.setLoggedIn(false);

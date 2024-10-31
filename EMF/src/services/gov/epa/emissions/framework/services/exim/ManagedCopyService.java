@@ -9,7 +9,6 @@ import gov.epa.emissions.framework.services.basic.StatusDAO;
 import gov.epa.emissions.framework.services.casemanagement.Case;
 import gov.epa.emissions.framework.services.casemanagement.ManagedCaseService;
 import gov.epa.emissions.framework.services.data.DataServiceImpl;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.CopyCaseSubmitter;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 import gov.epa.emissions.framework.tasks.TaskManagerFactory;
@@ -17,6 +16,8 @@ import gov.epa.emissions.framework.tasks.TaskManagerFactory;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import javax.persistence.EntityManagerFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,7 +29,7 @@ public class ManagedCopyService {
 
     //private static Thread runningThread = null;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MMddyy_HHmmss");
 
@@ -58,12 +59,12 @@ public class ManagedCopyService {
         return "For label: " + svcLabel + " # of active objects of this type= " + svcCount;
     }
 
-    public ManagedCopyService(HibernateSessionFactory sessionFactory) {
-        this(DbServerFactory.get(), sessionFactory);
+    public ManagedCopyService(EntityManagerFactory entityManagerFactory) {
+        this(DbServerFactory.get(), entityManagerFactory);
     }
 
-    public ManagedCopyService(DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public ManagedCopyService(DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
         this.dbServerFactory = dbServerFactory;
 
         if (DebugLevels.DEBUG_17())
@@ -73,9 +74,9 @@ public class ManagedCopyService {
 
     protected Services services() {
         Services services = new Services();
-        services.setLoggingService(new LoggingServiceImpl(sessionFactory));
-        services.setStatusService(new StatusDAO(sessionFactory));
-        services.setDataService(new DataServiceImpl(sessionFactory));
+        services.setLoggingService(new LoggingServiceImpl(entityManagerFactory));
+        services.setStatusService(new StatusDAO(entityManagerFactory));
+        services.setDataService(new DataServiceImpl(entityManagerFactory));
 
         return services;
     }
@@ -91,7 +92,7 @@ public class ManagedCopyService {
             for (int i = 0; i < toCopy.length; i++) {
                 Case caseToCopy = caseService.getCase(toCopy[i]);
                 //Case caseToCopy = getCase(toCopy[0]);
-                CopyTask copyTask = new CopyTask(caseToCopy, user, services, dbServerFactory, sessionFactory, caseService);
+                CopyTask copyTask = new CopyTask(caseToCopy, user, services, dbServerFactory, entityManagerFactory, caseService);
                 copyTasks.add(copyTask);
                 copyCaseSubmitter.addTasksToSubmitter(copyTasks);
                 copyTasks.removeAll(copyTasks);

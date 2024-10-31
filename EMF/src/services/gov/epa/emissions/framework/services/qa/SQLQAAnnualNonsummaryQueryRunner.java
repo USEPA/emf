@@ -3,14 +3,15 @@ package gov.epa.emissions.framework.services.qa;
 import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.QAStep;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+
+import javax.persistence.EntityManagerFactory;
 
 public class SQLQAAnnualNonsummaryQueryRunner extends SQLQAProgramRunner{
     private String emissioDatasourceName;
 
-    public SQLQAAnnualNonsummaryQueryRunner(DbServer dbServer, HibernateSessionFactory sessionFactory, QAStep qaStep) {
-        super(dbServer, sessionFactory, qaStep);
-        //this.sessionFactory = sessionFactory;
+    public SQLQAAnnualNonsummaryQueryRunner(DbServer dbServer, EntityManagerFactory entityManagerFactory, QAStep qaStep) {
+        super(dbServer, entityManagerFactory, qaStep);
+        //this.entityManagerFactory = entityManagerFactory;
         this.emissioDatasourceName = dbServer.getEmissionsDatasource().getName();
         //this.qaStep = qaStep;
         
@@ -19,7 +20,7 @@ public class SQLQAAnnualNonsummaryQueryRunner extends SQLQAProgramRunner{
     protected String query(DbServer dbServer, QAStep qaStep, String tableName) throws EmfException {
     //protected String query() throws EmfException {
         //System.out.println("The string is: " + qaStep.getProgramArguments());
-        SQLQAAnnualNonsummaryQuery parser = new SQLQAAnnualNonsummaryQuery(sessionFactory, emissioDatasourceName, tableName, qaStep);
+        SQLQAAnnualNonsummaryQuery parser = new SQLQAAnnualNonsummaryQuery(entityManagerFactory, emissioDatasourceName, tableName, qaStep);
         return parser.createAnnualQuery();
     }
     

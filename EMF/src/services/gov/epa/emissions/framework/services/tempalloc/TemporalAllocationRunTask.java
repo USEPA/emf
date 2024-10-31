@@ -1,19 +1,20 @@
 package gov.epa.emissions.framework.services.tempalloc;
 
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
-
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.Services;
 import gov.epa.emissions.framework.services.basic.EmfProperty;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class TemporalAllocationRunTask implements Runnable {
     
@@ -27,17 +28,17 @@ public class TemporalAllocationRunTask implements Runnable {
     
     private TemporalAllocationService taService;
     
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     public TemporalAllocationRunTask(TemporalAllocationTask temporalAllocationTask, User user,
             Services services, 
             TemporalAllocationService service, 
-            HibernateSessionFactory sessionFactory) {
+            EntityManagerFactory entityManagerFactory) {
         this.user = user;
         this.services = services;
         this.temporalAllocationTask = temporalAllocationTask;
         this.taService = service;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
     }
     
     public void run() {
@@ -103,12 +104,12 @@ public class TemporalAllocationRunTask implements Runnable {
     }
 
     private Long strategyPoolSize() {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            EmfProperty property = new EmfPropertiesDAO().getProperty("strategy-pool-size", session);
+            EmfProperty property = new EmfPropertiesDAO().getProperty("strategy-pool-size", entityManager);
             return Long.parseLong(property.getValue());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     

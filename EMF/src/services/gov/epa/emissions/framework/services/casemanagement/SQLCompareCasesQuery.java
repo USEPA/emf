@@ -1,33 +1,16 @@
 package gov.epa.emissions.framework.services.casemanagement;
 
-import gov.epa.emissions.commons.data.Dataset;
-import gov.epa.emissions.commons.data.DatasetType;
-import gov.epa.emissions.commons.data.InternalSource;
-import gov.epa.emissions.commons.db.DbServer;
-import gov.epa.emissions.commons.db.version.Version;
-import gov.epa.emissions.commons.db.version.Versions;
-import gov.epa.emissions.commons.io.VersionedQuery;
-import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.basic.DateUtil;
-import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.data.QAStep;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
-
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class SQLCompareCasesQuery {
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
     
-    public SQLCompareCasesQuery(HibernateSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public SQLCompareCasesQuery(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     public String createCompareQuery(int[] caseIds) throws EmfException {
@@ -644,14 +627,14 @@ where cases_parameters.case_id = 13
     }
 
     private Case getCase(int caseId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return new CaseDAO().getCase(caseId, session);
+            return new CaseDAO().getCase(caseId, entityManager);
         } catch (RuntimeException e) {
             throw new EmfException("Could not get Case, id = " + caseId);
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 }

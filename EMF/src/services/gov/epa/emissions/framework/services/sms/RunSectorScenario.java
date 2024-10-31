@@ -8,9 +8,9 @@ import gov.epa.emissions.framework.services.GCEnforcerTask;
 import gov.epa.emissions.framework.services.Services;
 import gov.epa.emissions.framework.services.basic.LoggingServiceImpl;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
-import gov.epa.emissions.framework.services.sms.SectorScenarioService;
 import gov.epa.emissions.framework.services.data.DataServiceImpl;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+
+import javax.persistence.EntityManagerFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,7 +21,7 @@ public class RunSectorScenario {
 
     private static Log log = LogFactory.getLog(RunSectorScenario.class);
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private PooledExecutor threadPool;
 
@@ -29,9 +29,9 @@ public class RunSectorScenario {
 
     private DbServerFactory dbServerFactory;
 
-    public RunSectorScenario(HibernateSessionFactory sessionFactory, 
+    public RunSectorScenario(EntityManagerFactory entityManagerFactory, 
             DbServerFactory dbServerFactory, PooledExecutor threadPool) {
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.threadPool = threadPool;
         this.dbServerFactory = dbServerFactory;
 //        this.services = services();
@@ -40,12 +40,12 @@ public class RunSectorScenario {
     public void run(User user, SectorScenario sectorScenario, SectorScenarioService service, String preStatus) throws EmfException {
         currentLimitations(user, sectorScenario);
         try {
-            SectorScenarioTask sectorScenarioTask = new SectorScenarioTask(sectorScenario, user, dbServerFactory, sessionFactory);
+            SectorScenarioTask sectorScenarioTask = new SectorScenarioTask(sectorScenario, user, dbServerFactory, entityManagerFactory);
             //factory.create(sectorScenario, user, 
-            //        sessionFactory, dbServerFactory);
+            //        entityManagerFactory, dbServerFactory);
             SectorScenarioRunTask task = new SectorScenarioRunTask( sectorScenarioTask, user, 
                     services(), service, 
-                    sessionFactory, preStatus);
+                    entityManagerFactory, preStatus);
             threadPool.execute(new GCEnforcerTask("Run SectorScenario: " + sectorScenario.getName(), task));
         } catch (Exception e) {
             log.error("Error running sector scenario: " + sectorScenario.getName(), e);
@@ -82,9 +82,9 @@ public class RunSectorScenario {
 
     protected Services services() {
         Services services = new Services();
-        services.setLoggingService(new LoggingServiceImpl(sessionFactory));
-        services.setStatusService(new StatusDAO(sessionFactory));
-        services.setDataService(new DataServiceImpl(dbServerFactory, sessionFactory));
+        services.setLoggingService(new LoggingServiceImpl(entityManagerFactory));
+        services.setStatusService(new StatusDAO(entityManagerFactory));
+        services.setDataService(new DataServiceImpl(dbServerFactory, entityManagerFactory));
 
         return services;
     }

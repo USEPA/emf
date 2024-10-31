@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
@@ -24,12 +25,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.Property;
 
 public class ModulesDAO {
 
@@ -44,96 +39,80 @@ public class ModulesDAO {
 
     //----------------------------------------------------------------
     
-    public List<LiteModule> getLiteModules(Session session) {
-        CriteriaBuilderQueryRoot<LiteModule> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(LiteModule.class, session);
+    public List<LiteModule> getLiteModules(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<LiteModule> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(LiteModule.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<LiteModule> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(builder.lower(root.get("name"))), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(builder.lower(root.get("name"))), entityManager);
     }
 
-    @SuppressWarnings("rawtypes")
-    public List getLiteModules(Session session, BasicSearchFilter searchFilter) {
-
-        Criteria criteria = session.createCriteria(LiteModule.class, "lm")
-//                .setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
-                ;
-//                .setProjection(
-//                        Projections.distinct(Projections.projectionList().add(Projections.property("lm.id"))))
-//                .setResultTransformer(Transformers.aliasToBean(LiteModule.class));
-
-//        criteria.createAlias("lm.project", "project", CriteriaSpecification.LEFT_JOIN);
-//        criteria.createAlias("lm.creator", "creator", CriteriaSpecification.LEFT_JOIN);
-//        criteria.createAlias("lm.tags", "tag", CriteriaSpecification.LEFT_JOIN);
-//        criteria.createAlias("lm.liteModuleTypeVersion", "liteModuleTypeVersion", CriteriaSpecification.LEFT_JOIN);
-//        criteria.createAlias("liteModuleTypeVersion.liteModuleType", "liteModuleType", CriteriaSpecification.LEFT_JOIN);
-
+    public List<LiteModule> getLiteModules(EntityManager entityManager, BasicSearchFilter searchFilter) {
+        String hql = "select distinct lm.id " +
+                "from LiteModule as lm " +
+                "left join lm.project as project " +
+                "left join lm.creator as creator " +
+                "left join lm.tags as tag " +
+                "left join lm.liteModuleTypeVersion as liteModuleTypeVersion " +
+                "left join liteModuleTypeVersion.liteModuleType as liteModuleType ";
+        //
         if (StringUtils.isNotBlank(searchFilter.getFieldName())
                 && StringUtils.isNotBlank(searchFilter.getFieldValue())) {
-            Criteria inCriteria = session.createCriteria(LiteModule.class, "lm")
-                    .setProjection(Property.forName("id"));
-            //                .setProjection(Projections.projectionList().add(Projections.property("lm.id")))
-            //                .setResultTransformer(Transformers.aliasToBean(Integer.class));
-            //                .setResultTransformer(Transformers.aliasToBean(LiteModule.class));
-            inCriteria.createAlias("lm.project", "project", CriteriaSpecification.LEFT_JOIN);
-            inCriteria.createAlias("lm.creator", "creator", CriteriaSpecification.LEFT_JOIN);
-            inCriteria.createAlias("lm.tags", "tag", CriteriaSpecification.LEFT_JOIN);
-            inCriteria.createAlias("lm.liteModuleTypeVersion", "liteModuleTypeVersion", CriteriaSpecification.LEFT_JOIN);
-            inCriteria.createAlias("liteModuleTypeVersion.liteModuleType", "liteModuleType", CriteriaSpecification.LEFT_JOIN);
+            String whereClause = SearchDAOUtility.buildSearchCriterion(new ModuleFilter(), searchFilter);
+            if (StringUtils.isNotBlank(whereClause))
+                hql += " where " + whereClause;
+            
+            
+            List<Integer> moduleIds = entityManager.createQuery(hql, Integer.class).getResultList();
 
-            SearchDAOUtility.buildSearchCriterion(inCriteria, new ModuleFilter(), searchFilter);
+            CriteriaBuilderQueryRoot<LiteModule> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(LiteModule.class, entityManager);
+            CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
+            Root<LiteModule> root = criteriaBuilderQueryRoot.getRoot();
+            CriteriaQuery<LiteModule> criteriaQuery = criteriaBuilderQueryRoot.getCriteriaQuery();
+            
+            criteriaQuery.select(root);
+            criteriaQuery.where(builder.equal(root.get("id"), moduleIds));
 
-            //get module ids to load from...
-            List<LiteModule> moduleIds = inCriteria.list();
-
-            if (moduleIds.size() > 0)
-                criteria
-                    .add(Property.forName("id").in(moduleIds));
-            else
-                criteria
-                    .add(Property.forName("id").eq((Object)null));
+            return hibernateFacade.getAll(criteriaBuilderQueryRoot, entityManager);
         }
-
-        List<LiteModule> modules = criteria.list();
-
-        return modules;
+        return new ArrayList<LiteModule>();
     }
 
-    public LiteModule getLiteModule(int id, Session session) {
-        List<LiteModule> list = hibernateFacade.get(LiteModule.class, "id", Integer.valueOf(id), session);
+    public LiteModule getLiteModule(int id, EntityManager entityManager) {
+        List<LiteModule> list = hibernateFacade.get(LiteModule.class, "id", Integer.valueOf(id), entityManager);
         return (list == null || list.size() == 0) ? null : list.get(0);
     }
 
-    public List<Module> getModules(Session session) {
-        CriteriaBuilderQueryRoot<Module> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Module.class, session);
+    public List<Module> getModules(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<Module> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Module.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<Module> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(builder.lower(root.get("name"))), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(builder.lower(root.get("name"))), entityManager);
     }
 
     @SuppressWarnings("unchecked")
-    public List<Module> getLockedModules(Session session) throws EmfException {
+    public List<Module> getLockedModules(EntityManager entityManager) throws EmfException {
         try {
-            CriteriaBuilderQueryRoot<Module> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Module.class, session);
+            CriteriaBuilderQueryRoot<Module> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Module.class, entityManager);
             CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
             Root<Module> root = criteriaBuilderQueryRoot.getRoot();
 
-            return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { builder.isNotNull(root.get("lockOwner")) }, session);
+            return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { builder.isNotNull(root.get("lockOwner")) }, entityManager);
         } catch (Exception ex) {
             throw new EmfException("Failed to get the list of locked modules: " + ex.getMessage());
         }
     }
 
-    public List<ModuleTypeVersionSubmodule> getSubmodulesUsingModuleTypeVersion(Session session, int moduleTypeVersionId) {
-        CriteriaBuilderQueryRoot<ModuleTypeVersionSubmodule> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ModuleTypeVersionSubmodule.class, session);
+    public List<ModuleTypeVersionSubmodule> getSubmodulesUsingModuleTypeVersion(EntityManager entityManager, int moduleTypeVersionId) {
+        CriteriaBuilderQueryRoot<ModuleTypeVersionSubmodule> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ModuleTypeVersionSubmodule.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<ModuleTypeVersionSubmodule> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { builder.equal(root.get("id"), Integer.valueOf(moduleTypeVersionId)) }, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { builder.equal(root.get("id"), Integer.valueOf(moduleTypeVersionId)) }, entityManager);
     }
     
-    public List<ModuleTypeVersionSubmodule> getAllSubmodulesUsingModuleTypeVersion(Session session, int moduleTypeVersionId) {
+    public List<ModuleTypeVersionSubmodule> getAllSubmodulesUsingModuleTypeVersion(EntityManager entityManager, int moduleTypeVersionId) {
         Map<Integer, ModuleTypeVersionSubmodule> allSubmodulesMap = new HashMap<Integer, ModuleTypeVersionSubmodule>();
         Set<Integer> todoMtvIds = new HashSet<Integer>();
         todoMtvIds.add(moduleTypeVersionId);
@@ -141,7 +120,7 @@ public class ModulesDAO {
             Set<Integer> newMtvIds = new HashSet<Integer>(todoMtvIds);
             todoMtvIds.clear();
             for(int newMtvId : newMtvIds) {
-                List<ModuleTypeVersionSubmodule> newSubmodules = getSubmodulesUsingModuleTypeVersion(session, newMtvId);
+                List<ModuleTypeVersionSubmodule> newSubmodules = getSubmodulesUsingModuleTypeVersion(entityManager, newMtvId);
                 for (ModuleTypeVersionSubmodule newSubmodule : newSubmodules) {
                     // making sure it's not an orphan submodule (that is, it's actually a submodule in its composite module type version)
                     if (newSubmodule.getCompositeModuleTypeVersion().containsSubmoduleId(newSubmodule.getId())) {
@@ -156,149 +135,139 @@ public class ModulesDAO {
     }
     
     @SuppressWarnings({ "unchecked" })
-    public List<Module> getModulesUsingModuleTypeVersion(Session session, int moduleTypeVersionId) {
-        CriteriaBuilderQueryRoot<Module> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Module.class, session);
+    public List<Module> getModulesUsingModuleTypeVersion(EntityManager entityManager, int moduleTypeVersionId) {
+        CriteriaBuilderQueryRoot<Module> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Module.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<Module> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { builder.equal(root.get("id"), Integer.valueOf(moduleTypeVersionId)) }, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { builder.equal(root.get("id"), Integer.valueOf(moduleTypeVersionId)) }, entityManager);
     }
     
-    public void removeModule(Module module, Session session) {
-        hibernateFacade.remove(module, session);
+    public void removeModule(Module module, EntityManager entityManager) {
+        hibernateFacade.remove(module, entityManager);
     }
 
-    public void removeModule(int moduleId, Session session) {
-        Module module = getModule(moduleId, session);
-        removeModule(module, session);
+    public void removeModule(int moduleId, EntityManager entityManager) {
+        Module module = getModule(moduleId, entityManager);
+        removeModule(module, entityManager);
     }
 
-    public Module obtainLockedModule(User user, int moduleId, Session session) {
-        return (Module) lockingScheme.getLocked(user, currentModule(moduleId, session), session);
+    public Module obtainLockedModule(User user, int moduleId, EntityManager entityManager) {
+        return (Module) lockingScheme.getLocked(user, currentModule(moduleId, entityManager), entityManager);
     }
 
-    public Module releaseLockedModule(User user, int moduleId, Session session) {
-        return (Module) lockingScheme.releaseLock(user, currentModule(moduleId, session), session);
+    public Module releaseLockedModule(User user, int moduleId, EntityManager entityManager) {
+        return (Module) lockingScheme.releaseLock(user, currentModule(moduleId, entityManager), entityManager);
     }
 
-    public ModuleDataset getModuleDataset(int moduleDatasetId, Session session) {
-        List<ModuleDataset> list = hibernateFacade.get(ModuleDataset.class, "id", Integer.valueOf(moduleDatasetId), session);
+    public ModuleDataset getModuleDataset(int moduleDatasetId, EntityManager entityManager) {
+        List<ModuleDataset> list = hibernateFacade.get(ModuleDataset.class, "id", Integer.valueOf(moduleDatasetId), entityManager);
         return (list == null || list.size() == 0) ? null : list.get(0);
     }
 
     //----------------------------------------------------------------
     
-    public Module updateModule(Module module, Session session) throws EmfException {
-        return (Module) lockingScheme.renewLockOnUpdate(module, currentModule(module.getId(), session), session);
+    public Module updateModule(Module module, EntityManager entityManager) throws EmfException {
+        return (Module) lockingScheme.renewLockOnUpdate(module, currentModule(module.getId(), entityManager), entityManager);
     }
 
-    public History updateHistory(History history, Session session) {
-        session.clear();
-        Transaction tx = session.beginTransaction();
-        try {
-            session.update(history);
-            tx.commit();
-        } catch (HibernateException e) {
-            tx.rollback();
-            throw e;
-        }
+    public History updateHistory(History history, EntityManager entityManager) {
+        entityManager.clear();
+        hibernateFacade.executeInsideTransaction(em -> {
+            entityManager.merge(history);
+        }, entityManager);
         return history;
     }
 
-    public HistorySubmodule updateHistorySubmodule(HistorySubmodule historySubmodule, Session session) {
-        session.clear();
-        Transaction tx = session.beginTransaction();
-        try {
-            session.update(historySubmodule);
-            tx.commit();
-        } catch (HibernateException e) {
-            tx.rollback();
-            throw e;
-        }
+    public HistorySubmodule updateHistorySubmodule(HistorySubmodule historySubmodule, EntityManager entityManager) {
+        entityManager.clear();
+        hibernateFacade.executeInsideTransaction(em -> {
+            entityManager.merge(historySubmodule);
+        }, entityManager);
         return historySubmodule;
     }
     
-    public void removeHistory(int historyId, Session session) {
-        History history = currentHistory(historyId, session);
-        hibernateFacade.remove(history, session);
+    public void removeHistory(int historyId, EntityManager entityManager) {
+        History history = currentHistory(historyId, entityManager);
+        hibernateFacade.remove(history, entityManager);
     }
 
-    public Module getModule(String name, Session session) {
-        List<Module> list = hibernateFacade.get(Module.class, "name", name, session);
+    public Module getModule(String name, EntityManager entityManager) {
+        List<Module> list = hibernateFacade.get(Module.class, "name", name, entityManager);
         Module result = null;
         if (list != null && list.size() > 0) {
             result = list.get(0);
-            result.setLastHistory(getLastHistory(result.getId(), session));
+            result.setLastHistory(getLastHistory(result.getId(), entityManager));
         }
         return result;
     }
 
-    public Module getModule(int id, Session session) {
-        List<Module> list = hibernateFacade.get(Module.class, "id", Integer.valueOf(id), session);
+    public Module getModule(int id, EntityManager entityManager) {
+        List<Module> list = hibernateFacade.get(Module.class, "id", Integer.valueOf(id), entityManager);
         Module result = null;
         if (list != null && list.size() > 0) {
             result = list.get(0);
-            result.setLastHistory(getLastHistory(id, session));
+            result.setLastHistory(getLastHistory(id, entityManager));
         }
         return result;
     }
 
-    public Module add(Module module, Session session) {
-        Serializable serializable = hibernateFacade.add(module, session);
+    public Module add(Module module, EntityManager entityManager) {
+        Serializable serializable = hibernateFacade.add(module, entityManager);
         Integer id = (Integer)serializable;
         module.setId(id);
         return module;
     }
     
-    public History add(History history, Session session) {
-        Serializable serializable = hibernateFacade.add(history, session);
+    public History add(History history, EntityManager entityManager) {
+        Serializable serializable = hibernateFacade.add(history, entityManager);
         Integer id = (Integer)serializable;
         history.setId(id);
         return history;
     }
 
-    public boolean canUpdate(Module module, Session session) {
-        if (!exists(module.getId(), session)) {
+    public boolean canUpdate(Module module, EntityManager entityManager) {
+        if (!exists(module.getId(), entityManager)) {
             return false;
         }
 
-        Module current = currentModule(module.getId(), session);
-        // The current object is saved in the session. Hibernate cannot persist our object with the same id.
-        session.clear();
+        Module current = currentModule(module.getId(), entityManager);
+        // The current object is saved in the entityManager. Hibernate cannot persist our object with the same id.
+        entityManager.clear();
         if (current.getName().equals(module.getName()))
             return true;
 
-        return !moduleNameUsed(module.getName(), session);
+        return !moduleNameUsed(module.getName(), entityManager);
     }
 
-    private boolean exists(int id, Session session) {
-        return hibernateFacade.exists(id, Module.class, session);
+    private boolean exists(int id, EntityManager entityManager) {
+        return hibernateFacade.exists(id, Module.class, entityManager);
     }
 
-    public boolean moduleNameUsed(String name, Session session) {
-        return hibernateFacade.nameUsed(name, Module.class, session);
+    public boolean moduleNameUsed(String name, EntityManager entityManager) {
+        return hibernateFacade.nameUsed(name, Module.class, entityManager);
     }
 
-    public Module currentModule(int moduleId, Session session) {
-        return hibernateFacade.current(moduleId, Module.class, session);
+    public Module currentModule(int moduleId, EntityManager entityManager) {
+        return hibernateFacade.current(moduleId, Module.class, entityManager);
     }
 
-    public History currentHistory(int historyId, Session session) {
-        return hibernateFacade.current(historyId, History.class, session);
+    public History currentHistory(int historyId, EntityManager entityManager) {
+        return hibernateFacade.current(historyId, History.class, entityManager);
     }
     
-    public List getHistoryForModule(int moduleId, Session session) {
-        CriteriaBuilderQueryRoot<History> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(History.class, session);
+    public List getHistoryForModule(int moduleId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<History> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(History.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<History> root = criteriaBuilderQueryRoot.getRoot();
         Join<Module, History> modJoin = root.join("module", JoinType.INNER);
 
         Predicate criterion = builder.equal(modJoin.get("id"), moduleId);
-        return hibernateFacade.get(criteriaBuilderQueryRoot, criterion, builder.asc(root.get("runId")), session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, criterion, builder.asc(root.get("runId")), entityManager);
     }
     
-    public History getLastHistory(int moduleId, Session session) {
-        CriteriaBuilder builder = session.getCriteriaBuilder();
+    public History getLastHistory(int moduleId, EntityManager entityManager) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<History> criteriaQuery = builder.createQuery(History.class);
         Root<History> root = criteriaQuery.from(History.class);
         Join<Module, History> modJoin = root.join("module", JoinType.INNER);
@@ -308,9 +277,9 @@ public class ModulesDAO {
         criteriaQuery.where(builder.equal(modJoin.get("id"), Integer.valueOf(moduleId)));
         criteriaQuery.orderBy(builder.desc(root.get("id")));
 
-        return session
+        return entityManager
                 .createQuery(criteriaQuery)
                 .setMaxResults(1)
-                .uniqueResult();
+                .getSingleResult();
     }
 }

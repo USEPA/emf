@@ -1,0 +1,34 @@
+<!-- The contents of this file will be loaded for each web application -->
+<Context>
+ <Manager pathname="" />
+ <Resource name="jdbc/EMFDB" 
+ 			auth="Container"
+          type="javax.sql.DataSource"
+          driverClassName="org.postgresql.Driver"
+          url="jdbc:postgresql://localhost:5432/emf?autoReconnect=true"
+          username="emf"
+          password="emf"
+          maxTotal="92"
+          maxIdle="30"
+          maxWaitMillis="30000"
+          removeAbandonedOnBorrow="true"
+          removeAbandonedTimeout="40"
+          logAbandoned="true"
+          validationQuery="select 1"
+          />
+ <Resource name="jdbc/SECTORSANDBOX" auth="Container"
+          type="javax.sql.DataSource"
+          driverClassName="org.postgresql.Driver"
+          url="jdbc:postgresql://localhost:5432/sector_data_sandbox?autoReconnect=true"
+          username="emf"
+          password="emf"
+          maxTotal="92"
+          maxIdle="30"
+          maxWaitMillis="30000"
+          removeAbandonedOnBorrow="true"
+          removeAbandonedTimeout="40"
+          logAbandoned="true"
+          validationQuery="select 1"
+          />           
+</Context>
+	

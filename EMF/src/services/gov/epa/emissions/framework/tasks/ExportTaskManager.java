@@ -5,7 +5,7 @@ import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.EmfProperty;
 import gov.epa.emissions.framework.services.exim.ExportTask;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import gov.epa.emissions.framework.services.persistence.JpaEntityManagerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,9 +20,11 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 public class ExportTaskManager implements TaskManager {
     private static Log log = LogFactory.getLog(ExportTaskManager.class);
@@ -31,7 +33,7 @@ public class ExportTaskManager implements TaskManager {
 
     private static int refCount = 0;
 
-    private static HibernateSessionFactory sessionFactory;
+    private static EntityManagerFactory entityManagerFactory;
 
     private final int poolSize;
 
@@ -70,7 +72,7 @@ public class ExportTaskManager implements TaskManager {
         taskQueue.clear();
         threadPoolQueue.clear();
         threadPool.shutdownNow();
-        sessionFactory = null;
+        entityManagerFactory = null;
     }
 
     public synchronized void removeTask(Runnable task) {
@@ -117,11 +119,11 @@ public class ExportTaskManager implements TaskManager {
     private ExportTaskManager() {
         super();
 
-        sessionFactory = HibernateSessionFactory.get();
+        entityManagerFactory = JpaEntityManagerFactory.get();;
 
         if (DebugLevels.DEBUG_14())
             System.out
-                    .println("*****HibernateSessionFactory in ExportTaskManager is null? " + (sessionFactory == null));
+                    .println("*****HibernateSessionFactory in ExportTaskManager is null? " + (entityManagerFactory == null));
 
         this.poolSize = runningThreadSize();
         this.maxPoolSize = poolSize;
@@ -673,16 +675,16 @@ public class ExportTaskManager implements TaskManager {
     }
 
     private int runningThreadSize() {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         int value = 4;
 
         try {
-            EmfProperty property = new EmfPropertiesDAO().getProperty("NUMBER_OF_SIMULT_EXPORTS", session);
+            EmfProperty property = new EmfPropertiesDAO().getProperty("NUMBER_OF_SIMULT_EXPORTS", entityManager);
             value = Integer.parseInt(property.getValue());
         } catch (Exception e) {
             return value;// Default value for maxpool and poolsize
         } finally {
-            session.close();
+            entityManager.close();
         }
 
         return value;

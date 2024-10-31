@@ -4,15 +4,16 @@ import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.cost.ControlMeasure;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+
+import javax.persistence.EntityManagerFactory;
 
 public class RegionFilter {
 
     private GenerateRegionMap generateRegionMap;
 
     public RegionFilter(DbServer dbServer, 
-            HibernateSessionFactory sessionFactory) {
-        this.generateRegionMap = new GenerateRegionMap(dbServer, sessionFactory);
+            EntityManagerFactory entityManagerFactory) {
+        this.generateRegionMap = new GenerateRegionMap(dbServer, entityManagerFactory);
     }
 
     public boolean filter(ControlMeasure controlMeasure, String fips) throws EmfException {

@@ -11,9 +11,10 @@ import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategy
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyInventoryOutputFactory;
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyResult;
 import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyResultType;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.Date;
+
+import javax.persistence.EntityManagerFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,7 +27,7 @@ public class ControlStrategyInventoryOutputTask implements Runnable {
 
     private ControlStrategy controlStrategy;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private DbServerFactory dbServerFactory;
     
@@ -36,11 +37,11 @@ public class ControlStrategyInventoryOutputTask implements Runnable {
     
     public ControlStrategyInventoryOutputTask(User user, ControlStrategy controlStrategy,
             ControlStrategyResult[] controlStrategyResults, String namePrefix, 
-            HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory) {
+            EntityManagerFactory entityManagerFactory, DbServerFactory dbServerFactory) {
         this.user = user;
         this.controlStrategy = controlStrategy;
         this.controlStrategyResults = controlStrategyResults;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.dbServerFactory = dbServerFactory;
         this.namePrefix = namePrefix;
     }
@@ -49,7 +50,7 @@ public class ControlStrategyInventoryOutputTask implements Runnable {
         try {
             int count = 0;
             ControlStrategyInventoryOutputFactory factory = new ControlStrategyInventoryOutputFactory(user, controlStrategy,
-                    namePrefix, sessionFactory, 
+                    namePrefix, entityManagerFactory, 
                     dbServerFactory);
             
             for (int i = 0; i < controlStrategyResults.length; i++) {
@@ -62,7 +63,7 @@ public class ControlStrategyInventoryOutputTask implements Runnable {
             }
             
             if (count > 0) {
-                endStatus(new StatusDAO(sessionFactory));
+                endStatus(new StatusDAO(entityManagerFactory));
             }
         } catch (Exception e) {
             e.printStackTrace();

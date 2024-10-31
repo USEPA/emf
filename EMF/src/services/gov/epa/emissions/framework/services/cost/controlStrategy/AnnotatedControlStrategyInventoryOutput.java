@@ -10,21 +10,21 @@ import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.cost.ControlStrategy;
-import gov.epa.emissions.framework.services.cost.ControlStrategyInputDataset;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.sql.SQLException;
+
+import javax.persistence.EntityManagerFactory;
 
 public class AnnotatedControlStrategyInventoryOutput extends AbstractControlStrategyInventoryOutput {
 
     public AnnotatedControlStrategyInventoryOutput(User user, ControlStrategy controlStrategy,
             ControlStrategyResult controlStrategyResult, String namePrefix, 
-            HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory) throws Exception {
+            EntityManagerFactory entityManagerFactory, DbServerFactory dbServerFactory) throws Exception {
         super(user, controlStrategy,
                 controlStrategyResult, namePrefix,
-                sessionFactory, dbServerFactory);
+                entityManagerFactory, dbServerFactory);
     }
 
     public void create() throws Exception {
@@ -54,7 +54,7 @@ public class AnnotatedControlStrategyInventoryOutput extends AbstractControlStra
             }        
 
             setControlStrategyResultContolledInventory(result, dataset);
-            updateVersion(dataset, dbServer, sessionFactory.getSession(), user);
+            updateVersion(dataset, dbServer, entityManagerFactory.createEntityManager(), user);
         } catch (Exception e) {
             failStatus(statusServices, e.getMessage());
             e.printStackTrace();

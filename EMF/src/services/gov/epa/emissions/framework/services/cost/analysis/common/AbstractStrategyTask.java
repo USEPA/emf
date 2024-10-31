@@ -40,7 +40,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 
 public abstract class AbstractStrategyTask implements Strategy {
@@ -49,7 +50,7 @@ public abstract class AbstractStrategyTask implements Strategy {
 
     protected Datasource datasource;
 
-    protected HibernateSessionFactory sessionFactory;
+    protected EntityManagerFactory entityManagerFactory;
 
     protected DbServerFactory dbServerFactory;
 
@@ -76,21 +77,21 @@ public abstract class AbstractStrategyTask implements Strategy {
     protected StrategyLoader loader;
     
     public AbstractStrategyTask(ControlStrategy controlStrategy, User user, 
-            DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory, StrategyLoader loader) throws EmfException {
+            DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory, StrategyLoader loader) throws EmfException {
 
         this.controlStrategy = controlStrategy;
         this.controlStrategyInputDatasetCount = controlStrategy.getControlStrategyInputDatasets().length;
         this.dbServerFactory = dbServerFactory;
         this.dbServer = dbServerFactory.getDbServer();
         this.datasource = dbServer.getEmissionsDatasource();
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.loader = loader;
         this.user = user;
-        this.statusDAO = new StatusDAO(sessionFactory);
-        this.controlStrategyDAO = new ControlStrategyDAO(dbServerFactory, sessionFactory);
-        this.keywords = new Keywords(new DataCommonsServiceImpl(sessionFactory).getKeywords());
+        this.statusDAO = new StatusDAO(entityManagerFactory);
+        this.controlStrategyDAO = new ControlStrategyDAO(dbServerFactory, entityManagerFactory);
+        this.keywords = new Keywords(new DataCommonsServiceImpl(entityManagerFactory).getKeywords());
         this.creator = new DatasetCreator(controlStrategy, user, 
-                sessionFactory, dbServerFactory,
+                entityManagerFactory, dbServerFactory,
                 datasource, keywords);
         this.strategyResultList = new ArrayList<ControlStrategyResult>();
         //setup the strategy run
@@ -203,30 +204,30 @@ public abstract class AbstractStrategyTask implements Strategy {
         controlStrategy.setTotalCost(Double.valueOf(totalCost));
         controlStrategy.setTotalReduction(Double.valueOf(totalReduction));
         
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         
         try {
-            controlStrategyDAO.updateWithoutLock(controlStrategy, session);
-//            controlStrategyDAO.updateWithLock(controlStrategy, session); //NOTE: user should have lock at this time
+            controlStrategyDAO.updateWithoutLock(controlStrategy, entityManager);
+//            controlStrategyDAO.updateWithLock(controlStrategy, entityManager); //NOTE: user should have lock at this time
             if (DebugLevels.DEBUG_25())
                 System.out.println("totalCost: " + totalCost + "  totalReduciton: " + totalReduction);
         } catch (Exception e) {
             e.printStackTrace();
             throw new EmfException("Error updating control strategy's total cost and reduction. " + e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.clear();
+            if (entityManager != null)
+                entityManager.clear();
         }
     }
 
     protected void deleteStrategyResults() throws EmfException { // JIZHEN-SECTOR
         //get rid of strategy results...
         if (controlStrategy.getDeleteResults()){
-            Session session = sessionFactory.getSession();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
             try {
                 List<EmfDataset> dsList = new ArrayList<EmfDataset>();
                 //first get the datasets to delete
-                EmfDataset[] datasets = controlStrategyDAO.getResultDatasets(controlStrategy.getId(), session);
+                EmfDataset[] datasets = controlStrategyDAO.getResultDatasets(controlStrategy.getId(), entityManager);
                 if (datasets != null) {
                     for (EmfDataset dataset : datasets) {
                         if (!user.isAdmin() && !dataset.getCreator().equalsIgnoreCase(user.getUsername())) {
@@ -236,18 +237,18 @@ public abstract class AbstractStrategyTask implements Strategy {
                         }
                     }
                 }
-//                EmfDataset[] dsList = controlStrategyDAO.getResultDatasets(controlStrategy.getId(), session);
+//                EmfDataset[] dsList = controlStrategyDAO.getResultDatasets(controlStrategy.getId(), entityManager);
                 //get rid of old strategy results...
                 removeControlStrategyResults();  //JIZHEN-SECTOR
                 //delete and purge datasets
                 if (dsList != null && dsList.size() > 0){
-                    controlStrategyDAO.removeResultDatasets(dsList.toArray(new EmfDataset[0]), user, session, dbServer);
+                    controlStrategyDAO.removeResultDatasets(dsList.toArray(new EmfDataset[0]), user, entityManager, dbServer);
                 }
             } catch (RuntimeException e) {
                 e.printStackTrace();
                 throw new EmfException("Could not remove Control Strategies results.");
             } finally {
-                session.close();
+                entityManager.close();
             }
         }
     }
@@ -255,13 +256,13 @@ public abstract class AbstractStrategyTask implements Strategy {
     protected void deleteStrategyResults(ControlStrategyResult[] results) throws EmfException {
         //get rid of strategy results...
         if (controlStrategy.getDeleteResults()){
-            Session session = sessionFactory.getSession();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
             try {
                 List<EmfDataset> dsList = new ArrayList<EmfDataset>();
                 //first ge tthe datasets to delete
                 if (results != null) {
                     for (ControlStrategyResult result : results) {
-                        for (EmfDataset dataset : controlStrategyDAO.getResultDatasets(controlStrategy.getId(), result.getId(), session)) {
+                        for (EmfDataset dataset : controlStrategyDAO.getResultDatasets(controlStrategy.getId(), result.getId(), entityManager)) {
                             if (!user.isAdmin() && !dataset.getCreator().equalsIgnoreCase(user.getUsername())) {
                                 setStatus("Since you are not the creator of " + dataset.getName() + ", this control strategy result will not be deleted.");
                             } else {
@@ -276,13 +277,13 @@ public abstract class AbstractStrategyTask implements Strategy {
                 }
                 //delete and purge datasets
                 if (dsList != null && dsList.size() > 0) {
-                    controlStrategyDAO.removeResultDatasets(dsList.toArray(new EmfDataset[0]), user, session, dbServer);
+                    controlStrategyDAO.removeResultDatasets(dsList.toArray(new EmfDataset[0]), user, entityManager, dbServer);
                 }
             } catch (RuntimeException e) {
                 e.printStackTrace();
                 throw new EmfException("Could not remove Control Strategies results.");
             } finally {
-                session.close();
+                entityManager.close();
             }
         }
     }
@@ -677,13 +678,13 @@ public abstract class AbstractStrategyTask implements Strategy {
     }
 
     protected boolean isRunStatusCancelled() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return controlStrategyDAO.getControlStrategyRunStatus(controlStrategy.getId(), session).equals("Cancelled");
+            return controlStrategyDAO.getControlStrategyRunStatus(controlStrategy.getId(), entityManager).equals("Cancelled");
         } catch (RuntimeException e) {
             throw new EmfException("Could not check if strategy run was cancelled.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
@@ -767,49 +768,49 @@ public abstract class AbstractStrategyTask implements Strategy {
 
     private StrategyResultType getStrategyResultType(String name) throws EmfException {
         StrategyResultType resultType = null;
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            resultType = controlStrategyDAO.getStrategyResultType(name, session);
+            resultType = controlStrategyDAO.getStrategyResultType(name, entityManager);
         } catch (RuntimeException e) {
             throw new EmfException("Could not get detailed strategy result type");
         } finally {
-            session.close();
+            entityManager.close();
         }
         return resultType;
     }
 
     protected Sector getSector(String name) throws EmfException {
         Sector sector = null;
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            sector = new SectorsDAO().getSector(name, session);
+            sector = new SectorsDAO().getSector(name, entityManager);
 
         } catch (RuntimeException e) {
             throw new EmfException("Could not get sector");
         } finally {
-            session.close();
+            entityManager.close();
         }
         return sector;
     }
 
     private DatasetType getDatasetType(String name) {
         DatasetType datasetType = null;
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            datasetType = new DatasetTypesDAO().get(name, session);
+            datasetType = new DatasetTypesDAO().get(name, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
         return datasetType;
     }
 
     protected ControlStrategyResult[] getControlStrategyResults() {
         ControlStrategyResult[] results = new ControlStrategyResult[] {};
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            results = controlStrategyDAO.getControlStrategyResults(controlStrategy.getId(), session).toArray(new ControlStrategyResult[0]);
+            results = controlStrategyDAO.getControlStrategyResults(controlStrategy.getId(), entityManager).toArray(new ControlStrategyResult[0]);
         } finally {
-            session.close();
+            entityManager.close();
         }
         return results;
     }
@@ -836,54 +837,54 @@ public abstract class AbstractStrategyTask implements Strategy {
     }
 
     protected void saveControlStrategyResult(ControlStrategyResult strategyResult) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            controlStrategyDAO.updateControlStrategyResult(strategyResult, session);
+            controlStrategyDAO.updateControlStrategyResult(strategyResult, entityManager);
             if (controlStrategyInputDatasetCount < 2) {
 //                runQASteps(strategyResult);
             }
         } catch (RuntimeException e) {
             throw new EmfException("Could not save control strategy results: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     protected void saveControlStrategy(ControlStrategy strategy) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            controlStrategyDAO.update(strategy, session);
+            controlStrategyDAO.update(strategy, entityManager);
         } catch (RuntimeException e) {
             throw new EmfException("Could not save control strategy: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     protected void updateControlStrategyWithLock(ControlStrategy strategy) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            controlStrategyDAO.updateWithLock(strategy, session);
+            controlStrategyDAO.updateWithLock(strategy, entityManager);
         } catch (RuntimeException e) {
             throw new EmfException("Could not save control strategy: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     protected void saveControlStrategySummaryResult(ControlStrategyResult strategyResult) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            controlStrategyDAO.updateControlStrategyResult(strategyResult, session);
+            controlStrategyDAO.updateControlStrategyResult(strategyResult, entityManager);
         } catch (Exception e) {
             throw new EmfException("Could not save control strategy results: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
     protected void updateResultDataset(ControlStrategyResult strategyResult) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         DatasetDAO dao = new DatasetDAO();
         
         try {
@@ -893,63 +894,63 @@ public abstract class AbstractStrategyTask implements Strategy {
             if (result != null) {
 //System.out.println(result.getName());
 
-//                Version version = dao.getVersion(session, result.getId(), result.getDefaultVersion());
+//                Version version = dao.getVersion(entityManager, result.getId(), result.getDefaultVersion());
 //System.out.println(result.getName());
                 
 //                if (version != null) {
 //                    version.setCreator(user);
 //                    System.out.println(result.getName());
-                    updateVersion(result, null, dbServer, session, dao);
+                    updateVersion(result, null, dbServer, entityManager, dao);
 //                    System.out.println(result.getName());
 //                }
             }
             
             if (contldInv != null) {
 //                System.out.println(result.getName());
-//                Version version = dao.getVersion(session, contldInv.getId(), contldInv.getDefaultVersion());
+//                Version version = dao.getVersion(entityManager, contldInv.getId(), contldInv.getDefaultVersion());
 
 
 //                if (version != null) {
 //                    version.setCreator(user);
-                    updateVersion(contldInv, null, dbServer, session, dao);
+                    updateVersion(contldInv, null, dbServer, entityManager, dao);
 //                }
             }
         } catch (Exception e) {
             e.printStackTrace();
             throw new EmfException("Cannot update result datasets (strategy id: " + strategyResult.getControlStrategyId() + "). " + e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
     
-    private void updateVersion(EmfDataset dataset, Version version, DbServer dbServer, Session session, DatasetDAO dao) throws Exception {
+    private void updateVersion(EmfDataset dataset, Version version, DbServer dbServer, EntityManager entityManager, DatasetDAO dao) throws Exception {
         creator.updateVersionZeroRecordCount(dataset);
         
-//        version = dao.obtainLockOnVersion(user, version.getId(), session);
-//        version.setNumberRecords((int)dao.getDatasetRecordsNumber(dbServer, session, dataset, version));
-//        dao.updateVersionNReleaseLock(version, session);
+//        version = dao.obtainLockOnVersion(user, version.getId(), entityManager);
+//        version.setNumberRecords((int)dao.getDatasetRecordsNumber(dbServer, entityManager, dataset, version));
+//        dao.updateVersionNReleaseLock(version, entityManager);
     }
 
     private void removeControlStrategyResults() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            controlStrategyDAO.removeControlStrategyResults(controlStrategy.getId(), session);
+            controlStrategyDAO.removeControlStrategyResults(controlStrategy.getId(), entityManager);
         } catch (RuntimeException e) {
             throw new EmfException("Could not remove previous control strategy result(s)");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private void removeControlStrategyResult(int resultId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            controlStrategyDAO.removeControlStrategyResult(controlStrategy.getId(), resultId, session);
+            controlStrategyDAO.removeControlStrategyResult(controlStrategy.getId(), resultId, entityManager);
         } catch (RuntimeException e) {
             throw new EmfException("Could not remove previous control strategy result(s)");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -966,7 +967,7 @@ public abstract class AbstractStrategyTask implements Strategy {
     }
 
     protected void runSummaryQASteps(EmfDataset dataset, int version) throws EmfException {
-        QAStepTask qaTask = new QAStepTask(dataset, version, user, sessionFactory, dbServerFactory);
+        QAStepTask qaTask = new QAStepTask(dataset, version, user, entityManagerFactory, dbServerFactory);
         //11/14/07 DCD instead of running the default qa steps specified in the property table, lets run all qa step templates...
         QAStepTemplate[] qaStepTemplates = dataset.getDatasetType().getQaStepTemplates();
         if (qaStepTemplates != null) {
@@ -1048,12 +1049,12 @@ public abstract class AbstractStrategyTask implements Strategy {
     }
 
     private Version version(int datasetId, int version) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             Versions versions = new Versions();
-            return versions.get(datasetId, version, session);
+            return versions.get(datasetId, version, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 

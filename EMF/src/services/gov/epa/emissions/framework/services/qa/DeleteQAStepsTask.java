@@ -12,7 +12,6 @@ import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.QAStep;
 import gov.epa.emissions.framework.services.data.QAStepResult;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,21 +19,23 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 public class DeleteQAStepsTask implements Runnable {
 
     private static Log LOG = LogFactory.getLog(DeleteQAStepsTask.class);
     
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
     
     private DbServerFactory dbServerFactory;
     
     private QADAO dao;
     
-    private StatusDAO statusDAO; // = new StatusDAO(sessionFactory);
+    private StatusDAO statusDAO; // = new StatusDAO(entityManagerFactory);
     
     private User user;
     
@@ -43,16 +44,16 @@ public class DeleteQAStepsTask implements Runnable {
     private int datasetId;
     
     public DeleteQAStepsTask(QAStep[] steps, int datasetId,
-            User user, HibernateSessionFactory sessionFactory, 
+            User user, EntityManagerFactory entityManagerFactory, 
             DbServerFactory dbServerFactory)
     {
         this.steps = steps;
         this.datasetId = datasetId;
         this.user = user;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.dbServerFactory = dbServerFactory;
         dao = new QADAO();
-        statusDAO = new StatusDAO(sessionFactory);
+        statusDAO = new StatusDAO(entityManagerFactory);
     }
     
     public void run() {
@@ -68,7 +69,7 @@ public class DeleteQAStepsTask implements Runnable {
     
     public void deleteQASteps(User user, QAStep[] steps, int datasetId) throws EmfException { //BUG3615
         
-        StatusDAO statusDAO = new StatusDAO(sessionFactory);
+        StatusDAO statusDAO = new StatusDAO(entityManagerFactory);
         Status status = new Status();
         status.setUsername(user.getUsername());
         status.setType("DeleteQASteps");
@@ -76,9 +77,9 @@ public class DeleteQAStepsTask implements Runnable {
         status.setTimestamp(new Date());
         statusDAO.add(status);
         
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         DatasetDAO datasetDAO = new DatasetDAO();
-        EmfDataset dataset = datasetDAO.obtainLocked(user, datasetDAO.getDataset(session, datasetId), session);
+        EmfDataset dataset = datasetDAO.obtainLocked(user, datasetDAO.getDataset(entityManager, datasetId), entityManager);
         
         DbServer dbServer = dbServerFactory.getDbServer();
         Datasource emfDatasource = dbServer.getEmfDatasource();
@@ -120,12 +121,12 @@ public class DeleteQAStepsTask implements Runnable {
 
                 if ( rs.next()) { // not empty
                     stepsReferenced += "\"" + step.getName() + "\" referenced by QA step \"" + rs.getString("name") + "\" for dataset \""; 
-                    EmfDataset qaDataset = datasetDAO.getDataset(session, rs.getInt("dataset_id"));
+                    EmfDataset qaDataset = datasetDAO.getDataset(entityManager, rs.getInt("dataset_id"));
                     stepsReferenced += qaDataset.getName() + "\'";
                     while ( rs.next()) {
                         stepsReferenced += ", ";
                         stepsReferenced += " \"" + rs.getString("name") + "\" for dataset \""; 
-                        qaDataset = datasetDAO.getDataset(session, rs.getInt("dataset_id"));
+                        qaDataset = datasetDAO.getDataset(entityManager, rs.getInt("dataset_id"));
                         stepsReferenced += qaDataset.getName() + "\"";
                     }
                     stepsReferenced +=". ";
@@ -175,7 +176,7 @@ public class DeleteQAStepsTask implements Runnable {
                 dbServer = dbServerFactory.getDbServer();
                 this.removeQAResultTable(step, dbServer);
                 try {
-                    dao.deleteQAStep(step, session);
+                    dao.deleteQAStep(step, entityManager);
                     succeeded++;
                 } catch (RuntimeException e) {
                     failed++;
@@ -194,7 +195,7 @@ public class DeleteQAStepsTask implements Runnable {
             
         }
         
-        session.close();
+        entityManager.close();
         
         msg = "Completed deleting the QA steps: \n";
         msg += "Total number of steps: " + total + "\n"; 
@@ -220,10 +221,10 @@ public class DeleteQAStepsTask implements Runnable {
     }
     
     private void removeQAResultTable(QAStep step, DbServer dbServer) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            QAStepResult result = dao.qaStepResult(step, session);
+            QAStepResult result = dao.qaStepResult(step, entityManager);
 
             if (result == null)
                 return;
@@ -238,13 +239,13 @@ public class DeleteQAStepsTask implements Runnable {
                 }
             }
 
-            dao.removeQAStepResult(result, session);
+            dao.removeQAStepResult(result, entityManager);
         } catch (Exception e) {
             LOG.error("Cannot drop result table for QA step: " + step.getName(), e);
             throw new EmfException("Cannot drop result table for QA step: " + step.getName());
         } finally {
             try {
-                session.close();
+                entityManager.close();
 
                 if (dbServer != null && dbServer.isConnected())
                     dbServer.disconnect();

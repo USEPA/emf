@@ -20,16 +20,17 @@ import gov.epa.emissions.framework.services.EmfServiceImpl;
 import gov.epa.emissions.framework.services.InfrastructureException;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import gov.epa.emissions.framework.services.persistence.JpaEntityManagerFactory;
 
 import java.sql.SQLException;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
 
 public class DataEditorServiceImpl extends EmfServiceImpl implements DataEditorService {
     private static final Log LOG = LogFactory.getLog(DataEditorServiceImpl.class);
@@ -40,35 +41,35 @@ public class DataEditorServiceImpl extends EmfServiceImpl implements DataEditorS
 
     private DataAccessCache cache;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private DataAccessor accessor;
 
     public DataEditorServiceImpl() throws Exception {
         super("Data Editor Service");
         try {
-            init(dbServer, dbServer.getEmissionsDatasource(), HibernateSessionFactory.get());
+            init(dbServer, dbServer.getEmissionsDatasource(), JpaEntityManagerFactory.get());
         } catch (Exception ex) {
             LOG.error("Could not initialize Data Editor Service", ex);
             throw new InfrastructureException("Server configuration error");
         }
     }
 
-    public DataEditorServiceImpl(DataSource datasource, DbServer dbServer, HibernateSessionFactory sessionFactory)
+    public DataEditorServiceImpl(DataSource datasource, DbServer dbServer, EntityManagerFactory entityManagerFactory)
             throws Exception {
         super(datasource, dbServer);
-        init(dbServer, dbServer.getEmissionsDatasource(), sessionFactory);
+        init(dbServer, dbServer.getEmissionsDatasource(), entityManagerFactory);
     }
 
-    private void init(DbServer dbServer, Datasource datasource, HibernateSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    private void init(DbServer dbServer, Datasource datasource, EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
         versions = new Versions();
         factory = new DefaultVersionedRecordsFactory(datasource);
 
         VersionedRecordsWriterFactory writerFactory = new DefaultVersionedRecordsWriterFactory();
         cache = new DataAccessCacheImpl(factory, writerFactory, datasource, dbServer.getSqlDataTypes());
 
-        accessor = new DataAccessorImpl(cache, sessionFactory);
+        accessor = new DataAccessorImpl(cache, entityManagerFactory);
     }
 
     public Page applyConstraints(DataAccessToken token, String rowFilter, String sortOrder) throws EmfException {
@@ -101,16 +102,16 @@ public class DataEditorServiceImpl extends EmfServiceImpl implements DataEditorS
     }
 
     public Version derive(Version base, User user, String name) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            Version derived = versions.derive(base, name, user, session);
+            Version derived = versions.derive(base, name, user, entityManager);
             return derived;
         } catch (HibernateException e) {
             LOG.error("Could not derive a new Version from the base Version: " + base.getVersion() + " of Dataset: "
                     + base.getDatasetId(), e);
             throw new EmfException("Could not create a new Version using " + base.getVersion() + " as the base");
         }finally{
-            session.close();
+            entityManager.close();
         }
     }
     
@@ -211,9 +212,9 @@ public class DataEditorServiceImpl extends EmfServiceImpl implements DataEditorS
                 System.out.println("\n======");
             } 
             
-            Session session = sessionFactory.getSession();
-            cache.submitChangeSet(token, changeset, pageNumber, session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            cache.submitChangeSet(token, changeset, pageNumber, entityManager);
+            entityManager.close();
         } catch (Exception e) {
             LOG.error("Could not submit changes for Dataset: " + token.datasetId() + ". Version: " + token.getVersion()
                     + "." + e.getMessage(), e);
@@ -224,9 +225,9 @@ public class DataEditorServiceImpl extends EmfServiceImpl implements DataEditorS
 
     public void discard(DataAccessToken token) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            cache.discardChangeSets(token, session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            cache.discardChangeSets(token, entityManager);
+            entityManager.close();
         } catch (Exception e) {
             LOG.error("Could not discard changes for Dataset: " + token.datasetId() + ". Version: "
                     + token.getVersion() + "\t" + e.getMessage(), e);
@@ -241,7 +242,7 @@ public class DataEditorServiceImpl extends EmfServiceImpl implements DataEditorS
                 return token;// abort
 
             DataAccessToken extended = accessor.renewLock(token);
-            return doSave(extended, cache, sessionFactory, dataset);
+            return doSave(extended, cache, entityManagerFactory, dataset);
         } catch (Exception e) {
             LOG.error("Could not save changes for Dataset: " + token.datasetId() + ". Version: " + token.getVersion()
                     + "\t" + e.getMessage(), e);
@@ -251,10 +252,10 @@ public class DataEditorServiceImpl extends EmfServiceImpl implements DataEditorS
     }
 
     private DataAccessToken doSave(DataAccessToken token, DataAccessCache cache,
-            HibernateSessionFactory hibernateSessionFactory, EmfDataset dataset) throws EmfException {
+            EntityManagerFactory entityManagerFactory, EmfDataset dataset) throws EmfException {
         try {
-            updateDataset(hibernateSessionFactory, dataset);
-            saveDataEditChanges(token, cache, hibernateSessionFactory); //JIZHEN-JIZHEN
+            updateDataset(entityManagerFactory, dataset);
+            saveDataEditChanges(token, cache, entityManagerFactory); //JIZHEN-JIZHEN
 
         } catch (Exception e) {
             LOG.error("Could not update Dataset: " + token.datasetId() + " with changes for Version: "
@@ -269,44 +270,44 @@ public class DataEditorServiceImpl extends EmfServiceImpl implements DataEditorS
     }
 
     private void saveDataEditChanges(DataAccessToken token, DataAccessCache cache,
-            HibernateSessionFactory hibernateSessionFactory) throws Exception {
-        Session session = hibernateSessionFactory.getSession();
+            EntityManagerFactory entityManagerFactory) throws Exception {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            cache.save(token, session);
+            cache.save(token, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
-    private void updateDataset(HibernateSessionFactory hibernateSessionFactory, EmfDataset dataset) throws Exception {
-        Session session = hibernateSessionFactory.getSession();
+    private void updateDataset(EntityManagerFactory entityManagerFactory, EmfDataset dataset) throws Exception {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             DatasetDAO dao = new DatasetDAO();
-            dao.updateWithoutLocking(dataset, session);
+            dao.updateWithoutLocking(dataset, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     void updateVersion(Version version) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            versions.save(version, session);
+            versions.save(version, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     Version doMarkFinal(Version derived) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            Version version = versions.markFinal(derived, session);
+            Version version = versions.markFinal(derived, entityManager);
             return version;
         } catch (HibernateException e) {
             LOG.error("Could not mark a derived Version: " + derived.getDatasetId() + " as Final" + "." + e);
             throw new EmfException("Could not mark a derived Version: " + derived.getDatasetId() + " as Final");
         }finally{
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -340,9 +341,9 @@ public class DataEditorServiceImpl extends EmfServiceImpl implements DataEditorS
         try {
             return accessor.openEditSession(user, token, pageSize);
         } catch (Exception e) {
-            LOG.error("Could not open Session for Dataset: " + token.datasetId() + ", Version: "
+            LOG.error("Could not open EntityManager for Dataset: " + token.datasetId() + ", Version: "
                     + token.getVersion().getVersion() + "." + e.getMessage(), e);
-            throw new EmfException("Could not open Session for Dataset: " + token.datasetId() + ", Version: "
+            throw new EmfException("Could not open EntityManager for Dataset: " + token.datasetId() + ", Version: "
                     + token.getVersion().getVersion());
         }
     }
@@ -351,12 +352,12 @@ public class DataEditorServiceImpl extends EmfServiceImpl implements DataEditorS
         try {
             accessor.closeEditSession(user, token);
         } finally {
-            new PerformanceMetrics().gc("Closing Data Editor session - (" + token + ")");
+            new PerformanceMetrics().gc("Closing Data Editor entityManager - (" + token + ")");
         }
     }
 
     /**
-     * This method is for cleaning up session specific objects within this service.
+     * This method is for cleaning up entityManager specific objects within this service.
      */
     protected void finalize() throws Throwable {
         accessor.shutdown();
@@ -365,9 +366,9 @@ public class DataEditorServiceImpl extends EmfServiceImpl implements DataEditorS
 
     public boolean hasChanges(DataAccessToken token) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            boolean result = cache.hasChanges(token, session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            boolean result = cache.hasChanges(token, entityManager);
+            entityManager.close();
 
             return result;
         } catch (Exception e) {

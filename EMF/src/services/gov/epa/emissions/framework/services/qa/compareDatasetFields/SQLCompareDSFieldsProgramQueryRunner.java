@@ -1,24 +1,25 @@
 package gov.epa.emissions.framework.services.qa.compareDatasetFields;
 
-import java.sql.SQLException;
-
 import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.QAStep;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.services.qa.SQLQAProgramRunner;
+
+import java.sql.SQLException;
+
+import javax.persistence.EntityManagerFactory;
 
 public class SQLCompareDSFieldsProgramQueryRunner extends SQLQAProgramRunner {
     
     private String emissioDatasourceName;
 
-    public SQLCompareDSFieldsProgramQueryRunner(DbServer dbServer, HibernateSessionFactory sessionFactory, QAStep qaStep) {
-        super(dbServer, sessionFactory, qaStep);
+    public SQLCompareDSFieldsProgramQueryRunner(DbServer dbServer, EntityManagerFactory entityManagerFactory, QAStep qaStep) {
+        super(dbServer, entityManagerFactory, qaStep);
         this.emissioDatasourceName = dbServer.getEmissionsDatasource().getName();
     }
     
     protected String query(DbServer dbServer, QAStep qaStep, String tableName) throws EmfException {
-        SQLCompareDatasetFieldsProgramQuery parser = new SQLCompareDatasetFieldsProgramQuery(sessionFactory, dbServer.getEmissionsDatasource(), emissioDatasourceName, tableName, qaStep);
+        SQLCompareDatasetFieldsProgramQuery parser = new SQLCompareDatasetFieldsProgramQuery(entityManagerFactory, dbServer.getEmissionsDatasource(), emissioDatasourceName, tableName, qaStep);
         String sql = "";
         try {
             sql = parser.createProgramQuery();

@@ -1,41 +1,40 @@
 package gov.epa.emissions.framework.services.cost.controlmeasure.io;
 
-import java.util.List;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Root;
-
-import org.hibernate.Session;
-
 import gov.epa.emissions.commons.data.Pollutant;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Root;
 
 public class Pollutants {
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private HibernateFacade facade;
 
     private List pollutantList;
 
-    public Pollutants(HibernateSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public Pollutants(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
         this.facade = new HibernateFacade();
-        pollutantList = pollutants(sessionFactory);
+        pollutantList = pollutants(entityManagerFactory);
     }
 
-    private List<Pollutant> pollutants(HibernateSessionFactory sessionFactory) {
-        Session session = sessionFactory.getSession();
+    private List<Pollutant> pollutants(EntityManagerFactory entityManagerFactory) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            CriteriaBuilderQueryRoot<Pollutant> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(Pollutant.class, session);
+            CriteriaBuilderQueryRoot<Pollutant> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(Pollutant.class, entityManager);
             CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
             Root<Pollutant> root = criteriaBuilderQueryRoot.getRoot();
 
-            return facade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+            return facade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -63,20 +62,20 @@ public class Pollutants {
     }
 
     private void save(Pollutant pollutant) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            facade.add(pollutant, session);
+            facade.add(pollutant, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private Pollutant load(String name) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return facade.load(Pollutant.class, "name", name, session);
+            return facade.load(Pollutant.class, "name", name, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 

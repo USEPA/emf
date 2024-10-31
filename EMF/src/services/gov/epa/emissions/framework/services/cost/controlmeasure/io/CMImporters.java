@@ -4,9 +4,10 @@ import gov.epa.emissions.commons.Record;
 import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.io.File;
+
+import javax.persistence.EntityManagerFactory;
 
 public class CMImporters {
 
@@ -26,17 +27,17 @@ public class CMImporters {
 
     private CMPropertyImporter propertyImporter;
     
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private User user;
     
     private DbServer dbServer;
 
-    public CMImporters(File[] files, Record[] records, User user, HibernateSessionFactory sessionFactory, DbServer dbServer) throws EmfException {
+    public CMImporters(File[] files, Record[] records, User user, EntityManagerFactory entityManagerFactory, DbServer dbServer) throws EmfException {
         this.files = files;
         this.records = records;
         this.user = user;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.dbServer = dbServer;
         summaryImporter = createSummaryImporter();
         efficiencyImporter = createEfficiencyImporter();
@@ -77,9 +78,9 @@ public class CMImporters {
         String[] colsv2 = fileFormatv2.cols();
         for (int i = 0; i < records.length; i++) {
             if (matches(cols, records[i].getTokens())) {
-                return new CMSummaryImporter(files[i], fileFormat, user, sessionFactory);
+                return new CMSummaryImporter(files[i], fileFormat, user, entityManagerFactory);
             } else if (matches(colsv2, records[i].getTokens())) {
-                return new CMSummaryImporter(files[i], fileFormatv2, user, sessionFactory); 
+                return new CMSummaryImporter(files[i], fileFormatv2, user, entityManagerFactory); 
             }
         }
 
@@ -97,13 +98,13 @@ public class CMImporters {
         String[] colsv4 = fileFormatv4.cols();
         for (int i = 0; i < records.length; i++) {
             if (matches(cols, records[i].getTokens())) {
-                return new CMEfficiencyImporter(files[i], fileFormat, user, sessionFactory, dbServer);
+                return new CMEfficiencyImporter(files[i], fileFormat, user, entityManagerFactory, dbServer);
             } else if (matches(colsv2, records[i].getTokens())){
-                return new CMEfficiencyImporter(files[i], fileFormatv2, user, sessionFactory, dbServer); 
+                return new CMEfficiencyImporter(files[i], fileFormatv2, user, entityManagerFactory, dbServer); 
             } else if (matches(colsv3, records[i].getTokens())) {
-                return new CMEfficiencyImporter(files[i], fileFormatv3, user, sessionFactory, dbServer);
+                return new CMEfficiencyImporter(files[i], fileFormatv3, user, entityManagerFactory, dbServer);
             } else if (matches(colsv4, records[i].getTokens())) {
-                return new CMEfficiencyImporter(files[i], fileFormatv4, user, sessionFactory, dbServer);
+                return new CMEfficiencyImporter(files[i], fileFormatv4, user, entityManagerFactory, dbServer);
             }
         }
         throw new EmfException("Failed to import control measures: Control Measure Efficiency file is required, the file is missing or has the wrong format, expected header format: " + getHeaderFormat(colsv4));
@@ -117,9 +118,9 @@ public class CMImporters {
         String[] colsv2 = fileFormatv2.cols();
         for (int i = 0; i < records.length; i++) {
             if (matches(cols, records[i].getTokens())) {
-                return new CMSCCImporter(files[i], fileFormat, user, sessionFactory);
+                return new CMSCCImporter(files[i], fileFormat, user, entityManagerFactory);
             } else if (matches(colsv2, records[i].getTokens())) {
-                return new CMSCCImporter(files[i], fileFormatv2, user, sessionFactory);
+                return new CMSCCImporter(files[i], fileFormatv2, user, entityManagerFactory);
             }
         }
 
@@ -134,9 +135,9 @@ public class CMImporters {
         String[] colsv2 = fileFormatv2.cols();
         for (int i = 0; i < records.length; i++) {
             if (matches(cols, records[i].getTokens())) {
-                return new CMEquationImporter(files[i], fileFormat, user, sessionFactory);
+                return new CMEquationImporter(files[i], fileFormat, user, entityManagerFactory);
             } else if (matches(colsv2, records[i].getTokens())) {
-                return new CMEquationImporter(files[i], fileFormatv2, user, sessionFactory);
+                return new CMEquationImporter(files[i], fileFormatv2, user, entityManagerFactory);
             }
         }
         return null;
@@ -149,7 +150,7 @@ public class CMImporters {
         String[] cols = fileFormat.cols();
         for (int i = 0; i < records.length; i++) {
             if (matches(cols, records[i].getTokens())) {
-                return new CMPropertyImporter(files[i], fileFormat, user, sessionFactory);
+                return new CMPropertyImporter(files[i], fileFormat, user, entityManagerFactory);
             }
         }
         return null;
@@ -163,7 +164,7 @@ public class CMImporters {
         String[] cols = fileFormat.cols();
         for (int i = 0; i < records.length; i++) {
             if (matches(cols, records[i].getTokens())) {
-                return new CMReferenceImporter(files[i], fileFormat, this.user, this.sessionFactory);
+                return new CMReferenceImporter(files[i], fileFormat, this.user, this.entityManagerFactory);
             }
         }
         return null;

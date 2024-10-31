@@ -1,14 +1,15 @@
 package gov.epa.emissions.framework.services.fast;
 
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 import org.apache.commons.logging.Log;
-import org.hibernate.Session;
 
 public abstract class AbstractDaoCommand<T> {
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private Log log;
 
@@ -16,13 +17,13 @@ public abstract class AbstractDaoCommand<T> {
 
     public AbstractDaoCommand<T> execute() throws EmfException {
 
-        if (this.sessionFactory == null) {
-            throw new EmfException("Hibernate session factory cannot be null.");
+        if (this.entityManagerFactory == null) {
+            throw new EmfException("Hibernate entityManager factory cannot be null.");
         }
 
-        Session session = this.sessionFactory.getSession();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         try {
-            this.doExecute(session);
+            this.doExecute(entityManager);
         } catch (EmfException e) {
 
             /*
@@ -40,8 +41,8 @@ public abstract class AbstractDaoCommand<T> {
             throw new EmfException(errorMessage);
         } finally {
 
-            if (session != null) {
-                session.close();
+            if (entityManager != null) {
+                entityManager.close();
             }
         }
 
@@ -52,8 +53,8 @@ public abstract class AbstractDaoCommand<T> {
         return this;
     }
 
-    public void setSessionFactory(HibernateSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public void setSessionFactory(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     public void setLog(Log log) {
@@ -72,5 +73,5 @@ public abstract class AbstractDaoCommand<T> {
         return "";
     }
 
-    protected abstract void doExecute(Session session) throws Exception;
+    protected abstract void doExecute(EntityManager entityManager) throws Exception;
 }

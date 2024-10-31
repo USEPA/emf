@@ -3,7 +3,8 @@ package gov.epa.emissions.framework.services.fast.netCDF;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.GCEnforcerTask;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+
+import javax.persistence.EntityManagerFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,7 +17,7 @@ public class ExportFastOutputToNetCDFFile {
 
     private DbServerFactory dbServerFactory;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private static Log LOG = LogFactory.getLog(ExportFastOutputToNetCDFFile.class);
 
@@ -33,10 +34,10 @@ public class ExportFastOutputToNetCDFFile {
     private int datasetVersion;
 
     public ExportFastOutputToNetCDFFile(int datasetId, int datasetVersion, int gridId, String userName, String dirName, String pollutant,
-            DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory,
+            DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory,
             PooledExecutor threadPool) {
 //        this(step, dbServerFactory,
-//            user, sessionFactory,
+//            user, entityManagerFactory,
 //            threadPool);
         this.datasetId = datasetId;
         this.datasetVersion = datasetVersion;
@@ -45,13 +46,13 @@ public class ExportFastOutputToNetCDFFile {
         this.dirName = dirName;
         this.pollutant = pollutant;
         this.dbServerFactory = dbServerFactory;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.threadPool = threadPool;
     }
 
     public void export() throws EmfException {
         ExportFastOutputToNetCDFFileTask task = new ExportFastOutputToNetCDFFileTask(datasetId, datasetVersion, gridId, userName, dirName, pollutant,
-                dbServerFactory, sessionFactory);
+                dbServerFactory, entityManagerFactory);
         try {
             threadPool.execute(new GCEnforcerTask("Export Dataset Id : " + datasetId, task));
         } catch (InterruptedException e) {

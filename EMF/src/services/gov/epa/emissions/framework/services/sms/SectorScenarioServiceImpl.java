@@ -6,19 +6,17 @@ import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.sms.SectorScenarioService;
-import gov.epa.emissions.framework.services.data.DatasetDAO;
-import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
-import gov.epa.emissions.framework.tasks.DebugLevels;
+import gov.epa.emissions.framework.services.persistence.JpaEntityManagerFactory;
 
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
 
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 
@@ -28,25 +26,25 @@ public class SectorScenarioServiceImpl implements SectorScenarioService {
 
     private PooledExecutor threadPool;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     protected DbServerFactory dbServerFactory;
 
     private SectorScenarioDAO dao;
 
     public SectorScenarioServiceImpl() throws Exception {
-        init(HibernateSessionFactory.get(), DbServerFactory.get());
+        init(JpaEntityManagerFactory.get(), DbServerFactory.get());
     }
 
-    public SectorScenarioServiceImpl(HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory)
+    public SectorScenarioServiceImpl(EntityManagerFactory entityManagerFactory, DbServerFactory dbServerFactory)
             throws Exception {
-        init(sessionFactory, dbServerFactory);
+        init(entityManagerFactory, dbServerFactory);
     }
 
-    private synchronized void init(HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory) {
-        this.sessionFactory = sessionFactory;
+    private synchronized void init(EntityManagerFactory entityManagerFactory, DbServerFactory dbServerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
         this.dbServerFactory = dbServerFactory;
-        dao = new SectorScenarioDAO(dbServerFactory, sessionFactory);
+        dao = new SectorScenarioDAO(dbServerFactory, entityManagerFactory);
         threadPool = createThreadPool();
 
     }
@@ -66,49 +64,49 @@ public class SectorScenarioServiceImpl implements SectorScenarioService {
     }
 
     public synchronized SectorScenario[] getSectorScenarios() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List cs = dao.all(session);
+            List cs = dao.all(entityManager);
             return (SectorScenario[]) cs.toArray(new SectorScenario[0]);
         } catch (HibernateException e) {
             LOG.error("Could not retrieve all sector scenarios." + e.getMessage());
             throw new EmfException("Could not retrieve all sector scenarios.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized int addSectorScenario(SectorScenario element) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         int csId;
         try {
-            csId = dao.add(element, session);
+            csId = dao.add(element, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not add Sector Scenario: " + element, e);
             throw new EmfException("Could not add Sector Scenario: " + element);
         } finally {
-            session.close();
+            entityManager.close();
         }
         return csId;
     }
 
     public synchronized void setSectorScenarioRunStatusAndCompletionDate(int id, String runStatus, Date completionDate)
             throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dao.setSectorScenarioRunStatusAndCompletionDate(id, runStatus, completionDate, session);
+            dao.setSectorScenarioRunStatusAndCompletionDate(id, runStatus, completionDate, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not set Control Strategy run status: " + id, e);
             throw new EmfException("Could not add Control Strategy run status: " + id);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized SectorScenario obtainLocked(User owner, int id) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            SectorScenario locked = dao.obtainLocked(owner, id, session);
+            SectorScenario locked = dao.obtainLocked(owner, id, entityManager);
 
             return locked;
         } catch (Exception e) {
@@ -116,63 +114,63 @@ public class SectorScenarioServiceImpl implements SectorScenarioService {
             throw new EmfException("Could not obtain lock for Sector Scenario: id = " + id + " by owner: "
                     + owner.getUsername());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized void releaseLocked(User user, int id) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dao.releaseLocked(user, id, session);
+            dao.releaseLocked(user, id, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not release lock for Sector Scenario id: " + id, e);
             throw new EmfException("Could not release lock for Sector Scenario id: " + id);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized SectorScenario updateSectorScenario(SectorScenario element) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            if (!dao.canUpdate(element, session))
+            if (!dao.canUpdate(element, entityManager))
                 throw new EmfException("The Sector Scenario name is already in use");
 
-            SectorScenario released = dao.update(element, session);
+            SectorScenario released = dao.update(element, entityManager);
 
             return released;
         } catch (RuntimeException e) {
             LOG.error("Could not update Sector Scenario: " + element, e);
             throw new EmfException("Could not update SectorScenario: " + element);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized SectorScenario updateSectorScenarioWithLock(SectorScenario element) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            if (!dao.canUpdate(element, session))
+            if (!dao.canUpdate(element, entityManager))
                 throw new EmfException("Sector Scenario name already in use");
 
-            SectorScenario csWithLock = dao.updateWithLock(element, session);
+            SectorScenario csWithLock = dao.updateWithLock(element, entityManager);
 
             return csWithLock;
         } catch (RuntimeException e) {
             LOG.error("Could not update Sector Scenario: " + element, e);
             throw new EmfException("Could not update Sector Scenario: " + element);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized void removeSectorScenarios(int[] ids, User user) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         String exception = "";
         try {
             for (int i = 0; i < ids.length; i++) {
-                SectorScenario cs = dao.getById(ids[i], session);
-                session.clear();
+                SectorScenario cs = dao.getById(ids[i], entityManager);
+                entityManager.clear();
 
                 // check if admin user, then allow it to be removed.
                 if (user.equals(cs.getCreator()) || user.isAdmin()) {
@@ -192,30 +190,30 @@ public class SectorScenarioServiceImpl implements SectorScenarioService {
             LOG.error("Could not remove Sector Scenario", e);
             throw new EmfException("Could not remove Sector Scenario");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private synchronized void remove(SectorScenario element, User user) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         DbServer dbServer = dbServerFactory.getDbServer();
         try {
 
-            if (!dao.canUpdate(element, session))
+            if (!dao.canUpdate(element, entityManager))
                 throw new EmfException("Sector Scenario doesn't exist.");
 
-            dao.removeSectorScenarioResults(element.getId(), user, session, dbServer);
+            dao.removeSectorScenarioResults(element.getId(), user, entityManager, dbServer);
             // SectorScenarioOutput[] sectorScenarioOutputs = getSectorScenarioOutputs(element.getId());
             // for (int i = 0; i < sectorScenarioOutputs.length; i++) {
-            // dao.remove(sectorScenarioOutputs[i], session);
+            // dao.remove(sectorScenarioOutputs[i], entityManager);
             // }
 
-            dao.remove(element, session);
+            dao.remove(element, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not remove Sector Scenario: " + element, e);
             throw new EmfException("Could not remove Sector Scenario: " + element.getName());
         } finally {
-            session.close();
+            entityManager.close();
             try {
                 dbServer.disconnect();
             } catch (Exception e) {
@@ -225,10 +223,10 @@ public class SectorScenarioServiceImpl implements SectorScenarioService {
     }
 
     public synchronized void runSectorScenario(User user, int sectorScenarioId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             // first see if the strategy has been canceled cor is running, is so don't run it...
-            String runStatus = dao.getSectorScenarioRunStatus(sectorScenarioId, session);
+            String runStatus = dao.getSectorScenarioRunStatus(sectorScenarioId, entityManager);
             if (//runStatus.equals("Cancelled") || 
                     runStatus.equals("Running"))
                 return;
@@ -244,106 +242,106 @@ public class SectorScenarioServiceImpl implements SectorScenarioService {
             // hence a exception when trying to purge/delete the resulting datasets
             // if (control);
 
-            String preRunStatus = dao.getSectorScenarioRunStatus(sectorScenarioId, session);
+            String preRunStatus = dao.getSectorScenarioRunStatus(sectorScenarioId, entityManager);
             // queue up the strategy to be run, by setting runStatus to Waiting
-            dao.setSectorScenarioRunStatusAndCompletionDate(sectorScenarioId, "Waiting", null, session);
+            dao.setSectorScenarioRunStatusAndCompletionDate(sectorScenarioId, "Waiting", null, entityManager);
 
             // validatePath(strategy.getExportDirectory());
-            RunSectorScenario runSectorScenario = new RunSectorScenario(sessionFactory, dbServerFactory, threadPool);
+            RunSectorScenario runSectorScenario = new RunSectorScenario(entityManagerFactory, dbServerFactory, threadPool);
             runSectorScenario.run(user, sectorScenario, this, preRunStatus);
         } catch (EmfException e) {
             // queue up the strategy to be run, by setting runStatus to Waiting
-            dao.setSectorScenarioRunStatusAndCompletionDate(sectorScenarioId, "Failed", null, session);
+            dao.setSectorScenarioRunStatusAndCompletionDate(sectorScenarioId, "Failed", null, entityManager);
 
             throw new EmfException(e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public List<SectorScenario> getSectorScenariosByRunStatus(String runStatus) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getSectorScenariosByRunStatus(runStatus, session);
+            return dao.getSectorScenariosByRunStatus(runStatus, entityManager);
         } catch (RuntimeException e) {
             throw new EmfException("Could not get Sector Scenarioes by run status: " + runStatus);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public Long getSectorScenarioRunningCount() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getSectorScenarioRunningCount(session);
+            return dao.getSectorScenarioRunningCount(entityManager);
         } catch (RuntimeException e) {
             throw new EmfException("Could not get Sector Scenarioes running count");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized void stopRunSectorScenario(int sectorScenarioId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             // look at the current status, if waiting or running, then update to Cancelled.
-            String status = dao.getSectorScenarioRunStatus(sectorScenarioId, session);
+            String status = dao.getSectorScenarioRunStatus(sectorScenarioId, entityManager);
             if (status.toLowerCase().startsWith("waiting") || status.toLowerCase().startsWith("running"))
-                dao.setSectorScenarioRunStatusAndCompletionDate(sectorScenarioId, "Cancelled", null, session);
+                dao.setSectorScenarioRunStatusAndCompletionDate(sectorScenarioId, "Cancelled", null, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not set Sector Scenario run status: " + sectorScenarioId, e);
             throw new EmfException("Could not add Sector Scenario run status: " + sectorScenarioId);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized String sectorScenarioRunStatus(int id) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.sectorScenarioRunStatus(id, session);
+            return dao.sectorScenarioRunStatus(id, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve Sector Scenario Status", e);
             throw new EmfException("Could not retrieve Sector Scenario Status");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     // returns Sector Scenario Id for the given name
     public synchronized int isDuplicateName(String name) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            SectorScenario cs = dao.getByName(name, session);
+            SectorScenario cs = dao.getByName(name, entityManager);
             return cs == null ? 0 : cs.getId();
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve if Sector Scenario name is already used", e);
             throw new EmfException("Could not retrieve if Sector Scenario name is already used");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized int isDuplicateAbbre(String abbre) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            SectorScenario cs = dao.getByAbbre(abbre, session);
+            SectorScenario cs = dao.getByAbbre(abbre, entityManager);
             return cs == null ? 0 : cs.getId();
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve if Sector Scenario abbreviation is already used", e);
             throw new EmfException("Could not retrieve if Sector Scenario abbreviation is already used");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized int copySectorScenario(int id, User creator) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             // get cs to copy
-            SectorScenario cs = dao.getById(id, session);
+            SectorScenario cs = dao.getById(id, entityManager);
 
-            session.clear();// clear to flush current
+            entityManager.clear();// clear to flush current
 
             String name = "Copy of " + cs.getName();
             // make sure this won't cause duplicate issues...
@@ -365,7 +363,7 @@ public class SectorScenarioServiceImpl implements SectorScenarioService {
                 copied.setLockOwner(null);
             }
 
-            dao.add(copied, session);
+            dao.add(copied, entityManager);
             int csId = copied.getId();
             return csId;
         } catch (EmfException e) {
@@ -378,7 +376,7 @@ public class SectorScenarioServiceImpl implements SectorScenarioService {
             LOG.error("Could not copy Sector Scenario", e);
             throw new EmfException("Could not copy Sector Scenario");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -387,68 +385,68 @@ public class SectorScenarioServiceImpl implements SectorScenarioService {
     }
 
     public synchronized SectorScenario getById(int id) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getById(id, session);
+            return dao.getById(id, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not get Sector Scenario", e);
             throw new EmfException("Could not get Sector Scenario");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized SectorScenarioOutput[] getSectorScenarioOutputs(int sectorScenarioId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List all = dao.getSectorScenarioOutputs(sectorScenarioId, session);
+            List all = dao.getSectorScenarioOutputs(sectorScenarioId, entityManager);
             return (SectorScenarioOutput[]) all.toArray(new SectorScenarioOutput[0]);
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve Sector Scenario results.", e);
             throw new EmfException("Could not retrieve Sector Scenario results.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized String getDefaultExportDirectory() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            String dir = dao.getDefaultExportDirectory(session);
+            String dir = dao.getDefaultExportDirectory(entityManager);
             return dir;
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve default export directory.", e);
             throw new EmfException("Could not retrieve default export directory.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized String getStrategyRunStatus(int id) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getStrategyRunStatus(session, id);
+            return dao.getStrategyRunStatus(entityManager, id);
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve strategy run status.", e);
             throw new EmfException("Could not retrieve strategy run status.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized String[] getDistinctSectorListFromDataset(int datasetId, int versionNumber) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         DbServer dbServer = dbServerFactory.getDbServer();
         try {
-            return dao.getDistinctSectorListFromDataset(session, dbServer, datasetId, versionNumber);
+            return dao.getDistinctSectorListFromDataset(entityManager, dbServer, datasetId, versionNumber);
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve distinct sector list from a dataset.", e);
             throw new EmfException("Could not retrieve distinct sector list from a dataset.");
         } finally {
             try {
-                session.close();
+                entityManager.close();
             } catch (Exception e) {
-                throw new EmfException("Could not close hibernate session - " + e.getMessage());
+                throw new EmfException("Could not close hibernate entityManager - " + e.getMessage());
             }
             try {
                 dbServer.disconnect();

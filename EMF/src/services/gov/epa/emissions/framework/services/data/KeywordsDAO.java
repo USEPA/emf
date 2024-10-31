@@ -9,7 +9,7 @@ import java.util.List;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Root;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
 
 public class KeywordsDAO {
 
@@ -19,27 +19,27 @@ public class KeywordsDAO {
         hibernateFacade = new HibernateFacade();
     }
 
-    public Keyword add(Keyword keyword, Session session) {
-        Keyword exist = getKeyword(keyword.getName(), session);
+    public Keyword add(Keyword keyword, EntityManager entityManager) {
+        Keyword exist = getKeyword(keyword.getName(), entityManager);
 
         if (exist != null)
             return exist;
 
-        hibernateFacade.add(keyword, session);
+        hibernateFacade.add(keyword, entityManager);
 
-        return getKeyword(keyword.getName(), session);
+        return getKeyword(keyword.getName(), entityManager);
     }
 
-    public List<Keyword> getKeywords(Session session) {
-        CriteriaBuilderQueryRoot<Keyword> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Keyword.class, session);
+    public List<Keyword> getKeywords(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<Keyword> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Keyword.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<Keyword> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public Keyword getKeyword(String name, Session session) {
-        return hibernateFacade.load(Keyword.class, "name", name, session);
+    public Keyword getKeyword(String name, EntityManager entityManager) {
+        return hibernateFacade.load(Keyword.class, "name", name, entityManager);
     }
 
 }

@@ -5,9 +5,9 @@ import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.Services;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyResultType;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
-
 import java.util.Date;
+
+import javax.persistence.EntityManagerFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,19 +24,19 @@ public class StrategySummaryTask implements Runnable {
 
 //    private ControlStrategyService csService;
 //
-//    private HibernateSessionFactory sessionFactory;
+//    private EntityManagerFactory entityManagerFactory;
     
     private StrategyResultType strategyResultType;
 
     public StrategySummaryTask(IStrategySummaryTask strategyResult, StrategyResultType strategyResultType, 
             User user, Services services, 
-            HibernateSessionFactory sessionFactory) {
+            EntityManagerFactory entityManagerFactory) {
         this.user = user;
         this.services = services;
         this.strategyResult = strategyResult;
         this.strategyResultType = strategyResultType;
 //        this.csService = service;
-//        this.sessionFactory = sessionFactory;
+//        this.entityManagerFactory = entityManagerFactory;
     }
 
     public void run() {

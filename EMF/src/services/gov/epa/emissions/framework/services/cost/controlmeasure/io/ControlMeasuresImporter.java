@@ -18,7 +18,6 @@ import gov.epa.emissions.framework.services.cost.AggregateEfficiencyRecordDAO;
 import gov.epa.emissions.framework.services.cost.ControlMeasure;
 import gov.epa.emissions.framework.services.cost.ControlMeasureDAO;
 import gov.epa.emissions.framework.services.cost.data.EfficiencyRecord;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,9 +30,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 public class ControlMeasuresImporter implements Importer {
 
@@ -57,7 +58,7 @@ public class ControlMeasuresImporter implements Importer {
 
     private OptimizedTableModifier modifier;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private DbServer dbServer;
     
@@ -71,16 +72,17 @@ public class ControlMeasuresImporter implements Importer {
     
     private boolean forScan = false;
 
-    public ControlMeasuresImporter(File folder, String[] fileNames, User user, boolean truncate, int[] sectorIds, HibernateSessionFactory factory, DbServerFactory dbServerFactory)
+    public ControlMeasuresImporter(File folder, String[] fileNames, User user, boolean truncate, int[] sectorIds, EntityManagerFactory entityManagerFactory, DbServerFactory dbServerFactory)
             throws EmfException, ImporterException {
         File[] files = fileNames(folder, fileNames);
         this.user = user;
         this.truncate = truncate;
         this.sectorIds = sectorIds;
-        this.sessionFactory = factory;
+        this.entityManagerFactory = entityManagerFactory;
         this.dbServer = dbServerFactory.getDbServer();
-        this.statusDao = new StatusDAO(factory);
-        ControlMeasuresImportIdentifier types = new ControlMeasuresImportIdentifier(files, user, factory, dbServer);
+        this.entityManagerFactory = entityManagerFactory;
+        this.statusDao = new StatusDAO(entityManagerFactory);
+        ControlMeasuresImportIdentifier types = new ControlMeasuresImportIdentifier(files, user, entityManagerFactory, dbServer);
         this.cmImporters = types.cmImporters();
         this.efficiency = cmImporters.efficiencyImporter();
         this.controlMeasures = new HashMap();
@@ -355,12 +357,12 @@ public class ControlMeasuresImporter implements Importer {
         List messages = new ArrayList(); 
         int cmId = 0;
         for (int i = 0; i < measures.length; i++) {
-            Session session = sessionFactory.getSession();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
             measures[i].setCreator(user);
             measures[i].setLastModifiedTime(date);
             measures[i].setLastModifiedBy(user.getName());
             try {
-                cmId = controlMeasuresDao.addFromImporter(measures[i],measures[i].getSccs(), user, session, dbServer);
+                cmId = controlMeasuresDao.addFromImporter(measures[i],measures[i].getSccs(), user, entityManager, dbServer);
                 measures[i].setId(cmId);
             } catch (EmfException e) {
                 e.printStackTrace();
@@ -373,12 +375,12 @@ public class ControlMeasuresImporter implements Importer {
             } 
 //            if ( i % 20 == 0 ) { //20, same as the JDBC batch size
 //                //flush a batch of inserts and release memory:
-//                session.flush();
-//                session.clear();
+//                entityManager.flush();
+//                entityManager.clear();
 //            }
-//            session.flush();
-            session.clear();
-            session.close();
+//            entityManager.flush();
+            entityManager.clear();
+            entityManager.close();
        }
         if (messages.size() > 0) {
             setDetailStatus(messages);
@@ -390,11 +392,11 @@ public class ControlMeasuresImporter implements Importer {
 //        List messages = new ArrayList(); 
 //        int id = 0;
 //        int count = 0;
-//        StatelessSession session = sessionFactory.getStatelessSession();
-//        Transaction tx = session.beginTransaction();
+//        StatelessSession entityManager = entityManagerFactory.getStatelessSession();
+//        Transaction tx = entityManager.beginTransaction();
 //        for (int i = 0; i < efficiencyRecords.length; i++) {
 //            try {
-//                id = controlMeasuresDao.addEfficiencyRecord(efficiencyRecords[i], session);
+//                id = controlMeasuresDao.addEfficiencyRecord(efficiencyRecords[i], entityManager);
 //                efficiencyRecords[i].setId(id);
 //                count++;
 //            } catch (EmfException e) {
@@ -402,7 +404,7 @@ public class ControlMeasuresImporter implements Importer {
 //            }
 //        }
 //        tx.commit();
-//        session.close();
+//        entityManager.close();
 //        if (messages.size() > 0) setStatus(messages);
 //        addCompletedStatus(count, "efficiency records");
 //    }
@@ -411,10 +413,10 @@ public class ControlMeasuresImporter implements Importer {
 //        List messages = new ArrayList(); 
 //        int id = 0;
 //        int count = 0;
-//        Session session = sessionFactory.getSession();
+//        EntityManager entityManager = entityManagerFactory.createEntityManager();
 //        for (int i = 0; i < efficiencyRecords.length; i++) {
 //            try {
-//                id = controlMeasuresDao.addEfficiencyRecord(efficiencyRecords[i], session);
+//                id = controlMeasuresDao.addEfficiencyRecord(efficiencyRecords[i], entityManager);
 //                efficiencyRecords[i].setId(id);
 //                count++;
 //            } catch (EmfException e) {
@@ -422,13 +424,13 @@ public class ControlMeasuresImporter implements Importer {
 //            }
 //            if ( i % 20 == 0 ) { //20, same as the JDBC batch size
 //                //flush a batch of inserts and release memory:
-//                session.flush();
-//                session.clear();
+//                entityManager.flush();
+//                entityManager.clear();
 //            }
 //        }
-//        session.flush();
-//        session.clear();
-//        session.close();
+//        entityManager.flush();
+//        entityManager.clear();
+//        entityManager.close();
 //        if (messages.size() > 0) setStatus(messages);
 //        addCompletedStatus(count, "efficiency records");
 //    }

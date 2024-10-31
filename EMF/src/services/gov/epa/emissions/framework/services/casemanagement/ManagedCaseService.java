@@ -40,8 +40,8 @@ import gov.epa.emissions.framework.services.exim.ManagedCopyService;
 import gov.epa.emissions.framework.services.exim.ManagedExportService;
 import gov.epa.emissions.framework.services.exim.ManagedImportService;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.CaseJobSubmitter;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 import gov.epa.emissions.framework.tasks.TaskManagerFactory;
@@ -66,6 +66,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -73,8 +75,6 @@ import javax.persistence.criteria.Root;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 public class ManagedCaseService {
     private static Log log = LogFactory.getLog(ManagedCaseService.class);
@@ -97,9 +97,10 @@ public class ManagedCaseService {
 
     private CaseDAO dao;
 
-    private HibernateSessionFactory sessionFactory = null;
+    private EntityManagerFactory entityManagerFactory = null;
 
     private DbServerFactory dbFactory;
+    private HibernateFacade hibernateFacade;
 
     private User user;
 
@@ -147,23 +148,24 @@ public class ManagedCaseService {
 
     private final int ALL_JOB_ID = 0;
 
-    // protected Session session = null;
+    // protected EntityManager entityManager = null;
 
-    // private Session getSession() {
-    // if (session == null) {
-    // session = sessionFactory.getSession();
+    // private EntityManager getSession() {
+    // if (entityManager == null) {
+    // entityManager = entityManagerFactory.createEntityManager();
     // }
-    // return session;
+    // return entityManager;
     // }
 
-    public ManagedCaseService(DbServerFactory dbFactory, HibernateSessionFactory sessionFactory) {
+    public ManagedCaseService(DbServerFactory dbFactory, EntityManagerFactory entityManagerFactory) {
         this.dbFactory = dbFactory;
-        this.sessionFactory = sessionFactory;
-        this.dao = new CaseDAO(sessionFactory);
+        this.entityManagerFactory = entityManagerFactory;
+        this.dao = new CaseDAO(entityManagerFactory);
+        this.hibernateFacade = new HibernateFacade();
 
         if (DebugLevels.DEBUG_9())
-            System.out.println("In ManagedCaseService constructor: Is the session Factory null? "
-                    + (sessionFactory == null));
+            System.out.println("In ManagedCaseService constructor: Is the entityManager Factory null? "
+                    + (entityManagerFactory == null));
 
         myTag();
 
@@ -172,7 +174,7 @@ public class ManagedCaseService {
 
         log.info("ManagedCaseService");
         // log.info("exportTaskSubmitter: " + caseJobSubmitter);
-        log.info("Session factory null? " + (sessionFactory == null));
+        log.info("EntityManager factory null? " + (entityManagerFactory == null));
         log.info("User null? : " + (user == null));
     }
 
@@ -189,7 +191,7 @@ public class ManagedCaseService {
 
         if (exportService == null) {
             try {
-                exportService = new ManagedExportService(dbFactory, sessionFactory);
+                exportService = new ManagedExportService(dbFactory, entityManagerFactory);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -204,7 +206,7 @@ public class ManagedCaseService {
 
         if (importService == null) {
             try {
-                importService = new ManagedImportService(dbFactory, sessionFactory);
+                importService = new ManagedImportService(dbFactory, entityManagerFactory);
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new EmfException(e.getMessage());
@@ -219,7 +221,7 @@ public class ManagedCaseService {
 
     //    if (copyService == null) {
             try {
-                copyService = new ManagedCopyService(dbFactory, sessionFactory);
+                copyService = new ManagedCopyService(dbFactory, entityManagerFactory);
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new EmfException(e.getMessage());
@@ -232,65 +234,65 @@ public class ManagedCaseService {
     // ***************************************************************************
 
     public synchronized Case[] getCases() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List cases = dao.getCases(session);
+            List cases = dao.getCases(entityManager);
 
             return (Case[]) cases.toArray(new Case[0]);
         } catch (RuntimeException e) {
             log.error("Could not get all Cases", e);
             throw new EmfException("Could not get all Cases");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
     
     public synchronized Case[] getCases(String nameContains) throws EmfException {
         
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getCases(session, nameContains);
+            return dao.getCases(entityManager, nameContains);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("Could not retrieve all case", e);
             throw new EmfException("Could not retrieve all case " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized Case getCase(int caseId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            Case caseObj = dao.getCase(caseId, session);
+            Case caseObj = dao.getCase(caseId, entityManager);
             return caseObj;
         } catch (RuntimeException e) {
             log.error("Could not get all Cases", e);
             throw new EmfException("Could not get all Cases");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized Case getCaseFromName(String name) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            Case caseObj = dao.getCaseFromName(name, session);
+            Case caseObj = dao.getCaseFromName(name, entityManager);
             return caseObj;
         } catch (RuntimeException e) {
             log.error("Could not get case", e);
             throw new EmfException("Could not get case");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
-    private Case getCase(int caseId, Session session) throws EmfException {
+    private Case getCase(int caseId, EntityManager entityManager) throws EmfException {
         try {
-            Case caseObj = dao.getCase(caseId, session);
+            Case caseObj = dao.getCase(caseId, entityManager);
             return caseObj;
         } catch (RuntimeException e) {
             log.error("Could not get case from case id: " + caseId + ".", e);
@@ -303,15 +305,15 @@ public class ManagedCaseService {
     }
     
     public synchronized Case[] getCases(CaseCategory category, String nameContains) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getCases(session, category,nameContains);
+            return dao.getCases(entityManager, category,nameContains);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("Could not retrieve all case", e);
             throw new EmfException("Could not retrieve all case " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
 
     }
@@ -319,11 +321,11 @@ public class ManagedCaseService {
 
     public synchronized Version[] getLaterVersions(EmfDataset dataset, Version version) throws EmfException {
         Versions versions = new Versions();
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
             int id = dataset.getId();
-            Version[] vers = versions.getLaterVersions(id, version, session);
+            Version[] vers = versions.getLaterVersions(id, version, entityManager);
 
             if (DebugLevels.DEBUG_14() && vers.length > 0)
                 System.out.println("There are " + vers.length + " later versions for dataset: " + dataset.getName());
@@ -333,28 +335,28 @@ public class ManagedCaseService {
             log.error("Could not get versions for dataset: " + dataset.getName() + ".\n" , e);
             throw new EmfException("Could not get versions for dataset: " + dataset.getName() + ".\n");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized CaseJob getCaseJob(int jobId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            return dao.getCaseJob(jobId, session);
+            return dao.getCaseJob(jobId, entityManager);
         } catch (Exception e) {
             log.error("Could not get job for job id " + jobId + ".\n", e);
             throw new EmfException("Could not get job for job id " + jobId + ".\n");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
-    private CaseJob getCaseJob(int jobId, Session session) throws EmfException {
+    private CaseJob getCaseJob(int jobId, EntityManager entityManager) throws EmfException {
         try {
-            return dao.getCaseJob(jobId, session);
+            return dao.getCaseJob(jobId, entityManager);
         } catch (Exception e) {
             log.error("Could not get job for job id " + jobId + ".\n", e);
             throw new EmfException("Could not get job for job id " + jobId + ".\n");
@@ -362,167 +364,167 @@ public class ManagedCaseService {
     }
 
     public synchronized Sector[] getSectorsUsedbyJobs(int caseId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List<Sector> sectors = dao.getSectorsUsedbyJobs(caseId, session);
+            List<Sector> sectors = dao.getSectorsUsedbyJobs(caseId, entityManager);
             return sectors.toArray(new Sector[0]);
         } catch (Exception e) {
             log.error("Could not get sectors for case id " + caseId + ".\n" + e.getMessage());
             throw new EmfException("Could not get sectors for case id " + caseId + ".\n");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized Abbreviation[] getAbbreviations() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List abbreviations = dao.getAbbreviations(session);
+            List abbreviations = dao.getAbbreviations(entityManager);
 
             return (Abbreviation[]) abbreviations.toArray(new Abbreviation[0]);
         } catch (RuntimeException e) {
             log.error("Could not get all Abbreviations", e);
             throw new EmfException("Could not get all Abbreviations");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized Abbreviation addAbbreviation(Abbreviation abbr) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            dao.add(abbr, session);
-            return (Abbreviation) dao.load(Abbreviation.class, abbr.getName(), session);
+            dao.add(abbr, entityManager);
+            return (Abbreviation) dao.load(Abbreviation.class, abbr.getName(), entityManager);
         } catch (Exception e) {
             log.error("Cannot add case abbreviation " + abbr.getName(), e);
             throw new EmfException("Cannot add case abbreviation " + abbr.getName() + e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized AirQualityModel[] getAirQualityModels() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List airQualityModels = dao.getAirQualityModels(session);
+            List airQualityModels = dao.getAirQualityModels(entityManager);
             return (AirQualityModel[]) airQualityModels.toArray(new AirQualityModel[0]);
         } catch (RuntimeException e) {
             log.error("Could not get all Air Quality Models", e);
             throw new EmfException("Could not get all Air Quality Models");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized CaseCategory[] getCaseCategories() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List results = dao.getCaseCategories(session);
+            List results = dao.getCaseCategories(entityManager);
             return (CaseCategory[]) results.toArray(new CaseCategory[0]);
         } catch (RuntimeException e) {
             log.error("Could not get all Case Categories", e);
             throw new EmfException("Could not get all Case Categories");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized CaseCategory addCaseCategory(CaseCategory element) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dao.add(element, session);
-            return (CaseCategory) dao.load(CaseCategory.class, element.getName(), session);
+            dao.add(element, entityManager);
+            return (CaseCategory) dao.load(CaseCategory.class, element.getName(), entityManager);
         } catch (RuntimeException e) {
             log.error("Could not add CaseCategory: " + element, e);
             throw new EmfException("Could not add CaseCategory: " + element);
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized EmissionsYear[] getEmissionsYears() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List results = dao.getEmissionsYears(session);
+            List results = dao.getEmissionsYears(entityManager);
             return (EmissionsYear[]) results.toArray(new EmissionsYear[0]);
         } catch (RuntimeException e) {
             log.error("Could not get all Emissions Years", e);
             throw new EmfException("Could not get all Emissions Years");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized MeteorlogicalYear[] getMeteorlogicalYears() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List results = dao.getMeteorlogicalYears(session);
+            List results = dao.getMeteorlogicalYears(entityManager);
             return (MeteorlogicalYear[]) results.toArray(new MeteorlogicalYear[0]);
         } catch (RuntimeException e) {
             log.error("Could not get all Meteorological Years", e);
             throw new EmfException("Could not get all Meteorological Years");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized Speciation[] getSpeciations() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List results = dao.getSpeciations(session);
+            List results = dao.getSpeciations(entityManager);
             return (Speciation[]) results.toArray(new Speciation[0]);
         } catch (RuntimeException e) {
             log.error("Could not get all Speciations", e);
             throw new EmfException("Could not get all Speciations");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized Case addCase(User user, Case element) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dao.add(element, session);
-            Case loaded = (Case) dao.load(Case.class, element.getName(), session);
-            Case locked = dao.obtainLocked(user, loaded, session);
+            dao.add(element, entityManager);
+            Case loaded = (Case) dao.load(Case.class, element.getName(), entityManager);
+            Case locked = dao.obtainLocked(user, loaded, entityManager);
             locked.setAbbreviation(new Abbreviation(loaded.getId() + ""));
-            return dao.update(locked, session);
+            return dao.update(locked, entityManager);
         } catch (RuntimeException e) {
             log.error("Could not add Case: " + element, e);
             throw new EmfException("Could not add Case: " + element);
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized String checkParentCase(Case caseObj) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dao.checkParentChildRelationship(caseObj, session);
+            dao.checkParentChildRelationship(caseObj, entityManager);
 
-            List<?> list1 = session.createQuery(
-                    "SELECT obj.caseId FROM CaseJob as obj WHERE obj.parentCaseId = " + caseObj.getId()).list();
-            List<?> list2 = session.createQuery(
-                    "SELECT obj.caseID FROM CaseInput as obj WHERE obj.parentCaseId = " + caseObj.getId()).list();
-            List<?> list3 = session.createQuery(
-                    "SELECT obj.caseID FROM CaseParameter as obj WHERE obj.parentCaseId = " + caseObj.getId()).list();
+            List<?> list1 = entityManager.createQuery(
+                    "SELECT obj.caseId FROM CaseJob as obj WHERE obj.parentCaseId = " + caseObj.getId()).getResultList();
+            List<?> list2 = entityManager.createQuery(
+                    "SELECT obj.caseID FROM CaseInput as obj WHERE obj.parentCaseId = " + caseObj.getId()).getResultList();
+            List<?> list3 = entityManager.createQuery(
+                    "SELECT obj.caseID FROM CaseParameter as obj WHERE obj.parentCaseId = " + caseObj.getId()).getResultList();
 
             if (list1 != null && list1.size() > 0) {
                 int childId = Integer.parseInt(list1.get(0).toString());
 
                 if (childId != caseObj.getId()) {
-                    Case childCase = dao.getCase(childId, session);
+                    Case childCase = dao.getCase(childId, entityManager);
                     return "\"" + caseObj.getName() + "\" is a parent case for at least one job from case \""
                             + childCase.getName() + "\".";
                 }
@@ -532,7 +534,7 @@ public class ManagedCaseService {
                 int childId = Integer.parseInt(list2.get(0).toString());
 
                 if (childId != caseObj.getId()) {
-                    Case childCase = dao.getCase(childId, session);
+                    Case childCase = dao.getCase(childId, entityManager);
                     return "\"" + caseObj.getName() + "\" is a parent case for at least one input from case \""
                             + childCase.getName() + "\".";
                 }
@@ -542,7 +544,7 @@ public class ManagedCaseService {
                 int childId = Integer.parseInt(list3.get(0).toString());
 
                 if (childId != caseObj.getId()) {
-                    Case childCase = dao.getCase(childId, session);
+                    Case childCase = dao.getCase(childId, entityManager);
                     return "\"" + caseObj.getName() + "\" is a parent case for at least one parameter from case \""
                             + childCase.getName() + "\".";
                 }
@@ -553,13 +555,13 @@ public class ManagedCaseService {
             log.error("Checking case " + caseObj.getName() + ".\n", e);
             throw new EmfException(e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized void removeCase(Case caseObj) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
             if (DebugLevels.DEBUG_18())
@@ -567,31 +569,31 @@ public class ManagedCaseService {
 
             setStatus(caseObj.getLastModifiedBy(), "Started removing case " + caseObj.getName() + ".", "Remove Case");
 
-            List<CaseJob> jobs = dao.getCaseJobs(caseObj.getId(), session);
+            List<CaseJob> jobs = dao.getCaseJobs(caseObj.getId(), entityManager);
             checkJobsStatuses(jobs, caseObj);
 
             if (DebugLevels.DEBUG_18())
                 log.warn("Removing case: finished checking job statuses: " + new Date());
 
-            List<CaseInput> inputs = dao.getCaseInputs(caseObj.getId(), session);
-            dao.removeCaseInputs(inputs.toArray(new CaseInput[0]), session);
+            List<CaseInput> inputs = dao.getCaseInputs(caseObj.getId(), entityManager);
+            dao.removeCaseInputs(inputs.toArray(new CaseInput[0]), entityManager);
 
             if (DebugLevels.DEBUG_18())
                 log.warn("Removing case: finished removing case inputs: " + new Date());
 
-            PersistedWaitTask[] persistedJobs = getPersistedJobs(jobs, session);
-            QueueCaseOutput[] outputQs = getQedOutputs(jobs, session);
+            PersistedWaitTask[] persistedJobs = getPersistedJobs(jobs, entityManager);
+            QueueCaseOutput[] outputQs = getQedOutputs(jobs, entityManager);
 
             if (outputQs.length > 0)
                 throw new EmfException("Selected case: " + caseObj.getName() + " has " + outputQs.length
                         + " pending outputs to register.");
 
-            CaseJobKey[] keys = getJobsKeys(jobs, session);
-            JobMessage[] msgs = getJobsMessages(jobs, session);
-            CaseOutput[] outputs = getJobsOutputs(jobs, session);
+            CaseJobKey[] keys = getJobsKeys(jobs, entityManager);
+            JobMessage[] msgs = getJobsMessages(jobs, entityManager);
+            CaseOutput[] outputs = getJobsOutputs(jobs, entityManager);
 
             try {
-                dao.removeObjects(persistedJobs, session);
+                dao.removeObjects(persistedJobs, entityManager);
             } catch (RuntimeException e) {
                 throw new EmfException("Cannot remove persisted jobs from db table.");
             }
@@ -600,7 +602,7 @@ public class ManagedCaseService {
                 log.warn("Removing case: finished removing persisted jobs: " + new Date());
 
             try {
-                dao.removeObjects(keys, session);
+                dao.removeObjects(keys, entityManager);
             } catch (RuntimeException e) {
                 throw new EmfException("Cannot remove job keys from db table.");
             }
@@ -609,7 +611,7 @@ public class ManagedCaseService {
                 log.warn("Removing case: finished removing job keys from job-key table: " + new Date());
 
             try {
-                dao.removeObjects(msgs, session);
+                dao.removeObjects(msgs, entityManager);
             } catch (RuntimeException e) {
                 throw new EmfException("Cannot remove job messages from db table.");
             }
@@ -618,7 +620,7 @@ public class ManagedCaseService {
                 log.warn("Removing case: finished removing job messages: " + new Date());
 
             try {
-                dao.removeObjects(outputs, session);
+                dao.removeObjects(outputs, entityManager);
             } catch (RuntimeException e) {
                 throw new EmfException("Cannot remove case outputs from db table.");
             }
@@ -635,7 +637,7 @@ public class ManagedCaseService {
                     dao.updateCaseJob(job);
                 }
 
-                dao.removeCaseJobs(toRemove, session);
+                dao.removeCaseJobs(toRemove, entityManager);
             } catch (RuntimeException e) {
                 throw new EmfException("Cannot remove jobs from db table.");
             }
@@ -643,9 +645,9 @@ public class ManagedCaseService {
             if (DebugLevels.DEBUG_18())
                 log.warn("Removing case: finished removing jobs: " + new Date());
 
-            List<CaseParameter> parameters = dao.getCaseParameters(caseObj.getId(), session);
+            List<CaseParameter> parameters = dao.getCaseParameters(caseObj.getId(), entityManager);
             try {
-                dao.removeCaseParameters(parameters.toArray(new CaseParameter[0]), session);
+                dao.removeCaseParameters(parameters.toArray(new CaseParameter[0]), entityManager);
             } catch (RuntimeException e) {
                 throw new EmfException("Cannot remove case parameters from db table.");
             }
@@ -654,7 +656,7 @@ public class ManagedCaseService {
                 log.warn("Removing case: finished removing case parameters: " + new Date());
 
             try {
-                dao.removeChildCase(caseObj.getId(), session);
+                dao.removeChildCase(caseObj.getId(), entityManager);
             } catch (Exception e) {
                 throw new EmfException("Cannot remove case: " + e.getMessage());
             }
@@ -663,7 +665,7 @@ public class ManagedCaseService {
                 log.warn("Removing case: finished removing items from parent-sensitivity cases table: " + new Date());
 
             try {
-                dao.remove(caseObj, session);
+                dao.remove(caseObj, entityManager);
             } catch (RuntimeException e) {
                 throw new EmfException("Cannot remove case objects: " + caseObj.getName() + " from db table.");
             }
@@ -672,7 +674,7 @@ public class ManagedCaseService {
                 log.warn("Removing case: finished removing case objects: " + new Date());
 
             try {
-                dao.removeObject(caseObj.getAbbreviation(), session);
+                dao.removeObject(caseObj.getAbbreviation(), entityManager);
             } catch (RuntimeException e) {
                 throw new EmfException("Cannot remove case abbreviation: " + caseObj.getAbbreviation().getName()
                         + " from db table.");
@@ -686,12 +688,12 @@ public class ManagedCaseService {
             log.error("Could not remove Case: " + caseObj, e);
             throw new EmfException(e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
-    private PersistedWaitTask[] getPersistedJobs(List<CaseJob> jobs, Session session2) {
+    private PersistedWaitTask[] getPersistedJobs(List<CaseJob> jobs, EntityManager session2) {
         List<PersistedWaitTask> persistedJobs = new ArrayList<PersistedWaitTask>();
 
         for (Iterator<CaseJob> iter = jobs.iterator(); iter.hasNext();) {
@@ -702,18 +704,18 @@ public class ManagedCaseService {
         return persistedJobs.toArray(new PersistedWaitTask[0]);
     }
 
-    private QueueCaseOutput[] getQedOutputs(List<CaseJob> jobs, Session session) {
+    private QueueCaseOutput[] getQedOutputs(List<CaseJob> jobs, EntityManager entityManager) {
         List<QueueCaseOutput> outputs = new ArrayList<QueueCaseOutput>();
 
         for (Iterator<CaseJob> iter = jobs.iterator(); iter.hasNext();) {
             CaseJob job = iter.next();
-            outputs.addAll(dao.getQueueCaseOutputs(job.getCaseId(), job.getId(), session));
+            outputs.addAll(dao.getQueueCaseOutputs(job.getCaseId(), job.getId(), entityManager));
         }
 
         return outputs.toArray(new QueueCaseOutput[0]);
     }
 
-    private CaseJobKey[] getJobsKeys(List<CaseJob> jobs, Session session2) {
+    private CaseJobKey[] getJobsKeys(List<CaseJob> jobs, EntityManager session2) {
         List<CaseJobKey> keys = new ArrayList<CaseJobKey>();
 
         for (Iterator<CaseJob> iter = jobs.iterator(); iter.hasNext();) {
@@ -749,23 +751,23 @@ public class ManagedCaseService {
 
     }
 
-    private CaseOutput[] getJobsOutputs(List<CaseJob> jobs, Session session) {
+    private CaseOutput[] getJobsOutputs(List<CaseJob> jobs, EntityManager entityManager) {
         List<CaseOutput> allOutputs = new ArrayList<CaseOutput>();
 
         for (Iterator<CaseJob> iter = jobs.iterator(); iter.hasNext();) {
             CaseJob job = iter.next();
-            allOutputs.addAll(dao.getCaseOutputs(job.getCaseId(), job.getId(), session));
+            allOutputs.addAll(dao.getCaseOutputs(job.getCaseId(), job.getId(), entityManager));
         }
 
         return allOutputs.toArray(new CaseOutput[0]);
     }
 
-    private JobMessage[] getJobsMessages(List<CaseJob> jobs, Session session) {
+    private JobMessage[] getJobsMessages(List<CaseJob> jobs, EntityManager entityManager) {
         List<JobMessage> allMsgs = new ArrayList<JobMessage>();
 
         for (Iterator<CaseJob> iter = jobs.iterator(); iter.hasNext();) {
             CaseJob job = iter.next();
-            allMsgs.addAll(dao.getJobMessages(job.getCaseId(), job.getId(), session));
+            allMsgs.addAll(dao.getJobMessages(job.getCaseId(), job.getId(), entityManager));
         }
 
         return allMsgs.toArray(new JobMessage[0]);
@@ -777,123 +779,123 @@ public class ManagedCaseService {
         status.setType(type);
         status.setMessage(message);
         status.setTimestamp(new Date());
-        StatusDAO statusDao = new StatusDAO(sessionFactory);
+        StatusDAO statusDao = new StatusDAO(entityManagerFactory);
         statusDao.add(status);
     }
 
     public synchronized Case obtainLocked(User owner, Case element) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            Case locked = dao.obtainLocked(owner, element, session);
+            Case locked = dao.obtainLocked(owner, element, entityManager);
             return locked;
         } catch (RuntimeException e) {
             log.error("Could not obtain lock for Case: " + element + " by owner: " + owner.getUsername(), e);
             throw new EmfException("Could not obtain lock for Case: " + element + " by owner: " + owner.getUsername());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized Case releaseLocked(User owner, Case locked) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            Case released = dao.releaseLocked(owner, locked, session);
+            Case released = dao.releaseLocked(owner, locked, entityManager);
             return released;
         } catch (RuntimeException e) {
             log.error("Could not release lock by " + locked.getLockOwner(), e);
             throw new EmfException("Could not release lock by " + locked.getLockOwner() + " for Case: " + locked);
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized Case updateCase(Case element) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
 
-            Case released = dao.update(element, session);
+            Case released = dao.update(element, entityManager);
             return released;
         } catch (RuntimeException e) {
             log.error("Could not update Case", e);
             throw new EmfException("Could not update Case: " + element + "; " + e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized CaseInput getCaseInput(int inputId) throws EmfException {
 
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
 
-            CaseInput input = dao.getCaseInput(inputId, session);
+            CaseInput input = dao.getCaseInput(inputId, entityManager);
             return input;
         } catch (RuntimeException e) {
             log.error("Could not get all Input Names", e);
             throw new EmfException("Could not get all Input Names");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
 
     }
 
     public synchronized InputName[] getInputNames() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List results = dao.getInputNames(session);
+            List results = dao.getInputNames(entityManager);
             return (InputName[]) results.toArray(new InputName[0]);
         } catch (RuntimeException e) {
             log.error("Could not get all Input Names", e);
             throw new EmfException("Could not get all Input Names");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized InputEnvtVar[] getInputEnvtVars() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List results = dao.getInputEnvtVars(session);
+            List results = dao.getInputEnvtVars(entityManager);
             return (InputEnvtVar[]) results.toArray(new InputEnvtVar[0]);
         } catch (RuntimeException e) {
             log.error("Could not get all Input Environment Variables", e);
             throw new EmfException("Could not get all Input Environment Variables");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized CaseProgram[] getPrograms() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List results = dao.getPrograms(session);
+            List results = dao.getPrograms(entityManager);
             return (CaseProgram[]) results.toArray(new CaseProgram[0]);
         } catch (RuntimeException e) {
             log.error("Could not get all Programs", e);
             throw new EmfException("Could not get all Programs");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized ModelToRun[] getModelToRuns() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List results = dao.getModelToRuns(session);
+            List results = dao.getModelToRuns(entityManager);
             return (ModelToRun[]) results.toArray(new ModelToRun[0]);
         } catch (RuntimeException e) {
             log.error("Could not get all Models To Run", e);
             throw new EmfException("Could not get all Models To Run");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
@@ -936,132 +938,132 @@ public class ManagedCaseService {
     }
 
     public synchronized InputName addCaseInputName(InputName name) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dao.add(name, session);
+            dao.add(name, entityManager);
 
-            CriteriaBuilderQueryRoot<InputName> criteriaBuilderQueryRoot = dao.getCriteriaBuilderQueryRoot(InputName.class, session);
+            CriteriaBuilderQueryRoot<InputName> criteriaBuilderQueryRoot = dao.getCriteriaBuilderQueryRoot(InputName.class, entityManager);
             CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
             Root<InputName> root = criteriaBuilderQueryRoot.getRoot();
 
             Predicate crit1 = builder.equal(root.get("name"), name.getName());
             Predicate crit2 = builder.equal(root.get("modelToRunId"), Integer.valueOf(name.getModelToRunId()));
 
-            return dao.load(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, session);
+            return dao.load(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, entityManager);
         } catch (Exception e) {
             log.error("Could not add new case input name '" + name.getName() + "'\n", e);
             throw new EmfException("Could not add new case input name '" + name.getName() + "'");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized CaseProgram addProgram(CaseProgram program) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dao.add(program, session);
+            dao.add(program, entityManager);
 
-            CriteriaBuilderQueryRoot<CaseProgram> criteriaBuilderQueryRoot = dao.getCriteriaBuilderQueryRoot(CaseProgram.class, session);
+            CriteriaBuilderQueryRoot<CaseProgram> criteriaBuilderQueryRoot = dao.getCriteriaBuilderQueryRoot(CaseProgram.class, entityManager);
             CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
             Root<CaseProgram> root = criteriaBuilderQueryRoot.getRoot();
 
             Predicate crit1 = builder.equal(root.get("name"), program.getName());
             Predicate crit2 = builder.equal(root.get("modelToRunId"), Integer.valueOf(program.getModelToRunId()));
 
-            return dao.load(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, session);
+            return dao.load(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, entityManager);
         } catch (Exception e) {
             log.error("Could not add new program '" + program.getName() + "'\n", e);
             throw new EmfException("Could not add new program '" + program.getName() + "'");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized InputEnvtVar addInputEnvtVar(InputEnvtVar inputEnvtVar) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dao.add(inputEnvtVar, session);
+            dao.add(inputEnvtVar, entityManager);
 
-            CriteriaBuilderQueryRoot<InputEnvtVar> criteriaBuilderQueryRoot = dao.getCriteriaBuilderQueryRoot(InputEnvtVar.class, session);
+            CriteriaBuilderQueryRoot<InputEnvtVar> criteriaBuilderQueryRoot = dao.getCriteriaBuilderQueryRoot(InputEnvtVar.class, entityManager);
             CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
             Root<InputEnvtVar> root = criteriaBuilderQueryRoot.getRoot();
 
             Predicate crit1 = builder.equal(root.get("name"), inputEnvtVar.getName());
             Predicate crit2 = builder.equal(root.get("modelToRunId"), Integer.valueOf(inputEnvtVar.getModelToRunId()));
-            return dao.load(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, session);
+            return dao.load(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, entityManager);
         } catch (Exception e) {
             log.error("Could not add new input environment variable '" + inputEnvtVar.getName() + "'\n", e);
             throw new EmfException("Could not add new input environment variable '" + inputEnvtVar.getName() + "'");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized ModelToRun addModelToRun(ModelToRun model) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            ModelToRun temp = dao.loadModelTorun(model.getName(), session);
+            ModelToRun temp = dao.loadModelTorun(model.getName(), entityManager);
 
             if (temp != null)
                 return temp;
 
-            dao.add(model, session);
+            dao.add(model, entityManager);
 
-            return (ModelToRun) dao.load(ModelToRun.class, model.getName(), session);
+            return (ModelToRun) dao.load(ModelToRun.class, model.getName(), entityManager);
         } catch (Exception e) {
             log.error("Could not add new model to run '" + model.getName() + "'\n", e);
             throw new EmfException("Could not add new model to run '" + model.getName() + "'");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized SubDir[] getSubDirs() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List results = dao.getSubDirs(session);
+            List results = dao.getSubDirs(entityManager);
             return (SubDir[]) results.toArray(new SubDir[0]);
         } catch (RuntimeException e) {
             log.error("Could not get all subdirectories", e);
             throw new EmfException("Could not get all subdirectories");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized SubDir addSubDir(SubDir subdir) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            CriteriaBuilderQueryRoot<SubDir> criteriaBuilderQueryRoot = dao.getCriteriaBuilderQueryRoot(SubDir.class, session);
+            CriteriaBuilderQueryRoot<SubDir> criteriaBuilderQueryRoot = dao.getCriteriaBuilderQueryRoot(SubDir.class, entityManager);
             CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
             Root<SubDir> root = criteriaBuilderQueryRoot.getRoot();
 
             Predicate crit1 = builder.equal(root.get("name"), subdir.getName());
             Predicate crit2 = builder.equal(root.get("modelToRunId"), Integer.valueOf(subdir.getModelToRunId()));
-            SubDir existed = dao.load(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, session);
+            SubDir existed = dao.load(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, entityManager);
 
             if (existed != null)
                 return existed;
 
-            dao.add(subdir, session);
+            dao.add(subdir, entityManager);
 
-            return dao.load(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, session);
+            return dao.load(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, entityManager);
         } catch (Exception e) {
             log.error("Could not add new subdirectory '" + subdir.getName() + "'\n", e);
             throw new EmfException("Could not add new subdirectory '" + subdir.getName() + "'");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized void addCaseInputs(User user, int caseId, CaseInput[] inputs) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<Sector> sectors = new ArrayList<Sector>();
         List<GeoRegion> regions = new ArrayList<GeoRegion>();
 
@@ -1071,7 +1073,7 @@ public class ManagedCaseService {
                 CaseJob job = dao.getCaseJob(inputs[i].getCaseJobID());
 
                 if (job != null) {
-                    CaseJob targetJob = dao.getCaseJob(caseId, job, session);
+                    CaseJob targetJob = dao.getCaseJob(caseId, job, entityManager);
 
                     if (targetJob == null)
                         throw new EmfException("Required case job: " + job.getName() + " doesn't exist in target case.");
@@ -1079,12 +1081,12 @@ public class ManagedCaseService {
                     inputs[i].setCaseJobID(targetJob.getId());
                 }
 
-                if (dao.caseInputExists(inputs[i], session))
+                if (dao.caseInputExists(inputs[i], entityManager))
                     throw new EmfException("Case input: " + inputs[i].getName() + " already exists in target case.");
             }
 
             for (CaseInput input : inputs) {
-                dao.add(input, session);
+                dao.add(input, entityManager);
                 Sector sector = input.getSector();
                 GeoRegion region = input.getRegion();
 
@@ -1099,19 +1101,19 @@ public class ManagedCaseService {
         } finally {
             // NOTE: if any inputs get copied, we need to update target case sector list
             try {
-                updateCase(user, caseId, session, sectors, regions);
+                updateCase(user, caseId, entityManager, sectors, regions);
             } catch (Exception e) {
                 throw new EmfException(e.getMessage() + " " + inputs.length + " inputs copied.");
             } finally {
-                if (session != null && session.isConnected())
-                    session.close();
+                if (entityManager != null)
+                    entityManager.close();
             }
         }
     }
 
     private synchronized void addCaseInputs(int sensitivityCaseId, CaseInput[] inputs, String jobPrefix, GeoRegion region)
             throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         
         try {
             for (int i = 0; i < inputs.length; i++) {
@@ -1122,7 +1124,7 @@ public class ManagedCaseService {
                     if (job.getRegion() != null && region != null) job.setRegion(region);
                     job.setName(jobPrefix + job.getName());
                     
-                    CaseJob targetJob = dao.getCaseJob(sensitivityCaseId, job, session);
+                    CaseJob targetJob = dao.getCaseJob(sensitivityCaseId, job, entityManager);
 
                     if (targetJob == null)
                         throw new EmfException("Required case job: " + jobPrefix + job.getName()
@@ -1131,24 +1133,24 @@ public class ManagedCaseService {
                     inputs[i].setCaseJobID(targetJob.getId());
                 }
 
-                if (dao.caseInputExists(inputs[i], session))
+                if (dao.caseInputExists(inputs[i], entityManager))
                     throw new EmfException("Case input: " + inputs[i].getName() + " already exists in target case.");
             }
 
             for (CaseInput input : inputs) {
-                dao.add(input, session);
+                dao.add(input, entityManager);
             }
         } catch (Exception e) {
             log.error("Could not add new case input '" + inputs[0].getName() + "' etc.\n", e);
             throw new EmfException(e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized CaseInput addCaseInput(User user, CaseInput input, boolean copyingCase) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<Sector> sectors = new ArrayList<Sector>();
         List<GeoRegion> regions = new ArrayList<GeoRegion>();
         Sector sector = input.getSector();
@@ -1161,37 +1163,37 @@ public class ManagedCaseService {
         
         try {
             if (!copyingCase)
-                checkNExtendCaseLock(user, getCase(input.getCaseID(), session));
+                checkNExtendCaseLock(user, getCase(input.getCaseID(), entityManager));
         } catch (EmfException e) {
             throw e;
         }
 
         try {
-            if (dao.caseInputExists(input, session))
+            if (dao.caseInputExists(input, entityManager))
                 throw new EmfException(
                         "The combination of 'Input Name', 'Region', 'Sector', 'Program', and 'Job' should be unique.");
 
-            dao.add(input, session);
+            dao.add(input, entityManager);
             
-            return (CaseInput) dao.loadCaseInput(input, session);
+            return (CaseInput) dao.loadCaseInput(input, entityManager);
         } catch (Exception e) {
             log.error("Could not add new case input '" + input.getName() + "'\n", e);
             throw new EmfException(e.getMessage() == null ? "Could not add new case input." : e.getMessage());
         } finally {
             try {
-                updateCase(user, input.getCaseID(), session, sectors, regions);
+                updateCase(user, input.getCaseID(), entityManager, sectors, regions);
             } catch (Exception e) {
                 throw new EmfException(e.getMessage() + " " + "Case can not be updated. ");
             } finally {
-                if (session != null && session.isConnected())
-                    session.close();
+                if (entityManager != null)
+                    entityManager.close();
             }
         }
         
     }
 
     public synchronized void updateCaseInput(User user, CaseInput input) throws EmfException {
-        Session localSession = sessionFactory.getSession();
+        EntityManager localSession = entityManagerFactory.createEntityManager();
         List<Sector> sectors = new ArrayList<Sector>();
         List<GeoRegion> regions = new ArrayList<GeoRegion>();
         Sector sector = input.getSector();
@@ -1216,7 +1218,7 @@ public class ManagedCaseService {
                         + ")");
 
             // Clear the cached information. To update a case
-            // FIXME: Verify the session.clear()
+            // FIXME: Verify the entityManager.clear()
             localSession.clear();
             dao.updateCaseInput(input, localSession);
             // setStatus(user, "Saved input " + input.getName() + " to database.", "Save Input");
@@ -1229,55 +1231,55 @@ public class ManagedCaseService {
             } catch (Exception e) {
                 throw new EmfException(e.getMessage() + " " + "Case can not be updated. ");
             } finally {
-                if (localSession != null && localSession.isConnected())
+                if (localSession != null)
                     localSession.close();
             } 
         }
     }
 
     public synchronized void removeCaseInputs(User user, CaseInput[] inputs) throws EmfException {
-        Session session = sessionFactory.getSession();       
+        EntityManager entityManager = entityManagerFactory.createEntityManager();       
         int caseId = inputs[0].getCaseID();        
         List<Sector> sectors = new ArrayList<Sector>();
         List<GeoRegion> regions = new ArrayList<GeoRegion>();
         try {
-            dao.removeCaseInputs(inputs, session);
+            dao.removeCaseInputs(inputs, entityManager);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("Could not remove case input " + inputs[0].getName() + " etc.\n" + e.getMessage());
             throw new EmfException("Could not remove case input " + inputs[0].getName() + " etc.");
         } finally {
             try {
-                updateCase(user, caseId, session, sectors, regions);
+                updateCase(user, caseId, entityManager, sectors, regions);
             } catch (Exception e) {
                 throw new EmfException(e.getMessage() + " " + "Case can not be updated. ");
             } finally {
-                if (session != null && session.isConnected())
-                    session.close();
+                if (entityManager != null)
+                    entityManager.close();
             }
         }
     }
 
     public synchronized CaseInput[] getCaseInputs(int caseId, int[] jobIds) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            List<CaseInput> inputs = dao.getCaseInputsByJobIds(caseId, jobIds, session);
+            List<CaseInput> inputs = dao.getCaseInputsByJobIds(caseId, jobIds, entityManager);
 
             return inputs.toArray(new CaseInput[0]);
         } catch (Exception e) {
             throw new EmfException("Error retrieving case inputs: " + e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized CaseInput[] getCaseInputs(int caseId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            List<CaseInput> inputs = dao.getCaseInputs(caseId, session);
+            List<CaseInput> inputs = dao.getCaseInputs(caseId, entityManager);
 
             Collections.sort(inputs, new Comparator<CaseInput>() {
                 public int compare(CaseInput o1, CaseInput o2) {
@@ -1308,17 +1310,17 @@ public class ManagedCaseService {
             log.error("Could not get all inputs for case (id=" + caseId + ").\n", e);
             throw new EmfException("Could not get all inputs for case (id=" + caseId + ").\n");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized CaseInput[] getCaseInputs(int pageSize, int caseId, Sector sector, String envNameContains,
             boolean showAll) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            List<CaseInput> inputs = dao.getCaseInputs(pageSize, caseId, sector, envNameContains, showAll, session);
+            List<CaseInput> inputs = dao.getCaseInputs(pageSize, caseId, sector, envNameContains, showAll, entityManager);
 
             Collections.sort(inputs, new Comparator<CaseInput>() {
                 public int compare(CaseInput o1, CaseInput o2) {
@@ -1348,15 +1350,15 @@ public class ManagedCaseService {
             log.error("Could not get all inputs for case (id=" + caseId + ").\n", e);
             throw new EmfException("Could not get all inputs for case (id=" + caseId + ").\n");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     /**
      * Gets all the inputs for this job, selects based on: case ID, job ID, and sector
      */
-    private List<CaseInput> getJobInputs(int caseId, int jobId, Sector sector, GeoRegion region, Session session)
+    private List<CaseInput> getJobInputs(int caseId, int jobId, Sector sector, GeoRegion region, EntityManager entityManager)
             throws EmfException {
         List<CaseInput> outInputs = new ArrayList<CaseInput>();
         EmfDataset cipDataset = null;
@@ -1364,7 +1366,7 @@ public class ManagedCaseService {
 
         // select the inputs based on 3 criteria
         try {
-            List<CaseInput> inputs = dao.getJobInputs(caseId, jobId, sector, region, session);
+            List<CaseInput> inputs = dao.getJobInputs(caseId, jobId, sector, region, entityManager);
             if (DebugLevels.DEBUG_9())
                 System.out.println("Are inputs null?" + (inputs == null));
             Iterator<CaseInput> iter = inputs.iterator();
@@ -1397,8 +1399,8 @@ public class ManagedCaseService {
         }
     }
 
-    private List<CaseInput> getAllJobInputs(CaseJob job, Session session) throws EmfException {
-        Map<String, List<CaseInput>> map = getInputHierarchy(job, session);
+    private List<CaseInput> getAllJobInputs(CaseJob job, EntityManager entityManager) throws EmfException {
+        Map<String, List<CaseInput>> map = getInputHierarchy(job, entityManager);
         List<CaseInput> inputsAll = new ArrayList<CaseInput>(); // all inputs
         List<CaseInput> inputsAAA = map.get(AAA);
         List<CaseInput> inputsASA = map.get(ASA);
@@ -1464,7 +1466,7 @@ public class ManagedCaseService {
         return (inputsAll);
     }
 
-    private Map<String, List<CaseInput>> getInputHierarchy(CaseJob job, Session session) throws EmfException {
+    private Map<String, List<CaseInput>> getInputHierarchy(CaseJob job, EntityManager entityManager) throws EmfException {
         Map<String, List<CaseInput>> map = new HashMap<String, List<CaseInput>>();
 
         /**
@@ -1491,37 +1493,37 @@ public class ManagedCaseService {
 
             // Get case inputs (the datasets associated w/ the case)
             // All regions, all sectors, all jobs
-            inputsAAA = this.getJobInputs(caseId, this.ALL_JOB_ID, this.ALL_SECTORS, this.ALL_REGIONS, session);
+            inputsAAA = this.getJobInputs(caseId, this.ALL_JOB_ID, this.ALL_SECTORS, this.ALL_REGIONS, entityManager);
 
             // All regions, sector specific, all jobs
             if (sector != this.ALL_SECTORS) {
-                inputsASA = this.getJobInputs(caseId, this.ALL_JOB_ID, sector, this.ALL_REGIONS, session);
+                inputsASA = this.getJobInputs(caseId, this.ALL_JOB_ID, sector, this.ALL_REGIONS, entityManager);
             }
 
             // All regions, all sectors, job specific
-            inputsAAJ = this.getJobInputs(caseId, jobId, this.ALL_SECTORS, this.ALL_REGIONS, session);
+            inputsAAJ = this.getJobInputs(caseId, jobId, this.ALL_SECTORS, this.ALL_REGIONS, entityManager);
 
             // All regions, specific sector and specific job
             if (sector != this.ALL_SECTORS) {
-                inputsASJ = this.getJobInputs(caseId, jobId, sector, this.ALL_REGIONS, session);
+                inputsASJ = this.getJobInputs(caseId, jobId, sector, this.ALL_REGIONS, entityManager);
             }
 
             // Specific region, all sectors, all jobs
             if (region != this.ALL_REGIONS)
-                inputsRAA = this.getJobInputs(caseId, this.ALL_JOB_ID, this.ALL_SECTORS, region, session);
+                inputsRAA = this.getJobInputs(caseId, this.ALL_JOB_ID, this.ALL_SECTORS, region, entityManager);
 
             // Region specific, sector specific, all jobs
             if (sector != this.ALL_SECTORS && region != this.ALL_REGIONS) {
-                inputsRSA = this.getJobInputs(caseId, this.ALL_JOB_ID, sector, region, session);
+                inputsRSA = this.getJobInputs(caseId, this.ALL_JOB_ID, sector, region, entityManager);
             }
 
             // Region specific, all sectors, job specific
             if (region != this.ALL_REGIONS)
-                inputsRAJ = this.getJobInputs(caseId, jobId, this.ALL_SECTORS, region, session);
+                inputsRAJ = this.getJobInputs(caseId, jobId, this.ALL_SECTORS, region, entityManager);
 
             // Region specific, specific sector and specific job
             if (sector != this.ALL_SECTORS && region != this.ALL_REGIONS) {
-                inputsRSJ = this.getJobInputs(caseId, jobId, sector, region, session);
+                inputsRSJ = this.getJobInputs(caseId, jobId, sector, region, entityManager);
             }
         } catch (Exception e) {
             log.error("Could not get all inputs for case (id=" + caseId + "), job (id=" + jobId + ").\n", e);
@@ -1564,23 +1566,23 @@ public class ManagedCaseService {
     }
 
     public synchronized ParameterName[] getParameterNames() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            List<ParameterName> type = dao.getParameterNames(session);
+            List<ParameterName> type = dao.getParameterNames(entityManager);
 
             return type.toArray(new ParameterName[0]);
         } catch (Exception e) {
             log.error("Could not get all parameter names.\n", e);
             throw new EmfException("Could not get all parameter names.\n");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized void addCaseParameters(User user, int caseId, CaseParameter[] params) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<Sector> sectors = new ArrayList<Sector>();
         List<GeoRegion> regions = new ArrayList<GeoRegion>();
         try {
@@ -1590,7 +1592,7 @@ public class ManagedCaseService {
                 CaseJob job = dao.getCaseJob(params[i].getJobId());
 
                 if (job != null) {
-                    CaseJob targetJob = dao.getCaseJob(caseId, job, session);
+                    CaseJob targetJob = dao.getCaseJob(caseId, job, entityManager);
 
                     if (targetJob == null)
                         throw new EmfException("Required case job: " + job.getName() + " doesn't exist in target case.");
@@ -1598,12 +1600,12 @@ public class ManagedCaseService {
                     params[i].setJobId(targetJob.getId());
                 }
 
-                if (dao.caseParameterExists(params[i], session))
+                if (dao.caseParameterExists(params[i], entityManager))
                     throw new EmfException("Case parameter: " + params[i].getName() + " already exists in target case.");
             }
 
             for (CaseParameter param : params) {
-                dao.addParameter(param, session);
+                dao.addParameter(param, entityManager);
                 Sector sector = param.getSector();
                 GeoRegion region = param.getRegion();
                 
@@ -1619,20 +1621,20 @@ public class ManagedCaseService {
             // NOTE: if there is any parameter get copied, need to add new sectors to the copied case
             // sectors list
             try {
-                updateCase(user, caseId, session, sectors, regions);
+                updateCase(user, caseId, entityManager, sectors, regions);
             } catch (Exception e) {
                 throw new EmfException(e.getMessage() + " " + params.length + " parameters copied.");
             } finally {
-                if (session != null && session.isConnected())
-                    session.close();
+                if (entityManager != null)
+                    entityManager.close();
             }
         }
     }
 
-    private void updateCase(User user, int caseId, Session session, List<Sector> sectors, List<GeoRegion> regions) throws EmfException {
+    private void updateCase(User user, int caseId, EntityManager entityManager, List<Sector> sectors, List<GeoRegion> regions) throws EmfException {
         
         boolean lockObtained = false;
-        Case target = dao.getCase(caseId, session);
+        Case target = dao.getCase(caseId, entityManager);
 
         if (target.isLocked() && !target.isLocked(user))
             throw new EmfException("Cannot obtain lock on target case to update sectors list.");
@@ -1640,7 +1642,7 @@ public class ManagedCaseService {
         Case locked = target;
 
         if (!target.isLocked()) {
-            locked = dao.obtainLocked(user, target, session);
+            locked = dao.obtainLocked(user, target, entityManager);
             lockObtained = true;
         }
         if (sectors.size() > 0) {
@@ -1671,15 +1673,15 @@ public class ManagedCaseService {
         locked.setLastModifiedDate(new Date());
 
         if (lockObtained) {
-            dao.update(locked, session);
+            dao.update(locked, entityManager);
             return;
         }
-        dao.updateWithLock(locked, session);
+        dao.updateWithLock(locked, entityManager);
     } 
 
     private synchronized void addCaseParameters(int caseId, CaseParameter[] params, String jobPrefix, GeoRegion region)
             throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
             for (int i = 0; i < params.length; i++) {
@@ -1693,7 +1695,7 @@ public class ManagedCaseService {
                     if (job.getRegion() != null && region != null) job.setRegion(region);
                     job.setName(jobPrefix + job.getName());
                     
-                    CaseJob targetJob = dao.getCaseJob(caseId, job, session);
+                    CaseJob targetJob = dao.getCaseJob(caseId, job, entityManager);
 
                     if (targetJob == null)
                         throw new EmfException("Required case job: " + jobPrefix + job.getName()
@@ -1702,39 +1704,39 @@ public class ManagedCaseService {
                     params[i].setJobId(targetJob.getId());
                 }
 
-                if (dao.caseParameterExists(params[i], session))
+                if (dao.caseParameterExists(params[i], entityManager))
                     throw new EmfException("Case parameter: " + params[i].getName() + " already exists in target case.");
             }
 
             for (CaseParameter param : params)
-                dao.addParameter(param, session);
+                dao.addParameter(param, entityManager);
         } catch (Exception e) {
             log.error("Could not add new case parameter '" + params[0].getName() + "' etc.\n", e);
             throw new EmfException(e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized CaseParameter addCaseParameter(User user, CaseParameter param, boolean copyingCase)
             throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<Sector> sectors = new ArrayList<Sector>();
         List<GeoRegion> regions = new ArrayList<GeoRegion>();
         try {
             if (!copyingCase)
-                checkNExtendCaseLock(user, getCase(param.getCaseID(), session));
+                checkNExtendCaseLock(user, getCase(param.getCaseID(), entityManager));
         } catch (EmfException e) {
             throw e;
         }
 
         try {
-            if (dao.caseParameterExists(param, session))
+            if (dao.caseParameterExists(param, entityManager))
                 throw new EmfException(
                         "The combination of 'Parameter Name', 'Region', 'Sector', 'Program', and 'Job' should be unique.");
 
-            dao.addParameter(param, session);
+            dao.addParameter(param, entityManager);
             
             Sector sector = param.getSector();
             GeoRegion region = param.getRegion();
@@ -1744,39 +1746,39 @@ public class ManagedCaseService {
             if (region != null && !regions.contains(region))
                 regions.add(region);
             
-            return dao.loadCaseParameter(param, session);
+            return dao.loadCaseParameter(param, entityManager);
         } catch (Exception e) {
             log.error("Could not add new case parameter '" + param.getName() + "'\n", e);
             throw new EmfException(e.getMessage() == null ? "Could not add new case parameter." : e.getMessage());
         } finally {
             try {
-                updateCase(user, param.getCaseID(), session, sectors, regions);
+                updateCase(user, param.getCaseID(), entityManager, sectors, regions);
             } catch (Exception e) {
                 throw new EmfException(e.getMessage() + " " + "Case can not be updated. ");
             } finally {      
-                if (session != null && session.isConnected())
-                    session.close();
+                if (entityManager != null)
+                    entityManager.close();
             }
         }
     }
 
     public synchronized void removeCaseParameters(User user, CaseParameter[] params) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<Sector> sectors = new ArrayList<Sector>();
         List<GeoRegion> regions = new ArrayList<GeoRegion>();
         try {
-            dao.removeCaseParameters(params, session);
+            dao.removeCaseParameters(params, entityManager);
         } catch (Exception e) {
             log.error("Could not remove case parameter " + params[0].getName() + " etc.\n", e);
             throw new EmfException("Could not remove case parameter " + params[0].getName() + " etc.");
         } finally {
             try {
-                updateCase(user, params[0].getCaseID(),session, sectors, regions);
+                updateCase(user, params[0].getCaseID(),entityManager, sectors, regions);
             } catch (Exception e) {
                 throw new EmfException(e.getMessage() + " " + "Case can not be updated. ");
             } finally {      
-                if (session != null && session.isConnected())
-                    session.close();
+                if (entityManager != null)
+                    entityManager.close();
             }
         }
         
@@ -1784,26 +1786,26 @@ public class ManagedCaseService {
     }
 
     public CaseParameter getCaseParameter(int caseId, ParameterEnvVar var) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            return dao.getCaseParameter(caseId, var, session);
+            return dao.getCaseParameter(caseId, var, entityManager);
         } catch (Exception e) {
             log.error("Could not get parameter for case (id=" + caseId + ") and environment variable: " + var.getName()
                     + ".\n", e);
             throw new EmfException("Could not get parameter for case (id=" + caseId + ") and environment variable: "
                     + var.getName() + ".\n");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized CaseParameter[] getCaseParameters(int caseId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            List<CaseParameter> params = dao.getCaseParameters(caseId, session);
+            List<CaseParameter> params = dao.getCaseParameters(caseId, entityManager);
 
             Collections.sort(params, new Comparator<CaseParameter>() {
                 public int compare(CaseParameter o1, CaseParameter o2) {
@@ -1834,34 +1836,34 @@ public class ManagedCaseService {
             log.error("Could not get all parameters for case (id=" + caseId + ").\n", e);
             throw new EmfException("Could not get all parameters for case (id=" + caseId + ").\n");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized CaseParameter[] getCaseParameters(int caseId, int[] jobIds) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            List<CaseParameter> params = dao.getCaseParametersByJobIds(caseId, jobIds, session);
+            List<CaseParameter> params = dao.getCaseParametersByJobIds(caseId, jobIds, entityManager);
 
             return params.toArray(new CaseParameter[0]);
         } catch (Exception e) {
             log.error("Could not get all parameters for case (id=" + caseId + ").\n", e);
             throw new EmfException("Could not get all parameters for case (id=" + caseId + ").\n");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized CaseParameter[] getCaseParameters(int pageSize, int caseId, Sector sector,
             String envNameContains, boolean showAll) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
             List<CaseParameter> params = dao.getCaseParameters(pageSize, caseId, sector, envNameContains, showAll,
-                    session);
+                    entityManager);
 
             Collections.sort(params, new Comparator<CaseParameter>() {
                 public int compare(CaseParameter o1, CaseParameter o2) {
@@ -1892,123 +1894,123 @@ public class ManagedCaseService {
             log.error("Could not get all parameters for case (id=" + caseId + ").\n", e);
             throw new EmfException("Could not get all parameters for case (id=" + caseId + ").\n");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized Executable addExecutable(Executable exe) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            if (!dao.exeutableExists(session, exe))
-                dao.add(exe, session);
+            if (!dao.exeutableExists(entityManager, exe))
+                dao.add(exe, entityManager);
 
-            return (Executable) dao.load(Executable.class, exe.getName(), session);
+            return (Executable) dao.load(Executable.class, exe.getName(), entityManager);
         } catch (Exception e) {
             log.error("Could not add new executable '" + exe.getName() + "'\n", e);
             throw new EmfException("Could not add new executable '" + exe.getName() + "'");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized ParameterName addParameterName(ParameterName name) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dao.addParameterName(name, session);
+            dao.addParameterName(name, entityManager);
 
-            CriteriaBuilderQueryRoot<ParameterName> criteriaBuilderQueryRoot = dao.getCriteriaBuilderQueryRoot(ParameterName.class, session);
+            CriteriaBuilderQueryRoot<ParameterName> criteriaBuilderQueryRoot = dao.getCriteriaBuilderQueryRoot(ParameterName.class, entityManager);
             CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
             Root<ParameterName> root = criteriaBuilderQueryRoot.getRoot();
             
             Predicate crit1 = builder.equal(root.get("name"), name.getName());
             Predicate crit2 = builder.equal(root.get("modelToRunId"), Integer.valueOf(name.getModelToRunId()));
-            return dao.load(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, session);
+            return dao.load(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, entityManager);
         } catch (Exception e) {
             log.error("Could not add new parameter name '" + name.getName() + "'\n", e);
             throw new EmfException("Could not add new parameter name '" + name.getName() + "'");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized ValueType[] getValueTypes() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            List<ValueType> type = dao.getValueTypes(session);
+            List<ValueType> type = dao.getValueTypes(entityManager);
 
             return type.toArray(new ValueType[0]);
         } catch (Exception e) {
             log.error("Could not get all value types.\n", e);
             throw new EmfException("Could not get all value types.\n");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized ValueType addValueType(ValueType type) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dao.addValueType(type, session);
-            return (ValueType) dao.load(ValueType.class, type.getName(), session);
+            dao.addValueType(type, entityManager);
+            return (ValueType) dao.load(ValueType.class, type.getName(), entityManager);
         } catch (Exception e) {
             log.error("Could not add new value type '" + type.getName() + "'\n", e);
             throw new EmfException("Could not add new value type '" + type.getName() + "'");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized ParameterEnvVar[] getParameterEnvVars() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            List<ParameterEnvVar> envvar = dao.getParameterEnvVars(session);
+            List<ParameterEnvVar> envvar = dao.getParameterEnvVars(entityManager);
 
             return envvar.toArray(new ParameterEnvVar[0]);
         } catch (Exception e) {
             log.error("Could not get all parameter env variables.\n", e);
             throw new EmfException("Could not get all parameter env variables.\n");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized ParameterEnvVar addParameterEnvVar(ParameterEnvVar envVar) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dao.add(envVar, session);
+            dao.add(envVar, entityManager);
 
-            CriteriaBuilderQueryRoot<ParameterEnvVar> criteriaBuilderQueryRoot = dao.getCriteriaBuilderQueryRoot(ParameterEnvVar.class, session);
+            CriteriaBuilderQueryRoot<ParameterEnvVar> criteriaBuilderQueryRoot = dao.getCriteriaBuilderQueryRoot(ParameterEnvVar.class, entityManager);
             CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
             Root<ParameterEnvVar> root = criteriaBuilderQueryRoot.getRoot();
 
             Predicate crit1 = builder.equal(root.get("name"), envVar.getName());
             Predicate crit2 = builder.equal(root.get("modelToRunId"), Integer.valueOf(envVar.getModelToRunId()));
-            return dao.load(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, session);
+            return dao.load(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, entityManager);
         } catch (Exception e) {
             log.error("Could not add new parameter env variable '" + envVar.getName() + "'\n", e);
             throw new EmfException("Could not add new parameter env variable '" + envVar.getName() + "'");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized void addCaseJobs(User user, int caseId, CaseJob[] jobs) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<Sector> sectors = new ArrayList<Sector>();
         List<GeoRegion> regions = new ArrayList<GeoRegion>();
         
         try {
             for (CaseJob job : jobs)
-                if (dao.getCaseJob(caseId, job, session) != null)
+                if (dao.getCaseJob(caseId, job, entityManager) != null)
                     throw new EmfException("Case job: " + job.getName() + " already exists in the target case.");
 
             for (CaseJob job : jobs) {
@@ -2019,7 +2021,7 @@ public class ManagedCaseService {
                 job.setRunCompletionDate(null);
                 job.setIdInQueue(null);
                 job.setRunstatus(dao.getJobRunStatuse("Not Started"));
-                dao.add(job, session);
+                dao.add(job, entityManager);
                 Sector sector = job.getSector();
                 GeoRegion region = job.getRegion();
                 
@@ -2034,21 +2036,21 @@ public class ManagedCaseService {
         } finally {
             // NOTE: if any jobs get copied, we need to update target case sector list
             try {
-                updateCase(user, caseId, session, sectors, regions);
+                updateCase(user, caseId, entityManager, sectors, regions);
             } catch (Exception e) {
                 throw new EmfException(e.getMessage() + " " + jobs.length + " jobs copied.");
             } finally {
-                session.close();
+                entityManager.close();
             }
         }
     }
 
     public synchronized void addCaseJobs4Sensitivity(User user, int caseId, CaseJob[] jobs) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
             for (CaseJob job : jobs)
-                if (dao.getCaseJob(caseId, job, session) != null)
+                if (dao.getCaseJob(caseId, job, entityManager) != null)
                     throw new EmfException("Case job: " + job.getName() + " already exists in the target case.");
 
             for (CaseJob job : jobs) {
@@ -2058,23 +2060,23 @@ public class ManagedCaseService {
                 job.setRunStartDate(null);
                 job.setRunCompletionDate(null);
                 job.setRunstatus(dao.getJobRunStatuse("Not Started"));
-                dao.add(job, session);
+                dao.add(job, entityManager);
             }
         } catch (EmfException e) {
             log.error("Could not add new case jobs '" + jobs[0].getName() + "' etc.\n" + e.getMessage());
             throw new EmfException(e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized CaseJob addCaseJob(User user, CaseJob job, boolean copyingCase) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<Sector> sectors = new ArrayList<Sector>();
         List<GeoRegion> regions = new ArrayList<GeoRegion>();
         try {
             if (!copyingCase) // if not copying case, automatically extend the lock on case object
-                checkNExtendCaseLock(user, getCase(job.getCaseId(), session));
+                checkNExtendCaseLock(user, getCase(job.getCaseId(), entityManager));
         } catch (EmfException e) {
             throw e;
         }
@@ -2083,12 +2085,12 @@ public class ManagedCaseService {
             if (job.getRunstatus() == null)
                 job.setRunstatus(dao.getJobRunStatuse("Not Started"));
             
-            if (dao.caseJobExists(job, session))
+            if (dao.caseJobExists(job, entityManager))
                 throw new EmfException(
                         "The combination of 'Name', 'Region', 'Sector' should be unique.");
 
             job.setIdInQueue(null);
-            dao.add(job, session);
+            dao.add(job, entityManager);
             
             Sector sector = job.getSector();
             GeoRegion region = job.getRegion();
@@ -2098,30 +2100,30 @@ public class ManagedCaseService {
             if (region != null && !regions.contains(region))
                 regions.add(region);
             
-            session.clear();
+            entityManager.clear();
             
-            return dao.loadCaseJob(job, session);
+            return dao.loadCaseJob(job, entityManager);
         } catch (Exception e) {
             log.error("Adding new job " + job.getName() + " failed.", e);
             throw new EmfException(e.getMessage());
         } finally {
             try {
-                updateCase(user, job.getCaseId(), session, sectors, regions);
+                updateCase(user, job.getCaseId(), entityManager, sectors, regions);
             } catch (Exception e) {
                 throw new EmfException(e.getMessage() + " " + "Case can not be updated. ");
             } finally {      
-                if (session != null && session.isConnected())
-                    session.close();
+                if (entityManager != null)
+                    entityManager.close();
             }
         }
     }
 
     public synchronized CaseJob[] getCaseJobs(int caseId) throws EmfException {
 
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            List<CaseJob> jobs = dao.getCaseJobs(caseId, session);
+            List<CaseJob> jobs = dao.getCaseJobs(caseId, entityManager);
 
             if (jobs == null || jobs.size() == 0)
                 return new CaseJob[0];
@@ -2133,16 +2135,16 @@ public class ManagedCaseService {
             log.error("Could not get all jobs for case (id=" + caseId + ").\n" + e.getMessage());
             throw new EmfException("Could not get all jobs for case (id=" + caseId + ").\n");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized JobRunStatus[] getJobRunStatuses() throws EmfException {
 
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            List<JobRunStatus> runstatuses = dao.getJobRunStatuses(session);
+            List<JobRunStatus> runstatuses = dao.getJobRunStatuses(entityManager);
 
             return runstatuses.toArray(new JobRunStatus[0]);
         } catch (Exception e) {
@@ -2150,15 +2152,15 @@ public class ManagedCaseService {
             log.error("Could not get all job run statuses.\n" + e.getMessage());
             throw new EmfException("Could not get all job run statuses.\n");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized Executable[] getExecutables(int casejobId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            List<Executable> runstatuses = dao.getExecutables(session);
+            List<Executable> runstatuses = dao.getExecutables(entityManager);
 
             return runstatuses.toArray(new Executable[0]);
         } catch (Exception e) {
@@ -2166,7 +2168,7 @@ public class ManagedCaseService {
             log.error("Could not get all executables.\n" + e.getMessage());
             throw new EmfException("Could not get all executables.\n");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -2176,12 +2178,12 @@ public class ManagedCaseService {
         if (jobslen == 0)
             return;
 
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
             int caseId = jobs[0].getCaseId();
-            CaseInput[] inputs = dao.getCaseInputs(caseId, session).toArray(new CaseInput[0]);
-            CaseParameter[] params = dao.getCaseParameters(caseId, session).toArray(new CaseParameter[0]);
+            CaseInput[] inputs = dao.getCaseInputs(caseId, entityManager).toArray(new CaseInput[0]);
+            CaseParameter[] params = dao.getCaseParameters(caseId, entityManager).toArray(new CaseParameter[0]);
 
             for (int i = 0; i < jobslen; i++) {
                 for (int j = 0; j < inputs.length; j++)
@@ -2199,98 +2201,99 @@ public class ManagedCaseService {
             log.error("Could not reset case job.\n" + e.getMessage());
             throw new EmfException("Could not reset case job ");
         } finally {
-            session.close();
+            entityManager.close();
         }
 
     }
 
     public synchronized void removeCaseJobs(User user, CaseJob[] jobs) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<Sector> sectors = new ArrayList<Sector>();
         List<GeoRegion> regions = new ArrayList<GeoRegion>();
         
-        checkJobsStatuses(Arrays.asList(jobs), dao.getCase(jobs[0].getCaseId(), session));
-        checkTaskPersistItems(jobs, session);
-        checkJobOutputItems(jobs, session);
-        checkJobHistoryItems(jobs, session);
+        checkJobsStatuses(Arrays.asList(jobs), dao.getCase(jobs[0].getCaseId(), entityManager));
+        checkTaskPersistItems(jobs, entityManager);
+        checkJobOutputItems(jobs, entityManager);
+        checkJobHistoryItems(jobs, entityManager);
         resetRelatedJobsField(jobs);
-        deleteCaseJobKeyObjects(jobs, session);
+        deleteCaseJobKeyObjects(jobs, entityManager);
 
         try {
-            dao.checkJobDependency(jobs, session);
+            dao.checkJobDependency(jobs, entityManager);
         } catch (EmfException e) {
             throw new EmfException("Cannot remove " + e.getMessage());
         }
 
         try {
-            session.clear();
-            dao.removeCaseJobs(jobs, session);
+            entityManager.clear();
+            dao.removeCaseJobs(jobs, entityManager);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("Could not remove case job " + jobs[0].getName() + " etc.\n" + e.getMessage());
             throw new EmfException("Could not remove selected job(s): " + e.getLocalizedMessage());
         } finally {
             try {
-                updateCase(user, jobs[0].getCaseId(),session, sectors, regions);
+                updateCase(user, jobs[0].getCaseId(),entityManager, sectors, regions);
             } catch (Exception e) {
                 throw new EmfException(e.getMessage() + " " + "Case can not be updated. ");
             } finally {    
-                if (session != null && session.isConnected())
-                    session.close();
+                if (entityManager != null)
+                    entityManager.close();
             }
         }
         
     }
 
-    private void checkJobOutputItems(CaseJob[] jobs, Session session) throws EmfException {
+    private void checkJobOutputItems(CaseJob[] jobs, EntityManager entityManager) throws EmfException {
         String query = "SELECT obj.name from " + CaseOutput.class.getSimpleName() + " obj WHERE obj.jobId = "
                 + getAndOrClause(jobs, "obj.jobId");
-        List<?> list = session.createQuery(query).list();
+        List<?> list = entityManager.createQuery(query).getResultList();
 
         if (list != null && list.size() > 0)
             throw new EmfException("Please remove case outputs for the selected jobs.");
     }
 
-    private void checkJobHistoryItems(CaseJob[] jobs, Session session) throws EmfException {
+    private void checkJobHistoryItems(CaseJob[] jobs, EntityManager entityManager) throws EmfException {
         String query = "SELECT obj.message from " + JobMessage.class.getSimpleName() + " obj WHERE obj.jobId = "
                 + getAndOrClause(jobs, "obj.jobId");
-        List<?> list = session.createQuery(query).list();
+        List<?> list = entityManager.createQuery(query).getResultList();
 
         if (list != null && list.size() > 0)
             throw new EmfException("Please remove job messages for the selected jobs.");
     }
 
-    private void checkTaskPersistItems(CaseJob[] jobs, Session session) throws EmfException {
+    private void checkTaskPersistItems(CaseJob[] jobs, EntityManager entityManager) throws EmfException {
         String query = "SELECT obj.id from " + PersistedWaitTask.class.getSimpleName() + " obj WHERE obj.jobId = "
                 + getAndOrClause(jobs, "obj.jobId");
-        List<?> list = session.createQuery(query).list();
+        List<?> list = entityManager.createQuery(query).getResultList();
 
         if (list != null && list.size() > 0)
             throw new EmfException("Cannot delete job(s) -- selected job(s) is still active.");
     }
 
-    private void deleteCaseJobKeyObjects(CaseJob[] jobs, Session session) throws EmfException {
-        int updatedItems = 0;
+    private void deleteCaseJobKeyObjects(CaseJob[] jobs, EntityManager entityManager) throws EmfException {
+        int[] updatedItems = {0};
 
         try {
-            Transaction tx = session.beginTransaction();
-
             String query = "DELETE " + CaseJobKey.class.getSimpleName() + " obj WHERE obj.jobId = "
                     + getAndOrClause(jobs, "obj.jobId");
 
             if (DebugLevels.DEBUG_16())
                 System.out.println("hql delete string: " + query);
 
-            updatedItems = session.createQuery(query).executeUpdate();
-            tx.commit();
+            
+            hibernateFacade
+                .executeInsideTransaction(em -> {
+                    updatedItems[0] = entityManager.createQuery(query).executeUpdate();
+                }, entityManager);
 
             if (DebugLevels.DEBUG_16())
-                System.out.println(updatedItems + " items updated.");
+                System.out.println(updatedItems[0] + " items updated.");
         } catch (HibernateException e) {
             throw new EmfException(e.getMessage());
         } finally {
             if (DebugLevels.DEBUG_16())
-                log.warn(updatedItems + " items updated from " + CaseJobKey.class.getName() + " table.");
+                log.warn(updatedItems[0] + " items updated from " + CaseJobKey.class.getName() + " table.");
         }
     }
 
@@ -2357,7 +2360,7 @@ public class ManagedCaseService {
     }
 
     public synchronized void updateCaseParameter(User user, CaseParameter parameter) throws EmfException {
-        Session localSession = sessionFactory.getSession();
+        EntityManager localSession = entityManagerFactory.createEntityManager();
         List<Sector> sectors = new ArrayList<Sector>();
         List<GeoRegion> regions = new ArrayList<GeoRegion>();
         
@@ -2374,7 +2377,7 @@ public class ManagedCaseService {
                 throw new EmfException("Case parameter uniqueness check failed (" + loaded.getId() + ","
                         + parameter.getId() + ")");
 
-            // FIXME: why session.clear()?
+            // FIXME: why entityManager.clear()?
             localSession.clear();
             dao.updateCaseParameter(parameter, localSession);
             
@@ -2397,7 +2400,7 @@ public class ManagedCaseService {
             } catch (Exception e) {
                 throw new EmfException(e.getMessage() + " " + "Case can not be updated. ");
             } finally {      
-                if (localSession != null && localSession.isConnected())
+                if (localSession != null)
                     localSession.close();
             }
          
@@ -2413,8 +2416,8 @@ public class ManagedCaseService {
         if (DebugLevels.DEBUG_0())
             System.out.println("ManagedCaseService::submitJobs size: " + jobIds.length + " for caseId= " + caseId);
 
-        // create a new caseJobSubmitter for each client call in a session
-        TaskSubmitter caseJobSubmitter = new CaseJobSubmitter(sessionFactory);
+        // create a new caseJobSubmitter for each client call in a entityManager
+        TaskSubmitter caseJobSubmitter = new CaseJobSubmitter(entityManagerFactory);
 
         Hashtable<String, CaseJob> caseJobsTable = new Hashtable<String, CaseJob>();
         ManagedExportService expSvc = null;
@@ -2428,7 +2431,7 @@ public class ManagedCaseService {
             // logNumDBConn("beginning of job submitter");
         }
 
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
             String caseJobExportSubmitterId = null;
@@ -2458,7 +2461,7 @@ public class ManagedCaseService {
                 if (DebugLevels.DEBUG_0())
                     System.out.println("The jobId= " + jid);
 
-                CaseJob caseJob = this.getCaseJob(jid, session);
+                CaseJob caseJob = this.getCaseJob(jid, entityManager);
 
                 // NOTE: This is where the jobkey is generated and set in the CaseJob
                 jobKey = this.createJobKey(jid);
@@ -2499,7 +2502,7 @@ public class ManagedCaseService {
                 if (DebugLevels.DEBUG_9())
                     System.out.println("before getJobFileName");
 
-                String jobFileName = this.getJobFileName(caseJob, session);
+                String jobFileName = this.getJobFileName(caseJob, entityManager);
                 String jobLogFile = this.getLog(jobFileName);
 
                 if (DebugLevels.DEBUG_6())
@@ -2508,7 +2511,7 @@ public class ManagedCaseService {
                 if (DebugLevels.DEBUG_9())
                     System.out.println("before setJobFileContent");
 
-                cjt.setJobFileContent(this.createJobFileContent(caseJob, user, jobFileName, jobLogFile, expSvc, session));
+                cjt.setJobFileContent(this.createJobFileContent(caseJob, user, jobFileName, jobLogFile, expSvc, entityManager));
 
                 if (DebugLevels.DEBUG_15()) {
                     logNumDBConn("after creation of job file (jobID: " + jid + ")");
@@ -2571,7 +2574,7 @@ public class ManagedCaseService {
 
                 // now get the Case (called jobCase since case is a reserved word in Java) using
                 // the caseId sent in from the GUI
-                // Case jobCase = this.getCase(caseId, session);
+                // Case jobCase = this.getCase(caseId, entityManager);
                 cjt.setCaseName(jobCase.getName());
 
                 String purpose = "Used by job: " + caseJob.getName() + " of Case: " + jobCase.getName();
@@ -2581,7 +2584,7 @@ public class ManagedCaseService {
                 if (DebugLevels.DEBUG_0())
                     System.out.println("caseId= " + caseId + " Is the Case for this job null? " + (jobCase == null));
 
-                List<CaseInput> inputs = getAllJobInputs(caseJob, session);
+                List<CaseInput> inputs = getAllJobInputs(caseJob, entityManager);
 
                 // test inputs for which need to be exported
                 List<CaseInput> inputs2Export = getInputs2Export(expSvc, inputs, caseJob, jobCase, user, purpose); // BUG3589
@@ -2604,19 +2607,19 @@ public class ManagedCaseService {
                 }
 
                 // send the casejobtask to the CJTM priority queue and then to wait queue
-                TaskManagerFactory.getCaseJobTaskManager(sessionFactory).addTask(cjt);
+                TaskManagerFactory.getCaseJobTaskManager(entityManagerFactory).addTask(cjt);
 
                 if (DebugLevels.DEBUG_15()) {
                     logNumDBConn("before submitting to export (jobID: " + cjt.getJobId() + ")");
                 }
 
                 // Now update the casejob in the database
-                caseJob.setRunstatus(getJobRunStatus(runStatusValue, session));
+                caseJob.setRunstatus(getJobRunStatus(runStatusValue, entityManager));
                 caseJob.setRunStartDate(new Date());
-                updateJob(caseJob, session);
+                updateJob(caseJob, entityManager);
 
                 // pass the inputs to the exportService which uses an exportJobSubmitter to work with exportTaskManager
-                if (!cjt.isExportsSuccess() && !this.doNotExportJobs(session)) {
+                if (!cjt.isExportsSuccess() && !this.doNotExportJobs(entityManager)) {
                     caseJobExportSubmitterId = expSvc.exportForJob(user, inputs2Export, cjt.getTaskId(), purpose,
                             caseJob, jobCase); // BUG3589
                 } else {
@@ -2638,7 +2641,7 @@ public class ManagedCaseService {
             // Process the case job task manager wait queue
             // if a job has no new exports, this signals the task queue to
             // process it
-            TaskManagerFactory.getCaseJobTaskManager(sessionFactory).processTaskQueue();
+            TaskManagerFactory.getCaseJobTaskManager(entityManagerFactory).processTaskQueue();
 
             if (DebugLevels.DEBUG_0())
                 System.out.println("Case Job Submitter Id for case job:" + caseJobSubmitterId);
@@ -2652,8 +2655,8 @@ public class ManagedCaseService {
                 logNumDBConn("finished job submission");
             }
 
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
@@ -2668,7 +2671,7 @@ public class ManagedCaseService {
         String delimeter = System.getProperty("file.separator");
         LoggingServiceImpl logSvr = exptSrv.services().getLoggingService();
 
-        Session session = this.sessionFactory.getSession();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         DatasetDAO dsdao = new DatasetDAO();
 
         for (Iterator<CaseInput> iter = inputs.iterator(); iter.hasNext();) {
@@ -2688,7 +2691,7 @@ public class ManagedCaseService {
                 ExternalSource[] extSrcs = null;
 
                 try {
-                    extSrcs = dsdao.getExternalSrcs(dataset.getId(), -1, null, session);
+                    extSrcs = dsdao.getExternalSrcs(dataset.getId(), -1, null, entityManager);
                 } catch (Exception e) {
                     log.error("Could not get external sources for dataset " + dataset.getName(), e);
                     throw new EmfException("Could not get external sources for dataset " + dataset.getName() + ".");
@@ -2747,7 +2750,7 @@ public class ManagedCaseService {
         return toExport;
     }
 
-    private JobRunStatus getJobRunStatus(String runStatus, Session session) throws EmfException {
+    private JobRunStatus getJobRunStatus(String runStatus, EntityManager entityManager) throws EmfException {
         JobRunStatus jrStat = null;
 
         try {
@@ -2761,11 +2764,11 @@ public class ManagedCaseService {
         }
     }
 
-    private synchronized void updateJob(CaseJob caseJob, Session session) throws EmfException {
+    private synchronized void updateJob(CaseJob caseJob, EntityManager entityManager) throws EmfException {
         try {
-            dao.updateCaseJob(caseJob, session);
-            dao.updateCaseJobKey(caseJob.getId(), caseJob.getJobkey(), session);
-//            session.flush();
+            dao.updateCaseJob(caseJob, entityManager);
+            dao.updateCaseJobKey(caseJob.getId(), caseJob.getJobkey(), entityManager);
+//            entityManager.flush();
         } catch (Exception e) {
             throw new EmfException(e.getMessage());
         }
@@ -2785,7 +2788,7 @@ public class ManagedCaseService {
 
             // This is a manual update of the waiting tasks in CaseJobTask manager
             // If CaseJobTaskManager is not null. check the dependencies in the WaitTable
-            TaskManagerFactory.getCaseJobTaskManager(sessionFactory).callBackFromJobRunServer();
+            TaskManagerFactory.getCaseJobTaskManager(entityManagerFactory).callBackFromJobRunServer();
 
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -2805,7 +2808,7 @@ public class ManagedCaseService {
     }
 
     public synchronized void saveCaseJobFromClient(User user, CaseJob job) throws EmfException {
-        Session localSession = sessionFactory.getSession();
+        EntityManager localSession = entityManagerFactory.createEntityManager();
         List<Sector> sectors = new ArrayList<Sector>();
         List<GeoRegion> regions = new ArrayList<GeoRegion>();
        
@@ -2850,10 +2853,10 @@ public class ManagedCaseService {
     }
 
     public synchronized Host[] getHosts() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            List<Host> hosts = dao.getHosts(session);
+            List<Host> hosts = dao.getHosts(entityManager);
 
             return hosts.toArray(new Host[0]);
         } catch (Exception e) {
@@ -2861,21 +2864,21 @@ public class ManagedCaseService {
             log.error("Could not get all hosts.\n" + e.getMessage());
             throw new EmfException("Could not get all hosts.\n");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized Host addHost(Host host) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dao.add(host, session);
-            return (Host) dao.load(Host.class, host.getName(), session);
+            dao.add(host, entityManager);
+            return (Host) dao.load(Host.class, host.getName(), entityManager);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("Could not add new host '" + host.getName() + "'\n" + e.getMessage());
             throw new EmfException("Could not add new host '" + host.getName() + "'");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -2974,7 +2977,7 @@ public class ManagedCaseService {
         }
     }
 
-    private Map<String, List<CaseParameter>> getParameterHierarchy(CaseJob job, Session session) throws EmfException {
+    private Map<String, List<CaseParameter>> getParameterHierarchy(CaseJob job, EntityManager entityManager) throws EmfException {
         Map<String, List<CaseParameter>> map = new HashMap<String, List<CaseParameter>>();
 
         /**
@@ -3001,37 +3004,37 @@ public class ManagedCaseService {
 
             // Get case inputs (the datasets associated w/ the case)
             // All regions, all sectors, all jobs
-            paramsAAA = this.getJobParameters(caseId, this.ALL_JOB_ID, this.ALL_SECTORS, this.ALL_REGIONS, session);
+            paramsAAA = this.getJobParameters(caseId, this.ALL_JOB_ID, this.ALL_SECTORS, this.ALL_REGIONS, entityManager);
 
             // All regions, sector specific, all jobs
             if (sector != this.ALL_SECTORS) {
-                paramsASA = this.getJobParameters(caseId, this.ALL_JOB_ID, sector, this.ALL_REGIONS, session);
+                paramsASA = this.getJobParameters(caseId, this.ALL_JOB_ID, sector, this.ALL_REGIONS, entityManager);
             }
 
             // All regions, all sectors, job specific
-            paramsAAJ = this.getJobParameters(caseId, jobId, this.ALL_SECTORS, this.ALL_REGIONS, session);
+            paramsAAJ = this.getJobParameters(caseId, jobId, this.ALL_SECTORS, this.ALL_REGIONS, entityManager);
 
             // All regions, specific sector and specific job
             if (sector != this.ALL_SECTORS) {
-                paramsASJ = this.getJobParameters(caseId, jobId, sector, this.ALL_REGIONS, session);
+                paramsASJ = this.getJobParameters(caseId, jobId, sector, this.ALL_REGIONS, entityManager);
             }
 
             // Specific region, all sectors, all jobs
             if (region != this.ALL_REGIONS)
-                paramsRAA = this.getJobParameters(caseId, this.ALL_JOB_ID, this.ALL_SECTORS, region, session);
+                paramsRAA = this.getJobParameters(caseId, this.ALL_JOB_ID, this.ALL_SECTORS, region, entityManager);
 
             // Region specific, sector specific, all jobs
             if (sector != this.ALL_SECTORS && region != this.ALL_REGIONS) {
-                paramsRSA = this.getJobParameters(caseId, this.ALL_JOB_ID, sector, region, session);
+                paramsRSA = this.getJobParameters(caseId, this.ALL_JOB_ID, sector, region, entityManager);
             }
 
             // Region specific, all sectors, job specific
             if (region != this.ALL_REGIONS)
-                paramsRAJ = this.getJobParameters(caseId, jobId, this.ALL_SECTORS, region, session);
+                paramsRAJ = this.getJobParameters(caseId, jobId, this.ALL_SECTORS, region, entityManager);
 
             // Region specific, specific sector and specific job
             if (sector != this.ALL_SECTORS && region != this.ALL_REGIONS) {
-                paramsRSJ = this.getJobParameters(caseId, jobId, sector, region, session);
+                paramsRSJ = this.getJobParameters(caseId, jobId, sector, region, entityManager);
             }
         } catch (Exception e) {
             log.error("Could not get all inputs for case (id=" + caseId + "), job (id=" + jobId + ").\n", e);
@@ -3052,14 +3055,14 @@ public class ManagedCaseService {
         return map;
     }
 
-    private List<CaseParameter> getJobParameters(int caseId, int jobId, Sector sector, GeoRegion region, Session session)
+    private List<CaseParameter> getJobParameters(int caseId, int jobId, Sector sector, GeoRegion region, EntityManager entityManager)
             throws EmfException {
         /**
          * Gets all the parameters for this job, selects based on: case ID, job ID, and sector
          */
         // select the inputs based on 3 criteria
         try {
-            List<CaseParameter> parameters = dao.getJobParameters(caseId, jobId, sector, region, session);
+            List<CaseParameter> parameters = dao.getJobParameters(caseId, jobId, sector, region, entityManager);
             // return an array of all type CaseParameter
             Collections.sort(parameters);
             return parameters;
@@ -3138,17 +3141,17 @@ public class ManagedCaseService {
 
         // check for external dataset
         if (dataset.isExternal()) {
-            Session session = this.sessionFactory.getSession();
+            EntityManager entityManager = this.entityManagerFactory.createEntityManager();
             ExternalSource[] externalDatasets = null;
             DatasetDAO dsdao = new DatasetDAO();
 
             try {
-                externalDatasets = dsdao.getExternalSrcs(dataset.getId(), -1, null, session);
+                externalDatasets = dsdao.getExternalSrcs(dataset.getId(), -1, null, entityManager);
             } catch (Exception e) {
                 log.error("Could not get external sources for dataset " + dataset.getName(), e);
                 throw new EmfException("Could not get external sources for dataset " + dataset.getName() + ".");
             } finally {
-                session.close();
+                entityManager.close();
             }
 
             // set the full path to the first external file in the dataset
@@ -3242,7 +3245,7 @@ public class ManagedCaseService {
     }
 
     public synchronized String createJobFileContent(CaseJob job, User user, String jobFileName,
-            String jobLogFile, ManagedExportService expSvc, Session session) throws EmfException {
+            String jobLogFile, ManagedExportService expSvc, EntityManager entityManager) throws EmfException {
         /**
          * Creates the content string for a job run file w/ all necessary inputs and parameters set.
          * 
@@ -3257,7 +3260,7 @@ public class ManagedCaseService {
         StringBuffer sbuf = new StringBuffer();
 
         // Some objects needed for accessing data
-        Case caseObj = this.getCase(job.getCaseId(), session);
+        Case caseObj = this.getCase(job.getCaseId(), entityManager);
         int jobId = job.getId();
 
         CaseInput headerInput = null; // input for the EMF Job header
@@ -3275,7 +3278,7 @@ public class ManagedCaseService {
          */
 
         // inputs based on all (A), specific region (R), specific sector (S), and/or specific job (J)
-        Map<String, List<CaseInput>> map = getInputHierarchy(job, session);
+        Map<String, List<CaseInput>> map = getInputHierarchy(job, entityManager);
         List<CaseInput> inputsAAA = map.get(AAA);
         List<CaseInput> inputsASA = map.get(ASA);
         List<CaseInput> inputsAAJ = map.get(AAJ);
@@ -3286,7 +3289,7 @@ public class ManagedCaseService {
         List<CaseInput> inputsRSJ = map.get(RSJ);
 
         // parameters based on all (A), specific region (R), specific sector (S), and/or specific job (J)
-        Map<String, List<CaseParameter>> paramsmap = getParameterHierarchy(job, session);
+        Map<String, List<CaseParameter>> paramsmap = getParameterHierarchy(job, entityManager);
         List<CaseParameter> paramsAAA = paramsmap.get(AAA);
         List<CaseParameter> paramsASA = paramsmap.get(ASA);
         List<CaseParameter> paramsAAJ = paramsmap.get(AAJ);
@@ -3297,7 +3300,7 @@ public class ManagedCaseService {
         List<CaseParameter> paramsRSJ = paramsmap.get(RSJ);
 
         // Create an export service to get names of the datasets as inputs to Smoke script
-        // ExportService exports = new ExportService(dbServerlocal, this.threadPool, this.sessionFactory);
+        // ExportService exports = new ExportService(dbServerlocal, this.threadPool, this.entityManagerFactory);
         // Get case inputs (the datasets associated w/ the case)
 
         // Exclude any inputs w/ environmental variable EMF_JOBHEADER and see if the EMF_JOBHEADER exists at each level
@@ -3553,7 +3556,7 @@ public class ManagedCaseService {
         String parentName = caseObj.getTemplateUsed();
         if (parentName != null && parentName != "") {
             try {
-                Case parentCase = dao.getCaseFromName(parentName, session);
+                Case parentCase = dao.getCaseFromName(parentName, entityManager);
                 sbuf.append(shellSetenv("PARENT_CASE", parentCase.getAbbreviation().getName()));
             } catch (Exception e) {
                 log.error("Parent case (" + parentName + ") does not exist. Will not set PARENT_CASE parameter");
@@ -3728,7 +3731,7 @@ public class ManagedCaseService {
 
     }
 
-    private String getJobFileName(CaseJob job, Session session) throws EmfException {
+    private String getJobFileName(CaseJob job, EntityManager entityManager) throws EmfException {
         /*
          * Creates the File name that corresponds to the job script file name.
          * 
@@ -3736,7 +3739,7 @@ public class ManagedCaseService {
          */
         String dateStamp = CustomDateFormat.format_YYYYMMDDHHMMSS(new Date());
         String jobName = job.getName().replace(" ", "_");
-        Case caseObj = this.getCase(job.getCaseId(), session);
+        Case caseObj = this.getCase(job.getCaseId(), entityManager);
         
         //Get sector name and region abbreviation
         String secName = job.getSector() == null ? "" : job.getSector().getName();
@@ -3880,7 +3883,7 @@ public class ManagedCaseService {
             if (!status.isEmpty() && !jobStatus.equalsIgnoreCase(status)) {
                 if (!(status.equalsIgnoreCase("Running"))) {
                     // Notify CaseJobTaskManager that the job status has changed to Completed or Failed
-                    TaskManagerFactory.getCaseJobTaskManager(sessionFactory).callBackFromJobRunServer();
+                    TaskManagerFactory.getCaseJobTaskManager(entityManagerFactory).callBackFromJobRunServer();
                 }
 
             }
@@ -3902,14 +3905,14 @@ public class ManagedCaseService {
     }
 
     public synchronized JobMessage[] getJobMessages(int caseId, int jobId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<JobMessage> msgs = null;
 
         try {
             if (jobId == 0)
-                msgs = dao.getJobMessages(caseId, session);
+                msgs = dao.getJobMessages(caseId, entityManager);
             else
-                msgs = dao.getJobMessages(caseId, jobId, session);
+                msgs = dao.getJobMessages(caseId, jobId, entityManager);
 
             return msgs.toArray(new JobMessage[0]);
         } catch (Exception e) {
@@ -3917,7 +3920,7 @@ public class ManagedCaseService {
             log.error(e.getMessage());
             throw new EmfException(e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -3952,7 +3955,7 @@ public class ManagedCaseService {
     }
 
     public synchronized void finalize() throws Throwable {
-        // this.session = null;
+        // this.entityManager = null;
         super.finalize();
     }
 
@@ -4053,26 +4056,26 @@ public class ManagedCaseService {
     }
 
     private User getUser(int uid) throws EmfException {
-        Session session = this.sessionFactory.getSession();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         User user = null;
         try {
             UserDAO userDAO = new UserDAO();
-            user = userDAO.get(uid, session);
+            user = userDAO.get(uid, entityManager);
 
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new EmfException("System Problems: Database access error");
 
         } finally {
-            session.clear();
-            session.close();
+            entityManager.clear();
+            entityManager.close();
         }
 
         return user;
     }
 
     private List<PersistedWaitTask> getPersistedTasksForUser(int uid) throws EmfException {
-        Session session = this.sessionFactory.getSession();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         List<PersistedWaitTask> allPersistTasks = null;
 
         try {
@@ -4093,8 +4096,8 @@ public class ManagedCaseService {
             throw new EmfException("System Problems: Database access error");
 
         } finally {
-            session.clear();
-            session.close();
+            entityManager.clear();
+            entityManager.close();
         }
 
         return allPersistTasks;
@@ -4116,7 +4119,7 @@ public class ManagedCaseService {
     }
 
     public synchronized String printStatusCaseJobTaskManager() throws EmfException {
-        return TaskManagerFactory.getCaseJobTaskManager(sessionFactory).getStatusOfWaitAndRunTable();
+        return TaskManagerFactory.getCaseJobTaskManager(entityManagerFactory).getStatusOfWaitAndRunTable();
     }
 
     public synchronized String validateJobs(Integer[] jobIDs) throws EmfException {
@@ -4124,20 +4127,20 @@ public class ManagedCaseService {
             System.out.println("Start validating jobs on server side. " + new Date());
 
         String ls = System.getProperty("line.separator");
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         List<CaseInput> allInputs = new ArrayList<CaseInput>();
 
         try {
             for (Integer id : jobIDs) {
-                CaseJob job = this.getCaseJob(id.intValue(), session);
-                allInputs.addAll(this.getAllJobInputs(job, session));
+                CaseJob job = this.getCaseJob(id.intValue(), entityManager);
+                allInputs.addAll(this.getAllJobInputs(job, entityManager));
             }
         } catch (RuntimeException e) {
             // NOTE Auto-generated catch block
             e.printStackTrace();
         } finally {
-            session.close();
+            entityManager.close();
         }
 
         if (DebugLevels.DEBUG_14())
@@ -4236,14 +4239,14 @@ public class ManagedCaseService {
     }
 
     public synchronized CaseOutput[] getCaseOutputs(int caseId, int jobId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<CaseOutput> outputs = null;
 
         try {
             if (jobId == 0)
-                outputs = dao.getCaseOutputs(caseId, session);
+                outputs = dao.getCaseOutputs(caseId, entityManager);
             else
-                outputs = dao.getCaseOutputs(caseId, jobId, session);
+                outputs = dao.getCaseOutputs(caseId, jobId, entityManager);
 
             return outputs.toArray(new CaseOutput[0]);
         } catch (Exception e) {
@@ -4251,7 +4254,7 @@ public class ManagedCaseService {
             log.error(e.getMessage());
             throw new EmfException(e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -4276,22 +4279,22 @@ public class ManagedCaseService {
 
     public synchronized void removeCaseOutputs(User user, CaseOutput[] outputs, boolean deleteDataset)
             throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            dao.removeCaseOutputs(user, outputs, deleteDataset, session);
+            dao.removeCaseOutputs(user, outputs, deleteDataset, entityManager);
         } catch (Exception e) {
             e.printStackTrace();
             // log.error("Could not remove case output " + outputs[0].getName() + " etc.\n" + e.getMessage());
             // throw new EmfException("Could not remove case output " + outputs[0].getName() + " etc.");
             throw new EmfException(e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized void updateCaseOutput(User user, CaseOutput output) throws EmfException {
-        Session localSession = sessionFactory.getSession();
+        EntityManager localSession = entityManagerFactory.createEntityManager();
 
         try {
             checkNExtendCaseLock(user, getCase(output.getCaseId(), localSession));
@@ -4307,7 +4310,7 @@ public class ManagedCaseService {
                         + ")");
 
             // Clear the cached information. To update a case
-            // FIXME: Verify the session.clear()
+            // FIXME: Verify the entityManager.clear()
             localSession.clear();
             dao.updateCaseOutput(output, localSession);
             // setStatus(user, "Saved input " + input.getName() + " to database.", "Save Input");
@@ -4322,41 +4325,41 @@ public class ManagedCaseService {
     }
 
     public synchronized void removeMessages(User user, JobMessage[] msgs) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            dao.removeJobMessages(msgs, session);
+            dao.removeJobMessages(msgs, entityManager);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("Could not remove case output " + msgs[0].getMessage() + " etc.\n" + e.getMessage());
             throw new EmfException("Could not remove case messages " + msgs[0].getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
 
     }
 
     public synchronized CaseOutput addCaseOutput(User user, CaseOutput output) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            checkNExtendCaseLock(user, getCase(output.getCaseId(), session));
+            checkNExtendCaseLock(user, getCase(output.getCaseId(), entityManager));
         } catch (EmfException e) {
             throw e;
         }
 
         try {
-            if (dao.caseOutputExists(output, session))
+            if (dao.caseOutputExists(output, entityManager))
                 throw new EmfException("The combination of 'Output Name'and 'Job' should be unique.");
 
-            dao.add(output, session);
-            return (CaseOutput) dao.loadCaseOutput(output, session);
+            dao.add(output, entityManager);
+            return (CaseOutput) dao.loadCaseOutput(output, entityManager);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("Could not add new case output '" + output.getName() + "'\n" + e.getMessage());
             throw new EmfException("Could not add new case output '" + output.getName() + "'");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -4368,9 +4371,9 @@ public class ManagedCaseService {
                     + " has it now.");
     }
 
-    private boolean doNotExportJobs(Session session) {
+    private boolean doNotExportJobs(EntityManager entityManager) {
         try {
-            EmfProperty property = new EmfPropertiesDAO().getProperty("DO_NOT_EXPORT_JOBS", session);
+            EmfProperty property = new EmfPropertiesDAO().getProperty("DO_NOT_EXPORT_JOBS", entityManager);
             String value = property.getValue();
             return value.equalsIgnoreCase("true") || value.equalsIgnoreCase("yes");
         } catch (Exception e) {
@@ -4386,73 +4389,73 @@ public class ManagedCaseService {
     }
 
     public synchronized AirQualityModel addAirQualityModel(AirQualityModel airQModel) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            AirQualityModel temp = (AirQualityModel) dao.load(AirQualityModel.class, airQModel.getName(), session);
+            AirQualityModel temp = (AirQualityModel) dao.load(AirQualityModel.class, airQModel.getName(), entityManager);
 
             if (temp != null)
                 return temp;
-            dao.add(airQModel, session);
-            return (AirQualityModel) dao.load(AirQualityModel.class, airQModel.getName(), session);
+            dao.add(airQModel, entityManager);
+            return (AirQualityModel) dao.load(AirQualityModel.class, airQModel.getName(), entityManager);
 
         } catch (Exception e) {
             e.printStackTrace();
             log.error("Could not add new AirQualityModel '" + airQModel.getName() + "'\n" + e.getMessage());
             throw new EmfException("Could not add new AirQualityModel '" + airQModel.getName() + "'");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized EmissionsYear addEmissionYear(EmissionsYear emissYear) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dao.add(emissYear, session);
-            return (EmissionsYear) dao.load(EmissionsYear.class, emissYear.getName(), session);
+            dao.add(emissYear, entityManager);
+            return (EmissionsYear) dao.load(EmissionsYear.class, emissYear.getName(), entityManager);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("Could not add new EmissionsYear '" + emissYear.getName() + "'\n" + e.getMessage());
             throw new EmfException("Could not add new EmissionsYear '" + emissYear.getName() + "'");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized MeteorlogicalYear addMeteorologicalYear(MeteorlogicalYear metYear) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dao.add(metYear, session);
-            return (MeteorlogicalYear) dao.load(MeteorlogicalYear.class, metYear.getName(), session);
+            dao.add(metYear, entityManager);
+            return (MeteorlogicalYear) dao.load(MeteorlogicalYear.class, metYear.getName(), entityManager);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("Could not add new MeteorlogicalYear '" + metYear.getName() + "'\n" + e.getMessage());
             throw new EmfException("Could not add new MeteorlogicalYear '" + metYear.getName() + "'");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized Speciation addSpeciation(Speciation speciation) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            Speciation temp = (Speciation) dao.load(Speciation.class, speciation.getName(), session);
+            Speciation temp = (Speciation) dao.load(Speciation.class, speciation.getName(), entityManager);
 
             if (temp != null)
                 return temp;
 
-            dao.add(speciation, session);
-            return (Speciation) dao.load(Speciation.class, speciation.getName(), session);
+            dao.add(speciation, entityManager);
+            return (Speciation) dao.load(Speciation.class, speciation.getName(), entityManager);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("Could not add new speciation '" + speciation.getName() + "'\n" + e.getMessage());
             throw new EmfException("Could not add new speciation '" + speciation.getName() + "'");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized String getJobStatusMessage(int caseId) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         int failedCount = 0;
         int waitingCount = 0;
@@ -4488,7 +4491,7 @@ public class ManagedCaseService {
         } catch (Exception e) {
             return "";
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -4509,35 +4512,35 @@ public class ManagedCaseService {
     }
 
     public synchronized String[] getAllCaseNameIDs() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getAllCaseNameIDs(session);
+            return dao.getAllCaseNameIDs(entityManager);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("Could not retrieve all case names and ids.", e);
             throw new EmfException("Could not retrieve all case names and ids. " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized Case addSensitivity2Case(User user, int parentCaseId, int templateCaseId, int[] jobIds,
             String jobGroup, Case sensitivityCase, GeoRegion region) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         Case lockedSC = null;
         Case lockedPC = null;
         Case lockedTC = null;
         String jobPrefix = (jobGroup == null || jobGroup.trim().isEmpty()) ? "" : jobGroup + " ";
 
         try {
-            lockedSC = dao.obtainLocked(user, sensitivityCase, session);
+            lockedSC = dao.obtainLocked(user, sensitivityCase, entityManager);
             int targetId = sensitivityCase.getId();
 
-            Case parent = dao.getCase(parentCaseId, session);
-            lockedPC = dao.obtainLocked(user, parent, session);
+            Case parent = dao.getCase(parentCaseId, entityManager);
+            lockedPC = dao.obtainLocked(user, parent, entityManager);
 
-            Case template = dao.getCase(templateCaseId, session);
-            lockedTC = dao.obtainLocked(user, template, session);
+            Case template = dao.getCase(templateCaseId, entityManager);
+            lockedTC = dao.obtainLocked(user, template, entityManager);
 
             if (lockedSC == null)
                 throw new EmfException("Cannot obtain lock for adding sensitivity to happen: User "
@@ -4551,18 +4554,18 @@ public class ManagedCaseService {
                 throw new EmfException("Cannot obtain lock for adding sensitivity to happen: User "
                         + template.getLockOwner() + " has the lock for case '" + template.getName() + "'");
 
-            List<CaseJob> existingJobs = dao.getCaseJobs(targetId, session);
-            List<CaseInput> existingInputs = dao.getCaseInputs(targetId, session);
-            List<CaseParameter> existingParams = dao.getCaseParameters(targetId, session);
+            List<CaseJob> existingJobs = dao.getCaseJobs(targetId, entityManager);
+            List<CaseInput> existingInputs = dao.getCaseInputs(targetId, entityManager);
+            List<CaseParameter> existingParams = dao.getCaseParameters(targetId, entityManager);
             CaseJob[] jobs2copy = getJobs2Copy(jobIds);
 
             checkJobsDuplication(existingJobs, jobs2copy, jobPrefix);
 
             CaseJob[] jobs = cloneCaseJobs(lockedSC.getId(), lockedTC.getId(), jobGroup, jobPrefix, jobs2copy, region, user);
             CaseInput[] inputs = cloneCaseInputs(parentCaseId, lockedSC.getId(), getValidCaseInputs4SensitivityCase(
-                    template.getId(), jobIds, jobs2copy, session), region, session);
+                    template.getId(), jobIds, jobs2copy, entityManager), region, entityManager);
             CaseParameter[] params = cloneCaseParameters(parentCaseId, lockedSC.getId(),
-                    getValidCaseParameters4SensitivityCase(template.getId(), jobIds, jobs2copy, session), region, session);
+                    getValidCaseParameters4SensitivityCase(template.getId(), jobIds, jobs2copy, entityManager), region, entityManager);
 
             addCaseJobs4Sensitivity(user, targetId, jobs);
             addCaseInputs(targetId, removeRedundantInputs(inputs, existingInputs, jobPrefix), jobPrefix, region);
@@ -4582,17 +4585,17 @@ public class ManagedCaseService {
         } finally {
             try {
                 if (lockedSC != null)
-                    dao.releaseLocked(user, lockedSC, session);
+                    dao.releaseLocked(user, lockedSC, entityManager);
 
-                session.clear();
+                entityManager.clear();
                 if (lockedPC != null)
-                    dao.releaseLocked(user, lockedPC, session);
+                    dao.releaseLocked(user, lockedPC, entityManager);
 
-                session.clear();
+                entityManager.clear();
                 if (lockedTC != null)
-                    dao.releaseLocked(user, lockedTC, session);
+                    dao.releaseLocked(user, lockedTC, entityManager);
 
-                session.close();
+                entityManager.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -4635,23 +4638,23 @@ public class ManagedCaseService {
             throws EmfException {
         List<CaseInput> uniqueInputs = new ArrayList<CaseInput>();
         uniqueInputs.addAll(Arrays.asList(inputs));
-        Session session = this.sessionFactory.getSession();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         CaseInput[] existingInputsArray = existingInputs.toArray(new CaseInput[0]);
         CaseJob[] selectedJobs = new CaseJob[inputs.length];
         CaseJob[] existingJobs = new CaseJob[existingInputs.size()];
 
         try {
             for (int i = 0; i < inputs.length; i++)
-                selectedJobs[i] = dao.getCaseJob(inputs[i].getCaseJobID(), session);
+                selectedJobs[i] = dao.getCaseJob(inputs[i].getCaseJobID(), entityManager);
 
             for (int j = 0; j < existingInputs.size(); j++)
-                existingJobs[j] = dao.getCaseJob(existingInputsArray[j].getCaseJobID(), session);
+                existingJobs[j] = dao.getCaseJob(existingInputsArray[j].getCaseJobID(), entityManager);
         } catch (Exception e) {
             throw new EmfException("Cannot get jobs for comparisons in removing dedundant case inputs. "
                     + e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
 
         for (int m = 0; m < inputs.length; m++) {
@@ -4688,23 +4691,23 @@ public class ManagedCaseService {
             String jobPrefix) throws EmfException {
         List<CaseParameter> uniqueParams = new ArrayList<CaseParameter>();
         uniqueParams.addAll(Arrays.asList(params));
-        Session session = this.sessionFactory.getSession();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         CaseParameter[] existingParamsArray = existingParams.toArray(new CaseParameter[0]);
         CaseJob[] selectedJobs = new CaseJob[params.length];
         CaseJob[] existingJobs = new CaseJob[existingParams.size()];
 
         try {
             for (int i = 0; i < params.length; i++)
-                selectedJobs[i] = dao.getCaseJob(params[i].getJobId(), session);
+                selectedJobs[i] = dao.getCaseJob(params[i].getJobId(), entityManager);
 
             for (int j = 0; j < existingParams.size(); j++)
-                existingJobs[j] = dao.getCaseJob(existingParamsArray[j].getJobId(), session);
+                existingJobs[j] = dao.getCaseJob(existingParamsArray[j].getJobId(), entityManager);
         } catch (Exception e) {
             throw new EmfException("Cannot get jobs for comparisons in removing dedundant case parameters. "
                     + e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
 
         for (int m = 0; m < params.length; m++) {
@@ -4739,7 +4742,7 @@ public class ManagedCaseService {
 
     public synchronized Case mergeCases(User user, int parentCaseId, int templateCaseId, int[] jobIds, String jobGroup,
             Case sensitivityCase) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         Case lockedSC = null;
         Case lockedPC = null;
         Case lockedTC = null;
@@ -4750,22 +4753,22 @@ public class ManagedCaseService {
 
             if (abbr != null) {
                 try {
-                    dao.add(abbr, session);
+                    dao.add(abbr, entityManager);
                 } catch (RuntimeException e) {
                     throw new EmfException("Please check if the specified abbreviation already exists.");
                 }
             }
 
-            dao.add(sensitivityCase, session);
-            Case loaded = (Case) dao.load(Case.class, sensitivityCase.getName(), session);
-            lockedSC = dao.obtainLocked(user, loaded, session);
+            dao.add(sensitivityCase, entityManager);
+            Case loaded = (Case) dao.load(Case.class, sensitivityCase.getName(), entityManager);
+            lockedSC = dao.obtainLocked(user, loaded, entityManager);
             int targetId = loaded.getId();
             GeoRegion senRegion = (loaded.getRegions() == null ? null : loaded.getRegions()[0]);
 
-            Case parent = dao.getCase(parentCaseId, session);
-            lockedPC = dao.obtainLocked(user, parent, session);
-            Case template = dao.getCase(templateCaseId, session);
-            lockedTC = dao.obtainLocked(user, template, session);
+            Case parent = dao.getCase(parentCaseId, entityManager);
+            lockedPC = dao.obtainLocked(user, parent, entityManager);
+            Case template = dao.getCase(templateCaseId, entityManager);
+            lockedTC = dao.obtainLocked(user, template, entityManager);
 
             if (lockedSC == null)
                 throw new EmfException("Cannot obtain lock for merging case to happen: User " + loaded.getLockOwner()
@@ -4782,9 +4785,9 @@ public class ManagedCaseService {
             CaseJob[] jobs2copy = getJobs2Copy(jobIds);
             CaseJob[] jobs = cloneCaseJobs(lockedSC.getId(), lockedTC.getId(), jobGroup, jobPrefix, jobs2copy, senRegion, user);
             CaseInput[] inputs = cloneCaseInputs(parentCaseId, lockedSC.getId(), getValidCaseInputs4SensitivityCase(
-                    template.getId(), jobIds, jobs2copy, session), senRegion, session);
+                    template.getId(), jobIds, jobs2copy, entityManager), senRegion, entityManager);
             CaseParameter[] params = cloneCaseParameters(parentCaseId, lockedSC.getId(),
-                    getValidCaseParameters4SensitivityCase(template.getId(), jobIds, jobs2copy, session), senRegion, session);
+                    getValidCaseParameters4SensitivityCase(template.getId(), jobIds, jobs2copy, entityManager), senRegion, entityManager);
 
             addCaseJobs4Sensitivity(user, targetId, jobs);
             addCaseInputs(targetId, inputs, jobPrefix, senRegion);
@@ -4812,17 +4815,17 @@ public class ManagedCaseService {
         } finally {
             try {
                 if (lockedSC != null)
-                    dao.releaseLocked(user, lockedSC, session);
+                    dao.releaseLocked(user, lockedSC, entityManager);
 
-                session.clear();
+                entityManager.clear();
                 if (lockedPC != null)
-                    dao.releaseLocked(user, lockedPC, session);
+                    dao.releaseLocked(user, lockedPC, entityManager);
 
-                session.clear();
+                entityManager.clear();
                 if (lockedTC != null)
-                    dao.releaseLocked(user, lockedTC, session);
+                    dao.releaseLocked(user, lockedTC, entityManager);
 
-                session.close();
+                entityManager.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -4869,13 +4872,13 @@ public class ManagedCaseService {
     }
 
     private CaseJob[] getJobs2Copy(int[] jobIds) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
             CaseJob[] jobs = new CaseJob[jobIds.length];
 
             for (int i = 0; i < jobs.length; i++)
-                jobs[i] = dao.getCaseJob(jobIds[i], session);
+                jobs[i] = dao.getCaseJob(jobIds[i], entityManager);
 
             return jobs;
         } catch (Exception e) {
@@ -4883,7 +4886,7 @@ public class ManagedCaseService {
             log.error("Could not get all jobs.", e);
             throw new EmfException("Could not get all jobs. " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -4909,7 +4912,7 @@ public class ManagedCaseService {
         return copied.toArray(new CaseJob[0]);
     }
 
-    private CaseInput[] cloneCaseInputs(int parentCaseId, int targetCaseId, CaseInput[] inputs, GeoRegion region, Session session)
+    private CaseInput[] cloneCaseInputs(int parentCaseId, int targetCaseId, CaseInput[] inputs, GeoRegion region, EntityManager entityManager)
             throws Exception {
         List<CaseInput> inputList2Target = new ArrayList<CaseInput>();
 
@@ -4919,7 +4922,7 @@ public class ManagedCaseService {
             if (tempInput.getRegion() != null)
                 tempInput.setRegion(region);
             
-            CaseInput inputFromParent = getParentCaseInputs4SensitivityCase(parentCaseId, tempInput, region, session);
+            CaseInput inputFromParent = getParentCaseInputs4SensitivityCase(parentCaseId, tempInput, region, entityManager);
             boolean modifiedFromParent = false;
 
             if (inputFromParent != null) {
@@ -4965,7 +4968,7 @@ public class ManagedCaseService {
     }
 
     private CaseParameter[] cloneCaseParameters(int parentCaseId, int targetCaseId, CaseParameter[] params,
-            GeoRegion senRegion, Session session) throws Exception {
+            GeoRegion senRegion, EntityManager entityManager) throws Exception {
         List<CaseParameter> params2Target = new ArrayList<CaseParameter>();
 
         for (int i = 0; i < params.length; i++) {
@@ -4974,7 +4977,7 @@ public class ManagedCaseService {
             if (tempParam.getRegion() != null)
                 tempParam.setRegion(senRegion);
             
-            CaseParameter parentParameter = getParentCaseParameters4SensitivityCase(parentCaseId, tempParam, senRegion, session);
+            CaseParameter parentParameter = getParentCaseParameters4SensitivityCase(parentCaseId, tempParam, senRegion, entityManager);
             boolean modifiedFromParent = false;
 
             if (parentParameter != null) {
@@ -5076,18 +5079,18 @@ public class ManagedCaseService {
     }
 
     public synchronized Case[] getSensitivityCases(int parentCaseId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         Exception exc = null;
         Case parent = null;
 
         try {
-            List<Case> cases = dao.getSensitivityCases(parentCaseId, session);
+            List<Case> cases = dao.getSensitivityCases(parentCaseId, entityManager);
             return cases.toArray(new Case[0]);
         } catch (Exception e) {
             exc = e;
-            parent = dao.getCase(parentCaseId, session);
+            parent = dao.getCase(parentCaseId, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
 
             if (exc != null) {
                 exc.printStackTrace();
@@ -5101,21 +5104,21 @@ public class ManagedCaseService {
     }
 
     public synchronized String[] getJobGroups(int caseId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            return dao.getJobGroups(caseId, session);
+            return dao.getJobGroups(caseId, entityManager);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("Could not get all job groups info.", e);
             throw new EmfException("Could not get all job groups info.");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
-    private CaseInput[] getValidCaseInputs4SensitivityCase(int caseId, int[] jobIds, CaseJob[] jobs, Session session) {
+    private CaseInput[] getValidCaseInputs4SensitivityCase(int caseId, int[] jobIds, CaseJob[] jobs, EntityManager entityManager) {
         String query = "SELECT obj.id from "
                 + CaseInput.class.getSimpleName()
                 + " as obj WHERE obj.caseID = "
@@ -5127,19 +5130,19 @@ public class ManagedCaseService {
         if (DebugLevels.DEBUG_9())
             log.warn(query);
 
-        List<?> ids = session.createQuery(query).list();
+        List<?> ids = entityManager.createQuery(query).getResultList();
         List<CaseInput> inputs = new ArrayList<CaseInput>();
 
         for (Iterator<?> iter = ids.iterator(); iter.hasNext();) {
             Integer id = (Integer) iter.next();
-            inputs.add(dao.getCaseInput(id, session));
+            inputs.add(dao.getCaseInput(id, entityManager));
         }
 
         return inputs.toArray(new CaseInput[0]);
     }
 
     private CaseParameter[] getValidCaseParameters4SensitivityCase(int caseId, int[] jobIds, CaseJob[] jobs,
-            Session session) {
+            EntityManager entityManager) {
         String query = "SELECT obj.id from "
                 + CaseParameter.class.getSimpleName()
                 + " as obj WHERE obj.caseID = "
@@ -5151,12 +5154,12 @@ public class ManagedCaseService {
         if (DebugLevels.DEBUG_9())
             log.warn(query);
 
-        List<?> ids = session.createQuery(query).list();
+        List<?> ids = entityManager.createQuery(query).getResultList();
 
         List<CaseParameter> params = new ArrayList<CaseParameter>();
 
         for (Iterator<?> iter = ids.iterator(); iter.hasNext();)
-            params.add(dao.getCaseParameter((Integer) iter.next(), session));
+            params.add(dao.getCaseParameter((Integer) iter.next(), entityManager));
 
         return params.toArray(new CaseParameter[0]);
     }
@@ -5266,7 +5269,7 @@ public class ManagedCaseService {
     // (all jobs and same sector and same region) )
 
     @SuppressWarnings("unchecked")
-    private CaseParameter getParentCaseParameters4SensitivityCase(int parentcaseId, CaseParameter templateparam, GeoRegion selectedRegion, Session session) {
+    private CaseParameter getParentCaseParameters4SensitivityCase(int parentcaseId, CaseParameter templateparam, GeoRegion selectedRegion, EntityManager entityManager) {
 
         if (DebugLevels.DEBUG_9()) {
             System.out.println("Trying to find match for " + templateparam.getName());
@@ -5284,7 +5287,7 @@ public class ManagedCaseService {
         CaseJob refJob = new CaseJob();
         
         //NOTE: if templateJob is NOT null it means that this template parameter is job specific
-        CaseJob templateJob = dao.getCaseJob(templateparam.getJobId(), session);
+        CaseJob templateJob = dao.getCaseJob(templateparam.getJobId(), entityManager);
         
         if (templateJob != null) {
             refJob.setName(templateJob.getName());
@@ -5296,7 +5299,7 @@ public class ManagedCaseService {
         // from the parent case
         if (templateJob != null && templateJob.getRegion() != null) refJob.setRegion(selectedRegion);
         
-        CaseJob parentJob = (templateJob == null) ? null : dao.getCaseJob(parentcaseId, refJob, session);
+        CaseJob parentJob = (templateJob == null) ? null : dao.getCaseJob(parentcaseId, refJob, entityManager);
         
         //NOTE: if template parameter is job specific and this job doesn't exist in parent case, then there is definitely no matches
         if (templateJob != null && parentJob == null) return null;
@@ -5304,7 +5307,7 @@ public class ManagedCaseService {
         //NOTE: parentJob is NOT null, implies that this template parameter is job specific
         if (parentJob != null) {
             //NOTE: get all job specific params by this specific job
-            List<CaseParameter> params = dao.getCaseParametersByJobId(parentcaseId, parentJob.getId(), session);
+            List<CaseParameter> params = dao.getCaseParametersByJobId(parentcaseId, parentJob.getId(), entityManager);
             
             //NOTE: if there is no job specific params in parent case, then no matches
             if (params == null || params.size() == 0) return null;
@@ -5346,7 +5349,7 @@ public class ManagedCaseService {
         if (DebugLevels.DEBUG_9())
             log.warn(query);
 
-        List<Integer> ids = session.createQuery(query).list();
+        List<Integer> ids = entityManager.createQuery(query).getResultList();
 
         if (DebugLevels.DEBUG_9()) {
             System.out.println("#IDs returned by query: " + ids == null ? 0 : ids.size());
@@ -5357,7 +5360,7 @@ public class ManagedCaseService {
          */
         List<CaseParameter> parameters = new ArrayList<CaseParameter>();
         for (Integer id : ids) {
-            parameters.add(dao.getCaseParameter(id, session));
+            parameters.add(dao.getCaseParameter(id, entityManager));
         }
         
         if (DebugLevels.DEBUG_9()) {
@@ -5388,7 +5391,7 @@ public class ManagedCaseService {
     }
 
     @SuppressWarnings("unchecked")
-    private CaseInput getParentCaseInputs4SensitivityCase(int parentcaseId, CaseInput templateinput, GeoRegion selectedRegion, Session session) {
+    private CaseInput getParentCaseInputs4SensitivityCase(int parentcaseId, CaseInput templateinput, GeoRegion selectedRegion, EntityManager entityManager) {
 
         if (DebugLevels.DEBUG_9()) {
             System.out.println("Trying to find match for " + templateinput.getName());
@@ -5405,7 +5408,7 @@ public class ManagedCaseService {
         Sector sector = templateinput.getSector();
         
         //NOTE: if templateJob is NOT null it means that this template input is job specific
-        CaseJob templateJob = dao.getCaseJob(templateinput.getCaseJobID(), session);
+        CaseJob templateJob = dao.getCaseJob(templateinput.getCaseJobID(), entityManager);
         
         if (templateJob != null) {
             refJob.setName(templateJob.getName());
@@ -5417,7 +5420,7 @@ public class ManagedCaseService {
         // from the parent case
         if (templateJob != null && templateJob.getRegion() != null) refJob.setRegion(selectedRegion);
         
-        CaseJob parentJob = (templateJob == null) ? null : dao.getCaseJob(parentcaseId, refJob, session);
+        CaseJob parentJob = (templateJob == null) ? null : dao.getCaseJob(parentcaseId, refJob, entityManager);
         
         //NOTE: if template input is job specific and this job doesn't exist in parent case, then there is definitely no matches
         if (templateJob != null && parentJob == null) return null;
@@ -5425,7 +5428,7 @@ public class ManagedCaseService {
         //NOTE: parentJob is NOT null, implies that this template input is job specific
         if (parentJob != null) {
             //NOTE: get all job specific inputs by this specific job
-            List<CaseInput> inputs = dao.getCaseInputsByJobIds(parentcaseId, new int[] {parentJob.getId()}, session);
+            List<CaseInput> inputs = dao.getCaseInputsByJobIds(parentcaseId, new int[] {parentJob.getId()}, entityManager);
             
             //NOTE: if there is no job specific inputs in parent case, then no matches
             if (inputs == null || inputs.size() == 0) return null;
@@ -5466,7 +5469,7 @@ public class ManagedCaseService {
         if (DebugLevels.DEBUG_9())
             log.warn(query);
 
-        List<Integer> ids = session.createQuery(query).list();
+        List<Integer> ids = entityManager.createQuery(query).getResultList();
 
         if (DebugLevels.DEBUG_9()) {
             System.out.println("#IDs returned by query: " + ids == null ? 0 : ids.size());
@@ -5477,7 +5480,7 @@ public class ManagedCaseService {
          */
         List<CaseInput> inputs = new ArrayList<CaseInput>();
         for (Integer id : ids) {
-            inputs.add(dao.getCaseInput(id, session));
+            inputs.add(dao.getCaseInput(id, entityManager));
         }
         
         if (DebugLevels.DEBUG_9()) {
@@ -5508,11 +5511,11 @@ public class ManagedCaseService {
     }
     
     public synchronized void printCase(String folder, int caseId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         Case currentCase = null;
 
         try {
-            currentCase = dao.getCase(caseId, session);
+            currentCase = dao.getCase(caseId, entityManager);
             if (currentCase == null)
                 throw new EmfException("Cannot retrieve current case.");
 
@@ -5521,8 +5524,8 @@ public class ManagedCaseService {
                 throw new EmfException("EMF cannot write to folder " + folder);
             }
             List<CaseJob> jobs = dao.getCaseJobs(caseId);
-            List<CaseInput> inputs = dao.getCaseInputs(caseId, session);
-            List<CaseParameter> parameters = dao.getCaseParameters(caseId, session);
+            List<CaseInput> inputs = dao.getCaseInputs(caseId, entityManager);
+            List<CaseParameter> parameters = dao.getCaseParameters(caseId, entityManager);
 
             String prefix = currentCase.getName() + "_" + currentCase.getAbbreviation().getName() + "_";
             prefix = StringTools.replaceNoneLetterDigit(prefix, '_');
@@ -5533,7 +5536,7 @@ public class ManagedCaseService {
             // First buffer: parameter
             // Second buffer: inputs
             // third buffer: jobs
-            String[] caseExportString = getCaseExportString(currentCase, parameters, jobs, inputs, session);
+            String[] caseExportString = getCaseExportString(currentCase, parameters, jobs, inputs, entityManager);
 
             printCaseSumParams(caseExportString[0], folder, sumParamFile);
             printCaseInputs(caseExportString[1], folder, inputsFile);
@@ -5548,28 +5551,28 @@ public class ManagedCaseService {
                     // + (currentCase == null ? " (id = " + caseId + "). " : currentCase.getName() + ". ")
                     + e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public String[] printLocalCase(int caseId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         Case currentCase = null;
 
         try {
-            currentCase = dao.getCase(caseId, session);
+            currentCase = dao.getCase(caseId, entityManager);
             if (currentCase == null)
                 throw new EmfException("Cannot retrieve current case.");
 
             List<CaseJob> jobs = dao.getCaseJobs(caseId);
-            List<CaseInput> inputs = dao.getCaseInputs(caseId, session);
-            List<CaseParameter> parameters = dao.getCaseParameters(caseId, session);
+            List<CaseInput> inputs = dao.getCaseInputs(caseId, entityManager);
+            List<CaseParameter> parameters = dao.getCaseParameters(caseId, entityManager);
 
             // First buffer: parameter
             // Second buffer: inputs
             // third buffer: jobs
-            String[] caseExportString = getCaseExportString(currentCase, parameters, jobs, inputs, session);
+            String[] caseExportString = getCaseExportString(currentCase, parameters, jobs, inputs, entityManager);
 
             return caseExportString;
         } catch (Exception e) {
@@ -5580,18 +5583,18 @@ public class ManagedCaseService {
                     // + (currentCase == null ? " (id = " + caseId + "). " : currentCase.getName() + ". ")
                     + e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     private synchronized String[] getCaseExportString(Case currentCase, List<CaseParameter> parameters,
-            List<CaseJob> jobs, List<CaseInput> inputs, Session session) {
+            List<CaseJob> jobs, List<CaseInput> inputs, EntityManager entityManager) {
 
         List<String> caseExportList = new ArrayList<String>();
         caseExportList.add(bufferCaseSumParams(currentCase, parameters, jobs));
-        caseExportList.add(bufferCaseInputs(inputs, jobs, session));
-        caseExportList.add(bufferCaseJobs(jobs, session));
+        caseExportList.add(bufferCaseInputs(inputs, jobs, entityManager));
+        caseExportList.add(bufferCaseJobs(jobs, entityManager));
         return caseExportList.toArray(new String[0]);
     }
 
@@ -5792,11 +5795,11 @@ public class ManagedCaseService {
         return "";
     }
 
-    private String getDependsOnJobsString(DependentJob[] dependentJobs, Session session) {
+    private String getDependsOnJobsString(DependentJob[] dependentJobs, EntityManager entityManager) {
         StringBuffer sb = new StringBuffer();
 
         for (DependentJob job : dependentJobs) {
-            CaseJob depJob = dao.getCaseJob(job.getJobId(), session);
+            CaseJob depJob = dao.getCaseJob(job.getJobId(), entityManager);
             sb.append(depJob != null ? depJob.getName() + "&" : "");
         }
 
@@ -5805,7 +5808,7 @@ public class ManagedCaseService {
         return lastAmp < 0 ? sb.toString() : sb.toString().substring(0, lastAmp);
     }
 
-    private synchronized String bufferCaseInputs(List<CaseInput> inputs, List<CaseJob> jobs, Session session) {
+    private synchronized String bufferCaseInputs(List<CaseInput> inputs, List<CaseJob> jobs, EntityManager entityManager) {
         String ls = System.getProperty("line.separator");
         String columns = "Tab,Inputname,Envt Variable,Region,Sector,Job,Program,Dataset,Version,QA status,DS Type,Reqd?,Local?,Subdir,Last Modified,Parentcase"
                 + ls;
@@ -5829,7 +5832,7 @@ public class ManagedCaseService {
             String subdir = input.getSubdirObj() == null ? "" : input.getSubdirObj() + "";
             String lstMod = input.getLastModifiedDate() == null ? "" : CustomDateFormat.format_MM_DD_YYYY_HH_mm(input
                     .getLastModifiedDate());
-            Case parent = (input.getParentCaseId() > 0) ? dao.getCase(input.getParentCaseId(), session) : null;
+            Case parent = (input.getParentCaseId() > 0) ? dao.getCase(input.getParentCaseId(), entityManager) : null;
             String parentName = parent != null ? parent.getName() : "";
 
             sb.append("Inputs,\"" + clean(name) + "\",\"" + clean(envVar) + "\",\"" + clean(region) + "\",\""
@@ -5843,7 +5846,7 @@ public class ManagedCaseService {
         // writer.close();
     }
 
-    private String bufferCaseJobs(List<CaseJob> jobs, Session session) {
+    private String bufferCaseJobs(List<CaseJob> jobs, EntityManager entityManager) {
         String ls = System.getProperty("line.separator");
         String columns = "Tab,JobName,Order,Region,Sector,RunStatus,StartDate,CompletionDate,Executable,Arguments,Path,QueueOptions,JobGroup,Local,QueueID,User,Host,Notes,Purpose,DependsOn"
                 + ls;
@@ -5872,7 +5875,7 @@ public class ManagedCaseService {
             String host = job.getHost() == null ? "" : job.getHost() + "";
             String notes = job.getRunNotes() == null ? "" : processNewLines(job.getRunNotes());
             String purpose = job.getPurpose() == null ? "" : processNewLines(job.getPurpose());
-            String dependsOn = getDependsOnJobsString(job.getDependentJobs(), session);
+            String dependsOn = getDependsOnJobsString(job.getDependentJobs(), entityManager);
 
             sb.append("Jobs,\"" + clean(name) + "\"," + order + ",\"" + clean(region) + "\",\"" + clean(sector) + "\","
                     + clean(status) + "," + start + "," + end + "," + clean(exec) + ",\"" + clean(args) + "\","
@@ -5910,7 +5913,7 @@ public class ManagedCaseService {
                 throw new EmfException("only the user who is running the job '" + job.getName()
                         + "' or an administrator can cancel the job");
 
-            TaskManagerFactory.getCaseJobTaskManager(sessionFactory).cancelJob(id, user);
+            TaskManagerFactory.getCaseJobTaskManager(entityManagerFactory).cancelJob(id, user);
             jobCanceled++;
         }
 

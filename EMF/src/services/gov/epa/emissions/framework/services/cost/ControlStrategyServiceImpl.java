@@ -20,19 +20,20 @@ import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyResultT
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import gov.epa.emissions.framework.services.persistence.JpaEntityManagerFactory;
 import gov.epa.emissions.framework.services.qa.QueryToString;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
 
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 
@@ -42,25 +43,25 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
 
     private PooledExecutor threadPool;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private DbServerFactory dbServerFactory;
 
     private ControlStrategyDAO dao;
 
     public ControlStrategyServiceImpl() throws Exception {
-        init(HibernateSessionFactory.get(), DbServerFactory.get());
+        init(JpaEntityManagerFactory.get(), DbServerFactory.get());
     }
 
-    public ControlStrategyServiceImpl(HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory)
+    public ControlStrategyServiceImpl(EntityManagerFactory entityManagerFactory, DbServerFactory dbServerFactory)
             throws Exception {
-        init(sessionFactory, dbServerFactory);
+        init(entityManagerFactory, dbServerFactory);
     }
 
-    private synchronized void init(HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory) {
-        this.sessionFactory = sessionFactory;
+    private synchronized void init(EntityManagerFactory entityManagerFactory, DbServerFactory dbServerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
         this.dbServerFactory = dbServerFactory;
-        dao = new ControlStrategyDAO(dbServerFactory, sessionFactory);
+        dao = new ControlStrategyDAO(dbServerFactory, entityManagerFactory);
         threadPool = createThreadPool();
 
     }
@@ -80,62 +81,62 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
     }
 
     public synchronized ControlStrategy[] getControlStrategies() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List cs = dao.all(session);
+            List cs = dao.all(entityManager);
             return (ControlStrategy[]) cs.toArray(new ControlStrategy[0]);
         } catch (HibernateException e) {
             LOG.error("Could not retrieve all control strategies.");
             throw new EmfException("Could not retrieve all control strategies.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized ControlStrategy[] getControlStrategies(BasicSearchFilter searchFilter) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List cs = dao.getControlStrategies(session, searchFilter);
+            List cs = dao.getControlStrategies(entityManager, searchFilter);
             return (ControlStrategy[]) cs.toArray(new ControlStrategy[0]);
         } catch (HibernateException e) {
             LOG.error("Could not retrieve all control strategies.");
             throw new EmfException("Could not retrieve all control strategies.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized int addControlStrategy(ControlStrategy element) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         int csId;
         try {
-            csId = dao.add(element, session);
+            csId = dao.add(element, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not add Control Strategy: " + element, e);
             throw new EmfException("Could not add Control Strategy: " + element);
         } finally {
-            session.close();
+            entityManager.close();
         }
         return csId;
     }
 
     public synchronized void setControlStrategyRunStatusAndCompletionDate(int id, String runStatus, Date completionDate)
             throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dao.setControlStrategyRunStatusAndCompletionDate(id, runStatus, completionDate, session);
+            dao.setControlStrategyRunStatusAndCompletionDate(id, runStatus, completionDate, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not set Control Strategy run status: " + id, e);
             throw new EmfException("Could not add Control Strategy run status: " + id);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized ControlStrategy obtainLocked(User owner, int id) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            ControlStrategy locked = dao.obtainLocked(owner, id, session);
+            ControlStrategy locked = dao.obtainLocked(owner, id, entityManager);
 
             return locked;
         } catch (RuntimeException e) {
@@ -145,15 +146,15 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
             throw new EmfException("Could not obtain lock for Control Strategy: id = " + id + " by owner: "
                     + owner.getUsername());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     // FIXME
     // public void releaseLocked(ControlStrategy locked) throws EmfException {
-    // Session session = sessionFactory.getSession();
+    // EntityManager entityManager = entityManagerFactory.createEntityManager();
     // try {
-    // dao.releaseLocked(locked, session);
+    // dao.releaseLocked(locked, entityManager);
     // } catch (RuntimeException e) {
     // LOG.error(
     // "Could not release lock for Control Strategy : " + locked + " by owner: " + locked.getLockOwner(),
@@ -161,54 +162,54 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
     // throw new EmfException("Could not release lock for Control Strategy: " + locked + " by owner: "
     // + locked.getLockOwner());
     // } finally {
-    // session.close();
+    // entityManager.close();
     // }
     // }
 
     public synchronized void releaseLocked(User user, int id) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dao.releaseLocked(user, id, session);
+            dao.releaseLocked(user, id, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not release lock for Control Strategy id: " + id, e);
             throw new EmfException("Could not release lock for Control Strategy id: " + id);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized ControlStrategy updateControlStrategy(ControlStrategy element) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            if (!dao.canUpdate(element, session))
+            if (!dao.canUpdate(element, entityManager))
                 throw new EmfException("The Control Strategy name is already in use");
 
-            ControlStrategy released = dao.update(element, session);
+            ControlStrategy released = dao.update(element, entityManager);
 
             return released;
         } catch (RuntimeException e) {
             LOG.error("Could not update Control Strategy: " + element, e);
             throw new EmfException("Could not update ControlStrategy: " + element);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized ControlStrategy updateControlStrategyWithLock(ControlStrategy element) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            if (!dao.canUpdate(element, session))
+            if (!dao.canUpdate(element, entityManager))
                 throw new EmfException("Control Strategy name already in use");
 
-            ControlStrategy csWithLock = dao.updateWithLock(element, session);
+            ControlStrategy csWithLock = dao.updateWithLock(element, entityManager);
 
             return csWithLock;
-            // return dao.getById(csWithLock.getId(), session);
+            // return dao.getById(csWithLock.getId(), entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not update Control Strategy: " + element, e);
             throw new EmfException("Could not update ControlStrategy: " + element);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -232,12 +233,12 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
     }
 
     public synchronized void removeControlStrategies(int[] ids, User user, boolean deleteResults, boolean deleteCntlInvs) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         String exception = "";
         try {
             for (int i = 0; i < ids.length; i++) {
-                ControlStrategy cs = dao.getById(ids[i], session);
-                session.clear();
+                ControlStrategy cs = dao.getById(ids[i], entityManager);
+                entityManager.clear();
 
                 // check if admin user, then allow it to be removed.
                 if (user.equals(cs.getCreator()) || user.isAdmin()) {
@@ -257,15 +258,15 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
             LOG.error("Could not remove Control Strategy", e);
             throw new EmfException("Could not remove ControlStrategy");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private synchronized void remove(ControlStrategy element, User user, boolean deleteResults, boolean deleteCntlInvs) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
 
-            if (!dao.canUpdate(element, session))
+            if (!dao.canUpdate(element, entityManager))
                 throw new EmfException("Control Strategy name already in use");
 
             ControlStrategyResult[] controlStrategyResults = getControlStrategyResults(element.getId());
@@ -281,32 +282,32 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
                 }
             }
             
-            dao.removeControlStrategyResults(element.getId(), session);
+            dao.removeControlStrategyResults(element.getId(), entityManager);
 
             if (dsList.size() > 0) {
-                dao.removeResultDatasets(dsList.toArray(new EmfDataset[0]), user, session,
+                dao.removeResultDatasets(dsList.toArray(new EmfDataset[0]), user, entityManager,
                         dbServerFactory.getDbServer());
             }
 
-            dao.remove(element, session);
+            dao.remove(element, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not remove control strategy: " + element, e);
             throw new EmfException("Could not remove control strategy: " + element.getName());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized void removeResultDatasets(Integer[] ids, User user) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         DatasetDAO dsDao = new DatasetDAO();
         try {
             for (Integer id : ids) {
-                EmfDataset dataset = dsDao.getDataset(session, id);
+                EmfDataset dataset = dsDao.getDataset(entityManager, id);
 
                 if (dataset != null) {
                     try {
-                        dsDao.remove(user, dataset, session);
+                        dsDao.remove(user, dataset, entityManager);
                     } catch (EmfException e) {
                         if (DebugLevels.DEBUG_12())
                             System.out.println(e.getMessage());
@@ -316,14 +317,16 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
                 }
             }
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized void runStrategy(User user, int controlStrategyId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             ControlStrategy strategy = getById(controlStrategyId);
+            LOG.info(strategy.getConstraint().getDomainWidePctReductionIncrement());
+            LOG.info(strategy.getConstraint().getDomainWidePctReduction());
             //get rid of for now, since we don't auto export anything
             //make sure a valid server-side export path was specified
             //validateExportPath(strategy.getExportDirectory());
@@ -335,33 +338,33 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
             
 
             // queue up the strategy to be run, by setting runStatus to Waiting
-            dao.setControlStrategyRunStatusAndCompletionDate(controlStrategyId, "Waiting", null, session);
+            dao.setControlStrategyRunStatusAndCompletionDate(controlStrategyId, "Waiting", null, entityManager);
 
             StrategyFactory factory = new StrategyFactory();
 //            validatePath(strategy.getExportDirectory());
-            RunControlStrategy runStrategy = new RunControlStrategy(factory, sessionFactory, dbServerFactory,
+            RunControlStrategy runStrategy = new RunControlStrategy(factory, entityManagerFactory, dbServerFactory,
                     threadPool);
             runStrategy.run(user, strategy, this);
         } catch (EmfException e) {
             // queue up the strategy to be run, by setting runStatus to Waiting
-            dao.setControlStrategyRunStatusAndCompletionDate(controlStrategyId, "Failed", null, session);
+            dao.setControlStrategyRunStatusAndCompletionDate(controlStrategyId, "Failed", null, entityManager);
 
             throw new EmfException(e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized void summarizeStrategy(User user, int controlStrategyId, 
             String exportDirectory, StrategyResultType strategyResultType) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
 
             ControlStrategy strategy = getById(controlStrategyId);
             
             StrategySummaryFactory factory = new StrategySummaryFactory();
 
-            SummarizeStrategy runStrategyResult = new SummarizeStrategy(factory, sessionFactory, 
+            SummarizeStrategy runStrategyResult = new SummarizeStrategy(factory, entityManagerFactory, 
                     dbServerFactory, threadPool);
 
             runStrategyResult.run(user, strategy, 
@@ -370,29 +373,29 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
         } catch (EmfException e) {
             throw new EmfException(e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public List<ControlStrategy> getControlStrategiesByRunStatus(String runStatus) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getControlStrategiesByRunStatus(runStatus, session);
+            return dao.getControlStrategiesByRunStatus(runStatus, entityManager);
         } catch (RuntimeException e) {
             throw new EmfException("Could not get Control Strategies by run status: " + runStatus);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public Long getControlStrategyRunningCount() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getControlStrategyRunningCount(session);
+            return dao.getControlStrategyRunningCount(entityManager);
         } catch (RuntimeException e) {
             throw new EmfException("Could not get Control Strategies running count");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -407,30 +410,30 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
 //    }
 
     public synchronized void stopRunStrategy(int controlStrategyId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             // look at the current status, if waiting or running, then update to Cancelled.
-            String status = dao.getControlStrategyRunStatus(controlStrategyId, session);
+            String status = dao.getControlStrategyRunStatus(controlStrategyId, entityManager);
             if (status.toLowerCase().startsWith("waiting") || status.toLowerCase().startsWith("running"))
-                dao.setControlStrategyRunStatusAndCompletionDate(controlStrategyId, "Cancelled", null, session);
+                dao.setControlStrategyRunStatusAndCompletionDate(controlStrategyId, "Cancelled", null, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not set Control Strategy run status: " + controlStrategyId, e);
             throw new EmfException("Could not add Control Strategy run status: " + controlStrategyId);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized StrategyType[] getStrategyTypes() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List st = dao.getAllStrategyTypes(session);
+            List st = dao.getAllStrategyTypes(entityManager);
             return (StrategyType[]) st.toArray(new StrategyType[0]);
         } catch (HibernateException e) {
             LOG.error("could not retrieve all control strategy types. " + e.getMessage());
             throw new EmfException("could not retrieve all control strategy types. " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -439,7 +442,7 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
         try {
             ControlStrategyInventoryOutputTask task = new ControlStrategyInventoryOutputTask(user, controlStrategy,
                     controlStrategyResults, namePrefix, 
-                    sessionFactory, dbServerFactory);
+                    entityManagerFactory, dbServerFactory);
             if (task.shouldProceed())
                 threadPool.execute(new GCEnforcerTask("Create Inventories: " + controlStrategy.getName(), task));
         } catch (Exception e) {
@@ -449,40 +452,40 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
     }
 
     public synchronized String controlStrategyRunStatus(int id) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.controlStrategyRunStatus(id, session);
+            return dao.controlStrategyRunStatus(id, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve ControlStrategy Status", e);
             throw new EmfException("Could not retrieve ControlStrategy Status");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     // returns control strategy Id for the given name
     public synchronized int isDuplicateName(String name) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            ControlStrategy cs = dao.getByName(name, session);
+            ControlStrategy cs = dao.getByName(name, entityManager);
             return cs == null ? 0 : cs.getId();
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve if ControlStrategy name is already used", e);
             throw new EmfException("Could not retrieve if ControlStrategy name is already used");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized int copyControlStrategy(int id, User creator) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             // get cs to copy
-            ControlStrategy cs = dao.getById(id, session);
+            ControlStrategy cs = dao.getById(id, entityManager);
 
             ControlStrategyConstraint constraint = cs.getConstraint();
 
-            session.clear();// clear to flush current
+            entityManager.clear();// clear to flush current
 
             String name = "Copy of " + cs.getName();
             // make sure this won't cause duplicate issues...
@@ -503,12 +506,12 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
                 copied.setLockOwner(null);
             }
 
-            dao.add(copied, session);
+            dao.add(copied, entityManager);
             int csId = copied.getId();
             // FIXME: something is not right with the hibernate mapping, constraint should be added automatically.
             if (constraint != null) {
                 constraint.setControlStrategyId(csId);
-                dao.add(constraint, session);
+                dao.add(constraint, entityManager);
             }
             return csId;
         } catch (EmfException e) {
@@ -521,7 +524,7 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
             LOG.error("Could not copy control strategy", e);
             throw new EmfException("Could not copy control strategy");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -530,75 +533,75 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
     }
 
     public synchronized ControlStrategy getById(int id) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getById(id, session);
+            return dao.getById(id, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not get control strategy", e);
             throw new EmfException("Could not get control strategy");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized ControlStrategyResult[] getControlStrategyResults(int controlStrategyId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List all = dao.getControlStrategyResults(controlStrategyId, session);
+            List all = dao.getControlStrategyResults(controlStrategyId, entityManager);
             return (ControlStrategyResult[]) all.toArray(new ControlStrategyResult[0]);
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve control strategy results.", e);
             throw new EmfException("Could not retrieve control strategy results.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized String getDefaultExportDirectory() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            String dir = dao.getDefaultExportDirectory(session);
+            String dir = dao.getDefaultExportDirectory(entityManager);
             return dir;
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve default export directory.", e);
             throw new EmfException("Could not retrieve default export directory.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized StrategyResultType[] getOptionalStrategyResultTypes() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getOptionalStrategyResultTypes(session);
+            return dao.getOptionalStrategyResultTypes(entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve strategy result types.", e);
             throw new EmfException("Could not retrieve strategy result types.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized String getStrategyRunStatus(int id) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getStrategyRunStatus(session, id);
+            return dao.getStrategyRunStatus(entityManager, id);
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve strategy run status.", e);
             throw new EmfException("Could not retrieve strategy run status.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized String getCoSTSUs() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            EmfProperty property = new EmfPropertiesDAO().getProperty("COST_SU", session);
+            EmfProperty property = new EmfPropertiesDAO().getProperty("COST_SU", entityManager);
             
             return (property != null ? property.getValue() : "");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
@@ -643,22 +646,22 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
     }
 
     public synchronized StrategyGroup[] getStrategyGroups() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List groups = dao.getAllStrategyGroups(session);
+            List groups = dao.getAllStrategyGroups(entityManager);
             return (StrategyGroup[]) groups.toArray(new StrategyGroup[0]);
         } catch (HibernateException e) {
             LOG.error("Could not retrieve all control strategy groups. " + e.getMessage());
             throw new EmfException("Could not retrieve all control strategy groups. " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized StrategyGroup obtainLockedGroup(User owner, int id) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            StrategyGroup locked = dao.obtainLockedGroup(owner, id, session);
+            StrategyGroup locked = dao.obtainLockedGroup(owner, id, entityManager);
             return locked;
         } catch (RuntimeException e) {
             LOG.error("Could not obtain lock for Strategy Group: id = " + id + " by owner: "
@@ -666,73 +669,73 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
             throw new EmfException("Could not obtain lock for Strategy Group: id = " + id + " by owner: "
                     + owner.getUsername());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized void releaseLockedGroup(User user, int id) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dao.releaseLockedGroup(user, id, session);
+            dao.releaseLockedGroup(user, id, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not release lock for Strategy Group id: " + id, e);
             throw new EmfException("Could not release lock for Strategy Group id: " + id);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized int addStrategyGroup(StrategyGroup group) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         int groupId;
         try {
-            groupId = dao.addGroup(group, session);
+            groupId = dao.addGroup(group, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not add Control Strategy Group: " + group, e);
             throw new EmfException("Could not add Control Strategy Group: " + group);
         } finally {
-            session.close();
+            entityManager.close();
         }
         return groupId;
     }
 
     public synchronized StrategyGroup updateStrategyGroupWithLock(StrategyGroup group) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            if (!dao.canUpdateGroup(group, session))
+            if (!dao.canUpdateGroup(group, entityManager))
                 throw new EmfException("Control Strategy Group name already in use");
 
-            StrategyGroup groupWithLock = dao.updateGroupWithLock(group, session);
+            StrategyGroup groupWithLock = dao.updateGroupWithLock(group, entityManager);
 
             return groupWithLock;
         } catch (RuntimeException e) {
             LOG.error("Could not update Control Strategy Group: " + group, e);
             throw new EmfException("Could not update Control Strategy Group: " + group);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized int isDuplicateGroupName(String name) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            StrategyGroup group = dao.getGroupByName(name, session);
+            StrategyGroup group = dao.getGroupByName(name, entityManager);
             return group == null ? 0 : group.getId();
         } catch (RuntimeException e) {
             LOG.error("Could not determine if Control Strategy Group name is already used", e);
             throw new EmfException("Could not determine if Control Strategy Group name is already used");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized void removeStrategyGroups(int[] ids, User user) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         String exception = "";
         try {
             for (int i = 0; i < ids.length; i++) {
-                StrategyGroup group = dao.getGroupById(ids[i], session);
-                session.clear();
+                StrategyGroup group = dao.getGroupById(ids[i], entityManager);
+                entityManager.clear();
 
                 // check if admin user, then allow it to be removed.
 //                if (user.equals(cs.getCreator()) || user.isAdmin()) {
@@ -752,22 +755,22 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
             LOG.error("Could not remove Control Strategy Group", e);
             throw new EmfException("Could not remove Control Strategy Group");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private synchronized void removeGroup(StrategyGroup group) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            if (!dao.canUpdateGroup(group, session))
+            if (!dao.canUpdateGroup(group, entityManager))
                 throw new EmfException("Control Strategy Group doesn't exist.");
 
-            dao.removeGroup(group, session);
+            dao.removeGroup(group, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not remove Control Strategy Group: " + group, e);
             throw new EmfException("Could not remove Control Strategy Group: " + group.getName());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 }

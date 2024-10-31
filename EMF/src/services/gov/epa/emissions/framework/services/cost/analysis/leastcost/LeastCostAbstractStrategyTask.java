@@ -21,7 +21,6 @@ import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategy
 import gov.epa.emissions.framework.services.cost.controlStrategy.DatasetCreator;
 import gov.epa.emissions.framework.services.data.DatasetTypesDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.sql.ResultSet;
@@ -30,7 +29,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public abstract class LeastCostAbstractStrategyTask extends AbstractCheckMessagesStrategyTask {
 
@@ -39,8 +39,8 @@ public abstract class LeastCostAbstractStrategyTask extends AbstractCheckMessage
     protected ControlStrategyResult leastCostCurveSummaryResult;
 
     public LeastCostAbstractStrategyTask(ControlStrategy controlStrategy, User user, DbServerFactory dbServerFactory,
-            HibernateSessionFactory sessionFactory, StrategyLoader loader) throws EmfException {
-        super(controlStrategy, user, dbServerFactory, sessionFactory, loader);
+            EntityManagerFactory entityManagerFactory, StrategyLoader loader) throws EmfException {
+        super(controlStrategy, user, dbServerFactory, entityManagerFactory, loader);
     }
 
     protected void compareInventoriesTemporalResolution() {
@@ -114,11 +114,11 @@ public abstract class LeastCostAbstractStrategyTask extends AbstractCheckMessage
     
     protected DatasetType getMergedInventoryDatasetType(String type) {
         DatasetType datasetType = null;
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            datasetType = new DatasetTypesDAO().get(type, session);
+            datasetType = new DatasetTypesDAO().get(type, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
         return datasetType;
     }
@@ -393,12 +393,12 @@ public abstract class LeastCostAbstractStrategyTask extends AbstractCheckMessage
     }
 
     protected Version version(EmfDataset inputDataset, int datasetVersion) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             Versions versions = new Versions();
-            return versions.get(inputDataset.getId(), datasetVersion, session);
+            return versions.get(inputDataset.getId(), datasetVersion, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 

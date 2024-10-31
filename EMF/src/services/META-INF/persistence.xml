@@ -3,18 +3,23 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence 
              https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
-	<persistence-unit name="com.baeldung.movie_catalog">
+	<persistence-unit name="gov.epa.emissions" transaction-type="RESOURCE_LOCAL">
 	    <description>Hibernate EntityManager Demo</description>
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<jta-data-source>java:comp/env/jdbc/EMFDB</jta-data-source>
+	    <class>gov.epa.emissions.framework.services.data.Note</class>
+	    <class>gov.epa.emissions.framework.services.data.DatasetNote</class>
 	    <exclude-unlisted-classes>true</exclude-unlisted-classes>
 	    <properties>
 	    	<property name="hibernate.ejb.cfgfile" value="/hibernate.cfg.xml" />
 	        <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-	        <property name="hibernate.hbm2ddl.auto" value="update"/>
+	        <property name="hibernate.hbm2ddl.auto" value="none"/>
 	        <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-	        <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/EMF"/>
+   	        <!--property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/emf"/>
 	        <property name="javax.persistence.jdbc.user" value="emf"/>
-	        <property name="javax.persistence.jdbc.password" value="emf"/>
+	        <property name="javax.persistence.jdbc.password" value="emf"/-->
+			<property name="hibernate.jdbc.time_zone" value="UTC"/>
+			<!--property name="hibernate.transaction.jta.platform" value="bitronix.tm.jndi.BitronixJndiPlatform"/-->
 	    </properties>
 	</persistence-unit>
 </persistence>

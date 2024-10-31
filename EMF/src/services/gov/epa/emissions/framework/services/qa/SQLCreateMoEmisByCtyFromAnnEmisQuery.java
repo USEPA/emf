@@ -5,7 +5,6 @@ import gov.epa.emissions.commons.io.VersionedQuery;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.QAStep;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+
+import javax.persistence.EntityManagerFactory;
 
 public class SQLCreateMoEmisByCtyFromAnnEmisQuery extends SQLQAProgramQuery{
     
@@ -29,10 +30,10 @@ public class SQLCreateMoEmisByCtyFromAnnEmisQuery extends SQLQAProgramQuery{
     
     ArrayList<String> compareDatasetNames = new ArrayList<String>();
     
-    public SQLCreateMoEmisByCtyFromAnnEmisQuery(HibernateSessionFactory sessionFactory, DbServer dbServer, 
+    public SQLCreateMoEmisByCtyFromAnnEmisQuery(EntityManagerFactory entityManagerFactory, DbServer dbServer, 
             String emissioDatasourceName, String tableName, 
             QAStep qaStep) {
-        super(sessionFactory,emissioDatasourceName,tableName,qaStep);
+        super(entityManagerFactory,emissioDatasourceName,tableName,qaStep);
         this.dbServer = dbServer;
     }
 
@@ -300,7 +301,7 @@ public class SQLCreateMoEmisByCtyFromAnnEmisQuery extends SQLQAProgramQuery{
 
     protected String query(String partialQuery, boolean createClause) throws EmfException {
 
-        SQLQueryParser parser = new SQLQueryParser(sessionFactory, emissionDatasourceName, tableName );
+        SQLQueryParser parser = new SQLQueryParser(entityManagerFactory, emissionDatasourceName, tableName );
         return parser.parse(partialQuery, createClause);
     }
 

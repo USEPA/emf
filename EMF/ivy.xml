@@ -96,37 +96,17 @@
 
 		<dependency org="jakarta.xml.rpc" name="jakarta.xml.rpc-api" rev="1.1.4" />
 
-        <!--dependency org="log4j" name="log4j" rev="1.2.17" conf="server->default" /-->
-        <!--<dependency org="mail" name="mail" rev="?" />-->
-        <!--<dependency org="mchange-commons" name="mchange-commons" rev="0.2" />-->
-        <!--<dependency org="oscache" name="oscache" rev="2.1" />-->
         <dependency org="javax.persistence" name="persistence-api" rev="1.0.2" conf="server->default"/><!-- Server Client ? -->
-        <!--<dependency org="proxool" name="proxool" rev="0.8.3" />-->
-        <!--<dependency org="org.slf4j" name="slf4j-api" rev="1.6.1"/>--><!-- Server Client ? -->
-        <!--dependency org="org.slf4j" name="slf4j-nop" rev="1.6.1" /-->
-        <!--dependency org="log4j" name="log4j" rev="1.2.17" >
-            <artifact name="log4j" type="jar"/>
-        </dependency--><!-- needed for spring-core -->
-        <!--<dependency org="org.springframework" name="spring-aop" rev="3.2.4.RELEASE"/>-->
-        <!--<dependency org="org.springframework" name="spring-aspects" rev="3.2.4.RELEASE"/>-->
-        <dependency org="org.springframework" name="spring-beans" rev="5.3.27" conf="server->default"/>
+
+        <!-- needed for spring-core -->
+        <!--dependency org="org.springframework" name="spring-beans" rev="5.3.27" conf="server->default"/>
         <dependency org="org.springframework" name="spring-context" rev="5.3.27" conf="server->default"/>
         <dependency org="org.springframework" name="spring-core" rev="5.3.27" conf="server->default"/>
-        <!--<dependency org="org.springframework" name="spring-dao" rev="2.0.8"/>  Not needed, brought over on accident-->
-        <!--<dependency org="org.springframework" name="spring-expression" rev="3.2.4.RELEASE"/> transitive dep -->
-        <!--<dependency org="org.springframework" name="spring-hibernate3" rev="2.0.8"/>  Not needed, brought over on accident-->
-        <!--<dependency org="org.springframework" name="spring-jdbc" rev="3.2.4.RELEASE"/>-->
         <dependency org="org.springframework" name="spring-orm" rev="5.3.27" conf="server->default"/>
         <dependency org="org.springframework" name="spring-tx" rev="5.3.27" conf="server->default"/>
-        <dependency org="org.springframework" name="spring-web" rev="5.3.27" conf="server->default"/>
-        <!--<dependency org="swarmcache" name="swarmcache" rev="1.0rc2"/>-->
-        <!--<dependency org="versioncheck" name="versioncheck" rev="?"/>-->
-        <!--<dependency org="weka" name="weka" rev="3.4.11" />&lt;!&ndash; New version, WILL IT WORK? couldn't find older jar, it looks the same though &ndash;&gt;-->
-        <!--dependency org="nz.ac.waikato.cms.weka" name="weka-stable" rev="3.6.6" /--><!-- Analysis Engine Only -->
-        <!--dependency org="com.thoughtworks.xstream" name="xstream" rev="1.2.1" /--> <!-- Analysis Engine Only -->
+        <dependency org="org.springframework" name="spring-web" rev="5.3.27" conf="server->default"/-->
 
-        <!--dependency org="axis" name="axis" rev="1.4" conf="client->default;server->default" >
-        </dependency--><!-- Server Client -->
+        <!-- Server Client -->
         <dependency org="org.apache.axis" name="axis-rt-core" rev="1.4.1-SNAPSHOT" conf="client->default;server->default" /><!-- Server Client -->
         <dependency org="org.apache.axis" name="axis-rt-jws" rev="1.4.1-SNAPSHOT" conf="client->default;server->default" /><!-- Server Client -->
 
@@ -145,6 +125,19 @@
         <dependency org="org.apache.tomcat" name="tomcat-dbcp" rev="9.0.1" conf="server->default" />
         <dependency org="javax.servlet" name="javax.servlet-api" rev="4.0.1" conf="server->default" />
         <dependency org="javax.servlet" name="jstl" rev="1.2" conf="server->default" />
+        
+<!-- https://mvnrepository.com/artifact/org.glassfish.jersey.core/jersey-common -->
+<dependency org="org.glassfish.jersey.core" name="jersey-common" rev="2.45" conf="server->default" />
+<!-- https://mvnrepository.com/artifact/org.glassfish.jersey.core/jersey-server -->
+<dependency org="org.glassfish.jersey.core" name="jersey-server" rev="2.45" conf="server->default" />
+<!--<dependency org="org.hibernate" name="hibernate-validator" rev="7.0.5.Final" conf="server->default" />-->
+<dependency org="org.glassfish.jersey.containers" name="jersey-container-servlet" rev="2.45" conf="server->default" />
+<dependency org="org.glassfish.jersey.inject" name="jersey-hk2" rev="2.45" conf="server->default" />
+<dependency org="org.glassfish.jersey.media" name="jersey-media-json-jackson" rev="2.45" conf="client->default;server->default" />
+
+<dependency org="org.glassfish.jersey.core" name="jersey-client" rev="2.45" conf="client->default" />
+
+<!--dependency org="org.codehaus.btm" name="btm" rev="2.1.4" conf="server->default" /-->
 
 		<override org="javax.servlet" module="servlet-api" rev="2.3"/>
 		<!--exclude module="axis-jaxrpc" /-->

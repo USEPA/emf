@@ -5,6 +5,7 @@ import gov.epa.emissions.commons.security.PasswordGenerator;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.client.preference.DefaultUserPreferences;
 import gov.epa.emissions.framework.client.preference.UserPreference;
+import gov.epa.emissions.framework.client.transport.UserClient;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.AuthenticationException;
 import gov.epa.emissions.framework.services.basic.EmfProperty;
@@ -90,6 +91,8 @@ public class LoginPresenter {
             throw new EmfException("Unable to login via SSO Url.");
         }
 
+        
+//        User user = new UserClient().getUser(username);
         User user = userAdmin.getUser(username);
 
         if (user == null) {

@@ -7,13 +7,14 @@ import gov.epa.emissions.framework.services.cost.ControlStrategy;
 import gov.epa.emissions.framework.services.cost.analysis.common.AbstractCheckMessagesStrategyTask;
 import gov.epa.emissions.framework.services.cost.analysis.common.StrategyLoader;
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyResult;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+
+import javax.persistence.EntityManagerFactory;
 
 public class MaxEmsRedStrategy extends AbstractCheckMessagesStrategyTask {
 
     public MaxEmsRedStrategy(ControlStrategy controlStrategy, User user, DbServerFactory dbServerFactory,
-            HibernateSessionFactory sessionFactory, StrategyLoader loader) throws EmfException {
-        super(controlStrategy, user, dbServerFactory, sessionFactory, loader);
+            EntityManagerFactory entityManagerFactory, StrategyLoader loader) throws EmfException {
+        super(controlStrategy, user, dbServerFactory, entityManagerFactory, loader);
     }
 
     public void run() throws EmfException {

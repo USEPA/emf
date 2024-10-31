@@ -47,7 +47,6 @@
         <!--<dependency org="com.sun.woodstock.dependlibs" name="jh" rev="2.0"/>-->
         <!--<dependency org="net.java.linoleum" name="jlfgr" rev="1_0"  />-->
         <!--<dependency org="javax.transaction" name="jta" rev="1.1" />-->
-        <!--dependency org="log4j" name="log4j" rev="1.2.9" conf="commons->default" /-->
         <dependency org="org.slf4j" name="slf4j-api" rev="1.7.36" conf="test->default;commons->default" />
         <dependency org="org.slf4j" name="slf4j-simple" rev="1.7.36" conf="test->default;commons->default" />
 		<dependency org="org.postgresql" name="postgresql" rev="42.5.4" conf="commons->default" />
@@ -55,6 +54,9 @@
         <!--<dependency org="com.thoughtworks.xstream" name="xstream" rev="1.2.1" /> &lt;!&ndash; Analysis Engine Only &ndash;&gt;-->
         <dependency org="dbunit" name="dbunit" rev="2.1" conf="commons->default"/>
         <dependency org="junit" name="junit" rev="3.8.1" conf="commons->default"/>
+		<dependency org="org.glassfish.jersey.inject" name="jersey-hk2" rev="2.45" conf="commons->default" />
+<dependency org="org.glassfish.jersey.media" name="jersey-media-json-jackson" rev="2.45" conf="commons->default" />
+
 
         <!-- Testing Framework(s) Dependencies -->
         <dependency org="cobertura" name="cobertura" rev="1.6" conf="test->default"/>
@@ -67,5 +69,6 @@
         <!--<exclude module="asm" conf="test->default"/>-->
         <!--override org="xml-apis" module="xml-apis" rev="1.0.b2"/-->
         <override org="asm" module="asm" rev="2.1"/>
+        <override org="log4j" module="log4j" rev="1.2.17" />
     </dependencies>
 </ivy-module>

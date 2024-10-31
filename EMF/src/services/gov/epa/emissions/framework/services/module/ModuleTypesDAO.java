@@ -12,7 +12,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
 
 public class ModuleTypesDAO {
 
@@ -27,127 +27,127 @@ public class ModuleTypesDAO {
 
     //---------------------------------------------
     
-    public List<ModuleType> getModuleTypes(Session session) {
-        CriteriaBuilderQueryRoot<ModuleType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ModuleType.class, session);
+    public List<ModuleType> getModuleTypes(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<ModuleType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ModuleType.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<ModuleType> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public List<ModuleType> getLockedModuleTypes(Session session) throws EmfException {
+    public List<ModuleType> getLockedModuleTypes(EntityManager entityManager) throws EmfException {
         try {
-            CriteriaBuilderQueryRoot<ModuleType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ModuleType.class, session);
+            CriteriaBuilderQueryRoot<ModuleType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ModuleType.class, entityManager);
             CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
             Root<ModuleType> root = criteriaBuilderQueryRoot.getRoot();
 
-            return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { builder.isNotNull(root.get("lockOwner")) }, session);
+            return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { builder.isNotNull(root.get("lockOwner")) }, entityManager);
         } catch (Exception ex) {
             throw new EmfException("Failed to get the list of locked module types: " + ex.getMessage());
         }
     }
 
-    public void removeModuleType(ModuleType moduleType, Session session) {
-        hibernateFacade.remove(moduleType, session);
+    public void removeModuleType(ModuleType moduleType, EntityManager entityManager) {
+        hibernateFacade.remove(moduleType, entityManager);
     }
 
-    public ModuleType obtainLockedModuleType(User user, int moduleTypeId, Session session) {
-        return (ModuleType) lockingScheme.getLocked(user, currentModuleType(moduleTypeId, session), session);
+    public ModuleType obtainLockedModuleType(User user, int moduleTypeId, EntityManager entityManager) {
+        return (ModuleType) lockingScheme.getLocked(user, currentModuleType(moduleTypeId, entityManager), entityManager);
     }
 
-    public ModuleType releaseLockedModuleType(User user, int moduleTypeId, Session session) {
-        return (ModuleType) lockingScheme.releaseLock(user, currentModuleType(moduleTypeId, session), session);
+    public ModuleType releaseLockedModuleType(User user, int moduleTypeId, EntityManager entityManager) {
+        return (ModuleType) lockingScheme.releaseLock(user, currentModuleType(moduleTypeId, entityManager), entityManager);
     }
 
-    public ModuleType updateModuleType(ModuleType moduleType, Session session) throws EmfException {
-        return (ModuleType) lockingScheme.renewLockOnUpdate(moduleType, currentModuleType(moduleType.getId(), session), session);
+    public ModuleType updateModuleType(ModuleType moduleType, EntityManager entityManager) throws EmfException {
+        return (ModuleType) lockingScheme.renewLockOnUpdate(moduleType, currentModuleType(moduleType.getId(), entityManager), entityManager);
     }
 
-    public ModuleType getModuleType(String name, Session session) {
-        List<ModuleType> list = hibernateFacade.get(ModuleType.class, "name", name, session);
+    public ModuleType getModuleType(String name, EntityManager entityManager) {
+        List<ModuleType> list = hibernateFacade.get(ModuleType.class, "name", name, entityManager);
         return (list == null || list.size() == 0) ? null : list.get(0);
     }
 
-    public ModuleType getModuleType(int id, Session session) {
-        List<ModuleType> list = hibernateFacade.get(ModuleType.class, "id", Integer.valueOf(id), session);
+    public ModuleType getModuleType(int id, EntityManager entityManager) {
+        List<ModuleType> list = hibernateFacade.get(ModuleType.class, "id", Integer.valueOf(id), entityManager);
         return (list == null || list.size() == 0) ? null : list.get(0);
     }
 
-    public void addModuleType(ModuleType moduleType, Session session) {
-        hibernateFacade.add(moduleType, session);
+    public void addModuleType(ModuleType moduleType, EntityManager entityManager) {
+        hibernateFacade.add(moduleType, entityManager);
     }
 
-    public boolean canUpdateModuleType(ModuleType moduleType, Session session) {
-        if (!moduleTypeExists(moduleType.getId(), session)) {
+    public boolean canUpdateModuleType(ModuleType moduleType, EntityManager entityManager) {
+        if (!moduleTypeExists(moduleType.getId(), entityManager)) {
             return false;
         }
 
-        ModuleType current = currentModuleType(moduleType.getId(), session);
-        // The current object is saved in the session. Hibernate cannot persist our
+        ModuleType current = currentModuleType(moduleType.getId(), entityManager);
+        // The current object is saved in the entityManager. Hibernate cannot persist our
         // object with the same id.
-        session.clear();
+        entityManager.clear();
         if (current.getName().equals(moduleType.getName()))
             return true;
 
-        return !moduleTypeNameUsed(moduleType.getName(), session);
+        return !moduleTypeNameUsed(moduleType.getName(), entityManager);
     }
 
-    private boolean moduleTypeExists(int moduleTypeId, Session session) {
-        return hibernateFacade.exists(moduleTypeId, ModuleType.class, session);
+    private boolean moduleTypeExists(int moduleTypeId, EntityManager entityManager) {
+        return hibernateFacade.exists(moduleTypeId, ModuleType.class, entityManager);
     }
 
-    public boolean moduleTypeNameUsed(String name, Session session) {
-        return hibernateFacade.nameUsed(name, ModuleType.class, session);
+    public boolean moduleTypeNameUsed(String name, EntityManager entityManager) {
+        return hibernateFacade.nameUsed(name, ModuleType.class, entityManager);
     }
 
-    public ModuleType currentModuleType(int moduleTypeId, Session session) {
-        return hibernateFacade.current(moduleTypeId, ModuleType.class, session);
+    public ModuleType currentModuleType(int moduleTypeId, EntityManager entityManager) {
+        return hibernateFacade.current(moduleTypeId, ModuleType.class, entityManager);
     }
 
     //---------------------------------------------
     
-    public ModuleTypeVersion getModuleTypeVersion(int id, Session session) {
-        List<ModuleTypeVersion> list = hibernateFacade.get(ModuleTypeVersion.class, "id", Integer.valueOf(id), session);
+    public ModuleTypeVersion getModuleTypeVersion(int id, EntityManager entityManager) {
+        List<ModuleTypeVersion> list = hibernateFacade.get(ModuleTypeVersion.class, "id", Integer.valueOf(id), entityManager);
         return (list == null || list.size() == 0) ? null : list.get(0);
     }
 
-    public ModuleTypeVersion currentModuleTypeVersion(int moduleTypeVersionId, Session session) {
-        return hibernateFacade.current(moduleTypeVersionId, ModuleTypeVersion.class, session);
+    public ModuleTypeVersion currentModuleTypeVersion(int moduleTypeVersionId, EntityManager entityManager) {
+        return hibernateFacade.current(moduleTypeVersionId, ModuleTypeVersion.class, entityManager);
     }
 
-    public void removeModuleTypeVersion(ModuleTypeVersion moduleTypeVersion, Session session) {
-        hibernateFacade.remove(moduleTypeVersion, session);
+    public void removeModuleTypeVersion(ModuleTypeVersion moduleTypeVersion, EntityManager entityManager) {
+        hibernateFacade.remove(moduleTypeVersion, entityManager);
     }
 
-    public ModuleTypeVersion addModuleTypeVersion(ModuleTypeVersion moduleTypeVersion, Session session) {
-        hibernateFacade.add(moduleTypeVersion, session);
-        return currentModuleTypeVersion(moduleTypeVersion.getId(), session);
+    public ModuleTypeVersion addModuleTypeVersion(ModuleTypeVersion moduleTypeVersion, EntityManager entityManager) {
+        hibernateFacade.add(moduleTypeVersion, entityManager);
+        return currentModuleTypeVersion(moduleTypeVersion.getId(), entityManager);
     }
 
-    public ModuleTypeVersion updateModuleTypeVersion(ModuleTypeVersion moduleTypeVersion, Session session) {
-        hibernateFacade.updateOnly(moduleTypeVersion, session);
-        return currentModuleTypeVersion(moduleTypeVersion.getId(), session);
+    public ModuleTypeVersion updateModuleTypeVersion(ModuleTypeVersion moduleTypeVersion, EntityManager entityManager) {
+        hibernateFacade.updateOnly(moduleTypeVersion, entityManager);
+        return currentModuleTypeVersion(moduleTypeVersion.getId(), entityManager);
     }
 
     //---------------------------------------------
     
-    public List<ParameterType> getParameterTypes(Session session) {
-        CriteriaBuilderQueryRoot<ParameterType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ParameterType.class, session);
+    public List<ParameterType> getParameterTypes(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<ParameterType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ParameterType.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<ParameterType> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(builder.lower(root.get("sqlType"))), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(builder.lower(root.get("sqlType"))), entityManager);
     }
     
-    public List<Tag> getTags(Session session) {
-        CriteriaBuilderQueryRoot<Tag> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Tag.class, session);
+    public List<Tag> getTags(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<Tag> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Tag.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<Tag> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
     
-    public void addTag(Tag tag, Session session) {
-        hibernateFacade.add(tag, session);
+    public void addTag(Tag tag, EntityManager entityManager) {
+        hibernateFacade.add(tag, entityManager);
     }
 }

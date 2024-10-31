@@ -18,7 +18,6 @@ import gov.epa.emissions.framework.services.cost.ControlStrategyMeasure;
 import gov.epa.emissions.framework.services.cost.LightControlMeasure;
 import gov.epa.emissions.framework.services.cost.data.ControlTechnology;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.io.File;
@@ -26,7 +25,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class CMImportTask implements Runnable {
 
@@ -36,7 +36,7 @@ public class CMImportTask implements Runnable {
 
     private User user;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private DbServerFactory dbServerFactory;
 
@@ -47,28 +47,28 @@ public class CMImportTask implements Runnable {
     private int[] sectorIds;
 
     public CMImportTask(File folder, String[] files, User user, boolean truncate, int[] sectorIds,
-            HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory) {
+            EntityManagerFactory entityManagerFactory, DbServerFactory dbServerFactory) {
         this.folder = folder;
         this.files = files;
         this.user = user;
         this.truncate = truncate;
         this.sectorIds = sectorIds;
-        this.sessionFactory = sessionFactory;
         this.dbServerFactory = dbServerFactory;
-        this.statusDao = new StatusDAO(sessionFactory);
+        this.entityManagerFactory = entityManagerFactory;
+        this.statusDao = new StatusDAO(entityManagerFactory);
     }
 
     public void run() {
         //if truncate measures, lets first backup the existing measures
         //then purge measures by sector(s)
         if (truncate) {
-            Session session = sessionFactory.getSession();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
             
             DbServer dbServer = dbServerFactory.getDbServer();
 
             try {
                 
-                List<ControlMeasure> controlMeasures = new ControlMeasureDAO().getControlMeasureBySectors(sectorIds, true, session);
+                List<ControlMeasure> controlMeasures = new ControlMeasureDAO().getControlMeasureBySectors(sectorIds, true, entityManager);
                 int[] ids = new int[controlMeasures.size()];
                 
                 String cmMsg = "Control Measures to be deleted: " + controlMeasures.size() + "\n";
@@ -80,17 +80,17 @@ public class CMImportTask implements Runnable {
                 }
                 setDetailStatus( cmMsg ); 
                 
-                EmfProperty property = new EmfPropertiesDAO().getProperty("COST_CMDB_BACKUP_FOLDER", session);
+                EmfProperty property = new EmfPropertiesDAO().getProperty("COST_CMDB_BACKUP_FOLDER", entityManager);
                 String backupFolder = property.getValue();
                 CMExportTask exportTask = new CMExportTask(new File(backupFolder), CustomDateFormat.format_YYDDHHMMSS(new Date()), ids, user,
-                        sessionFactory, dbServerFactory, false);
+                        entityManagerFactory, dbServerFactory, false);
                 exportTask.run();
                 
                 //look for dependencies on Control Strategies and Control Programs
                 //if they're are dependent strategies, then finalize these so they can't be used in the future
                 ControlStrategyDAO csDAO = new ControlStrategyDAO();
-                List<ControlStrategy> cs = //new ControlStrategyDAO().getControlStrategiesByControlMeasures(ids, session);
-                    csDAO.getControlStrategiesByControlMeasures(ids, session);
+                List<ControlStrategy> cs = //new ControlStrategyDAO().getControlStrategiesByControlMeasures(ids, entityManager);
+                    csDAO.getControlStrategiesByControlMeasures(ids, entityManager);
                 
                 String msg = "There are " + cs.size() + " control strategies that have dependent measures that will be purged.  These strategies will be finalized.";
                 setStatus( msg);
@@ -116,11 +116,11 @@ public class CMImportTask implements Runnable {
                     }
                     //s.setDescription( desc);
                     //s.setIsFinal( true);
-                    if (!csDAO.obtainLocked(user, s.getId(), session).isLocked(user)) {
+                    if (!csDAO.obtainLocked(user, s.getId(), entityManager).isLocked(user)) {
                         throw new EmfException("Cannot lock control strategy");
                     }
-                    csDAO.finalizeControlStrategy(s.getId(), cmMsg, session, ids);
-                    csDAO.releaseLocked(user, s.getId(), session);
+                    csDAO.finalizeControlStrategy(s.getId(), cmMsg, entityManager, ids);
+                    csDAO.releaseLocked(user, s.getId(), entityManager);
                 }
                 
                 if ( DebugLevels.DEBUG_23()) {
@@ -128,8 +128,8 @@ public class CMImportTask implements Runnable {
                 }
                 
                 ControlProgramDAO cpDAO = new ControlProgramDAO();
-                List<ControlProgram> cp = //new ControlStrategyDAO().getControlStrategiesByControlMeasures(ids, session);
-                    cpDAO.getControlProgramsByControlMeasures(ids, session);
+                List<ControlProgram> cp = //new ControlStrategyDAO().getControlStrategiesByControlMeasures(ids, entityManager);
+                    cpDAO.getControlProgramsByControlMeasures(ids, entityManager);
                 
                 msg = "There are " + cp.size() + " Programs affected:";
                 setStatus( msg);
@@ -154,18 +154,18 @@ public class CMImportTask implements Runnable {
                     }
                     //s.setDescription( desc);
                     //s.setIsFinal( true);
-                    if (!cpDAO.obtainLocked(user, p.getId(), session).isLocked(user)) {
+                    if (!cpDAO.obtainLocked(user, p.getId(), entityManager).isLocked(user)) {
                         throw new EmfException("Cannot lock control program");
                     }
-                    cpDAO.updateControlProgram(p.getId(), cmMsg, session, ids);
-                    cpDAO.releaseLocked(user, p.getId(), session);
+                    cpDAO.updateControlProgram(p.getId(), cmMsg, entityManager, ids);
+                    cpDAO.releaseLocked(user, p.getId(), entityManager);
                 } 
                 
                 if ( DebugLevels.DEBUG_23()) {
                     System.out.println("===== 2 =====");
                 }
 
-                new ControlMeasureDAO().remove(sectorIds, sessionFactory, dbServer);
+                new ControlMeasureDAO().remove(sectorIds, entityManagerFactory, dbServer);
                 
                 if ( DebugLevels.DEBUG_23()) {
                     System.out.println("===== 3 =====");
@@ -178,19 +178,20 @@ public class CMImportTask implements Runnable {
                 e.printStackTrace();
                 setDetailStatus("Exception occured: " + e.getMessage());
             } finally {
-                session.close();
+                entityManager.close();
                 try {
                     dbServer.disconnect();
                 } catch (Exception e) {
                     // NOTE Auto-generated catch block
                     e.printStackTrace();
                 }
+                entityManager.close();
             }
         }
         try {
             ControlMeasuresImporter importer = null;
             try {
-                importer = new ControlMeasuresImporter(folder, files, user, truncate, sectorIds, sessionFactory, dbServerFactory);
+                importer = new ControlMeasuresImporter(folder, files, user, truncate, sectorIds, entityManagerFactory, dbServerFactory);
             } catch (Exception e) {
                 setDetailStatus(e.getMessage());
                 setStatus(e.getMessage());
@@ -208,7 +209,7 @@ public class CMImportTask implements Runnable {
         try {
             ControlMeasuresImporter importer = null;
             try {
-                importer = new ControlMeasuresImporter(folder, files, user, truncate, sectorIds, sessionFactory, dbServerFactory);
+                importer = new ControlMeasuresImporter(folder, files, user, truncate, sectorIds, entityManagerFactory, dbServerFactory);
             } catch (Exception e) {
                 setDetailStatus(e.getMessage());
                 setStatus(e.getMessage());

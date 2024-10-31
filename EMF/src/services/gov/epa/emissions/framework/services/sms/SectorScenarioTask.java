@@ -29,7 +29,6 @@ import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.Keywords;
 import gov.epa.emissions.framework.services.persistence.DataSourceFactory;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -40,9 +39,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
-
-import org.hibernate.Session;
 
 public class SectorScenarioTask {
 
@@ -50,7 +49,7 @@ public class SectorScenarioTask {
 
     protected Datasource datasource;
 
-    protected HibernateSessionFactory sessionFactory;
+    protected EntityManagerFactory entityManagerFactory;
 
     protected DbServerFactory dbServerFactory;
 
@@ -73,18 +72,18 @@ public class SectorScenarioTask {
     protected List<SectorScenarioOutput> sectorScenarioOutputList;
 
     public SectorScenarioTask(SectorScenario sectorScenario, User user, 
-            DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory) throws EmfException {
+            DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory) throws EmfException {
         this.sectorScenario = sectorScenario;
         this.dbServerFactory = dbServerFactory;
         this.dbServer = dbServerFactory.getDbServer();
         this.datasource = dbServer.getEmissionsDatasource();
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.user = user;
-        this.statusDAO = new StatusDAO(sessionFactory);
-        this.sectorScenarioDAO = new SectorScenarioDAO(dbServerFactory, sessionFactory);
-        this.keywords = new Keywords(new DataCommonsServiceImpl(sessionFactory).getKeywords());
+        this.statusDAO = new StatusDAO(entityManagerFactory);
+        this.sectorScenarioDAO = new SectorScenarioDAO(dbServerFactory, entityManagerFactory);
+        this.keywords = new Keywords(new DataCommonsServiceImpl(entityManagerFactory).getKeywords());
         this.creator = new DatasetCreator(null, user, 
-                sessionFactory, dbServerFactory,
+                entityManagerFactory, dbServerFactory,
                 datasource, keywords);
         this.sectorScenarioOutputList = new ArrayList<SectorScenarioOutput>();
         //setup the strategy run
@@ -1485,11 +1484,11 @@ public class SectorScenarioTask {
 //    }
 
     private String[] getDistinctSectorListFromDataset(int datasetId, int versionNumber) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return sectorScenarioDAO.getDistinctSectorListFromDataset(session, dbServer, datasetId, versionNumber);
+            return sectorScenarioDAO.getDistinctSectorListFromDataset(entityManager, dbServer, datasetId, versionNumber);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -1659,12 +1658,12 @@ public class SectorScenarioTask {
     protected void deleteSectorScenarioOutputs() throws EmfException {
         //get rid of strategy results...
         if (true){
-            Session session = sessionFactory.getSession();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
             try {
 
                 // first get the datasets to delete
                 List<EmfDataset> dsList = new ArrayList<EmfDataset>();
-                EmfDataset[] datasets = sectorScenarioDAO.getOutputDatasets(sectorScenario.getId(), session);
+                EmfDataset[] datasets = sectorScenarioDAO.getOutputDatasets(sectorScenario.getId(), entityManager);
                 if (datasets != null) {
                     List<String> msgList = new ArrayList<String>();
                     for (EmfDataset dataset : datasets) {
@@ -1695,20 +1694,20 @@ public class SectorScenarioTask {
                         dsIDs[i] = dsList.get(i).getId();
                     }
                     try {
-                        this.sectorScenarioDAO.checkIfUsed(dsIDs, user, dbServer, session);
+                        this.sectorScenarioDAO.checkIfUsed(dsIDs, user, dbServer, entityManager);
                     } catch ( Exception e) {
                         throw new EmfException( "Can not delete sector scenario output datasets: \n" + e.getMessage());
                     }
                     
                     removeSectorScenarioOutputs();
-                    //sectorScenarioDAO.removeResultDatasets(dsList.toArray(new EmfDataset[0]), user, session, dbServer);
+                    //sectorScenarioDAO.removeResultDatasets(dsList.toArray(new EmfDataset[0]), user, entityManager, dbServer);
                 }
 
             } catch (RuntimeException e) {
                 e.printStackTrace();
                 throw new EmfException("Could not remove sector scenario outputs: " + e.getMessage());
             } finally {
-                session.close();
+                entityManager.close();
             }
         }
     }
@@ -1738,13 +1737,13 @@ public class SectorScenarioTask {
     }
 
     protected boolean isRunStatusCancelled() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return sectorScenarioDAO.getSectorScenarioRunStatus(sectorScenario.getId(), session).equals("Cancelled");
+            return sectorScenarioDAO.getSectorScenarioRunStatus(sectorScenario.getId(), entityManager).equals("Cancelled");
         } catch (RuntimeException e) {
             throw new EmfException("Could not check if strategy run was cancelled.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
@@ -1813,46 +1812,46 @@ public class SectorScenarioTask {
 
     protected SectorScenarioOutputType getSectorScenarioOutputType(String name) throws EmfException {
         SectorScenarioOutputType resultType = null;
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            resultType = sectorScenarioDAO.getSectorScenarioOutputType(name, session);
+            resultType = sectorScenarioDAO.getSectorScenarioOutputType(name, entityManager);
         } catch (RuntimeException e) {
             throw new EmfException("Could not get detailed strategy result type");
         } finally {
-            session.close();
+            entityManager.close();
         }
         return resultType;
     }
 
     protected EmfDataset getDataset(int id) {
         EmfDataset dataset = null;
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dataset = new DatasetDAO().getDataset(session, id);
+            dataset = new DatasetDAO().getDataset(entityManager, id);
         } finally {
-            session.close();
+            entityManager.close();
         }
         return dataset;
     }
 
     protected DatasetType getDatasetType(String name) {
         DatasetType datasetType = null;
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            datasetType = new DatasetTypesDAO().get(name, session);
+            datasetType = new DatasetTypesDAO().get(name, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
         return datasetType;
     }
 
     protected SectorScenarioOutput[] getSectorScenarioOutputs() {
         SectorScenarioOutput[] results = new SectorScenarioOutput[] {};
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            results = sectorScenarioDAO.getSectorScenarioOutputs(sectorScenario.getId(), session).toArray(new SectorScenarioOutput[0]);
+            results = sectorScenarioDAO.getSectorScenarioOutputs(sectorScenario.getId(), entityManager).toArray(new SectorScenarioOutput[0]);
         } finally {
-            session.close();
+            entityManager.close();
         }
         return results;
     }
@@ -1863,90 +1862,90 @@ public class SectorScenarioTask {
 //    }
 
     protected void saveSectorScenarioOutput(SectorScenarioOutput sectorScenarioOutput) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            sectorScenarioDAO.updateSectorScenarioOutput(sectorScenarioOutput, session);
+            sectorScenarioDAO.updateSectorScenarioOutput(sectorScenarioOutput, entityManager);
 //          runQASteps(sectorScenarioOutput);
         } catch (RuntimeException e) {
             throw new EmfException("Could not save control strategy results: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     protected void saveSectorScenario(SectorScenario sectorScenario) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            sectorScenarioDAO.update(sectorScenario, session);
+            sectorScenarioDAO.update(sectorScenario, entityManager);
         } catch (RuntimeException e) {
             throw new EmfException("Could not save sector scenario: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     protected void saveSectorScenarioSummaryOutput(SectorScenarioOutput sectorScenarioOutput) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            sectorScenarioDAO.updateSectorScenarioOutput(sectorScenarioOutput, session);
+            sectorScenarioDAO.updateSectorScenarioOutput(sectorScenarioOutput, entityManager);
         } catch (Exception e) {
             throw new EmfException("Could not save control strategy results: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
     protected void updateOutputDatasetVersionRecordCount(SectorScenarioOutput sectorScenarioOutput) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         DatasetDAO dao = new DatasetDAO();
         
         try {
             EmfDataset result = sectorScenarioOutput.getOutputDataset();
             
             if (result != null) {
-                Version version = dao.getVersion(session, result.getId(), result.getDefaultVersion());
+                Version version = dao.getVersion(entityManager, result.getId(), result.getDefaultVersion());
                 
                 if (version != null) {
 //                    version.setCreator(user);
-                    updateVersion(result, version, dbServer, session, dao);
+                    updateVersion(result, version, dbServer, entityManager, dao);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
             throw new EmfException("Cannot update result datasets (strategy id: " + sectorScenarioOutput.getSectorScenarioId() + "). " + e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
     
-    private void updateVersion(EmfDataset dataset, Version version, DbServer dbServer, Session session, DatasetDAO dao) throws Exception {
+    private void updateVersion(EmfDataset dataset, Version version, DbServer dbServer, EntityManager entityManager, DatasetDAO dao) throws Exception {
 //        creator.updateVersionZeroRecordCount(dataset);
 
-        version = dao.obtainLockOnVersion(user, version.getId(), session);
-        version.setNumberRecords((int)dao.getDatasetRecordsNumber(dbServer, session, dataset, version));
-        dao.updateVersionNReleaseLock(version, session);
+        version = dao.obtainLockOnVersion(user, version.getId(), entityManager);
+        version.setNumberRecords((int)dao.getDatasetRecordsNumber(dbServer, entityManager, dataset, version));
+        dao.updateVersionNReleaseLock(version, entityManager);
     }
 
     private void removeSectorScenarioOutputs() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            sectorScenarioDAO.removeSectorScenarioResultsV2(sectorScenario.getId(), user, session, dbServer);
+            sectorScenarioDAO.removeSectorScenarioResultsV2(sectorScenario.getId(), user, entityManager, dbServer);
         } catch (RuntimeException e) {
             throw new EmfException("Could not remove previous sector scenario output(s)");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
 //    private void removeSectorScenarioOutput(int resultId) throws EmfException {
-//        Session session = sessionFactory.getSession();
+//        EntityManager entityManager = entityManagerFactory.createEntityManager();
 //        try {
-//            controlStrategyDAO.removeSectorScenarioOutput(sectorScenario.getId(), resultId, session);
+//            controlStrategyDAO.removeSectorScenarioOutput(sectorScenario.getId(), resultId, entityManager);
 //        } catch (RuntimeException e) {
 //            throw new EmfException("Could not remove previous control strategy result(s)");
 //        } finally {
-//            session.close();
+//            entityManager.close();
 //        }
 //    }
 
@@ -1963,7 +1962,7 @@ public class SectorScenarioTask {
     }
 
     protected void runSummaryQASteps(EmfDataset dataset, int version) throws EmfException {
-        QAStepTask qaTask = new QAStepTask(dataset, version, user, sessionFactory, dbServerFactory);
+        QAStepTask qaTask = new QAStepTask(dataset, version, user, entityManagerFactory, dbServerFactory);
         //11/14/07 DCD instead of running the default qa steps specified in the property table, lets run all qa step templates...
         QAStepTemplate[] qaStepTemplates = dataset.getDatasetType().getQaStepTemplates();
         if (qaStepTemplates != null) {
@@ -2019,12 +2018,12 @@ public class SectorScenarioTask {
     }
 
     private Version version(int datasetId, int version) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             Versions versions = new Versions();
-            return versions.get(datasetId, version, session);
+            return versions.get(datasetId, version, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
@@ -2136,12 +2135,12 @@ public class SectorScenarioTask {
     }  
     
     private synchronized String getIOTempDir() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            EmfProperty property = new EmfPropertiesDAO().getProperty("ImportExportTempDir", session);
+            EmfProperty property = new EmfPropertiesDAO().getProperty("ImportExportTempDir", entityManager);
             return (property != null ? property.getValue() : "");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 

@@ -18,7 +18,6 @@ import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
@@ -27,6 +26,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
@@ -35,16 +37,13 @@ import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 
 public class ControlStrategyDAO {
     private LockingScheme lockingScheme;
 
     private HibernateFacade hibernateFacade;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private DbServerFactory dbServerFactory;
     
@@ -56,65 +55,62 @@ public class ControlStrategyDAO {
         this.datasetDao = new DatasetDAO();
     }
 
-    public ControlStrategyDAO(DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory) {
+    public ControlStrategyDAO(DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory) {
         this();
         this.dbServerFactory = dbServerFactory;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
     }
 
-    public int add(ControlStrategy element, Session session) {
-        return addObject(element, session);
+    public int add(ControlStrategy element, EntityManager entityManager) {
+        hibernateFacade.add(element, entityManager);
+        return element.getId();
     }
 
-    public void add(ControlStrategyConstraint element, Session session) {
-        addObject(element, session);
+    public void add(ControlStrategyConstraint element, EntityManager entityManager) {
+        hibernateFacade.add(element, entityManager);
     }
 
-    public int add(ControlStrategyResult element, Session session) {
-        return addObject(element, session);
+    public int add(ControlStrategyResult element, EntityManager entityManager) {
+        hibernateFacade.add(element, entityManager);
+        return element.getId();
     }
 
-    private int addObject(Object obj, Session session) {
-        return (Integer)hibernateFacade.add(obj, session);
+    public String getControlStrategyRunStatus(int controlStrategyId, EntityManager entityManager) {
+        return (String)entityManager.createQuery("select cS.runStatus from ControlStrategy cS where cS.id = " + controlStrategyId).getSingleResult();
     }
 
-    public String getControlStrategyRunStatus(int controlStrategyId, Session session) {
-        return (String)session.createQuery("select cS.runStatus from ControlStrategy cS where cS.id = " + controlStrategyId).uniqueResult();
+    public Long getControlStrategyRunningCount(EntityManager entityManager) {
+        return (Long)entityManager.createQuery("select count(*) as total from ControlStrategy cS where cS.runStatus = 'Running'").getSingleResult();
     }
 
-    public Long getControlStrategyRunningCount(Session session) {
-        return (Long)session.createQuery("select count(*) as total from ControlStrategy cS where cS.runStatus = 'Running'").uniqueResult();
-    }
-
-    public List<ControlStrategy> getControlStrategiesByRunStatus(String runStatus, Session session) {
+    public List<ControlStrategy> getControlStrategiesByRunStatus(String runStatus, EntityManager entityManager) {
 //        Criterion critRunStatus = Restrictions.eq("runStatus", runStatus);
-//        return hibernateFacade.get(ControlStrategy.class, critRunStatus, Order.asc("lastModifiedDate"), session);
+//        return hibernateFacade.get(ControlStrategy.class, critRunStatus, Order.asc("lastModifiedDate"), entityManager);
 //
-        return session
+        return entityManager
                 .createQuery("select new ControlStrategy(cS.id, cS.name) from ControlStrategy cS where cS.runStatus = :runStatus order by cS.lastModifiedDate", ControlStrategy.class)
                 .setParameter("runStatus", runStatus)
-                .list();
+                .getResultList();
     }
 
-    public void setControlStrategyRunStatusAndCompletionDate(int controlStrategyId, String runStatus, Date completionDate, Session session) {
-        Transaction tx = null;
+    public void setControlStrategyRunStatusAndCompletionDate(int controlStrategyId, String runStatus, Date completionDate, EntityManager entityManager) {
         try {
-            tx = session.beginTransaction();
-            session.createQuery("update ControlStrategy set runStatus = :status, lastModifiedDate = :date, completionDate = :completionDate where id = :id")
-            .setParameter("status", runStatus)
-            .setParameter("date", new Date())
-            .setParameter("completionDate", completionDate)
-            .setParameter("id", Integer.valueOf(controlStrategyId))
-            .executeUpdate();
-            tx.commit();
+            hibernateFacade.executeInsideTransaction(em -> {
+                em
+                    .createQuery("update ControlStrategy set runStatus = :status, lastModifiedDate = :date, completionDate = :completionDate where id = :id")
+                    .setParameter("status", runStatus)
+                    .setParameter("date", new Date())
+                    .setParameter("completionDate", completionDate)
+                    .setParameter("id", Integer.valueOf(controlStrategyId))
+                    .executeUpdate();
+                }, entityManager);
         } catch (HibernateException e) {
-            tx.rollback();
             throw e;
         }
     }
 
     // return ControlStrategies orderby name
-    public List<ControlStrategy> all(Session session) {
+    public List<ControlStrategy> all(EntityManager entityManager) {
 
 //        "Name", "Last Modified", "Run Status", "Region", 
 //        "Target Pollutant", "Total Cost", "Reduction", 
@@ -125,7 +121,7 @@ public class ControlStrategyDAO {
 //        project(element), analysisType(element), costYear(element), 
 //        "" + (element.getInventoryYear() != 0 ? element.getInventoryYear() : ""), 
 //        element.getCreator().getName()
-        return session
+        return entityManager
                 .createQuery("select new ControlStrategy(cS.id, cS.name, " +
                     "cS.lastModifiedDate, cS.runStatus, " +
                     "R, TP, " +
@@ -139,11 +135,11 @@ public class ControlStrategyDAO {
                     "left join cS.region as R " +
                     "left join cS.project as P " +
                     "order by cS.name", ControlStrategy.class)
-                .list();
-        //return hibernateFacade.getAll(ControlStrategy.class, Order.asc("name"), session);
+                .getResultList();
+        //return hibernateFacade.getAll(ControlStrategy.class, Order.asc("name"), entityManager);
     }
 
-    public List<ControlStrategy> getControlStrategies(Session session, BasicSearchFilter searchFilter) throws EmfException {
+    public List<ControlStrategy> getControlStrategies(EntityManager entityManager, BasicSearchFilter searchFilter) throws EmfException {
         String hql = "select distinct new ControlStrategy(cs.id, cs.name, " +
                 "cs.lastModifiedDate, cs.runStatus, " +
                 "region, targetPollutant, " +
@@ -168,135 +164,139 @@ public class ControlStrategyDAO {
             if (StringUtils.isNotBlank(whereClause))
                 hql += " where " + whereClause;
         }
-        return session.createQuery(hql, ControlStrategy.class).list();
+        return entityManager.createQuery(hql, ControlStrategy.class).getResultList();
     }
 //    // return ControlStrategies orderby name
-//    public List test(Session session) {
+//    public List test(EntityManager entityManager) {
 //        //check if dataset is a input inventory for some strategy (via the StrategyInputDataset table)
-//        List list = session.createQuery("select cS.name from ControlStrategy as cS inner join cS.controlStrategyInputDatasets as iDs inner join iDs.inputDataset as iD with iD.id = 1221").list();
+//        List list = entityManager.createQuery("select cS.name from ControlStrategy as cS inner join cS.controlStrategyInputDatasets as iDs inner join iDs.inputDataset as iD with iD.id = 1221").list();
 //        //check if dataset is a input inventory for some strategy (via the StrategyResult table, could be here for historical reasons)
-//        list = session.createQuery("select cS.name from ControlStrategyResult sR, ControlStrategy cS where sR.controlStrategyId = cS.id and sR.inputDataset.id = 1221").list();
+//        list = entityManager.createQuery("select cS.name from ControlStrategyResult sR, ControlStrategy cS where sR.controlStrategyId = cS.id and sR.inputDataset.id = 1221").list();
 //        //check if dataset is a detailed result dataset for some strategy
-//        list = session.createQuery("select cS.name from ControlStrategyResult sR, ControlStrategy cS where sR.controlStrategyId = cS.id and sR.detailedResultDataset.id = 1221").list();
+//        list = entityManager.createQuery("select cS.name from ControlStrategyResult sR, ControlStrategy cS where sR.controlStrategyId = cS.id and sR.detailedResultDataset.id = 1221").list();
 //        //check if dataset is a controlled inventory for some strategy
-//        list = session.createQuery("select cS.name from ControlStrategyResult sR, ControlStrategy cS where sR.controlStrategyId = cS.id and sR.controlledInventoryDataset.id = 1221").list();
+//        list = entityManager.createQuery("select cS.name from ControlStrategyResult sR, ControlStrategy cS where sR.controlStrategyId = cS.id and sR.controlledInventoryDataset.id = 1221").list();
 //        //check if dataset is used as a region/county dataset for specific strategy measures
-//        list = session.createQuery("select cS.name from ControlStrategy as cS inner join cS.controlMeasures as cM inner join cM.regionDataset as rD with rD.id = 1221").list();
+//        list = entityManager.createQuery("select cS.name from ControlStrategy as cS inner join cS.controlMeasures as cM inner join cM.regionDataset as rD with rD.id = 1221").list();
 //        //check if dataset is used as a region/county dataset for specific strategy
-//        list = session.createQuery("select cS.name from ControlStrategy cS where cS.countyDataset.id = 1221").list();
+//        list = entityManager.createQuery("select cS.name from ControlStrategy cS where cS.countyDataset.id = 1221").list();
 //
 //        return list;
 //    }
 
-    public List<StrategyType> getAllStrategyTypes(Session session) {
-        CriteriaBuilderQueryRoot<StrategyType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(StrategyType.class, session);
+    public List<StrategyType> getAllStrategyTypes(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<StrategyType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(StrategyType.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<StrategyType> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
 //    // TODO: gettig all the strategies to obtain the lock--- is it a good idea?
-//    public ControlStrategy obtainLocked(User owner, ControlStrategy element, Session session) {
-//        return (ControlStrategy) lockingScheme.getLocked(owner, current(element, session), session);
+//    public ControlStrategy obtainLocked(User owner, ControlStrategy element, EntityManager entityManager) {
+//        return (ControlStrategy) lockingScheme.getLocked(owner, current(element, entityManager), entityManager);
 //    }
 //
-    public ControlStrategy obtainLocked(User owner, int id, Session session) {
-        return (ControlStrategy) lockingScheme.getLocked(owner, current(id, session), session);
+    public ControlStrategy obtainLocked(User owner, int id, EntityManager entityManager) {
+        return (ControlStrategy) lockingScheme.getLocked(owner, current(id, entityManager), entityManager);
     }
 
-//    public void releaseLocked(ControlStrategy locked, Session session) {
-//        ControlStrategy current = current(locked, session);
+//    public void releaseLocked(ControlStrategy locked, EntityManager entityManager) {
+//        ControlStrategy current = current(locked, entityManager);
 //        String runStatus = current.getRunStatus();
 //        if (runStatus == null || !runStatus.equalsIgnoreCase("Running"))
-//            lockingScheme.releaseLock(current, session);
+//            lockingScheme.releaseLock(current, entityManager);
 //    }
 
-    public void releaseLocked(User user, int id, Session session) {
-        ControlStrategy current = getById(id, session);
+    public void releaseLocked(User user, int id, EntityManager entityManager) {
+        ControlStrategy current = getById(id, entityManager);
         String runStatus = current.getRunStatus();
         if (runStatus == null || !runStatus.equalsIgnoreCase("Running"))
-            lockingScheme.releaseLock(user, current, session);
+            lockingScheme.releaseLock(user, current, entityManager);
     }
 
-    public ControlStrategy update(ControlStrategy locked, Session session) throws EmfException {
-        return (ControlStrategy) lockingScheme.releaseLockOnUpdate(locked, current(locked, session), session);
+    public ControlStrategy update(ControlStrategy locked, EntityManager entityManager) throws EmfException {
+        return (ControlStrategy) lockingScheme.releaseLockOnUpdate(locked, current(locked, entityManager), entityManager);
     }
 
-    public void updateWithoutLock(ControlStrategy controlStrategy, Session session) throws EmfException {
-        hibernateFacade.saveOrUpdate(controlStrategy, session);
+    public void updateWithoutLock(ControlStrategy controlStrategy, EntityManager entityManager) throws EmfException {
+        hibernateFacade.saveOrUpdate(controlStrategy, entityManager);
     }
     
-    public ControlStrategy updateWithLock(ControlStrategy locked, Session session) throws EmfException {
-        return (ControlStrategy) lockingScheme.renewLockOnUpdate(locked, current(locked, session), session);
+    public void updateWithoutLock(ControlStrategyResult controlStrategyResult, EntityManager entityManager) throws EmfException {
+        hibernateFacade.saveOrUpdate(controlStrategyResult, entityManager);
+    }
+    
+    public ControlStrategy updateWithLock(ControlStrategy locked, EntityManager entityManager) throws EmfException {
+        return (ControlStrategy) lockingScheme.renewLockOnUpdate(locked, current(locked, entityManager), entityManager);
     }
 
-    private ControlStrategy current(ControlStrategy strategy, Session session) {
-        return current(strategy.getId(), session);
+    private ControlStrategy current(ControlStrategy strategy, EntityManager entityManager) {
+        return current(strategy.getId(), entityManager);
     }
 
-    public boolean canUpdate(ControlStrategy controlStrategy, Session session) {
-        if (!exists(controlStrategy.getId(), session)) {
+    public boolean canUpdate(ControlStrategy controlStrategy, EntityManager entityManager) {
+        if (!exists(controlStrategy.getId(), entityManager)) {
             return false;
         }
 
-        ControlStrategy current = current(controlStrategy.getId(), session);
+        ControlStrategy current = current(controlStrategy.getId(), entityManager);
 
-        session.clear();// clear to flush current
+        entityManager.clear();// clear to flush current
 
         if (current.getName().equals(controlStrategy.getName()))
             return true;
 
-        return !nameUsed(controlStrategy.getName(), session);
+        return !nameUsed(controlStrategy.getName(), entityManager);
     }
 
-    public boolean nameUsed(String name, Session session) {
-        return hibernateFacade.nameUsed(name, ControlStrategy.class, session);
+    public boolean nameUsed(String name, EntityManager entityManager) {
+        return hibernateFacade.nameUsed(name, ControlStrategy.class, entityManager);
     }
 
-    private ControlStrategy current(int id, Session session) {
-        return hibernateFacade.current(id, ControlStrategy.class, session);
+    private ControlStrategy current(int id, EntityManager entityManager) {
+        return hibernateFacade.current(id, ControlStrategy.class, entityManager);
     }
 
-    public boolean exists(int id, Session session) {
-        return hibernateFacade.exists(id, ControlStrategy.class, session);
+    public boolean exists(int id, EntityManager entityManager) {
+        return hibernateFacade.exists(id, ControlStrategy.class, entityManager);
     }
 
-    public void remove(ControlStrategy strategy, Session session) {
-        if (strategy.getConstraint() != null) hibernateFacade.remove(strategy.getConstraint(), session);
-        hibernateFacade.remove(strategy, session);
+    public void remove(ControlStrategy strategy, EntityManager entityManager) {
+        if (strategy.getConstraint() != null) hibernateFacade.remove(strategy.getConstraint(), entityManager);
+        hibernateFacade.remove(strategy, entityManager);
     }
 
-    public void remove(ControlStrategyResult result, Session session) {
-        hibernateFacade.remove(result, session);
+    public void remove(ControlStrategyResult result, EntityManager entityManager) {
+        hibernateFacade.remove(result, entityManager);
     }
 
-    public StrategyResultType getDetailedStrategyResultType(Session session) {
-        return getStrategyResultType(StrategyResultType.detailedStrategyResult, session);
+    public StrategyResultType getDetailedStrategyResultType(EntityManager entityManager) {
+        return getStrategyResultType(StrategyResultType.detailedStrategyResult, entityManager);
     }
 
-    public StrategyResultType getStrategyResultType(String name, Session session) {
-        return hibernateFacade.load(StrategyResultType.class, "name", name, session);
+    public StrategyResultType getStrategyResultType(String name, EntityManager entityManager) {
+        return hibernateFacade.load(StrategyResultType.class, "name", name, entityManager);
     }
 
-    public StrategyResultType[] getOptionalStrategyResultTypes(Session session) {
-        CriteriaBuilder builder = session.getCriteriaBuilder();
+    public StrategyResultType[] getOptionalStrategyResultTypes(EntityManager entityManager) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<StrategyResultType> criteriaQuery = builder.createQuery(StrategyResultType.class);
         Root<StrategyResultType> root = criteriaQuery.from(StrategyResultType.class);
 
         criteriaQuery.select(root);
         criteriaQuery.where(builder.equal(root.get("optional"), true));
 
-        return session.createQuery(criteriaQuery).getResultList().toArray(new StrategyResultType[0]);
+        return entityManager.createQuery(criteriaQuery).getResultList().toArray(new StrategyResultType[0]);
     }
 
-    public StrategyResultType getSummaryStrategyResultType(Session session) {
-        return getStrategyResultType(StrategyResultType.strategyMeasureSummary, session);
+    public StrategyResultType getSummaryStrategyResultType(EntityManager entityManager) {
+        return getStrategyResultType(StrategyResultType.strategyMeasureSummary, entityManager);
     }
 
     public ControlStrategyResult getControlStrategyResult(int controlStrategyId, int inputDatasetId, 
-            int detailedResultDatasetId, Session session) {
-        CriteriaBuilderQueryRoot<ControlStrategyResult> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlStrategyResult.class, session);
+            int detailedResultDatasetId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<ControlStrategyResult> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlStrategyResult.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<ControlStrategyResult> root = criteriaBuilderQueryRoot.getRoot();
         Join<EmfDataset, ControlStrategyResult> drdJoin = root.join("detailedResultDataset", javax.persistence.criteria.JoinType.INNER);
@@ -304,81 +304,79 @@ public class ControlStrategyDAO {
         Predicate critControlStrategyId = builder.equal(root.get("controlStrategyId"), controlStrategyId);
         Predicate critInputDatasetId = builder.equal(root.get("inputDatasetId"), inputDatasetId);
         Predicate critDetailedResultDatasetId = builder.equal(drdJoin.get("id"), detailedResultDatasetId);
-        return hibernateFacade.load(session, criteriaBuilderQueryRoot, new Predicate[] {critControlStrategyId, critInputDatasetId, critDetailedResultDatasetId});
+        return hibernateFacade.load(entityManager, criteriaBuilderQueryRoot, new Predicate[] {critControlStrategyId, critInputDatasetId, critDetailedResultDatasetId});
     }
 
-    public ControlStrategyResult getControlStrategyResult(int id, Session session) {
-        return hibernateFacade.load(ControlStrategyResult.class, "id", Integer.valueOf(id), session);
+    public ControlStrategyResult getControlStrategyResult(int id, EntityManager entityManager) {
+        return hibernateFacade.load(ControlStrategyResult.class, "id", Integer.valueOf(id), entityManager);
     }
 
-//    private void updateControlStrategyIds(ControlStrategy controlStrategy, Session session) {
+//    private void updateControlStrategyIds(ControlStrategy controlStrategy, EntityManager entityManager) {
 //        Criterion c1 = Restrictions.eq("name", controlStrategy.getName());
-//        List list = hibernateFacade.get(ControlStrategy.class, c1, session);
+//        List list = hibernateFacade.get(ControlStrategy.class, c1, entityManager);
 //        if (!list.isEmpty()) {
 //            ControlStrategy cs = (ControlStrategy) list.get(0);
 //            controlStrategy.setId(cs.getId());
 //        }
 //    }
 //
-    public void updateControlStrategyResult(ControlStrategyResult result, Session session) {
-        hibernateFacade.saveOrUpdate(result, session);
+    public void updateControlStrategyResult(ControlStrategyResult result, EntityManager entityManager) {
+        hibernateFacade.saveOrUpdate(result, entityManager);
     }
 
-    public String controlStrategyRunStatus(int id, Session session) {
-        ControlStrategy controlStrategy = hibernateFacade.current(id, ControlStrategy.class, session);
+    public String controlStrategyRunStatus(int id, EntityManager entityManager) {
+        ControlStrategy controlStrategy = hibernateFacade.current(id, ControlStrategy.class, entityManager);
         return controlStrategy.getRunStatus();
     }
 
-//    public void removeControlStrategyResult(ControlStrategy controlStrategy, Session session) {
+//    public void removeControlStrategyResult(ControlStrategy controlStrategy, EntityManager entityManager) {
 //        Criterion c = Restrictions.eq("controlStrategyId", Integer.valueOf(controlStrategy.getId()));
-//        List list = hibernateFacade.get(ControlStrategyResult.class, c, session);
+//        List list = hibernateFacade.get(ControlStrategyResult.class, c, entityManager);
 //        for (int i = 0; i < list.size(); i++) {
 //            ControlStrategyResult result = (ControlStrategyResult) list.get(i);
-//            hibernateFacade.delete(result,session);
+//            hibernateFacade.delete(result,entityManager);
 //        }
 //    }
 
-    public void removeControlStrategyResults(int controlStrategyId, Session session) {
+    public void removeControlStrategyResults(int controlStrategyId, EntityManager entityManager) {
         String hqlDelete = "delete ControlStrategyResult sr where sr.controlStrategyId = :controlStrategyId";
-        Transaction tx = null;
         try {
-            tx = session.beginTransaction();
-            session.createQuery( hqlDelete )
-                .setParameter("controlStrategyId", Integer.valueOf(controlStrategyId))
-                .executeUpdate();
-            tx.commit();
+            hibernateFacade.executeInsideTransaction(em -> {
+                em
+                    .createQuery( hqlDelete )
+                    .setParameter("controlStrategyId", Integer.valueOf(controlStrategyId))
+                    .executeUpdate();
+                }, entityManager);
         } catch (RuntimeException e) {
-            tx.rollback();
             throw e;
         }
     }
 
-    public void removeControlStrategyResult(int controlStrategyId, int resultId, Session session) {
+    public void removeControlStrategyResult(int controlStrategyId, int resultId, EntityManager entityManager) {
         String hqlDelete = "delete ControlStrategyResult sr where sr.id = :resultId and sr.controlStrategyId = :controlStrategyId";
-        Transaction tx = null;
         try {
-            tx = session.beginTransaction();
-            session.createQuery( hqlDelete )
-                .setParameter("resultId", Integer.valueOf(resultId))
-                .setParameter("controlStrategyId", Integer.valueOf(controlStrategyId))
-                .executeUpdate();
-            tx.commit();
+            hibernateFacade.executeInsideTransaction(em -> {
+                em
+                    .createQuery( hqlDelete )
+                    .setParameter("resultId", Integer.valueOf(resultId))
+                    .setParameter("controlStrategyId", Integer.valueOf(controlStrategyId))
+                    .executeUpdate();
+                }, entityManager);
         } catch (RuntimeException e) {
-            tx.rollback();
             throw e;
         }
     }
 
-    public ControlStrategy getByName(String name, Session session) {
-        return hibernateFacade.load(ControlStrategy.class, "name", name, session);
+    public ControlStrategy getByName(String name, EntityManager entityManager) {
+        return hibernateFacade.load(ControlStrategy.class, "name", name, entityManager);
     }
 
-    public ControlStrategy getById(int id, Session session) {
-        return hibernateFacade.load(ControlStrategy.class, "id", Integer.valueOf(id), session);
+    public ControlStrategy getById(int id, EntityManager entityManager) {
+        return hibernateFacade.load(ControlStrategy.class, "id", Integer.valueOf(id), entityManager);
     }
 
-    public List<ControlStrategyResult> getControlStrategyResults(int controlStrategyId, Session session) {
-        CriteriaBuilder builder = session.getCriteriaBuilder();
+    public List<ControlStrategyResult> getControlStrategyResults(int controlStrategyId, EntityManager entityManager) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<ControlStrategyResult> criteriaQuery = builder.createQuery(ControlStrategyResult.class);
         Root<ControlStrategyResult> root = criteriaQuery.from(ControlStrategyResult.class);
 
@@ -388,14 +386,14 @@ public class ControlStrategyDAO {
 
         criteriaQuery.where(builder.equal(root.get("controlStrategyId"), controlStrategyId));
 
-        return session.createQuery(criteriaQuery).getResultList();
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
     
-    public void removeResultDatasets(EmfDataset[] datasets, User user, Session session, DbServer dbServer) throws EmfException {
+    public void removeResultDatasets(EmfDataset[] datasets, User user, EntityManager entityManager, DbServer dbServer) throws EmfException {
         if (datasets != null) {
             try {
-                deleteDatasets(datasets, user, session);
-                datasetDao.deleteDatasets(datasets, dbServer, session);
+                deleteDatasets(datasets, user, entityManager);
+                datasetDao.deleteDatasets(datasets, dbServer, entityManager);
             } catch (EmfException e) {
                 if (DebugLevels.DEBUG_12())
                     System.out.println(e.getMessage());
@@ -405,31 +403,31 @@ public class ControlStrategyDAO {
         }
     }
     
-    public void deleteDatasets(EmfDataset[] datasets, User user, Session session) throws EmfException {
-        EmfDataset[] lockedDatasets = getLockedDatasets(datasets, user, session);
+    public void deleteDatasets(EmfDataset[] datasets, User user, EntityManager entityManager) throws EmfException {
+        EmfDataset[] lockedDatasets = getLockedDatasets(datasets, user, entityManager);
         
         if (lockedDatasets == null)
             return;
         
         try {
-            new DataServiceImpl(dbServerFactory, sessionFactory).deleteDatasets(user, lockedDatasets, DeleteType.CONTROL_STRATEGY);
+            new DataServiceImpl(dbServerFactory, entityManagerFactory).deleteDatasets(user, lockedDatasets, DeleteType.CONTROL_STRATEGY);
         } catch (EmfException e) {
-//            releaseLocked(lockedDatasets, user, session);
+//            releaseLocked(lockedDatasets, user, entityManager);
 //            throw new EmfException(e.getMessage());
             if (!e.getType().equals(EmfException.MSG_TYPE))
                 throw new EmfException(e.getMessage());
         } finally {
-            releaseLocked(lockedDatasets, user, session);
+            releaseLocked(lockedDatasets, user, entityManager);
         }
     }
     
-    private EmfDataset[] getLockedDatasets(EmfDataset[] datasets, User user, Session session) {
+    private EmfDataset[] getLockedDatasets(EmfDataset[] datasets, User user, EntityManager entityManager) {
         List<EmfDataset> lockedList = new ArrayList<EmfDataset>();
         
         for (int i = 0; i < datasets.length; i++) {
-            EmfDataset locked = obtainLockedDataset(datasets[i], user, session);
+            EmfDataset locked = obtainLockedDataset(datasets[i], user, entityManager);
             if (locked == null) {
-                releaseLocked(lockedList.toArray(new EmfDataset[0]), user, session);
+                releaseLocked(lockedList.toArray(new EmfDataset[0]), user, entityManager);
                 return null;
             }
             
@@ -439,29 +437,29 @@ public class ControlStrategyDAO {
         return lockedList.toArray(new EmfDataset[0]);
     }
 
-    private EmfDataset obtainLockedDataset(EmfDataset dataset, User user, Session session) {
-        EmfDataset locked = datasetDao.obtainLocked(user, dataset, session);
+    private EmfDataset obtainLockedDataset(EmfDataset dataset, User user, EntityManager entityManager) {
+        EmfDataset locked = datasetDao.obtainLocked(user, dataset, entityManager);
         return locked;
     }
     
-    private void releaseLocked(EmfDataset[] lockedDatasets, User user, Session session) {
+    private void releaseLocked(EmfDataset[] lockedDatasets, User user, EntityManager entityManager) {
         if (lockedDatasets.length == 0)
             return;
         
         for(int i = 0; i < lockedDatasets.length; i++)
-            datasetDao.releaseLocked(user, lockedDatasets[i], session);
+            datasetDao.releaseLocked(user, lockedDatasets[i], entityManager);
     }
-//    public void removeResultDatasets(Integer[] ids, User user, Session session, DbServer dbServer) throws EmfException {
+//    public void removeResultDatasets(Integer[] ids, User user, EntityManager entityManager, DbServer dbServer) throws EmfException {
 //        DatasetDAO dsDao = new DatasetDAO();
 //        for (Integer id : ids ) {
-//            EmfDataset dataset = dsDao.getDataset(session, id);
+//            EmfDataset dataset = dsDao.getDataset(entityManager, id);
 //
 //            if (dataset != null) {
 //                try {
-//                    dsDao.remove(user, dataset, session);
-//                    purgeDeletedDatasets(dataset, session, dbServer);
-//                    session.flush();
-//                    session.clear();
+//                    dsDao.remove(user, dataset, entityManager);
+//                    purgeDeletedDatasets(dataset, entityManager, dbServer);
+//                    entityManager.flush();
+//                    entityManager.clear();
 //                } catch (EmfException e) {
 //                    if (DebugLevels.DEBUG_12())
 //                        System.out.println(e.getMessage());
@@ -472,10 +470,10 @@ public class ControlStrategyDAO {
 //        }
 //    }
     
-//    private void purgeDeletedDatasets(EmfDataset dataset, Session session, DbServer dbServer) throws EmfException {
+//    private void purgeDeletedDatasets(EmfDataset dataset, EntityManager entityManager, DbServer dbServer) throws EmfException {
 //        try {
 //            DatasetDAO dao = new DatasetDAO();
-//            dao.deleteDatasets(new EmfDataset[] {dataset}, dbServer, session);
+//            dao.deleteDatasets(new EmfDataset[] {dataset}, dbServer, entityManager);
 //        } catch (Exception e) {
 //            throw new EmfException(e.getMessage());
 //        } finally {
@@ -483,8 +481,8 @@ public class ControlStrategyDAO {
 //        }
 //    }
 
-    public Integer[] getResultDatasetIds(int controlStrategyId, Session session) {
-        List<ControlStrategyResult> results = getControlStrategyResults(controlStrategyId, session);
+    public Integer[] getResultDatasetIds(int controlStrategyId, EntityManager entityManager) {
+        List<ControlStrategyResult> results = getControlStrategyResults(controlStrategyId, entityManager);
         List<Integer> datasetLists = new ArrayList<Integer>();
         if(results != null){
             for (int i=0; i<results.size(); i++){
@@ -504,8 +502,8 @@ public class ControlStrategyDAO {
     }
 
     
-    public EmfDataset[] getResultDatasets(int controlStrategyId, Session session) {
-        List<ControlStrategyResult> results = getControlStrategyResults(controlStrategyId, session);
+    public EmfDataset[] getResultDatasets(int controlStrategyId, EntityManager entityManager) {
+        List<ControlStrategyResult> results = getControlStrategyResults(controlStrategyId, entityManager);
         List<EmfDataset> datasets = new ArrayList<EmfDataset>();
         if(results != null){
             for (int i=0; i<results.size(); i++){
@@ -520,8 +518,8 @@ public class ControlStrategyDAO {
         return null; 
     }
 
-    public EmfDataset[] getResultDatasets(int controlStrategyId, int resultId, Session session) {
-        ControlStrategyResult result = getControlStrategyResult(resultId, session);
+    public EmfDataset[] getResultDatasets(int controlStrategyId, int resultId, EntityManager entityManager) {
+        ControlStrategyResult result = getControlStrategyResult(resultId, entityManager);
         List<EmfDataset> datasets = new ArrayList<EmfDataset>();
         if(result != null){
             if (result.getDetailedResultDataset() != null)
@@ -534,70 +532,70 @@ public class ControlStrategyDAO {
         return null; 
     }
 
-    public void setControlStrategyRunStatus(int id, String runStatus, Date completionDate, Session session) {
+    public void setControlStrategyRunStatus(int id, String runStatus, Date completionDate, EntityManager entityManager) {
         // NOTE Auto-generated method stub
         
     }
 
-    public String getDefaultExportDirectory(Session session) {
-        EmfProperty tmpDir = new EmfPropertiesDAO().getProperty("ImportExportTempDir", session);
+    public String getDefaultExportDirectory(EntityManager entityManager) {
+        EmfProperty tmpDir = new EmfPropertiesDAO().getProperty("ImportExportTempDir", entityManager);
         String dir = "";
         if (tmpDir != null)
             dir = tmpDir.getValue();
         return dir;
     }
 
-    public String getStrategyRunStatus(Session session, int id) {
-        return (String)session.createQuery("select cS.runStatus " +
-                "from ControlStrategy cS where cS.id = " + id).uniqueResult();
+    public String getStrategyRunStatus(EntityManager entityManager, int id) {
+        return (String)entityManager.createQuery("select cS.runStatus " +
+                "from ControlStrategy cS where cS.id = " + id).getSingleResult();
     }
 
-    public List<ControlStrategy> getControlStrategiesByControlMeasures(int[] cmIds, Session session) {
+    public List<ControlStrategy> getControlStrategiesByControlMeasures(int[] cmIds, EntityManager entityManager) {
         List<ControlStrategy> list = new ArrayList<ControlStrategy>();
         String idList = "";
         for (int i = 0; i < cmIds.length; ++i) {
             idList += (i > 0 ? ","  : "") + cmIds[i];
         }
         try {
-            Query<ControlStrategy> query = session.createQuery("select distinct cs "
+            TypedQuery<ControlStrategy> query = entityManager.createQuery("select distinct cs "
                     + "FROM ControlStrategy AS cs "
                     + (cmIds != null && cmIds.length > 0 
                             ? "inner join cs.controlMeasures AS csm inner join csm.controlMeasure AS cm "
                                + "WHERE cm.id in (" + idList + ") " 
                             : "")
                     + "order by cs.name", ControlStrategy.class);
-//            Query query = session.createQuery("select new ControlStrategy(cs.id, cs.name, cs.controlMeasures) "
+//            Query query = entityManager.createQuery("select new ControlStrategy(cs.id, cs.name, cs.controlMeasures) "
 //                    + "FROM ControlStrategy AS cs "
 //                    + (cmIds != null && cmIds.length > 0 
 //                            ? "inner join cs.controlMeasures AS csm inner join csm.controlMeasure AS cm "
 //                               + "WHERE cm.id in (" + idList + ") " 
 //                            : "")
 //                    + "order by cs.name");
-            query.setCacheable(true);
-            list = query.list();
+            query.setHint("org.hibernate.cacheable", Boolean.TRUE);
+            list = query.getResultList();
         } catch(Exception ex) {
             ex.printStackTrace();
         }
         return list;
     }
     
-    public void finalizeControlStrategy(int controlStrategyId, String msg, Session session, int[] measureIdsToDelete) throws EmfException {
-        Transaction tx = null;
+    public void finalizeControlStrategy(int controlStrategyId, String msg, EntityManager entityManager, int[] measureIdsToDelete) throws EmfException {
         try {
-            tx = session.beginTransaction();
-            session
-                .createQuery("update ControlStrategy set isFinal = :isFinal, description =  '' || "
-                        + "description || '\n------\n' || :msg, lastModifiedDate = :date where id = :id")
-                .setParameter("isFinal", true)
-                .setParameter("msg", msg)
-                .setParameter("date", new Date())
-                .setParameter("id", Integer.valueOf(controlStrategyId))
-                .executeUpdate();
-            tx.commit();
-            session.clear();
+            hibernateFacade.executeInsideTransaction(em -> {
+                em
+                    .createQuery("update ControlStrategy set isFinal = :isFinal, description =  '' || "
+                            + "description || '\n------\n' || :msg, lastModifiedDate = :date where id = :id")
+                    .setParameter("isFinal", true)
+                    .setParameter("msg", msg)
+                    .setParameter("date", new Date())
+                    .setParameter("id", Integer.valueOf(controlStrategyId))
+                    .executeUpdate();
+                }, entityManager);
+
+            entityManager.clear();
             
             //also need to purge measures that are being deleted...this is needed to keep hibernate list_index in synch...
-            ControlStrategy cs = getById(controlStrategyId, session);
+            ControlStrategy cs = getById(controlStrategyId, entityManager);
             List<ControlStrategyMeasure> measures = new ArrayList<ControlStrategyMeasure>();
             measures.addAll(Arrays.asList(cs.getControlMeasures()));
             for (ControlStrategyMeasure m : cs.getControlMeasures()) {
@@ -608,10 +606,9 @@ public class ControlStrategyDAO {
                 }
             }
             cs.setControlMeasures(measures.toArray(new ControlStrategyMeasure[0]));
-            updateWithLock(cs, session);
+            updateWithLock(cs, entityManager);
             
         } catch (HibernateException e) {
-            tx.rollback();
             throw e;
         } catch (EmfException e) {
             // NOTE Auto-generated catch block
@@ -620,66 +617,67 @@ public class ControlStrategyDAO {
         }
     }
 
-    public List<StrategyGroup> getAllStrategyGroups(Session session) {
-        CriteriaBuilderQueryRoot<StrategyGroup> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(StrategyGroup.class, session);
+    public List<StrategyGroup> getAllStrategyGroups(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<StrategyGroup> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(StrategyGroup.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<StrategyGroup> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public StrategyGroup getGroupById(int id, Session session) {
-        StrategyGroup group = hibernateFacade.load(StrategyGroup.class, "id", Integer.valueOf(id), session);
+    public StrategyGroup getGroupById(int id, EntityManager entityManager) {
+        StrategyGroup group = hibernateFacade.load(StrategyGroup.class, "id", Integer.valueOf(id), entityManager);
         return group;
     }
 
-    public StrategyGroup getGroupByName(String name, Session session) {
-        StrategyGroup group = hibernateFacade.load(StrategyGroup.class, "name", new String(name), session);
+    public StrategyGroup getGroupByName(String name, EntityManager entityManager) {
+        StrategyGroup group = hibernateFacade.load(StrategyGroup.class, "name", new String(name), entityManager);
         return group;
     }
 
-    public StrategyGroup obtainLockedGroup(User owner, int id, Session session) {
-        return (StrategyGroup) lockingScheme.getLocked(owner, currentGroup(id, session), session);
+    public StrategyGroup obtainLockedGroup(User owner, int id, EntityManager entityManager) {
+        return (StrategyGroup) lockingScheme.getLocked(owner, currentGroup(id, entityManager), entityManager);
     }
 
-    public void releaseLockedGroup(User user, int id, Session session) {
-        StrategyGroup current = getGroupById(id, session);
-        lockingScheme.releaseLock(user, current, session);
+    public void releaseLockedGroup(User user, int id, EntityManager entityManager) {
+        StrategyGroup current = getGroupById(id, entityManager);
+        lockingScheme.releaseLock(user, current, entityManager);
     }
 
-    public int addGroup(StrategyGroup group, Session session) {
-        return addObject(group, session);
+    public int addGroup(StrategyGroup group, EntityManager entityManager) {
+        hibernateFacade.add(group, entityManager);
+        return group.getId();
     }
 
-    public boolean canUpdateGroup(StrategyGroup strategyGroup, Session session) {
-        if (!exists(strategyGroup.getId(), session)) {
+    public boolean canUpdateGroup(StrategyGroup strategyGroup, EntityManager entityManager) {
+        if (!exists(strategyGroup.getId(), entityManager)) {
             return false;
         }
 
-        StrategyGroup current = currentGroup(strategyGroup.getId(), session);
+        StrategyGroup current = currentGroup(strategyGroup.getId(), entityManager);
 
-        session.clear();// clear to flush current
+        entityManager.clear();// clear to flush current
 
         if (current.getName().equals(strategyGroup.getName()))
             return true;
 
-        return !nameUsed(strategyGroup.getName(), session);
+        return !nameUsed(strategyGroup.getName(), entityManager);
     }
 
-    private StrategyGroup currentGroup(int id, Session session) {
-        return hibernateFacade.current(id, StrategyGroup.class, session);
+    private StrategyGroup currentGroup(int id, EntityManager entityManager) {
+        return hibernateFacade.current(id, StrategyGroup.class, entityManager);
     }
     
-    public StrategyGroup updateGroupWithLock(StrategyGroup locked, Session session) throws EmfException {
-        return (StrategyGroup) lockingScheme.renewLockOnUpdate(locked, currentGroup(locked, session), session);
+    public StrategyGroup updateGroupWithLock(StrategyGroup locked, EntityManager entityManager) throws EmfException {
+        return (StrategyGroup) lockingScheme.renewLockOnUpdate(locked, currentGroup(locked, entityManager), entityManager);
     }
 
-    private StrategyGroup currentGroup(StrategyGroup strategyGroup, Session session) {
-        return currentGroup(strategyGroup.getId(), session);
+    private StrategyGroup currentGroup(StrategyGroup strategyGroup, EntityManager entityManager) {
+        return currentGroup(strategyGroup.getId(), entityManager);
     }
     
-    public void removeGroup(StrategyGroup strategyGroup, Session session) {
-        hibernateFacade.remove(strategyGroup, session);
+    public void removeGroup(StrategyGroup strategyGroup, EntityManager entityManager) {
+        hibernateFacade.remove(strategyGroup, entityManager);
     }
 
 }

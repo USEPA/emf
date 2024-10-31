@@ -49,14 +49,14 @@
 //import java.util.Map;
 //import java.util.Properties;
 //
-//import org.hibernate.Session;
+//import javax.persistence.EntityManager;
 //
 //
 //public class AQGridCalculator {
 //
 //    // private DbServerFactory dbServerFactory;
 //    //
-//    // private HibernateSessionFactory sessionFactory;
+//    // private EntityManagerFactory entityManagerFactory;
 //    //
 //    // private User user;
 //    //
@@ -70,7 +70,7 @@
 //
 ////    private TestServiceTestCase serviceTestCase;
 //    
-//    private HibernateSessionFactory sessionFactory;
+//    private EntityManagerFactory entityManagerFactory;
 //
 //    private DbServerFactory dbServerFactory;
 //    
@@ -83,10 +83,10 @@
 ////        this.serviceTestCase = new TestServiceTestCase();
 //        try {
 ////            this.serviceTestCase.setUp();
-//            this.sessionFactory = sessionFactory();
+//            this.entityManagerFactory = entityManagerFactory();
 //            this.dbServerFactory = dbServerFactory();
 //            this.creator = new DatasetCreator(new ControlStrategy(), getUser("delvecch"), 
-//                    sessionFactory, dbServerFactory,
+//                    entityManagerFactory, dbServerFactory,
 //                    dbServerFactory.getDbServer().getEmissionsDatasource(), new Keywords(new Keyword[] { } ));
 //        } catch (Exception e) {
 //            // NOTE Auto-generated catch block
@@ -95,7 +95,7 @@
 //        this.datasetDAO = new DatasetDAO(dbServerFactory);
 //    }
 //
-//    private HibernateSessionFactory sessionFactory() throws Exception {
+//    private EntityManagerFactory entityManagerFactory() throws Exception {
 //        String folder = "test";
 //        File configFile = new File(folder, "postgres.conf");
 //        LocalHibernateConfiguration config = new LocalHibernateConfiguration(configFile);
@@ -120,9 +120,9 @@
 //    
 //
 //
-//    public AQGridCalculator(DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory, User user) {
+//    public AQGridCalculator(DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory, User user) {
 //        // this.dbServerFactory = dbServerFactory;
-//        // this.sessionFactory = sessionFactory;
+//        // this.entityManagerFactory = entityManagerFactory;
 //    }
 //
 ////    private Connection getConnection() {
@@ -519,12 +519,12 @@
 //    }
 //    
 //    private String getProperty(String propertyName) {
-//        Session session = sessionFactory.getSession();
+//        EntityManager entityManager = entityManagerFactory.createEntityManager();
 //        try {
-//            EmfProperty property = new EmfPropertiesDAO().getProperty(propertyName, session);
+//            EmfProperty property = new EmfPropertiesDAO().getProperty(propertyName, entityManager);
 //            return property.getValue();
 //        } finally {
-//            session.close();
+//            entityManager.close();
 //        }
 //    }
 //    public Map<String, AQTransferCoefficient> getTransferCoefficients() throws EmfException {
@@ -940,26 +940,26 @@
 //    }
 //    
 //    private EmfDataset loadDataset(String datasetName) throws EmfException {
-//        Session session = sessionFactory.getSession();
+//        EntityManager entityManager = entityManagerFactory.createEntityManager();
 //        try {
-//            EmfDataset dataset = datasetDAO.getDataset(session, datasetName);
+//            EmfDataset dataset = datasetDAO.getDataset(entityManager, datasetName);
 //            return dataset;
 //        } catch (RuntimeException e) {
 //            throw new EmfException("Could not get dataset " + datasetName);
 //        } finally {
-//            session.close();
+//            entityManager.close();
 //        }
 //    }
 //
 //    private User getUser(String username) throws EmfException {
-//        Session session = sessionFactory.getSession();
+//        EntityManager entityManager = entityManagerFactory.createEntityManager();
 //        try {
 //            UserDAO dao = new UserDAO();
-//            return dao.get(username, session);
+//            return dao.get(username, entityManager);
 //        } catch (RuntimeException e) {
 //            throw new EmfException("Could not get user " + username);
 //        } finally {
-//            session.close();
+//            entityManager.close();
 //        }
 //    }
 //
@@ -1119,11 +1119,11 @@
 //
 //    protected EmfDataset addDataset(String datasetName) throws EmfException {
 //        DbServer dbServer = dbServerFactory.getDbServer();
-//        Session session = sessionFactory.getSession();
-//        User user = new UserDAO().get("delvecch", session);
+//        EntityManager entityManager = entityManagerFactory.createEntityManager();
+//        User user = new UserDAO().get("delvecch", entityManager);
 //        
 //        DatasetCreator creator = new DatasetCreator(new ControlStrategy(), user, 
-//                sessionFactory, dbServerFactory,
+//                entityManagerFactory, dbServerFactory,
 //                dbServerFactory.getDbServer().getEmissionsDatasource(), new Keywords(new Keyword[] { } ));
 //        try {
 //            EmfDataset dataset = creator.addDataset("fast", "fast_" + datasetName, getDatasetType(DatasetType.orlPointInventory), new VersionedTableFormat(new ORLPointFileFormat(dbServer.getSqlDataTypes()), dbServer.getSqlDataTypes()), "");
@@ -1133,7 +1133,7 @@
 //        } catch (Exception e) {
 //            throw new EmfException("Could not get dataset " + datasetName);
 //        } finally {
-//            session.close();
+//            entityManager.close();
 //            try {
 //                dbServer.disconnect();
 //            } catch (Exception e) {
@@ -1146,7 +1146,7 @@
 //    protected EmfDataset addDataset(String datasetName, DatasetType datasetType,
 //            TableFormat tableFormat, String headerDescription) throws EmfException {
 //        DbServer dbServer = dbServerFactory.getDbServer();
-//        Session session = sessionFactory.getSession();
+//        EntityManager entityManager = entityManagerFactory.createEntityManager();
 //        
 //        try {
 //            EmfDataset dataset = creator.addDataset("fast", datasetName + System.nanoTime(), datasetType, tableFormat, headerDescription);
@@ -1158,7 +1158,7 @@
 //            e.printStackTrace();
 //            throw new EmfException("Could not add dataset " + datasetName);
 //        } finally {
-//            session.close();
+//            entityManager.close();
 //            try {
 //                dbServer.disconnect();
 //            } catch (Exception e) {
@@ -1169,13 +1169,13 @@
 //    }
 //
 //    private DatasetType getDatasetType(String datasetTypeName) throws EmfException {
-//        Session session = sessionFactory.getSession();
+//        EntityManager entityManager = entityManagerFactory.createEntityManager();
 //        try {
-//            return new DataCommonsDAO().getDatasetType(datasetTypeName, session);
+//            return new DataCommonsDAO().getDatasetType(datasetTypeName, entityManager);
 //        } catch (RuntimeException e) {
 //            throw new EmfException("Could not get dataset type " + datasetTypeName);
 //        } finally {
-//            session.close();
+//            entityManager.close();
 //        }
 //    }
 //
@@ -1250,12 +1250,12 @@
 //    }
 //
 //    protected Version version(EmfDataset inputDataset, int datasetVersion) {
-//        Session session = sessionFactory.getSession();
+//        EntityManager entityManager = entityManagerFactory.createEntityManager();
 //        try {
 //            Versions versions = new Versions();
-//            return versions.get(inputDataset.getId(), datasetVersion, session);
+//            return versions.get(inputDataset.getId(), datasetVersion, entityManager);
 //        } finally {
-//            session.close();
+//            entityManager.close();
 //        }
 //    }
 //

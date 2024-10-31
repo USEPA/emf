@@ -31,7 +31,6 @@ import gov.epa.emissions.framework.services.data.ProjectsDAO;
 import gov.epa.emissions.framework.services.data.RegionsDAO;
 import gov.epa.emissions.framework.services.data.SectorsDAO;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 import gov.epa.emissions.framework.tasks.ImportCaseOutputSubmitter;
 import gov.epa.emissions.framework.tasks.ImportCaseOutputTask;
@@ -47,10 +46,12 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
 
 public class ManagedImportService {
     private static Log log = LogFactory.getLog(ManagedImportService.class);
@@ -59,7 +60,7 @@ public class ManagedImportService {
 
     private static Thread runningThread = null;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MMddyy_HHmmss");
 
@@ -91,12 +92,12 @@ public class ManagedImportService {
         return "For label: " + svcLabel + " # of active objects of this type= " + svcCount;
     }
 
-    public ManagedImportService(HibernateSessionFactory sessionFactory) {
-        this(DbServerFactory.get(), sessionFactory);
+    public ManagedImportService(EntityManagerFactory entityManagerFactory) {
+        this(DbServerFactory.get(), entityManagerFactory);
     }
 
-    public ManagedImportService(DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public ManagedImportService(DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
         this.dbServerFactory = dbServerFactory;
 
         if (System.getProperty("IMPORT_EXPORT_TEMP_DIR") == null)
@@ -112,9 +113,9 @@ public class ManagedImportService {
 
     private Services services() {
         Services services = new Services();
-        services.setLoggingService(new LoggingServiceImpl(sessionFactory));
-        services.setStatusService(new StatusDAO(sessionFactory));
-        services.setDataService(new DataServiceImpl(sessionFactory));
+        services.setLoggingService(new LoggingServiceImpl(entityManagerFactory));
+        services.setStatusService(new StatusDAO(entityManagerFactory));
+        services.setDataService(new DataServiceImpl(entityManagerFactory));
 
         return services;
     }
@@ -130,14 +131,14 @@ public class ManagedImportService {
     }
 
     private synchronized boolean isNameUsed(String name) throws Exception {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         DatasetDAO dao = new DatasetDAO();
 
         try {
-            return dao.datasetNameUsed(name, session);
+            return dao.datasetNameUsed(name, entityManager);
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
@@ -197,7 +198,7 @@ public class ManagedImportService {
     }
 
     private synchronized void registerSubmitter(String task, String folderPath, String[] filenames) {
-        // The service instance (one per session) will have only one submitter for the type of service
+        // The service instance (one per entityManager) will have only one submitter for the type of service
         // Here the TaskManagerImportService has one reference to the ImportClientSubmitter
         ImportSubmitter submitter = null;
 
@@ -260,7 +261,7 @@ public class ManagedImportService {
     private synchronized void addTasks(String folder, File path, String[] filenames, String dsName, User user,
             DatasetType dsType, Services services) throws Exception {
         EmfDataset dataset = createDataset(folder, filenames[0], dsName, user, dsType, false);
-        ImportTask task = new ImportTask(dataset, filenames, path, user, services, dbServerFactory, sessionFactory);
+        ImportTask task = new ImportTask(dataset, filenames, path, user, services, dbServerFactory, entityManagerFactory);
 
         importTasks.add(task);
     }
@@ -328,7 +329,7 @@ public class ManagedImportService {
         }
 
         ImportCaseOutputTask task = new ImportCaseOutputTask(localOuput, dataset, files, path, user, services,
-                dbServerFactory, sessionFactory, useTaskManager);
+                dbServerFactory, entityManagerFactory, useTaskManager);
 
         importOutputTasks.add(task);
     }
@@ -344,7 +345,7 @@ public class ManagedImportService {
 
     private synchronized DatasetType getDsType(String datasetType, CaseOutput output) throws EmfException {
         DatasetTypesDAO dao = new DatasetTypesDAO();
-        DatasetType type = dao.get(datasetType, sessionFactory.getSession());
+        DatasetType type = dao.get(datasetType, entityManagerFactory.createEntityManager());
 
         if (type == null)
             throw new EmfException("Error registering output: Dataset type '" + datasetType
@@ -456,7 +457,7 @@ public class ManagedImportService {
         CountriesDAO countriesDao = new CountriesDAO();
         KeywordsDAO keywordsDAO = new KeywordsDAO();
 
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         String massStorageRoot = System.getProperty("MASS_STORAGE_ROOT");
 
         try {
@@ -464,11 +465,11 @@ public class ManagedImportService {
             Project projectObj = null;
                 
             if (project != null && !project.trim().isEmpty()) {
-                projectObj = projectsDao.getProject(project, session);
+                projectObj = projectsDao.getProject(project, entityManager);
             
             
                 if (projectObj == null && user.isAdmin())
-                    projectObj = projectsDao.addProject(new Project(project), session);
+                    projectObj = projectsDao.addProject(new Project(project), entityManager);
             
             
                 if (projectObj == null)
@@ -477,15 +478,15 @@ public class ManagedImportService {
             
             dataset.setProject(projectObj);
 
-            Region regionObj = regionsDao.getRegion(region, session);
-            dataset.setRegion((regionObj == null && region != null) ? regionsDao.addRegion(new Region(region), session)
+            Region regionObj = regionsDao.getRegion(region, entityManager);
+            dataset.setRegion((regionObj == null && region != null) ? regionsDao.addRegion(new Region(region), entityManager)
                     : regionObj);
 
-            Country countryObj = countriesDao.getCountry(country, session);
+            Country countryObj = countriesDao.getCountry(country, entityManager);
             dataset.setCountry((countryObj == null && country != null) ? countriesDao.addCountry(new Country(country),
-                    session) : countryObj);
+                    entityManager) : countryObj);
 
-            Sector sectorObj = sectorsDao.getSector(sector, session);
+            Sector sectorObj = sectorsDao.getSector(sector, entityManager);
 
             if (sectorObj == null && sector != null && !sector.isEmpty())
                 log.error("Sector " + sector + " does not exist in sectors table.");
@@ -494,17 +495,17 @@ public class ManagedImportService {
 
             if (massStorageRoot != null && folder.startsWith(massStorageRoot)) {
                 Keyword massKey = new Keyword("MASS_STORAGE_LOCATION");
-                Keyword loaded = keywordsDAO.add(massKey, session);
+                Keyword loaded = keywordsDAO.add(massKey, entityManager);
                 KeyVal keyval = new KeyVal(loaded, folder);
                 dataset.addKeyVal(keyval);
             }
 
-            dataset.setIntendedUse(intendedUsesDao.getIntendedUse("public", sessionFactory.getSession()));
+            dataset.setIntendedUse(intendedUsesDao.getIntendedUse("public", entityManagerFactory.createEntityManager()));
         } catch (HibernateException e) {
             e.printStackTrace();
             log.error(e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
 
         return dataset;
@@ -568,23 +569,23 @@ public class ManagedImportService {
         return TaskManagerFactory.getImportTaskManager().getStatusOfWaitAndRunTable();
     }
 
-    public Long getCaseOutputCount(Session session) {
+    public Long getCaseOutputCount(EntityManager entityManager) {
         Long count = 0L;
-        count = (Long) session.createQuery("select count(*) as total from " + QueueCaseOutput.class.getSimpleName())
-                .uniqueResult();
+        count = (Long) entityManager.createQuery("select count(*) as total from " + QueueCaseOutput.class.getSimpleName())
+                .getSingleResult();
         return count;
     }
 
     public synchronized void registerCaseOutputs(User user, CaseOutput[] outputs) throws EmfException {
         CaseDAO caseDao = new CaseDAO();
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         Exception exception = null;
 
         for (CaseOutput output : outputs) {
             try {
                 QueueCaseOutput queueOutput = new QueueCaseOutput();
                 queueOutput.poputlate(output);
-                caseDao.addQueueCaseOutput(queueOutput, session);
+                caseDao.addQueueCaseOutput(queueOutput, entityManager);
             } catch (Exception e) {
                 log.error(e);
                 exception = e;
@@ -601,8 +602,8 @@ public class ManagedImportService {
             exception = e;
         }
 
-        if (session != null && session.isConnected())
-            session.close();
+        if (entityManager != null)
+            entityManager.close();
 
         if (exception != null)
             throw new EmfException(exception.getMessage());
@@ -613,7 +614,7 @@ public class ManagedImportService {
         runningThread = new Thread(new Runnable() {
             public void run() {
                 CaseDAO caseDao = null;
-                Session session = null;
+                EntityManager entityManager = null;
 
                 try {
                     if (DebugLevels.DEBUG_17())
@@ -621,9 +622,9 @@ public class ManagedImportService {
                                 + Thread.currentThread().getId());
 
                     caseDao = new CaseDAO();
-                    session = sessionFactory.getSession();
+                    entityManager = entityManagerFactory.createEntityManager();
 
-                    List<QueueCaseOutput> caseOutputs = caseDao.getQueueCaseOutputs(session);
+                    List<QueueCaseOutput> caseOutputs = caseDao.getQueueCaseOutputs(entityManager);
                     int numOutputs = caseOutputs.size();
 
                     while (numOutputs > 0) {
@@ -634,11 +635,11 @@ public class ManagedImportService {
                                         + caseOutputs.get(i).getId());
 
                             createNRunOutputTasks(user, caseOutputs.get(i));
-                            removeQedOutput(caseOutputs.get(i), caseDao, session);
+                            removeQedOutput(caseOutputs.get(i), caseDao, entityManager);
                         }
 
                         // Checking if new ones coming during the process
-                        caseOutputs = caseDao.getQueueCaseOutputs(session);
+                        caseOutputs = caseDao.getQueueCaseOutputs(entityManager);
                         numOutputs = caseOutputs.size();
                     }
                 } catch (Exception e) {
@@ -646,8 +647,8 @@ public class ManagedImportService {
                 } finally {
                     ManagedImportService.numOfRunningThread = 0; // reset so that other thread can kick off
 
-                    if (session != null && session.isConnected())
-                        session.close();
+                    if (entityManager != null)
+                        entityManager.close();
                 }
             } // end of run()
         }); // enf of new Thread
@@ -679,14 +680,14 @@ public class ManagedImportService {
         }
     }
 
-    private void removeQedOutput(QueueCaseOutput qOutput, CaseDAO caseDao, Session session) {
-        caseDao.removeQedOutput(qOutput, session);
+    private void removeQedOutput(QueueCaseOutput qOutput, CaseDAO caseDao, EntityManager entityManager) {
+        caseDao.removeQedOutput(qOutput, entityManager);
 
         if (DebugLevels.DEBUG_17())
             System.out.println("qedOutput (id = " + qOutput.getId() + ") removed from QueueCaseOutput table.");
 
-//        session.flush();
-        session.clear();
+//        entityManager.flush();
+        entityManager.clear();
     }
 
     private void createOutputTasksFromQ(User user, QueueCaseOutput qoutput) throws Exception {
@@ -711,26 +712,26 @@ public class ManagedImportService {
     }
 
     private void setTempDirProperties() {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            EmfProperty eximTempDir = new EmfPropertiesDAO().getProperty("ImportExportTempDir", session);
+            EmfProperty eximTempDir = new EmfPropertiesDAO().getProperty("ImportExportTempDir", entityManager);
 
             if (eximTempDir != null)
                 System.setProperty("IMPORT_EXPORT_TEMP_DIR", eximTempDir.getValue());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private void setMassStorageProperties() {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            EmfProperty massStorageRoot = new EmfPropertiesDAO().getProperty("MASS_STORAGE_ROOT", session);
+            EmfProperty massStorageRoot = new EmfPropertiesDAO().getProperty("MASS_STORAGE_ROOT", entityManager);
 
             if (massStorageRoot != null)
                 System.setProperty("MASS_STORAGE_ROOT", massStorageRoot.getValue());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 

@@ -7,14 +7,14 @@ import gov.epa.emissions.commons.db.version.Versions;
 import gov.epa.emissions.commons.io.VersionedQuery;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class GenerateRegionMap {
 
@@ -22,11 +22,11 @@ public class GenerateRegionMap {
 
     private Datasource emissionDatasource;
     private RegionMap map;
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
-    public GenerateRegionMap(DbServer dbServer, HibernateSessionFactory sessionFactory) {
+    public GenerateRegionMap(DbServer dbServer, EntityManagerFactory entityManagerFactory) {
         this.emissionDatasource = dbServer.getEmissionsDatasource();
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.map = new RegionMap();
     }
 
@@ -84,12 +84,12 @@ public class GenerateRegionMap {
     }
     
     private Version version(EmfDataset regionDataset, int version) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             Versions versions = new Versions();
-            return versions.get(regionDataset.getId(), version, session);
+            return versions.get(regionDataset.getId(), version, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 

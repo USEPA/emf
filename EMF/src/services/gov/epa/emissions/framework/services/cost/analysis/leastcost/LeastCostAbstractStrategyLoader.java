@@ -18,7 +18,6 @@ import gov.epa.emissions.framework.services.cost.controlStrategy.DatasetCreator;
 import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyResultType;
 import gov.epa.emissions.framework.services.data.DatasetTypesDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.sql.ResultSet;
@@ -26,7 +25,8 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.Date;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class LeastCostAbstractStrategyLoader extends AbstractStrategyLoader {
     
@@ -39,9 +39,9 @@ public class LeastCostAbstractStrategyLoader extends AbstractStrategyLoader {
     protected double uncontrolledEmis;
 
     public LeastCostAbstractStrategyLoader(User user, DbServerFactory dbServerFactory, 
-            HibernateSessionFactory sessionFactory, ControlStrategy controlStrategy) throws EmfException {
+            EntityManagerFactory entityManagerFactory, ControlStrategy controlStrategy) throws EmfException {
         super(user, dbServerFactory, 
-                sessionFactory, controlStrategy);
+                entityManagerFactory, controlStrategy);
     }
 
     public ControlStrategyResult loadLeastCostCMWorksheetResult() throws EmfException {
@@ -92,7 +92,7 @@ public class LeastCostAbstractStrategyLoader extends AbstractStrategyLoader {
         result.setRunStatus("Start processing dataset");
 
         //persist result
-        saveControlStrategyResult(result);
+        addControlStrategyResult(result);
         return result;
     }
 
@@ -107,20 +107,20 @@ public class LeastCostAbstractStrategyLoader extends AbstractStrategyLoader {
         }
 
    private DatasetType getControlStrategyLeastCostCMWorksheetDatasetType() {
-       Session session = sessionFactory.getSession();
+       EntityManager entityManager = entityManagerFactory.createEntityManager();
        try {
-           return new DatasetTypesDAO().get("Control Strategy Least Cost Control Measure Worksheet", session);
+           return new DatasetTypesDAO().get("Control Strategy Least Cost Control Measure Worksheet", entityManager);
        } finally {
-           session.close();
+           entityManager.close();
        }
    }
 
    private DatasetType getControlStrategyLeastCostCurveSummaryDatasetType() {
-       Session session = sessionFactory.getSession();
+       EntityManager entityManager = entityManagerFactory.createEntityManager();
        try {
-           return new DatasetTypesDAO().get("Control Strategy Least Cost Curve Summary", session);
+           return new DatasetTypesDAO().get("Control Strategy Least Cost Curve Summary", entityManager);
        } finally {
-           session.close();
+           entityManager.close();
        }
    }
 
@@ -134,7 +134,7 @@ public class LeastCostAbstractStrategyLoader extends AbstractStrategyLoader {
         result.setRunStatus("Start processing LeastCost CM Worksheet result");
 
         //persist result
-        saveControlStrategyResult(result);
+        addControlStrategyResult(result);
         
         //create indexes on the datasets table...
         createLeastCostCMWorksheetIndexes((EmfDataset)result.getDetailedResultDataset());
@@ -152,33 +152,33 @@ public class LeastCostAbstractStrategyLoader extends AbstractStrategyLoader {
         result.setRunStatus("Start processing LeastCost Curve Summary result");
 
         //persist result
-        saveControlStrategyResult(result);
+        addControlStrategyResult(result);
         
         return result;
     }
 
     protected StrategyResultType getLeastCostCMWorksheetResultType() throws EmfException {
         StrategyResultType resultType = null;
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            resultType = new ControlStrategyDAO().getStrategyResultType(StrategyResultType.leastCostControlMeasureWorksheet, session);
+            resultType = new ControlStrategyDAO().getStrategyResultType(StrategyResultType.leastCostControlMeasureWorksheet, entityManager);
         } catch (RuntimeException e) {
             throw new EmfException("Could not get detailed strategy result type");
         } finally {
-            session.close();
+            entityManager.close();
         }
         return resultType;
     }
 
     protected StrategyResultType getLeastCostCurveSummaryResultType() throws EmfException {
         StrategyResultType resultType = null;
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            resultType = new ControlStrategyDAO().getStrategyResultType(StrategyResultType.leastCostCurveSummary, session);
+            resultType = new ControlStrategyDAO().getStrategyResultType(StrategyResultType.leastCostCurveSummary, entityManager);
         } catch (RuntimeException e) {
             throw new EmfException("Could not get detailed strategy result type");
         } finally {
-            session.close();
+            entityManager.close();
         }
         return resultType;
     }
@@ -217,12 +217,13 @@ public class LeastCostAbstractStrategyLoader extends AbstractStrategyLoader {
 
     protected void makeApplicableMeasuresAvailable(ControlStrategyResult leastCostCMWorksheetResult) throws EmfException {
         
-        String query = "update " + qualifiedEmissionTableName(leastCostCMWorksheetResult.getDetailedResultDataset()) + " set status = null::integer where status = 1;vacuum analyze " + qualifiedEmissionTableName(leastCostCMWorksheetResult.getDetailedResultDataset()) + ";";
+        String query = "update " + qualifiedEmissionTableName(leastCostCMWorksheetResult.getDetailedResultDataset()) + " set status = null::integer where status = 1;";
 
         if (DebugLevels.DEBUG_25())
             System.out.println(System.currentTimeMillis() + " " + query);
         try {
             datasource.query().execute(query);
+            datasource.query().execute("vacuum analyze " + qualifiedEmissionTableName(leastCostCMWorksheetResult.getDetailedResultDataset()) + ";");
         } catch (SQLException e) {
             throw new EmfException("Could not execute query -" + query + "\n" + e.getMessage());
         } finally {

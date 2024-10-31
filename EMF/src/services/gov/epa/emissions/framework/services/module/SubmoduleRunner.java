@@ -1,5 +1,17 @@
 package gov.epa.emissions.framework.services.module;
 
+import gov.epa.emissions.commons.data.DatasetType;
+import gov.epa.emissions.commons.data.InternalSource;
+import gov.epa.emissions.commons.db.Datasource;
+import gov.epa.emissions.commons.db.DbServer;
+import gov.epa.emissions.commons.io.TableFormat;
+import gov.epa.emissions.commons.security.User;
+import gov.epa.emissions.commons.util.CustomDateFormat;
+import gov.epa.emissions.framework.services.DbServerFactory;
+import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.data.DatasetDAO;
+import gov.epa.emissions.framework.services.data.EmfDataset;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -7,23 +19,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.hibernate.Session;
-
-import gov.epa.emissions.commons.data.DatasetType;
-import gov.epa.emissions.commons.data.InternalSource;
-import gov.epa.emissions.commons.data.KeyVal;
-import gov.epa.emissions.commons.db.Datasource;
-import gov.epa.emissions.commons.db.DbServer;
-import gov.epa.emissions.commons.db.SqlDataTypes;
-import gov.epa.emissions.commons.io.TableFormat;
-import gov.epa.emissions.commons.io.temporal.VersionedTableFormat;
-import gov.epa.emissions.commons.security.User;
-import gov.epa.emissions.commons.util.CustomDateFormat;
-import gov.epa.emissions.framework.services.DbServerFactory;
-import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.data.DatasetDAO;
-import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 abstract class SubmoduleRunner extends ModuleRunner {
     private ModuleRunner parentModuleRunner;
@@ -69,14 +66,14 @@ abstract class SubmoduleRunner extends ModuleRunner {
                                           CustomDateFormat.format_yyyy_MM_dd_HHmmssSSS(getStartDate()));
         historySubmodule.addLogMessage(History.INFO, logMessage);
         getHistory().addHistorySubmodule(historySubmodule);
-        getModulesDAO().updateHistory(getHistory(), getSession());
+        getModulesDAO().updateHistory(getHistory(), getEntityManager());
     }
 
     protected void stop() {
         Date submoduleStopDate = new Date();
         long durationSeconds = (submoduleStopDate.getTime() - submoduleStartDate.getTime()) / 1000;
         historySubmodule.setDurationSeconds((int)durationSeconds);
-        historySubmodule = getModulesDAO().updateHistorySubmodule(historySubmodule, getSession());
+        historySubmodule = getModulesDAO().updateHistorySubmodule(historySubmodule, getEntityManager());
     }
 
     public void run() throws EmfException {
@@ -104,7 +101,7 @@ abstract class SubmoduleRunner extends ModuleRunner {
         EmfDataset dataset = null;
         do {
             name = tempName + " " + CustomDateFormat.format_HHMMSSSS(new Date()); 
-            dataset = getDatasetDAO().getDataset(getSession(), tempName);
+            dataset = getDatasetDAO().getDataset(getEntityManager(), tempName);
         } while (dataset != null);
         return name;
     }
@@ -113,12 +110,12 @@ abstract class SubmoduleRunner extends ModuleRunner {
         
         DbServer dbServer = getDbServer();
         User user = getUser();
-        HibernateSessionFactory sessionFactory = getHibernateSessionFactory();
+        EntityManagerFactory entityManagerFactory = getEntityManagerFactory();
         DbServerFactory dbServerFactory = getDbServerFactory();
         Datasource datasource = getDatasource();
         Connection connection = getConnection();
         DatasetDAO datasetDAO = getDatasetDAO();
-        Session session = getSession();
+        EntityManager entityManager = getEntityManager();
         Date startDate = getStartDate();
         
         Module module = getModule();
@@ -157,12 +154,12 @@ abstract class SubmoduleRunner extends ModuleRunner {
                 internalDatasetName = getNewInternalDatasetName(moduleTypeVersionDataset);
             }
             String persistence = keepInternalDataset ? "persistent" : "temporary";
-            EmfDataset dataset = getDatasetDAO().getDataset(session, internalDatasetName);
+            EmfDataset dataset = getDatasetDAO().getDataset(entityManager, internalDatasetName);
             int versionNumber = 0;
             if (dataset == null) { // NEW
                 TableFormat tableFormat = getTableFormat(moduleTypeVersionDataset, dbServer);
                 String description = "New internal dataset created by the '" + module.getName() + "' module for the '" + placeholderPathNames + "' placeholder.";
-                DatasetCreator datasetCreator = new DatasetCreator(module, placeholderPathNames, user, sessionFactory, dbServerFactory, datasource);
+                DatasetCreator datasetCreator = new DatasetCreator(module, placeholderPathNames, user, entityManagerFactory, dbServerFactory, datasource);
                 dataset = datasetCreator.addDataset("mod", internalDatasetName, datasetType, module.getIsFinal(), tableFormat, description);
                
                 InternalSource internalSource = getInternalSource(dataset);
@@ -192,7 +189,7 @@ abstract class SubmoduleRunner extends ModuleRunner {
 
                 boolean must_unlock = false;
                 if (!dataset.isLocked()) {
-                    dataset = datasetDAO.obtainLocked(user, dataset, session);
+                    dataset = datasetDAO.obtainLocked(user, dataset, entityManager);
                     must_unlock = true;
                 } else if (!dataset.isLocked(user)) {
                     errorMessage = String.format("Could not replace internal dataset '%s' for placeholder '%s'. The dataset is locked by %s.",
@@ -201,11 +198,11 @@ abstract class SubmoduleRunner extends ModuleRunner {
                 }
                 
                 try {
-                    DatasetCreator datasetCreator = new DatasetCreator(module, placeholderPathNames, user, sessionFactory, dbServerFactory, datasource);
-                    datasetCreator.replaceDataset(session, connection, dataset, module.getIsFinal());
+                    DatasetCreator datasetCreator = new DatasetCreator(module, placeholderPathNames, user, entityManagerFactory, dbServerFactory, datasource);
+                    datasetCreator.replaceDataset(entityManager, connection, dataset, module.getIsFinal());
                 } finally {
                     if (must_unlock)
-                        dataset = datasetDAO.releaseLocked(user, dataset, session);
+                        dataset = datasetDAO.releaseLocked(user, dataset, entityManager);
                 }
                 
                 InternalSource internalSource = getInternalSource(dataset);
@@ -228,7 +225,7 @@ abstract class SubmoduleRunner extends ModuleRunner {
                 historyInternalDatasets.put(placeholderPath, historyInternalDataset);
             }
         }
-        getModulesDAO().updateHistory(getHistory(), getSession());
+        getModulesDAO().updateHistory(getHistory(), getEntityManager());
     }
 
     public ModuleRunner getParentModuleRunner() {
@@ -316,7 +313,7 @@ abstract class SubmoduleRunner extends ModuleRunner {
     protected void executeTeardownScript(List<String> outputDatasetTables) throws EmfException {
         Connection connection = getConnection();
         ModulesDAO modulesDAO = getModulesDAO();
-        Session session = getSession();
+        EntityManager entityManager = getEntityManager();
 
         String teardownScript = getDenyPermissionsScript(getUserTimeStamp(), outputDatasetTables);
 
@@ -326,7 +323,7 @@ abstract class SubmoduleRunner extends ModuleRunner {
             
             historySubmodule.addLogMessage(History.INFO, "Starting teardown script.");
             
-            historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, session);
+            historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, entityManager);
             
             statement = connection.createStatement();
             statement.execute(teardownScript);

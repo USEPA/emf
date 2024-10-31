@@ -7,106 +7,91 @@ import gov.epa.emissions.framework.services.basic.EmfProperty;
 
 import java.util.Date;
 
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import javax.persistence.EntityManager;
 
 public class LockingScheme {
 
     private EmfPropertiesDAO propertiesDao;
+    private HibernateFacade hibernateFacade;
 
     public LockingScheme() {
         propertiesDao = new EmfPropertiesDAO();
+        this.hibernateFacade = new HibernateFacade();
     }
 
     // throw an exception if the object is already locked
     //
-    public Lockable getLocked(User user, Lockable current, Session session) {
+    public Lockable getLocked(User user, Lockable current, EntityManager entityManager) {
         if (!current.isLocked()) {
-            grabLock(user, current, session);
+            grabLock(user, current, entityManager);
             return current;
         }
 
         long elapsed = new Date().getTime() - current.getLockDate().getTime();
 
-        if ((user.getName().equals(current.getLockOwner())) || (elapsed > timeInterval(session))) {
-            grabLock(user, current, session);
+        if ((user.getName().equals(current.getLockOwner())) || (elapsed > timeInterval(entityManager))) {
+            grabLock(user, current, entityManager);
         }
 
         return current;
     }
 
-    public long timeInterval(Session session) {
-        EmfProperty timeInterval = propertiesDao.getProperty("lock.time-interval", session);
+    public long timeInterval(EntityManager entityManager) {
+        EmfProperty timeInterval = propertiesDao.getProperty("lock.time-interval", entityManager);
         return Long.parseLong(timeInterval.getValue());
     }
 
-    public void grabLock(User user, Lockable lockable, Session session) {
+    public void grabLock(User user, Lockable lockable, EntityManager entityManager) {
         lockable.setLockOwner(user.getUsername());
         lockable.setLockDate(new Date());
 
-        Transaction tx = session.beginTransaction();
-        try {
-            session.update(lockable);
-            tx.commit();
-        } catch (HibernateException e) {
-            tx.rollback();
-            throw e;
-        }
+        hibernateFacade.executeInsideTransaction(em -> {
+            em.merge(lockable);
+            em.flush();
+        }, entityManager);
     }
 
-    public Lockable releaseLock(Lockable current, Session session) {
-        Transaction tx = session.beginTransaction();
-        
-        try {
-            current.setLockOwner(null);
-            current.setLockDate(null);
-            session.update(current);
-
-            tx.commit();
-        } catch (HibernateException e) {
-            tx.rollback();
-            throw e;
-        }
+    public Lockable releaseLock(Lockable current, EntityManager entityManager) {
+        current.setLockOwner(null);
+        current.setLockDate(null);
+        hibernateFacade.executeInsideTransaction(em -> {
+            em.merge(current);
+            em.flush();
+        }, entityManager);
 
         return current;
     }
 
-    public Lockable releaseLock(User owner, Lockable current, Session session) {
+    public Lockable releaseLock(User owner, Lockable current, EntityManager entityManager) {
         if (current == null || !current.isLocked() || !current.isLocked(owner))
             return current;
         
-        return releaseLock(current, session);
+        return releaseLock(current, entityManager);
     }
 
-    public Lockable releaseLockOnUpdate(Lockable target, Lockable current, Session session) throws EmfException {
-        doUpdate(target, current, session);
-        return releaseLock(target, session);
+    public Lockable releaseLockOnUpdate(Lockable target, Lockable current, EntityManager entityManager) throws EmfException {
+        doUpdate(target, current, entityManager);
+        return releaseLock(target, entityManager);
     }
 
-    private void doUpdate(Lockable target, Lockable current, Session session) throws EmfException {
+    private void doUpdate(Lockable target, Lockable current, EntityManager entityManager) throws EmfException {
         if (target.getLockOwner() == null || !current.isLocked(target.getLockOwner()))
             throw new EmfException("Cannot update without owning lock");
 
-        session.clear();// clear 'loaded' locked object - to make way for updated object
-        doUpdate(session, target);
+        entityManager.clear();// clear 'loaded' locked object - to make way for updated object
+        doUpdate(entityManager, target);
     }
 
-    public Lockable renewLockOnUpdate(Lockable target, Lockable current, Session session) throws EmfException {
-        doUpdate(target, current, session);
+    public Lockable renewLockOnUpdate(Lockable target, Lockable current, EntityManager entityManager) throws EmfException {
+        doUpdate(target, current, entityManager);
         return target;
     }
 
-    private void doUpdate(Session session, Lockable target) {
-        Transaction tx = session.beginTransaction();
-        try {
-            target.setLockDate(new Date());
-            session.update(target);
-            tx.commit();
-        } catch (HibernateException e) {
-            tx.rollback();
-            throw e;
-        } 
+    private void doUpdate(EntityManager entityManager, Lockable target) {
+        target.setLockDate(new Date());
+        hibernateFacade.executeInsideTransaction(em -> {
+            em.merge(target);
+            em.flush();
+        }, entityManager);
     }
-
 }

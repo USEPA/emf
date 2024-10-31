@@ -4,21 +4,19 @@ import gov.epa.emissions.commons.data.KeyVal;
 import gov.epa.emissions.commons.data.Keyword;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
-import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
-import gov.epa.emissions.framework.services.module.DatasetCreator;
-
 import gov.epa.emissions.framework.services.DbServerFactory;
+import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.GCEnforcerTask;
+import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
 import gov.epa.emissions.framework.services.basic.UserDAO;
 import gov.epa.emissions.framework.services.data.DataCommonsDAO;
 import gov.epa.emissions.framework.services.data.DataServiceImpl;
+import gov.epa.emissions.framework.services.data.DataServiceImpl.DeleteType;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.Keywords;
-import gov.epa.emissions.framework.services.data.DataServiceImpl.DeleteType;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import gov.epa.emissions.framework.services.persistence.JpaEntityManagerFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -30,9 +28,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 
@@ -40,7 +40,7 @@ public class ModuleServiceImpl implements ModuleService {
 
     private static Log LOG = LogFactory.getLog(ModuleServiceImpl.class);
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private DbServerFactory dbServerFactory;
 
@@ -61,24 +61,24 @@ public class ModuleServiceImpl implements ModuleService {
     private Keywords keywords;
 
     public ModuleServiceImpl() {
-        this(HibernateSessionFactory.get(), DbServerFactory.get());
+        this(JpaEntityManagerFactory.get(), DbServerFactory.get());
     }
 
-    public ModuleServiceImpl(HibernateSessionFactory sessionFactory) {
-        this(sessionFactory, DbServerFactory.get());
+    public ModuleServiceImpl(EntityManagerFactory entityManagerFactory) {
+        this(entityManagerFactory, DbServerFactory.get());
     }
 
-    public ModuleServiceImpl(HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory) {
-        this.sessionFactory = sessionFactory;
+    public ModuleServiceImpl(EntityManagerFactory entityManagerFactory, DbServerFactory dbServerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
         this.dbServerFactory = dbServerFactory;
         this.threadPool = createThreadPool();
         modulesDAO = new ModulesDAO();
         moduleTypesDAO = new ModuleTypesDAO();
         userDAO = new UserDAO();
-        statusDAO = new StatusDAO(sessionFactory);
+        statusDAO = new StatusDAO(entityManagerFactory);
         datasetDAO = new DatasetDAO(dbServerFactory);
         dataCommonsDAO = new DataCommonsDAO();
-        keywords = DatasetCreator.getKeywords(sessionFactory);
+        keywords = DatasetCreator.getKeywords(entityManagerFactory);
     }
 
     private synchronized PooledExecutor createThreadPool() {
@@ -91,10 +91,10 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public synchronized ModuleType[] getModuleTypes() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             @SuppressWarnings("unchecked")
-            List<ModuleType> list = moduleTypesDAO.getModuleTypes(session);
+            List<ModuleType> list = moduleTypesDAO.getModuleTypes(entityManager);
 
             ModuleType[] moduleTypes = list.toArray(new ModuleType[0]); 
             return moduleTypes;
@@ -102,44 +102,44 @@ public class ModuleServiceImpl implements ModuleService {
             LOG.error("Could not get all ModuleTypes", e);
             throw new EmfException("Could not get all ModuleTypes: " + e.getMessage());
         } finally {
-            session.close(); 
+            entityManager.close(); 
         }
     }
 
     @Override
     public synchronized ModuleType getModuleType(int id) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            ModuleType moduleType = moduleTypesDAO.getModuleType(id, session);
+            ModuleType moduleType = moduleTypesDAO.getModuleType(id, entityManager);
             return moduleType;
         } catch (Exception e) {
             LOG.error("Could not get ModuleType (ID=" + id + ")", e);
             throw new EmfException("Could not get ModuleType (ID=" + id + "): " + e.getMessage());
         } finally {
-            session.close(); 
+            entityManager.close(); 
         }
     }
 
     @Override
     public synchronized ModuleType getModuleType(String name) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            ModuleType moduleType = moduleTypesDAO.getModuleType(name, session);
+            ModuleType moduleType = moduleTypesDAO.getModuleType(name, entityManager);
             return moduleType;
         } catch (Exception e) {
             LOG.error("Could not get ModuleType \"" + name + "\"", e);
             throw new EmfException("Could not get ModuleType \"" + name + "\": " + e.getMessage());
         } finally {
-            session.close(); 
+            entityManager.close(); 
         }
     }
 
     @Override
     public synchronized ParameterType[] getParameterTypes() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             @SuppressWarnings("unchecked")
-            List<ParameterType> list = moduleTypesDAO.getParameterTypes(session);
+            List<ParameterType> list = moduleTypesDAO.getParameterTypes(entityManager);
 
             ParameterType[] moduleTypes = list.toArray(new ParameterType[0]); 
             return moduleTypes;
@@ -147,16 +147,16 @@ public class ModuleServiceImpl implements ModuleService {
             LOG.error("Could not get all ParameterTypes", e);
             throw new EmfException("Could not get all ParameterTypes: " + e.getMessage());
         } finally {
-            session.close(); 
+            entityManager.close(); 
         }
     }
 
     @Override
     public synchronized Tag[] getTags() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             @SuppressWarnings("unchecked")
-            List<Tag> list = moduleTypesDAO.getTags(session);
+            List<Tag> list = moduleTypesDAO.getTags(entityManager);
 
             Tag[] moduleTypes = list.toArray(new Tag[0]); 
             return moduleTypes;
@@ -164,20 +164,20 @@ public class ModuleServiceImpl implements ModuleService {
             LOG.error("Could not get all Tags", e);
             throw new EmfException("Could not get all Tags: " + e.getMessage());
         } finally {
-            session.close(); 
+            entityManager.close(); 
         }
     }
 
     @Override
     public void addTag(Tag tag) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            moduleTypesDAO.addTag(tag, session);
+            moduleTypesDAO.addTag(tag, entityManager);
         } catch (Exception e) {
             LOG.error("Could not create new tag", e);
             throw new EmfException("Could not create tag " + tag.getName() + ": " + e.toString());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
@@ -261,7 +261,7 @@ public class ModuleServiceImpl implements ModuleService {
             throw new EmfException("Can't save module type version because the module type is not locked by " + user.getName() + ".");
         }
         
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         // lock all dependent module types (one level only)
         // we need to update the connections for the dependent composite module type versions
@@ -292,13 +292,13 @@ public class ModuleServiceImpl implements ModuleService {
             if (dependentModuleType.getId() == moduleType.getId())
                 continue; // skip the updated module type (we know it's locked by this user)
             try {
-                ModuleType lockedDependentModuleType = moduleTypesDAO.obtainLockedModuleType(user, dependentModuleType.getId(), session);
+                ModuleType lockedDependentModuleType = moduleTypesDAO.obtainLockedModuleType(user, dependentModuleType.getId(), entityManager);
                 lockedDependentModuleTypes.put(lockedDependentModuleType.getId(), lockedDependentModuleType);
             } catch (Exception ex) {
                 for (ModuleType lockedDependentModuleType : lockedDependentModuleTypes.values()) {
                     if (lockedDependentModuleType.isLocked()) {
                         try {
-                            moduleTypesDAO.releaseLockedModuleType(user, lockedDependentModuleType.getId(), session);
+                            moduleTypesDAO.releaseLockedModuleType(user, lockedDependentModuleType.getId(), entityManager);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -333,13 +333,13 @@ public class ModuleServiceImpl implements ModuleService {
         
         for (Module dependentModule : dependentModules.values()) {
             try {
-                Module lockedDependentModule = modulesDAO.obtainLockedModule(user, dependentModule.getId(), session);
+                Module lockedDependentModule = modulesDAO.obtainLockedModule(user, dependentModule.getId(), entityManager);
                 lockedDependentModules.put(lockedDependentModule.getId(), lockedDependentModule);
             } catch (Exception ex) {
                 for (Module lockedDependentModule : lockedDependentModules.values()) {
                     if (lockedDependentModule.isLocked()) {
                         try {
-                            modulesDAO.releaseLockedModule(user, lockedDependentModule.getId(), session);
+                            modulesDAO.releaseLockedModule(user, lockedDependentModule.getId(), entityManager);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -348,7 +348,7 @@ public class ModuleServiceImpl implements ModuleService {
                 for (ModuleType lockedDependentModuleType : lockedDependentModuleTypes.values()) {
                     if (lockedDependentModuleType.isLocked()) {
                         try {
-                            moduleTypesDAO.releaseLockedModuleType(user, lockedDependentModuleType.getId(), session);
+                            moduleTypesDAO.releaseLockedModuleType(user, lockedDependentModuleType.getId(), entityManager);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -361,10 +361,10 @@ public class ModuleServiceImpl implements ModuleService {
         // update module type and all dependents
         
         try {
-            ModuleTypeVersion oldMTV = moduleTypesDAO.currentModuleTypeVersion(moduleTypeVersion.getId(), session);
+            ModuleTypeVersion oldMTV = moduleTypesDAO.currentModuleTypeVersion(moduleTypeVersion.getId(), entityManager);
             
-            session.clear();
-            moduleType = moduleTypesDAO.updateModuleType(moduleType, session);
+            entityManager.clear();
+            moduleType = moduleTypesDAO.updateModuleType(moduleType, entityManager);
             moduleTypeVersion = moduleType.getModuleTypeVersions().get(moduleTypeVersion.getVersion());
         
             if (oldMTV != null) {
@@ -404,14 +404,14 @@ public class ModuleServiceImpl implements ModuleService {
                 
                 StringBuilder errorMessage = new StringBuilder();
                 for (ModuleTypeVersion dependentModuleTypeVersion : dependentModuleTypeVersions) {
-                    dependentModuleTypeVersion = moduleTypesDAO.getModuleTypeVersion(dependentModuleTypeVersion.getId(), session); // get fresh copy
+                    dependentModuleTypeVersion = moduleTypesDAO.getModuleTypeVersion(dependentModuleTypeVersion.getId(), entityManager); // get fresh copy
 
                     StringBuilder cleanupScriptBuilder = new StringBuilder(); 
                     if (!dependentModuleTypeVersion.updateConnections(cleanupScriptBuilder))
                         continue;
                     
                     try {
-                        dependentModuleTypeVersion = moduleTypesDAO.updateModuleTypeVersion(dependentModuleTypeVersion, session);
+                        dependentModuleTypeVersion = moduleTypesDAO.updateModuleTypeVersion(dependentModuleTypeVersion, entityManager);
                     } catch (Exception e) {
                         e.printStackTrace();
                         errorMessage.append("Failed to update " + dependentModuleTypeVersion.fullNameSS("module type \"%s\" version \"%s\": ") + e.getMessage());
@@ -453,10 +453,10 @@ public class ModuleServiceImpl implements ModuleService {
                     }
                 }
                 for (Integer lockedDependentModuleId : lockedDependentModules.keySet()) {
-                    Module lockedDependentModule = modulesDAO.getModule(lockedDependentModuleId, session); // get fresh copy
+                    Module lockedDependentModule = modulesDAO.getModule(lockedDependentModuleId, entityManager); // get fresh copy
                     try {
                         if (lockedDependentModule.update(oldMTV)) {
-                            lockedDependentModule = updateModule(lockedDependentModule, session);
+                            lockedDependentModule = updateModule(lockedDependentModule, entityManager);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -479,7 +479,7 @@ public class ModuleServiceImpl implements ModuleService {
             for (Module lockedDependentModule : lockedDependentModules.values()) {
                 if (lockedDependentModule.isLocked()) {
                     try {
-                        modulesDAO.releaseLockedModule(user, lockedDependentModule.getId(), session);
+                        modulesDAO.releaseLockedModule(user, lockedDependentModule.getId(), entityManager);
                     } catch (Exception e) {
                         e.printStackTrace();
                         errorMessage.append("Failed to unlock the \"" + lockedDependentModule.getName() + "\" module. " + e.getMessage());
@@ -489,7 +489,7 @@ public class ModuleServiceImpl implements ModuleService {
             for (ModuleType lockedDependentModuleType : lockedDependentModuleTypes.values()) {
                 if (lockedDependentModuleType.isLocked()) {
                     try {
-                        moduleTypesDAO.releaseLockedModuleType(user, lockedDependentModuleType.getId(), session);
+                        moduleTypesDAO.releaseLockedModuleType(user, lockedDependentModuleType.getId(), entityManager);
                     } catch (Exception e) {
                         e.printStackTrace();
                         errorMessage.append("Failed to unlock the \"" + lockedDependentModuleType.getName() + "\" module type. " + e.getMessage());
@@ -500,13 +500,13 @@ public class ModuleServiceImpl implements ModuleService {
                 throw new EmfException(errorMessage.toString());
             }
 
-            session.close(); 
+            entityManager.close(); 
         }
 
         return moduleTypeVersion.getModuleType();
     }
 
-    private void finalizeSubmodules(ModuleTypeVersion moduleTypeVersion, User user, Session session, Date lastChangeDate) throws EmfException {
+    private void finalizeSubmodules(ModuleTypeVersion moduleTypeVersion, User user, EntityManager entityManager, Date lastChangeDate) throws EmfException {
         TreeMap<Integer, ModuleTypeVersion> unfinalizedSubmodules = moduleTypeVersion.getUnfinalizedSubmodules();
         if (unfinalizedSubmodules.size() == 0)
             return;
@@ -525,7 +525,7 @@ public class ModuleServiceImpl implements ModuleService {
                                                          CustomDateFormat.format_YYYY_MM_DD_HH_MM(moduleType.getLockDate()));
                     throw new EmfException(errorMessage);
                 }
-                moduleType = moduleTypesDAO.obtainLockedModuleType(user, moduleType.getId(), session);
+                moduleType = moduleTypesDAO.obtainLockedModuleType(user, moduleType.getId(), entityManager);
                 lockedModuleTypes.put(moduleType.getId(), moduleType);
                 unfinalizedModuleTypeVersion.setModuleType(moduleType);
             }
@@ -545,21 +545,21 @@ public class ModuleServiceImpl implements ModuleService {
             }
             
             for (ModuleType lockedModuleType : lockedModuleTypes.values()) {
-                lockedModuleType = moduleTypesDAO.updateModuleType(lockedModuleType, session);
+                lockedModuleType = moduleTypesDAO.updateModuleType(lockedModuleType, entityManager);
                 lockedModuleTypes.put(lockedModuleType.getId(), lockedModuleType);
             }
         } finally {
             for (ModuleType moduleType : lockedModuleTypes.values()) {
-                moduleType = moduleTypesDAO.releaseLockedModuleType(user, moduleType.getId(), session);
+                moduleType = moduleTypesDAO.releaseLockedModuleType(user, moduleType.getId(), entityManager);
             }
         }
     }
     
     @Override
     public synchronized ModuleType finalizeModuleTypeVersion(int moduleTypeVersionId, User user) throws EmfException {
-        Session session = this.sessionFactory.getSession();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         try {
-            ModuleTypeVersion moduleTypeVersion = moduleTypesDAO.getModuleTypeVersion(moduleTypeVersionId, session);
+            ModuleTypeVersion moduleTypeVersion = moduleTypesDAO.getModuleTypeVersion(moduleTypeVersionId, entityManager);
             if (moduleTypeVersion == null)
                 throw new EmfException("Cant't finalize module type version (ID=" + moduleTypeVersionId +"): invalid ID");
             
@@ -573,8 +573,8 @@ public class ModuleServiceImpl implements ModuleService {
             
             Date lastChangeDate = new Date();
             if (moduleTypeVersion.isComposite()) {
-                finalizeSubmodules(moduleTypeVersion, user, session, lastChangeDate);
-                moduleTypeVersion = moduleTypesDAO.getModuleTypeVersion(moduleTypeVersionId, session);
+                finalizeSubmodules(moduleTypeVersion, user, entityManager, lastChangeDate);
+                moduleTypeVersion = moduleTypesDAO.getModuleTypeVersion(moduleTypeVersionId, entityManager);
             }
             
             moduleTypeVersion.setIsFinal(true);
@@ -586,7 +586,7 @@ public class ModuleServiceImpl implements ModuleService {
             moduleTypeVersionRevision.setDescription("Finalized");
             moduleTypeVersion.addModuleTypeVersionRevision(moduleTypeVersionRevision);
             
-            moduleTypeVersion = moduleTypesDAO.updateModuleTypeVersion(moduleTypeVersion, session);
+            moduleTypeVersion = moduleTypesDAO.updateModuleTypeVersion(moduleTypeVersion, entityManager);
             moduleType = moduleTypeVersion.getModuleType();
             
             return moduleType;
@@ -594,74 +594,74 @@ public class ModuleServiceImpl implements ModuleService {
             LOG.error("Error finalizing module type version." , e);
             throw new EmfException("Error finalizing module type version.\n" + e.getMessage());
         } finally {
-            session.close(); 
+            entityManager.close(); 
         }
     }
 
     @Override
     public synchronized void deleteModuleTypes(User owner, ModuleType[] types) throws EmfException {
-        Session session = this.sessionFactory.getSession();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         try {
             for (int i=0; i<types.length; i++) {
-                moduleTypesDAO.removeModuleType(types[i], session);
+                moduleTypesDAO.removeModuleType(types[i], entityManager);
             }
         } catch (Exception e) {
             LOG.error("Error deleting module types. " , e);
             throw new EmfException("Error deleting module types. \n" + e.getMessage());
         } finally {
-            session.close(); 
+            entityManager.close(); 
         }
     }
 
     @Override
     public synchronized ModuleType obtainLockedModuleType(User user, int moduleTypeId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            ModuleType locked = moduleTypesDAO.obtainLockedModuleType(user, moduleTypeId, session);
+            ModuleType locked = moduleTypesDAO.obtainLockedModuleType(user, moduleTypeId, entityManager);
             return locked;
         } catch (Exception e) {
             LOG.error("Could not obtain lock for module type (ID = " + moduleTypeId + "): ", e);
             throw new EmfException("Could not obtain lock for module type (ID = " + moduleTypeId + "): " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     @Override
     public synchronized ModuleType releaseLockedModuleType(User user, int moduleTypeId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            ModuleType locked = moduleTypesDAO.releaseLockedModuleType(user, moduleTypeId, session);
+            ModuleType locked = moduleTypesDAO.releaseLockedModuleType(user, moduleTypeId, entityManager);
             return locked;
         } catch (Exception e) {
             LOG.error("Could not release lock for module type (ID = " + moduleTypeId + "): ", e);
             throw new EmfException("Could not release lock for module type (ID = " + moduleTypeId + "): " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     @Override
     public synchronized ModuleType addModuleType(ModuleType moduleType) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            if (moduleTypesDAO.moduleTypeNameUsed(moduleType.getName(), session))
+            if (moduleTypesDAO.moduleTypeNameUsed(moduleType.getName(), entityManager))
                 throw new EmfException("The \"" + moduleType.getName() + "\" name is already in use");
-            moduleTypesDAO.addModuleType(moduleType, session);
+            moduleTypesDAO.addModuleType(moduleType, entityManager);
             return moduleType;
         } catch (Exception e) {
             LOG.error("Could not add new module type", e);
             throw new EmfException("Could not add module type " + moduleType.getName() + ": " + e.toString());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
 //    public synchronized Module[] getModules() throws EmfException {
-//        Session session = sessionFactory.getSession();
+//        EntityManager entityManager = entityManagerFactory.createEntityManager();
 //        try {
 //            @SuppressWarnings("unchecked")
-//            List<Module> list = modulesDAO.getModules(session);
+//            List<Module> list = modulesDAO.getModules(entityManager);
 //
 //            Module[] modules = list.toArray(new Module[0]); 
 //            return modules;
@@ -669,48 +669,48 @@ public class ModuleServiceImpl implements ModuleService {
 //            LOG.error("Could not get all modules", e);
 //            throw new EmfException("Could not get all modules: " + e.getMessage());
 //        } finally {
-//            session.close();
+//            entityManager.close();
 //        }
 //    }
 
     @Override
     public synchronized Module getModule(int id) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            Module module = modulesDAO.getModule(id, session);
+            Module module = modulesDAO.getModule(id, entityManager);
             return module;
         } catch (Exception e) {
             LOG.error("Could not get module (ID=" + id + ")", e);
             throw new EmfException("Could not get module (ID=" + id + "): " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     @Override
     public synchronized Module getModule(String name) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            Module module = modulesDAO.getModule(name, session);
+            Module module = modulesDAO.getModule(name, entityManager);
             return module;
         } catch (Exception e) {
             LOG.error("Could not get Module \"" + name + "\"", e);
             throw new EmfException("Could not get Module \"" + name + "\": " + e.getMessage());
         } finally {
-            session.close(); 
+            entityManager.close(); 
         }
     }
 
-    private Module updateModule(Module module, Session session) throws EmfException {
+    private Module updateModule(Module module, EntityManager entityManager) throws EmfException {
         Connection connection = null;
         Statement statement = null;
         try {
-            if (!modulesDAO.canUpdate(module, session))
+            if (!modulesDAO.canUpdate(module, entityManager))
                 throw new EmfException("The module is already in use");
 
             // manually delete the missing module datasets, parameters, internal datasets, and internal parameters from the database
             
-            Module currentModule = modulesDAO.currentModule(module.getId(), session);
+            Module currentModule = modulesDAO.currentModule(module.getId(), entityManager);
             Map<String, ModuleDataset> newModuleDatasets = module.getModuleDatasets(); 
             for(ModuleDataset currentModuleDataset : currentModule.getModuleDatasets().values()) {
                 if (newModuleDatasets.containsKey(currentModuleDataset.getPlaceholderName())) {
@@ -820,7 +820,7 @@ public class ModuleServiceImpl implements ModuleService {
                 }
             }
             
-            Module released = modulesDAO.updateModule(module, session);
+            Module released = modulesDAO.updateModule(module, entityManager);
             return released;
         } catch (Exception e) {
             LOG.error("Could not update module: " + module.getName(), e);
@@ -839,11 +839,11 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public synchronized Module updateModule(Module module) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return updateModule(module, session);
+            return updateModule(module, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -851,17 +851,17 @@ public class ModuleServiceImpl implements ModuleService {
     public synchronized int[] deleteModules(User owner, int[] moduleIds, boolean deleteOutputs) throws EmfException {
         List<Integer> deletedModuleIdsList = new ArrayList<Integer>();
 
-        Session session = this.sessionFactory.getSession();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         for (int moduleId : moduleIds) {
             try {
                 if (deleteOutputs) {
-                    Module module = modulesDAO.getModule(moduleId, session);
+                    Module module = modulesDAO.getModule(moduleId, entityManager);
                     List<EmfDataset> datasets = new ArrayList<EmfDataset>();
                     for (ModuleDataset md : module.getModuleDatasets().values()) {
                         ModuleTypeVersionDataset mtvd = md.getModuleTypeVersionDataset();
                         if (!mtvd.isModeOUT()) continue; // only consider output datasets
                         
-                        for (History historyRecord : (List<History>)modulesDAO.getHistoryForModule(moduleId, session)) {
+                        for (History historyRecord : (List<History>)modulesDAO.getHistoryForModule(moduleId, entityManager)) {
                             HistoryDataset historyDataset = null;
                             String result = historyRecord.getResult();
                             // check that run was a success
@@ -872,7 +872,7 @@ public class ModuleServiceImpl implements ModuleService {
                             }
                             if (historyDataset == null || historyDataset.getDatasetId() == null) continue;
                             
-                            EmfDataset emfDataset = datasetDAO.getDataset(session, historyDataset.getDatasetId(), false);
+                            EmfDataset emfDataset = datasetDAO.getDataset(entityManager, historyDataset.getDatasetId(), false);
                             if (emfDataset != null && !datasets.contains(emfDataset)) {
                                 try {
                                     // check if any modules besides the one to be deleted use this dataset as input
@@ -886,18 +886,18 @@ public class ModuleServiceImpl implements ModuleService {
                         }
                     }
                     if (datasets.size() > 0) {
-                        deleteDatasets(datasets.toArray(new EmfDataset[0]), owner, session);
-                        datasetDAO.deleteDatasets(datasets.toArray(new EmfDataset[0]), dbServerFactory.getDbServer(), session);
+                        deleteDatasets(datasets.toArray(new EmfDataset[0]), owner, entityManager);
+                        datasetDAO.deleteDatasets(datasets.toArray(new EmfDataset[0]), dbServerFactory.getDbServer(), entityManager);
                     }
                 }
                 
-                modulesDAO.removeModule(moduleId, session);
+                modulesDAO.removeModule(moduleId, entityManager);
                 deletedModuleIdsList.add(moduleId);
             } finally {
                 // ignore
             }
         }
-        session.close();
+        entityManager.close();
         
         int[] deletedModuleIds = new int[deletedModuleIdsList.size()];
         for (int i = 0; i < deletedModuleIdsList.size(); i++) {
@@ -906,29 +906,29 @@ public class ModuleServiceImpl implements ModuleService {
         return deletedModuleIds;
     }
     
-    public void deleteDatasets(EmfDataset[] datasets, User user, Session session) throws EmfException {
-        EmfDataset[] lockedDatasets = getLockedDatasets(datasets, user, session);
+    public void deleteDatasets(EmfDataset[] datasets, User user, EntityManager entityManager) throws EmfException {
+        EmfDataset[] lockedDatasets = getLockedDatasets(datasets, user, entityManager);
         
         if (lockedDatasets == null)
             return;
         
         try {
-            new DataServiceImpl(dbServerFactory, sessionFactory).deleteDatasets(user, lockedDatasets, DeleteType.MODULE);
+            new DataServiceImpl(dbServerFactory, entityManagerFactory).deleteDatasets(user, lockedDatasets, DeleteType.MODULE);
         } catch (EmfException e) {
             if (!e.getType().equals(EmfException.MSG_TYPE))
                 throw new EmfException(e.getMessage());
         } finally {
-            releaseLocked(lockedDatasets, user, session);
+            releaseLocked(lockedDatasets, user, entityManager);
         }
     }
     
-    private EmfDataset[] getLockedDatasets(EmfDataset[] datasets, User user, Session session) {
+    private EmfDataset[] getLockedDatasets(EmfDataset[] datasets, User user, EntityManager entityManager) {
         List<EmfDataset> lockedList = new ArrayList<EmfDataset>();
         
         for (int i = 0; i < datasets.length; i++) {
-            EmfDataset locked = obtainLockedDataset(datasets[i], user, session);
+            EmfDataset locked = obtainLockedDataset(datasets[i], user, entityManager);
             if (locked == null) {
-                releaseLocked(lockedList.toArray(new EmfDataset[0]), user, session);
+                releaseLocked(lockedList.toArray(new EmfDataset[0]), user, entityManager);
                 return null;
             }
             
@@ -938,55 +938,55 @@ public class ModuleServiceImpl implements ModuleService {
         return lockedList.toArray(new EmfDataset[0]);
     }
 
-    private EmfDataset obtainLockedDataset(EmfDataset dataset, User user, Session session) {
-        EmfDataset locked = datasetDAO.obtainLocked(user, dataset, session);
+    private EmfDataset obtainLockedDataset(EmfDataset dataset, User user, EntityManager entityManager) {
+        EmfDataset locked = datasetDAO.obtainLocked(user, dataset, entityManager);
         return locked;
     }
     
-    private void releaseLocked(EmfDataset[] lockedDatasets, User user, Session session) {
+    private void releaseLocked(EmfDataset[] lockedDatasets, User user, EntityManager entityManager) {
         if (lockedDatasets.length == 0)
             return;
         
         for(int i = 0; i < lockedDatasets.length; i++)
-            datasetDAO.releaseLocked(user, lockedDatasets[i], session);
+            datasetDAO.releaseLocked(user, lockedDatasets[i], entityManager);
     }
 
     @Override
     public synchronized Module obtainLockedModule(User user, int moduleId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            Module locked = modulesDAO.obtainLockedModule(user, moduleId, session);
+            Module locked = modulesDAO.obtainLockedModule(user, moduleId, entityManager);
             return locked;
         } catch (Exception e) {
             LOG.error("Could not lock module. ", e);
             throw new EmfException("Could not lock module: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     @Override
     public synchronized Module releaseLockedModule(User user, int moduleId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            Module locked = modulesDAO.releaseLockedModule(user, moduleId, session);
+            Module locked = modulesDAO.releaseLockedModule(user, moduleId, entityManager);
             return locked;
         } catch (Exception e) {
             LOG.error("Could not unlock module. ", e);
             throw new EmfException("Could not unlock module: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     @Override
     public synchronized int[] lockModules(User user, int[] moduleIds) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<Integer> lockedModulesList = new ArrayList<Integer>();
         try {
             for(int moduleId : moduleIds) {
                 try {
-                    Module lockedModule = modulesDAO.obtainLockedModule(user, moduleId, session);
+                    Module lockedModule = modulesDAO.obtainLockedModule(user, moduleId, entityManager);
                     if (lockedModule != null)
                         lockedModulesList.add(lockedModule.getId());
                 } finally {
@@ -997,7 +997,7 @@ public class ModuleServiceImpl implements ModuleService {
             LOG.error("Could not lock module. ", e);
             throw new EmfException("Could not lock module: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
         
         int[] lockedModules = new int[lockedModulesList.size()];
@@ -1010,12 +1010,12 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public synchronized int[] unlockModules(User user, int[] moduleIds) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<Integer> unlockedModulesList = new ArrayList<Integer>();
         try {
             for(int moduleId : moduleIds) {
                 try {
-                    Module unlockedModule = modulesDAO.releaseLockedModule(user, moduleId, session);
+                    Module unlockedModule = modulesDAO.releaseLockedModule(user, moduleId, entityManager);
                     if (unlockedModule != null)
                         unlockedModulesList.add(unlockedModule.getId());
                 } finally {
@@ -1026,7 +1026,7 @@ public class ModuleServiceImpl implements ModuleService {
             LOG.error("Could not lock module. ", e);
             throw new EmfException("Could not lock module: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
         
         int[] unlockedModules = new int[unlockedModulesList.size()];
@@ -1039,24 +1039,24 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public synchronized Module addModule(Module module) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            if (modulesDAO.moduleNameUsed(module.getName(), session))
+            if (modulesDAO.moduleNameUsed(module.getName(), entityManager))
                 throw new EmfException("The \"" + module.getName() + "\" name is already in use");
 
-            return modulesDAO.add(module, session);
+            return modulesDAO.add(module, entityManager);
         } catch (Exception e) {
             LOG.error("Could not add new Module", e);
             throw new EmfException("Could not add module " + module.getName() + ": " + e.toString());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     @Override
     public synchronized void runModules(int[] moduleIds, User user) throws EmfException {
         try {
-            ModuleRunnerThread runner = new ModuleRunnerThread(moduleIds, user, dbServerFactory, sessionFactory);
+            ModuleRunnerThread runner = new ModuleRunnerThread(moduleIds, user, dbServerFactory, entityManagerFactory);
             threadPool.execute(new GCEnforcerTask("Module Runner", runner));
         } catch (Exception e) {
             LOG.error("Error running modules", e);
@@ -1066,16 +1066,16 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     public synchronized EmfDataset getEmfDatasetForModuleDataset(int moduleDatasetId) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         EmfDataset emfDataset = null;
         try {
-            ModuleDataset moduleDataset = modulesDAO.getModuleDataset(moduleDatasetId, session);
+            ModuleDataset moduleDataset = modulesDAO.getModuleDataset(moduleDatasetId, entityManager);
             if (moduleDataset == null)
                 throw new EmfException("Failed to get module dataset (ID = " + moduleDatasetId + ")");
             if (moduleDataset.getDatasetId() != null) {
-                emfDataset = datasetDAO.getDataset(session, moduleDataset.getDatasetId());
+                emfDataset = datasetDAO.getDataset(entityManager, moduleDataset.getDatasetId());
             } else if (moduleDataset.isSimpleDatasetName()) {
-                emfDataset = datasetDAO.getDataset(session, moduleDataset.getDatasetNamePattern());
+                emfDataset = datasetDAO.getDataset(entityManager, moduleDataset.getDatasetNamePattern());
             } else {
                 Module module = moduleDataset.getModule();
                 HistoryDataset historyDataset = null;
@@ -1087,13 +1087,13 @@ public class ModuleServiceImpl implements ModuleService {
                     }
                 }
                 if ((historyDataset != null) && (historyDataset.getDatasetId() != null)) {
-                    emfDataset = datasetDAO.getDataset(session, historyDataset.getDatasetId());
+                    emfDataset = datasetDAO.getDataset(entityManager, historyDataset.getDatasetId());
                 }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            session.close();
+            entityManager.close();
         }
         
         return emfDataset;
@@ -1101,7 +1101,7 @@ public class ModuleServiceImpl implements ModuleService {
     
     @Override
     public synchronized EmfDataset getEmfDatasetForModuleDataset(int moduleDatasetId, Integer newDatasetId, String newDatasetNamePattern) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         
         EmfDataset emfDataset = null;
         if (newDatasetId == null && newDatasetNamePattern == null)
@@ -1109,15 +1109,15 @@ public class ModuleServiceImpl implements ModuleService {
         
         try {
             if (newDatasetId != null) {
-                emfDataset = datasetDAO.getDataset(session, newDatasetId);
+                emfDataset = datasetDAO.getDataset(entityManager, newDatasetId);
             } else if (ModuleDataset.isSimpleDatasetName(newDatasetNamePattern)) {
-                emfDataset = datasetDAO.getDataset(session, newDatasetNamePattern);
+                emfDataset = datasetDAO.getDataset(entityManager, newDatasetNamePattern);
             } else {
-                ModuleDataset moduleDataset = modulesDAO.getModuleDataset(moduleDatasetId, session);
+                ModuleDataset moduleDataset = modulesDAO.getModuleDataset(moduleDatasetId, entityManager);
                 if (moduleDataset == null)
                     throw new EmfException("Failed to get module dataset (ID = " + moduleDatasetId + ")");
                 Module module = moduleDataset.getModule();
-                List<History> history = modulesDAO.getHistoryForModule(module.getId(), session);
+                List<History> history = modulesDAO.getHistoryForModule(module.getId(), entityManager);
                 HistoryDataset historyDataset = null;
                 if (history.size() > 0) {
                     History lastHistory = history.get(history.size() - 1);
@@ -1129,13 +1129,13 @@ public class ModuleServiceImpl implements ModuleService {
                     }
                 }
                 if ((historyDataset != null) && (historyDataset.getDatasetId() != null)) {
-                    emfDataset = datasetDAO.getDataset(session, historyDataset.getDatasetId());
+                    emfDataset = datasetDAO.getDataset(entityManager, historyDataset.getDatasetId());
                 }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            session.close();
+            entityManager.close();
         }
         
         return emfDataset;
@@ -1143,40 +1143,40 @@ public class ModuleServiceImpl implements ModuleService {
     
     @Override
     public synchronized ModuleTypeVersionSubmodule[] getSubmodulesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List<ModuleTypeVersionSubmodule> list = modulesDAO.getSubmodulesUsingModuleTypeVersion(session, moduleTypeVersionId);
+            List<ModuleTypeVersionSubmodule> list = modulesDAO.getSubmodulesUsingModuleTypeVersion(entityManager, moduleTypeVersionId);
             ModuleTypeVersionSubmodule[] submodules = list.toArray(new ModuleTypeVersionSubmodule[0]);
             return submodules;
         } catch (Exception e) {
             LOG.error("Could not get submodules using module type version (ID = " + moduleTypeVersionId + ")", e);
             throw new EmfException("Could not get submodules using module type version (ID = " + moduleTypeVersionId + "): " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
     @Override
     public synchronized ModuleTypeVersionSubmodule[] getAllSubmodulesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List<ModuleTypeVersionSubmodule> list = modulesDAO.getAllSubmodulesUsingModuleTypeVersion(session, moduleTypeVersionId);
+            List<ModuleTypeVersionSubmodule> list = modulesDAO.getAllSubmodulesUsingModuleTypeVersion(entityManager, moduleTypeVersionId);
             ModuleTypeVersionSubmodule[] submodules = list.toArray(new ModuleTypeVersionSubmodule[0]);
             return submodules;
         } catch (Exception e) {
             LOG.error("Could not get all submodules using module type version (ID = " + moduleTypeVersionId + ")", e);
             throw new EmfException("Could not get all submodules using module type version (ID = " + moduleTypeVersionId + "): " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
     @Override
     public synchronized ModuleTypeVersion[] getModuleTypeVersionsUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             Map<Integer, ModuleTypeVersion> moduleTypeVersionsMap = new HashMap<Integer, ModuleTypeVersion>();
-            List<ModuleTypeVersionSubmodule> submodules = modulesDAO.getSubmodulesUsingModuleTypeVersion(session, moduleTypeVersionId);
+            List<ModuleTypeVersionSubmodule> submodules = modulesDAO.getSubmodulesUsingModuleTypeVersion(entityManager, moduleTypeVersionId);
             for (ModuleTypeVersionSubmodule submodule : submodules) {
                 ModuleTypeVersion moduleTypeVersion = submodule.getCompositeModuleTypeVersion();
                 moduleTypeVersionsMap.put(moduleTypeVersion.getId(), moduleTypeVersion);
@@ -1187,15 +1187,15 @@ public class ModuleServiceImpl implements ModuleService {
             LOG.error("Could not get the module type versions using module type version (ID = " + moduleTypeVersionId + ")", e);
             throw new EmfException("Could not get the module type versions using module type version (ID = " + moduleTypeVersionId + "): " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
     @Override
     public synchronized ModuleTypeVersion[] getAllModuleTypeVersionsUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List<ModuleTypeVersionSubmodule> submodules = modulesDAO.getAllSubmodulesUsingModuleTypeVersion(session, moduleTypeVersionId);
+            List<ModuleTypeVersionSubmodule> submodules = modulesDAO.getAllSubmodulesUsingModuleTypeVersion(entityManager, moduleTypeVersionId);
             Map<Integer, ModuleTypeVersion> moduleTypeVersionsMap = new HashMap<Integer, ModuleTypeVersion>();
             for (ModuleTypeVersionSubmodule submodule : submodules) {
                 ModuleTypeVersion moduleTypeVersion = submodule.getCompositeModuleTypeVersion();
@@ -1207,16 +1207,16 @@ public class ModuleServiceImpl implements ModuleService {
             LOG.error("Could not get all module type versions using module type version (ID = " + moduleTypeVersionId + ")", e);
             throw new EmfException("Could not get all module type versions using module type version (ID = " + moduleTypeVersionId + "): " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
     @Override
     public synchronized ModuleType[] getModuleTypesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             Map<Integer, ModuleType> moduleTypesMap = new HashMap<Integer, ModuleType>();
-            List<ModuleTypeVersionSubmodule> submodules = modulesDAO.getSubmodulesUsingModuleTypeVersion(session, moduleTypeVersionId);
+            List<ModuleTypeVersionSubmodule> submodules = modulesDAO.getSubmodulesUsingModuleTypeVersion(entityManager, moduleTypeVersionId);
             for (ModuleTypeVersionSubmodule submodule : submodules) {
                 ModuleType moduleType = submodule.getCompositeModuleTypeVersion().getModuleType();
                 moduleTypesMap.put(moduleType.getId(), moduleType);
@@ -1227,15 +1227,15 @@ public class ModuleServiceImpl implements ModuleService {
             LOG.error("Could not get the module types using module type version (ID = " + moduleTypeVersionId + ")", e);
             throw new EmfException("Could not get the module types using module type version (ID = " + moduleTypeVersionId + "): " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
     @Override
     public synchronized ModuleType[] getAllModuleTypesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List<ModuleTypeVersionSubmodule> submodules = modulesDAO.getAllSubmodulesUsingModuleTypeVersion(session, moduleTypeVersionId);
+            List<ModuleTypeVersionSubmodule> submodules = modulesDAO.getAllSubmodulesUsingModuleTypeVersion(entityManager, moduleTypeVersionId);
             Map<Integer, ModuleType> moduleTypesMap = new HashMap<Integer, ModuleType>();
             for (ModuleTypeVersionSubmodule submodule : submodules) {
                 ModuleType moduleType = submodule.getCompositeModuleTypeVersion().getModuleType();
@@ -1247,33 +1247,33 @@ public class ModuleServiceImpl implements ModuleService {
             LOG.error("Could not get all module types using module type version (ID = " + moduleTypeVersionId + ")", e);
             throw new EmfException("Could not get all module types using module type version (ID = " + moduleTypeVersionId + "): " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
     @Override
     public synchronized Module[] getModulesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List<Module> list = modulesDAO.getModulesUsingModuleTypeVersion(session, moduleTypeVersionId);
+            List<Module> list = modulesDAO.getModulesUsingModuleTypeVersion(entityManager, moduleTypeVersionId);
             Module[] modules = list.toArray(new Module[0]); 
             return modules;
         } catch (Exception e) {
             LOG.error("Could not get all modules using module type version (ID = " + moduleTypeVersionId + ")", e);
             throw new EmfException("Could not get all modules using module type version (ID = " + moduleTypeVersionId + "): " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
     @Override
     public synchronized Module[] getAllModulesUsingModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List<Module> list = modulesDAO.getModulesUsingModuleTypeVersion(session, moduleTypeVersionId);
-            List<ModuleTypeVersionSubmodule> submodules = modulesDAO.getAllSubmodulesUsingModuleTypeVersion(session, moduleTypeVersionId);
+            List<Module> list = modulesDAO.getModulesUsingModuleTypeVersion(entityManager, moduleTypeVersionId);
+            List<ModuleTypeVersionSubmodule> submodules = modulesDAO.getAllSubmodulesUsingModuleTypeVersion(entityManager, moduleTypeVersionId);
             for (ModuleTypeVersionSubmodule submodule : submodules) {
-                List<Module> list2 = modulesDAO.getModulesUsingModuleTypeVersion(session, submodule.getCompositeModuleTypeVersion().getId());
+                List<Module> list2 = modulesDAO.getModulesUsingModuleTypeVersion(entityManager, submodule.getCompositeModuleTypeVersion().getId());
                 list.addAll(list2);
             }
             Module[] modules = list.toArray(new Module[0]); 
@@ -1282,72 +1282,72 @@ public class ModuleServiceImpl implements ModuleService {
             LOG.error("Could not get all modules using module type version (ID = " + moduleTypeVersionId + ")", e);
             throw new EmfException("Could not get all modules using module type version (ID = " + moduleTypeVersionId + "): " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
     @Override
     public synchronized History getHistory(int historyId) throws EmfException {
-        Session session = sessionFactory.getSession();
-        return modulesDAO.currentHistory(historyId, session);
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        return modulesDAO.currentHistory(historyId, entityManager);
     }
     
     @Override
     public synchronized History[] getHistoryForModule(int moduleId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List<History> list = modulesDAO.getHistoryForModule(moduleId, session);
+            List<History> list = modulesDAO.getHistoryForModule(moduleId, entityManager);
             return list.toArray(new History[0]);
         } catch (Exception e) {
             LOG.error("Could not get history for module (ID=" + moduleId + ")", e);
             throw new EmfException("Could not get history for module (ID=" + moduleId + "): " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
     public synchronized void deleteHistory(int historyId) throws EmfException {
-        Session session = sessionFactory.getSession();
-        modulesDAO.removeHistory(historyId, session);
-        session.close();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        modulesDAO.removeHistory(historyId, entityManager);
+        entityManager.close();
     }
     
     @Override
     public synchronized LiteModule[] getLiteModules() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             @SuppressWarnings("unchecked")
-            List<LiteModule> liteModules = modulesDAO.getLiteModules(session);
+            List<LiteModule> liteModules = modulesDAO.getLiteModules(entityManager);
             return liteModules.toArray(new LiteModule[]{});
         } catch (Exception e) {
             LOG.error("Could not get all lite modules", e);
             throw new EmfException("Could not get all lite module: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     @Override
     public synchronized LiteModule[] getLiteModules(BasicSearchFilter searchFilter) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             @SuppressWarnings("unchecked")
-            List<LiteModule> liteModules = modulesDAO.getLiteModules(session, searchFilter);
+            List<LiteModule> liteModules = modulesDAO.getLiteModules(entityManager, searchFilter);
             return liteModules.toArray(new LiteModule[]{});
         } catch (Exception e) {
             LOG.error("Could not get all lite modules", e);
             throw new EmfException("Could not get all lite module: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     // TODO enhance this method by returning the type of relation also (created, using, replacing, used/created/replaced in old runs, etc.)
     @Override
     public synchronized LiteModule[] getRelatedLiteModules(int datasetId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            EmfDataset dataset = datasetDAO.getDataset(session, datasetId);
+            EmfDataset dataset = datasetDAO.getDataset(entityManager, datasetId);
             KeyVal[] keyVals = dataset.getKeyVals();
             Keyword moduleIdKeyword = keywords.get("MODULE_ID");
             int creatorModuleId = -1; 
@@ -1357,41 +1357,41 @@ public class ModuleServiceImpl implements ModuleService {
                 }
             }
             @SuppressWarnings("unchecked")
-            List<Module> modules = modulesDAO.getModules(session);
+            List<Module> modules = modulesDAO.getModules(entityManager);
             List<LiteModule> liteModules = new ArrayList<LiteModule>();
             
             nextModule:
             for (Module module : modules) {
                 if (module.getId() == creatorModuleId) {
-                    liteModules.add(modulesDAO.getLiteModule(module.getId(), session));
+                    liteModules.add(modulesDAO.getLiteModule(module.getId(), entityManager));
                     continue;
                 }
                 for (ModuleDataset moduleDataset : module.getModuleDatasets().values()) {
                     if (moduleDataset.getId() == datasetId) {
-                        liteModules.add(modulesDAO.getLiteModule(module.getId(), session));
+                        liteModules.add(modulesDAO.getLiteModule(module.getId(), entityManager));
                         continue nextModule;
                     }
                     if (moduleDataset.getDatasetNamePattern() != null && moduleDataset.isSimpleDatasetName() && moduleDataset.getDatasetNamePattern().equals(dataset.getName())) {
-                        liteModules.add(modulesDAO.getLiteModule(module.getId(), session));
+                        liteModules.add(modulesDAO.getLiteModule(module.getId(), entityManager));
                         continue nextModule;
                     }
                 }
                 for (ModuleInternalDataset moduleInternalDataset : module.getModuleInternalDatasets().values()) {
                     if (moduleInternalDataset.getKeep() && moduleInternalDataset.getDatasetNamePattern() != null && moduleInternalDataset.isSimpleDatasetName() && moduleInternalDataset.getDatasetNamePattern().equals(dataset.getName())) {
-                        liteModules.add(modulesDAO.getLiteModule(module.getId(), session));
+                        liteModules.add(modulesDAO.getLiteModule(module.getId(), entityManager));
                         continue nextModule;
                     }
                 }
-                for(History history : (List<History>)modulesDAO.getHistoryForModule(module.getId(), session)) {
+                for(History history : (List<History>)modulesDAO.getHistoryForModule(module.getId(), entityManager)) {
                     for (HistoryDataset historyDataset : history.getHistoryDatasets().values()) {
                         if (historyDataset.getDatasetId() != null && historyDataset.getDatasetId() == datasetId) {
-                            liteModules.add(modulesDAO.getLiteModule(module.getId(), session));
+                            liteModules.add(modulesDAO.getLiteModule(module.getId(), entityManager));
                             continue nextModule;
                         }
                     }
                     for (HistoryInternalDataset historyInternalDataset : history.getHistoryInternalDatasets().values()) {
                         if (historyInternalDataset.getDatasetId() != null && historyInternalDataset.getDatasetId() == datasetId) {
-                            liteModules.add(modulesDAO.getLiteModule(module.getId(), session));
+                            liteModules.add(modulesDAO.getLiteModule(module.getId(), entityManager));
                             continue nextModule;
                         }
                     }
@@ -1403,17 +1403,17 @@ public class ModuleServiceImpl implements ModuleService {
             e.printStackTrace();
             throw new EmfException("Could not get all related modules: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     @Override
     public ModuleType removeModuleTypeVersion(int moduleTypeVersionId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             ModuleTypeVersion moduleTypeVersion = null;
             try {
-                moduleTypeVersion = moduleTypesDAO.getModuleTypeVersion(moduleTypeVersionId, session);
+                moduleTypeVersion = moduleTypesDAO.getModuleTypeVersion(moduleTypeVersionId, entityManager);
             } catch (Exception e) {
                 LOG.error("Could not get module type version (ID=" + moduleTypeVersionId +")", e);
                 throw new EmfException("Could not get module type version (ID=" + moduleTypeVersionId +"): " + e.getMessage());
@@ -1426,26 +1426,26 @@ public class ModuleServiceImpl implements ModuleService {
             try {
                 ModuleType moduleType = moduleTypeVersion.getModuleType();
                 moduleType.removeModuleTypeVersion(moduleTypeVersion);
-                moduleTypesDAO.removeModuleTypeVersion(moduleTypeVersion, session);
-                return moduleTypesDAO.getModuleType(moduleType.getId(), session); 
+                moduleTypesDAO.removeModuleTypeVersion(moduleTypeVersion, entityManager);
+                return moduleTypesDAO.getModuleType(moduleType.getId(), entityManager); 
             } catch (Exception e) {
                 String fullName = moduleTypeVersion.fullNameSS("\"%s\" version \"%s\"");
                 LOG.error("Could not remove module type " + fullName, e);
                 throw new EmfException("Could not remove module type " + fullName + ": " + e.getMessage());
             }
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     @Override
     public void releaseOrphanLocks() throws EmfException {
         // NOTE modules may still be running
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             Map<String, User> lockUserCache = new HashMap<String, User>();
             @SuppressWarnings("unchecked")
-            List<Module> lockedModules = modulesDAO.getLockedModules(session);
+            List<Module> lockedModules = modulesDAO.getLockedModules(entityManager);
             for (Module lockedModule : lockedModules) {
                 if (!lockedModule.isLocked())
                     continue;
@@ -1454,15 +1454,15 @@ public class ModuleServiceImpl implements ModuleService {
                 if (lockUserCache.containsKey(lockUserName)) {
                     lockUser = lockUserCache.get(lockUserName);
                 } else {
-                    lockUser = userDAO.get(lockUserName, session);
+                    lockUser = userDAO.get(lockUserName, entityManager);
                     lockUserCache.put(lockUserName, lockUser);
                 }
                 if (!lockUser.isLoggedIn()) {
-                    modulesDAO.releaseLockedModule(lockUser, lockedModule.getId(), session);
+                    modulesDAO.releaseLockedModule(lockUser, lockedModule.getId(), entityManager);
                 }
             }
             @SuppressWarnings("unchecked")
-            List<ModuleType> lockedModuleTypes = moduleTypesDAO.getLockedModuleTypes(session);
+            List<ModuleType> lockedModuleTypes = moduleTypesDAO.getLockedModuleTypes(entityManager);
             for (ModuleType lockedModuleType : lockedModuleTypes) {
                 if (!lockedModuleType.isLocked())
                     continue;
@@ -1471,15 +1471,15 @@ public class ModuleServiceImpl implements ModuleService {
                 if (lockUserCache.containsKey(lockUserName)) {
                     lockUser = lockUserCache.get(lockUserName);
                 } else {
-                    lockUser = userDAO.get(lockUserName, session);
+                    lockUser = userDAO.get(lockUserName, entityManager);
                     lockUserCache.put(lockUserName, lockUser);
                 }
                 if (!lockUser.isLoggedIn()) {
-                    moduleTypesDAO.releaseLockedModuleType(lockUser, lockedModuleType.getId(), session);
+                    moduleTypesDAO.releaseLockedModuleType(lockUser, lockedModuleType.getId(), entityManager);
                 }
             }
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 }

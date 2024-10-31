@@ -3,10 +3,11 @@ package gov.epa.emissions.framework.services.qa;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.QAStep;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+
+import javax.persistence.EntityManagerFactory;
 
 public class SQLQAAnnualQuery extends SQLQAProgramQuery{
     
@@ -14,8 +15,8 @@ public class SQLQAAnnualQuery extends SQLQAProgramQuery{
     // The lists are filled using command-line and/or GUI input.
     
 
-    public SQLQAAnnualQuery(HibernateSessionFactory sessionFactory, String emissioDatasourceName, String tableName, QAStep qaStep) {       
-        super(sessionFactory,emissioDatasourceName,tableName,qaStep);
+    public SQLQAAnnualQuery(EntityManagerFactory entityManagerFactory, String emissioDatasourceName, String tableName, QAStep qaStep) {       
+        super(entityManagerFactory,emissioDatasourceName,tableName,qaStep);
         
     }
     
@@ -383,7 +384,7 @@ public class SQLQAAnnualQuery extends SQLQAProgramQuery{
         //private String query(DbServer dbServer, QAStep qaStep, String tableName, String partialQuery, EmfDataset dataset, Version version) throws EmfException {
         private String query(String partialQuery, boolean createClause) throws EmfException {
             
-            SQLQueryParser parser = new SQLQueryParser(sessionFactory, emissionDatasourceName, tableName );
+            SQLQueryParser parser = new SQLQueryParser(entityManagerFactory, emissionDatasourceName, tableName );
             return parser.parse(partialQuery, createClause);
         }
         

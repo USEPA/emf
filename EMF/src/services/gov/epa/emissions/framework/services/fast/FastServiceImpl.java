@@ -11,15 +11,17 @@ import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.fast.netCDF.ExportFastOutputToNetCDFFile;
 import gov.epa.emissions.framework.services.fast.shapefile.ExportFastOutputToShapeFile;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import gov.epa.emissions.framework.services.persistence.JpaEntityManagerFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 
@@ -29,24 +31,24 @@ public class FastServiceImpl implements FastService {
 
     private PooledExecutor threadPool;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     protected DbServerFactory dbServerFactory;
 
     private FastDAO dao;
 
     public FastServiceImpl() throws Exception {
-        init(HibernateSessionFactory.get(), DbServerFactory.get());
+        init(JpaEntityManagerFactory.get(), DbServerFactory.get());
     }
 
-    public FastServiceImpl(HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory) throws Exception {
-        init(sessionFactory, dbServerFactory);
+    public FastServiceImpl(EntityManagerFactory entityManagerFactory, DbServerFactory dbServerFactory) throws Exception {
+        init(entityManagerFactory, dbServerFactory);
     }
 
-    private synchronized void init(HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory) {
-        this.sessionFactory = sessionFactory;
+    private synchronized void init(EntityManagerFactory entityManagerFactory, DbServerFactory dbServerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
         this.dbServerFactory = dbServerFactory;
-        dao = new FastDAO(dbServerFactory, sessionFactory);
+        dao = new FastDAO(dbServerFactory, entityManagerFactory);
         threadPool = createThreadPool();
 
     }
@@ -67,7 +69,7 @@ public class FastServiceImpl implements FastService {
 
     private <T> T executeDaoCommand(AbstractDaoCommand<T> daoCommand) throws EmfException {
 
-        daoCommand.setSessionFactory(this.sessionFactory);
+        daoCommand.setSessionFactory(this.entityManagerFactory);
         daoCommand.setLog(LOG);
         return daoCommand.execute().getReturnValue();
     }
@@ -76,8 +78,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<FastRun[]>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                List<FastRun> fastRuns = dao.getFastRuns(session);
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                List<FastRun> fastRuns = dao.getFastRuns(entityManager);
                 this.setReturnValue(fastRuns.toArray(new FastRun[0]));
             }
 
@@ -92,8 +94,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<FastRun[]>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                List<FastRun> fastRuns = dao.getFastRuns(gridId, session);
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                List<FastRun> fastRuns = dao.getFastRuns(gridId, entityManager);
                 this.setReturnValue(fastRuns.toArray(new FastRun[0]));
             }
 
@@ -108,8 +110,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<Integer>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                this.setReturnValue(dao.add(fastRun, session));
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                this.setReturnValue(dao.add(fastRun, entityManager));
             }
 
             @Override
@@ -124,8 +126,8 @@ public class FastServiceImpl implements FastService {
 
         this.executeDaoCommand(new AbstractDaoCommand<Void>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                dao.setFastRunRunStatusAndCompletionDate(id, runStatus, completionDate, session);
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                dao.setFastRunRunStatusAndCompletionDate(id, runStatus, completionDate, entityManager);
             }
 
             @Override
@@ -139,9 +141,9 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<FastRun>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
+            protected void doExecute(EntityManager entityManager) throws Exception {
 
-                FastRun locked = dao.obtainLockedFastRun(owner, id, session);
+                FastRun locked = dao.obtainLockedFastRun(owner, id, entityManager);
                 this.setReturnValue(locked);
             }
 
@@ -154,9 +156,9 @@ public class FastServiceImpl implements FastService {
 
     // FIXME
     // public void releaseLocked(FastRun locked) throws EmfException {
-    // Session session = sessionFactory.getSession();
+    // EntityManager entityManager = entityManagerFactory.createEntityManager();
     // try {
-    // dao.releaseLocked(locked, session);
+    // dao.releaseLocked(locked, entityManager);
     // } catch (RuntimeException e) {
     // LOG.error(
     // "Could not release lock for Control Strategy : " + locked + " by owner: "
@@ -166,7 +168,7 @@ public class FastServiceImpl implements FastService {
     // locked + " by owner: "
     // + locked.getLockOwner());
     // } finally {
-    // session.close();
+    // entityManager.close();
     // }
     // }
 
@@ -174,8 +176,8 @@ public class FastServiceImpl implements FastService {
 
         this.executeDaoCommand(new AbstractDaoCommand<Void>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                dao.releaseLockedFastRun(user, id, session);
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                dao.releaseLockedFastRun(user, id, entityManager);
             }
 
             @Override
@@ -189,13 +191,13 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<FastRun>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
+            protected void doExecute(EntityManager entityManager) throws Exception {
 
-                if (!dao.canUpdateFastRun(fastRun, session)) {
+                if (!dao.canUpdateFastRun(fastRun, entityManager)) {
                     throw new EmfException("The Fast run name is already in use");
                 }
 
-                FastRun released = dao.updateFastRun(fastRun, session);
+                FastRun released = dao.updateFastRun(fastRun, entityManager);
 
                 this.setReturnValue(released);
             }
@@ -211,13 +213,13 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<FastRun>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
+            protected void doExecute(EntityManager entityManager) throws Exception {
 
-                if (!dao.canUpdateFastRun(fastRun, session)) {
+                if (!dao.canUpdateFastRun(fastRun, entityManager)) {
                     throw new EmfException("Fast run name already in use");
                 }
 
-                FastRun fastRunWithLock = dao.updateFastRunWithLock(fastRun, session);
+                FastRun fastRunWithLock = dao.updateFastRunWithLock(fastRun, entityManager);
 
                 this.setReturnValue(fastRunWithLock);
             }
@@ -249,13 +251,13 @@ public class FastServiceImpl implements FastService {
 
         this.executeDaoCommand(new AbstractDaoCommand<Void>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
+            protected void doExecute(EntityManager entityManager) throws Exception {
 
                 String exception = "";
                 for (int i = 0; i < ids.length; i++) {
 
-                    FastRun fastRun = dao.getFastRun(ids[i], session);
-                    session.clear();
+                    FastRun fastRun = dao.getFastRun(ids[i], entityManager);
+                    entityManager.clear();
 
                     // check if admin user, then allow it to be removed.
                     if (user.equals(fastRun.getCreator()) || user.isAdmin()) {
@@ -286,18 +288,18 @@ public class FastServiceImpl implements FastService {
 
         this.executeDaoCommand(new AbstractDaoCommand<Void>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
+            protected void doExecute(EntityManager entityManager) throws Exception {
 
-                if (!dao.canUpdateFastRun(fastRun, session)) {
+                if (!dao.canUpdateFastRun(fastRun, entityManager)) {
                     throw new EmfException("Fast run " + fastRun + " already in use");
                 }
 
                 FastRunOutput[] fastRunOutputs = getFastRunOutputs(fastRun.getId());
                 for (int i = 0; i < fastRunOutputs.length; i++) {
-                    dao.remove(fastRunOutputs[i], session);
+                    dao.remove(fastRunOutputs[i], entityManager);
                 }
 
-                dao.remove(fastRun, session);
+                dao.remove(fastRun, entityManager);
             }
 
             @Override
@@ -311,15 +313,15 @@ public class FastServiceImpl implements FastService {
 
         this.executeDaoCommand(new AbstractDaoCommand<Void>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
+            protected void doExecute(EntityManager entityManager) throws Exception {
 
                 DatasetDAO dsDao = new DatasetDAO();
                 for (Integer id : ids) {
-                    EmfDataset dataset = dsDao.getDataset(session, id);
+                    EmfDataset dataset = dsDao.getDataset(entityManager, id);
 
                     if (dataset != null) {
                         try {
-                            dsDao.remove(user, dataset, session);
+                            dsDao.remove(user, dataset, entityManager);
                         } catch (EmfException e) {
 
                             if (DebugLevels.DEBUG_12()) {
@@ -343,13 +345,13 @@ public class FastServiceImpl implements FastService {
 
         this.executeDaoCommand(new AbstractDaoCommand<Void>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
+            protected void doExecute(EntityManager entityManager) throws Exception {
 
                 try {
 
                     // first see if the strategy has been canceled, is so don't
                     // run it...
-                    String runStatus = dao.getFastRunRunStatus(fastRunId, session);
+                    String runStatus = dao.getFastRunRunStatus(fastRunId, entityManager);
                     if (runStatus.equals("Cancelled")) {
                         return;
                     }
@@ -370,16 +372,16 @@ public class FastServiceImpl implements FastService {
 
                     // queue up the strategy to be run, by setting runStatus to
                     // Waiting
-                    dao.setFastRunRunStatusAndCompletionDate(fastRunId, "Waiting", null, session);
+                    dao.setFastRunRunStatusAndCompletionDate(fastRunId, "Waiting", null, entityManager);
 
                     // validatePath(strategy.getExportDirectory());
-                    RunFastRun runStrategy = new RunFastRun(sessionFactory, dbServerFactory, threadPool);
+                    RunFastRun runStrategy = new RunFastRun(entityManagerFactory, dbServerFactory, threadPool);
                     runStrategy.run(user, strategy, FastServiceImpl.this);
                 } catch (EmfException e) {
 
                     // queue up the strategy to be run, by setting runStatus to
                     // Waiting
-                    dao.setFastRunRunStatusAndCompletionDate(fastRunId, "Failed", null, session);
+                    dao.setFastRunRunStatusAndCompletionDate(fastRunId, "Failed", null, entityManager);
 
                     throw new EmfException(e.getMessage());
                 }
@@ -409,8 +411,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<List<FastRun>>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                this.setReturnValue(dao.getFastRunsByRunStatus(runStatus, session));
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                this.setReturnValue(dao.getFastRunsByRunStatus(runStatus, entityManager));
             }
 
             @Override
@@ -424,8 +426,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<Long>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                this.setReturnValue(dao.getFastRunRunningCount(session));
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                this.setReturnValue(dao.getFastRunRunningCount(entityManager));
             }
 
             @Override
@@ -449,12 +451,12 @@ public class FastServiceImpl implements FastService {
 
         this.executeDaoCommand(new AbstractDaoCommand<Void>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
+            protected void doExecute(EntityManager entityManager) throws Exception {
                 // look at the current status, if waiting or running, then
                 // update to Cancelled.
-                String status = dao.getFastRunRunStatus(fastRunId, session);
+                String status = dao.getFastRunRunStatus(fastRunId, entityManager);
                 if (status.toLowerCase().startsWith("waiting") || status.toLowerCase().startsWith("running")) {
-                    dao.setFastRunRunStatusAndCompletionDate(fastRunId, "Cancelled", null, session);
+                    dao.setFastRunRunStatusAndCompletionDate(fastRunId, "Cancelled", null, entityManager);
                 }
             }
 
@@ -469,9 +471,9 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<Integer>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
+            protected void doExecute(EntityManager entityManager) throws Exception {
 
-                FastRun fastRun = dao.getFastRun(name, session);
+                FastRun fastRun = dao.getFastRun(name, entityManager);
                 this.setReturnValue(fastRun == null ? 0 : fastRun.getId());
             }
 
@@ -486,12 +488,12 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<Integer>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
+            protected void doExecute(EntityManager entityManager) throws Exception {
 
                 // get fast run to copy
-                FastRun fastRun = dao.getFastRun(id, session);
+                FastRun fastRun = dao.getFastRun(id, entityManager);
 
-                session.clear();// clear to flush current
+                entityManager.clear();// clear to flush current
 
                 String name = "Copy of " + fastRun.getName();
                 // make sure this won't cause duplicate issues...
@@ -511,7 +513,7 @@ public class FastServiceImpl implements FastService {
                 copied.setLockDate(null);
                 copied.setLockOwner(null);
 
-                dao.add(copied, session);
+                dao.add(copied, entityManager);
                 this.setReturnValue(copied.getId());
             }
 
@@ -531,8 +533,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<FastRun>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                this.setReturnValue(dao.getFastRun(id, session));
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                this.setReturnValue(dao.getFastRun(id, entityManager));
             }
 
             @Override
@@ -546,8 +548,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<FastRunOutput[]>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                List<FastRunOutput> all = dao.getFastRunOutputs(fastRunId, session);
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                List<FastRunOutput> all = dao.getFastRunOutputs(fastRunId, entityManager);
                 this.setReturnValue(all.toArray(new FastRunOutput[0]));
             }
 
@@ -562,8 +564,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<String>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                this.setReturnValue(dao.getDefaultExportDirectory(session));
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                this.setReturnValue(dao.getDefaultExportDirectory(entityManager));
             }
 
             @Override
@@ -577,8 +579,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<String>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                this.setReturnValue(dao.getStrategyRunStatus(session, id));
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                this.setReturnValue(dao.getStrategyRunStatus(entityManager, id));
             }
 
             @Override
@@ -592,9 +594,9 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<FastDataset[]>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
+            protected void doExecute(EntityManager entityManager) throws Exception {
 
-                List<FastDataset> all = dao.getFastDatasets(session);
+                List<FastDataset> all = dao.getFastDatasets(entityManager);
                 this.setReturnValue(all.toArray(new FastDataset[0]));
             }
 
@@ -609,8 +611,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<FastDataset>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                this.setReturnValue(dao.getFastDataset(session, fastDatasetId));
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                this.setReturnValue(dao.getFastDataset(entityManager, fastDatasetId));
             }
 
             @Override
@@ -624,8 +626,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<Integer>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                List<FastDataset> all = dao.getFastDatasets(session);
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                List<FastDataset> all = dao.getFastDatasets(entityManager);
                 this.setReturnValue(all.size());
             }
 
@@ -640,8 +642,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<Integer>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                this.setReturnValue(dao.addFastDataset(fastDataset, session));
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                this.setReturnValue(dao.addFastDataset(fastDataset, entityManager));
             }
 
             @Override
@@ -662,7 +664,7 @@ public class FastServiceImpl implements FastService {
     //
     // return this.executeDaoCommand(new AbstractDaoCommand<Integer>() {
     // @Override
-    // protected void doExecute(Session session) throws Exception {
+    // protected void doExecute(EntityManager entityManager) throws Exception {
     //
     // DbServer dbServer = dbServerFactory.getDbServer();
     //
@@ -670,10 +672,10 @@ public class FastServiceImpl implements FastService {
     // baseNonPointDatasetName,
     // baseNonPointDatasetVersion, griddedSMKDatasetName,
     // griddedSMKDatasetVersion,
-    // invTableDatasetName, invTableDatasetVersion, gridName, userName, session,
+    // invTableDatasetName, invTableDatasetVersion, gridName, userName, entityManager,
     // dbServer);
     //
-    // populateFastQuasiPointDataset((new UserDAO()).get(userName, session),
+    // populateFastQuasiPointDataset((new UserDAO()).get(userName, entityManager),
     // fastDatasetId);
     //
     // this.setReturnValue(fastDatasetId);
@@ -690,8 +692,8 @@ public class FastServiceImpl implements FastService {
 
         this.executeDaoCommand(new AbstractDaoCommand<Void>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                dao.removeFastDataset(fastDatasetId, session);
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                dao.removeFastDataset(fastDatasetId, entityManager);
             }
 
             @Override
@@ -705,8 +707,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<FastNonPointDataset[]>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                List<FastNonPointDataset> all = dao.getFastNonPointDatasets(session);
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                List<FastNonPointDataset> all = dao.getFastNonPointDatasets(entityManager);
                 this.setReturnValue(all.toArray(new FastNonPointDataset[0]));
             }
 
@@ -721,8 +723,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<FastNonPointDataset>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                this.setReturnValue(dao.getFastNonPointDataset(session, fastNonPointDatasetId));
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                this.setReturnValue(dao.getFastNonPointDataset(entityManager, fastNonPointDatasetId));
             }
 
             @Override
@@ -736,8 +738,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<Integer>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                List<FastNonPointDataset> all = dao.getFastNonPointDatasets(session);
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                List<FastNonPointDataset> all = dao.getFastNonPointDatasets(entityManager);
                 this.setReturnValue(all.size());
             }
 
@@ -753,12 +755,12 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<Integer>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
+            protected void doExecute(EntityManager entityManager) throws Exception {
 
                 DbServer dbServer = dbServerFactory.getDbServer();
 
                 int fastDatasetId = dao.addFastNonPointDataset(fastNonPointDataset, user, 
-                        session, dbServer);
+                        entityManager, dbServer);
 
                 populateFastQuasiPointDataset(user, fastDatasetId);
 
@@ -776,8 +778,8 @@ public class FastServiceImpl implements FastService {
 
         this.executeDaoCommand(new AbstractDaoCommand<Void>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                dao.removeFastNonPointDataset(fastNonPointDatasetId, session);
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                dao.removeFastNonPointDataset(fastNonPointDatasetId, entityManager);
             }
 
             @Override
@@ -790,11 +792,11 @@ public class FastServiceImpl implements FastService {
     private void populateFastQuasiPointDataset(final User user, final int fastNonPointDatasetId) throws EmfException {
         this.executeDaoCommand(new AbstractDaoCommand<Void>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
+            protected void doExecute(EntityManager entityManager) throws Exception {
 
                 FastDataset fastDataset = getFastDataset(fastNonPointDatasetId);
                 PopulateFastQuasiPointDatasetTask task = new PopulateFastQuasiPointDatasetTask(user, fastDataset,
-                        sessionFactory, dbServerFactory);
+                        entityManagerFactory, dbServerFactory);
                 if (task.shouldProceed()) {
                     threadPool.execute(new GCEnforcerTask("Populate FAST Quasi Point Inventory: "
                             + fastDataset.getDataset().getName(), task));
@@ -812,8 +814,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<Grid[]>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                List<Grid> all = dao.getGrids(session);
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                List<Grid> all = dao.getGrids(entityManager);
                 this.setReturnValue(all.toArray(new Grid[0]));
             }
 
@@ -828,8 +830,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<Grid>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                this.setReturnValue(dao.getGrid(session, name));
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                this.setReturnValue(dao.getGrid(entityManager, name));
             }
 
             @Override
@@ -843,8 +845,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<FastAnalysis[]>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                List<FastAnalysis> fastAnalyses = dao.getFastAnalyses(session);
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                List<FastAnalysis> fastAnalyses = dao.getFastAnalyses(entityManager);
                 this.setReturnValue(fastAnalyses.toArray(new FastAnalysis[0]));
             }
 
@@ -859,8 +861,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<Integer>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                this.setReturnValue(dao.add(fastAnalysis, session));
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                this.setReturnValue(dao.add(fastAnalysis, entityManager));
             }
 
             @Override
@@ -875,8 +877,8 @@ public class FastServiceImpl implements FastService {
 
         this.executeDaoCommand(new AbstractDaoCommand<Void>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                dao.setFastAnalysisRunStatusAndCompletionDate(id, runStatus, completionDate, session);
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                dao.setFastAnalysisRunStatusAndCompletionDate(id, runStatus, completionDate, entityManager);
             }
 
             @Override
@@ -890,8 +892,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<FastAnalysis>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                this.setReturnValue(dao.obtainLockedFastAnalysis(owner, id, session));
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                this.setReturnValue(dao.obtainLockedFastAnalysis(owner, id, entityManager));
             }
 
             @Override
@@ -903,9 +905,9 @@ public class FastServiceImpl implements FastService {
 
     // FIXME
     // public void releaseLocked(FastAnalysis locked) throws EmfException {
-    // Session session = sessionFactory.getSession();
+    // EntityManager entityManager = entityManagerFactory.createEntityManager();
     // try {
-    // dao.releaseLocked(locked, session);
+    // dao.releaseLocked(locked, entityManager);
     // } catch (RuntimeException e) {
     // LOG.error(
     // "Could not release lock for Control Strategy : " + locked + " by owner: "
@@ -915,7 +917,7 @@ public class FastServiceImpl implements FastService {
     // locked + " by owner: "
     // + locked.getLockOwner());
     // } finally {
-    // session.close();
+    // entityManager.close();
     // }
     // }
 
@@ -923,8 +925,8 @@ public class FastServiceImpl implements FastService {
 
         this.executeDaoCommand(new AbstractDaoCommand<Void>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                dao.releaseLockedFastAnalysis(user, id, session);
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                dao.releaseLockedFastAnalysis(user, id, entityManager);
             }
 
             @Override
@@ -938,13 +940,13 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<FastAnalysis>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
+            protected void doExecute(EntityManager entityManager) throws Exception {
 
-                if (!dao.canUpdate(fastAnalysis, session)) {
+                if (!dao.canUpdate(fastAnalysis, entityManager)) {
                     throw new EmfException("The Fast analysis " + fastAnalysis + " is already in use");
                 }
 
-                this.setReturnValue(dao.updateFastAnalysis(fastAnalysis, session));
+                this.setReturnValue(dao.updateFastAnalysis(fastAnalysis, entityManager));
             }
 
             @Override
@@ -958,13 +960,13 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<FastAnalysis>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
+            protected void doExecute(EntityManager entityManager) throws Exception {
 
-                if (!dao.canUpdate(fastAnalysis, session)) {
+                if (!dao.canUpdate(fastAnalysis, entityManager)) {
                     throw new EmfException("The Fast analysis " + fastAnalysis + " is already in use");
                 }
 
-                this.setReturnValue(dao.updateWithLock(fastAnalysis, session));
+                this.setReturnValue(dao.updateWithLock(fastAnalysis, entityManager));
             }
 
             @Override
@@ -978,12 +980,12 @@ public class FastServiceImpl implements FastService {
 
         this.executeDaoCommand(new AbstractDaoCommand<Void>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
+            protected void doExecute(EntityManager entityManager) throws Exception {
 
                 String exception = "";
                 for (int i = 0; i < ids.length; i++) {
-                    FastAnalysis fastAnalysis = dao.getFastAnalysis(ids[i], session);
-                    session.clear();
+                    FastAnalysis fastAnalysis = dao.getFastAnalysis(ids[i], entityManager);
+                    entityManager.clear();
 
                     // check if admin user, then allow it to be removed.
                     if (user.equals(fastAnalysis.getCreator()) || user.isAdmin()) {
@@ -1014,17 +1016,17 @@ public class FastServiceImpl implements FastService {
 
         this.executeDaoCommand(new AbstractDaoCommand<Void>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                if (!dao.canUpdate(fastAnalysis, session)) {
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                if (!dao.canUpdate(fastAnalysis, entityManager)) {
                     throw new EmfException("The Fast analysis " + fastAnalysis + " already in use");
                 }
 
                 FastAnalysisOutput[] fastAnalysisOutputs = getFastAnalysisOutputs(fastAnalysis.getId());
                 for (int i = 0; i < fastAnalysisOutputs.length; i++) {
-                    dao.remove(fastAnalysisOutputs[i], session);
+                    dao.remove(fastAnalysisOutputs[i], entityManager);
                 }
 
-                dao.remove(fastAnalysis, session);
+                dao.remove(fastAnalysis, entityManager);
             }
 
             @Override
@@ -1038,10 +1040,10 @@ public class FastServiceImpl implements FastService {
 
         this.executeDaoCommand(new AbstractDaoCommand<Void>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
+            protected void doExecute(EntityManager entityManager) throws Exception {
 
                 try {
-                    dao.getFastAnalysisRunStatus(fastAnalysisId, session);
+                    dao.getFastAnalysisRunStatus(fastAnalysisId, entityManager);
 
                     FastAnalysis strategy = getFastAnalysis(fastAnalysisId);
                     // validateSectors(strategy);
@@ -1059,15 +1061,15 @@ public class FastServiceImpl implements FastService {
 
                     // queue up the strategy to be run, by setting runStatus to
                     // Waiting
-                    dao.setFastAnalysisRunStatusAndCompletionDate(fastAnalysisId, "Waiting", null, session);
+                    dao.setFastAnalysisRunStatusAndCompletionDate(fastAnalysisId, "Waiting", null, entityManager);
 
                     // validatePath(strategy.getExportDirectory());
-                    RunFastAnalysis runStrategy = new RunFastAnalysis(sessionFactory, dbServerFactory, threadPool);
+                    RunFastAnalysis runStrategy = new RunFastAnalysis(entityManagerFactory, dbServerFactory, threadPool);
                     runStrategy.run(user, strategy, FastServiceImpl.this);
                 } finally {
                     // queue up the strategy to be run, by setting runStatus to
                     // Waiting
-                    dao.setFastAnalysisRunStatusAndCompletionDate(fastAnalysisId, "Failed", null, session);
+                    dao.setFastAnalysisRunStatusAndCompletionDate(fastAnalysisId, "Failed", null, entityManager);
                 }
             }
         });
@@ -1077,8 +1079,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<List<FastAnalysis>>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                this.setReturnValue(dao.getFastAnalysesByRunStatus(runStatus, session));
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                this.setReturnValue(dao.getFastAnalysesByRunStatus(runStatus, entityManager));
             }
 
             @Override
@@ -1092,8 +1094,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<Long>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                this.setReturnValue(dao.getFastAnalysisRunningCount(session));
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                this.setReturnValue(dao.getFastAnalysisRunningCount(entityManager));
             }
 
             @Override
@@ -1107,12 +1109,12 @@ public class FastServiceImpl implements FastService {
 
         this.executeDaoCommand(new AbstractDaoCommand<Void>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
+            protected void doExecute(EntityManager entityManager) throws Exception {
                 // look at the current status, if waiting or running, then
                 // update to Cancelled.
-                String status = dao.getFastAnalysisRunStatus(fastAnalysisId, session);
+                String status = dao.getFastAnalysisRunStatus(fastAnalysisId, entityManager);
                 if (status.toLowerCase().startsWith("waiting") || status.toLowerCase().startsWith("running")) {
-                    dao.setFastAnalysisRunStatusAndCompletionDate(fastAnalysisId, "Cancelled", null, session);
+                    dao.setFastAnalysisRunStatusAndCompletionDate(fastAnalysisId, "Cancelled", null, entityManager);
                 }
             }
 
@@ -1128,8 +1130,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<Integer>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                FastAnalysis fastAnalysis = dao.getFastAnalysis(name, session);
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                FastAnalysis fastAnalysis = dao.getFastAnalysis(name, entityManager);
                 this.setReturnValue(fastAnalysis == null ? 0 : fastAnalysis.getId());
             }
 
@@ -1144,12 +1146,12 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<Integer>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
+            protected void doExecute(EntityManager entityManager) throws Exception {
 
                 // get fast analysis to copy
-                FastAnalysis fastAnalysis = dao.getFastAnalysis(id, session);
+                FastAnalysis fastAnalysis = dao.getFastAnalysis(id, entityManager);
 
-                session.clear();// clear to flush current
+                entityManager.clear();// clear to flush current
 
                 String name = "Copy of " + fastAnalysis.getName();
                 // make sure this won't cause duplicate issues...
@@ -1171,7 +1173,7 @@ public class FastServiceImpl implements FastService {
                     copied.setLockOwner(null);
                 }
 
-                dao.add(copied, session);
+                dao.add(copied, entityManager);
                 this.setReturnValue(copied.getId());
             }
 
@@ -1186,8 +1188,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<FastAnalysis>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                this.setReturnValue(dao.getFastAnalysis(id, session));
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                this.setReturnValue(dao.getFastAnalysis(id, entityManager));
             }
 
             @Override
@@ -1201,8 +1203,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<FastAnalysisOutput[]>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                List<FastAnalysisOutput> all = dao.getFastAnalysisOutputs(fastAnalysisId, session);
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                List<FastAnalysisOutput> all = dao.getFastAnalysisOutputs(fastAnalysisId, entityManager);
                 this.setReturnValue(all.toArray(new FastAnalysisOutput[0]));
             }
 
@@ -1217,8 +1219,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<String>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                this.setReturnValue(dao.getFastAnalysisRunStatus(session, id));
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                this.setReturnValue(dao.getFastAnalysisRunStatus(entityManager, id));
             }
 
             @Override
@@ -1232,8 +1234,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<FastAnalysisOutputType>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                this.setReturnValue(dao.getFastAnalysisOutputType(name, session));
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                this.setReturnValue(dao.getFastAnalysisOutputType(name, entityManager));
             }
 
             @Override
@@ -1247,8 +1249,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<FastAnalysisOutputType[]>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                List<FastAnalysisOutputType> all = dao.getFastAnalysisOutputTypes(session);
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                List<FastAnalysisOutputType> all = dao.getFastAnalysisOutputTypes(entityManager);
                 this.setReturnValue(all.toArray(new FastAnalysisOutputType[0]));
             }
 
@@ -1263,8 +1265,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<FastRunOutputType>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                this.setReturnValue(dao.getFastRunOutputType(name, session));
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                this.setReturnValue(dao.getFastRunOutputType(name, entityManager));
             }
 
             @Override
@@ -1278,8 +1280,8 @@ public class FastServiceImpl implements FastService {
 
         return this.executeDaoCommand(new AbstractDaoCommand<FastRunOutputType[]>() {
             @Override
-            protected void doExecute(Session session) throws Exception {
-                List<FastRunOutputType> all = dao.getFastRunOutputTypes(session);
+            protected void doExecute(EntityManager entityManager) throws Exception {
+                List<FastRunOutputType> all = dao.getFastRunOutputTypes(entityManager);
                 this.setReturnValue(all.toArray(new FastRunOutputType[0]));
             }
 
@@ -1293,7 +1295,7 @@ public class FastServiceImpl implements FastService {
     public synchronized void exportFastOutputToShapeFile(int datasetId, int datasetVersion, int gridId, String userName, 
             String dirName, String pollutant) throws EmfException {
         try {
-            ExportFastOutputToShapeFile exportQATask = new ExportFastOutputToShapeFile(datasetId, datasetVersion, gridId, userName, dirName, pollutant, dbServerFactory, sessionFactory,
+            ExportFastOutputToShapeFile exportQATask = new ExportFastOutputToShapeFile(datasetId, datasetVersion, gridId, userName, dirName, pollutant, dbServerFactory, entityManagerFactory,
                     threadPool);
             exportQATask.export();
         } catch (Exception e) {
@@ -1305,7 +1307,7 @@ public class FastServiceImpl implements FastService {
     public synchronized void exportFastOutputToNetCDFFile(int datasetId, int datasetVersion, int gridId, String userName, 
             String dirName, String pollutant) throws EmfException {
         try {
-            ExportFastOutputToNetCDFFile exportQATask = new ExportFastOutputToNetCDFFile(datasetId, datasetVersion, gridId, userName, dirName, pollutant, dbServerFactory, sessionFactory,
+            ExportFastOutputToNetCDFFile exportQATask = new ExportFastOutputToNetCDFFile(datasetId, datasetVersion, gridId, userName, dirName, pollutant, dbServerFactory, entityManagerFactory,
                     threadPool);
             exportQATask.export();
         } catch (Exception e) {

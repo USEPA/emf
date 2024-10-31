@@ -14,7 +14,6 @@ import gov.epa.emissions.framework.services.casemanagement.ManagedCaseService;
 import gov.epa.emissions.framework.services.casemanagement.jobs.CaseJob;
 import gov.epa.emissions.framework.services.casemanagement.jobs.DependentJob;
 import gov.epa.emissions.framework.services.casemanagement.parameters.CaseParameter;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.CopyTaskManager;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 import gov.epa.emissions.framework.tasks.Task;
@@ -26,9 +25,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 public class CopyTask extends Task {
     
@@ -49,7 +50,7 @@ public class CopyTask extends Task {
 
     private Case copyToCase;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
     
     //private LoggingServiceImpl loggingService;
 
@@ -62,7 +63,7 @@ public class CopyTask extends Task {
     private ManagedCaseService caseService;
 
     public CopyTask(Case copyCase, User user, Services services,
-            DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory, 
+            DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory, 
             ManagedCaseService caseService) {
         super();
         createId();
@@ -75,9 +76,9 @@ public class CopyTask extends Task {
         this.statusServices = services.getStatus();
 //        this.loggingService = services.getLoggingService();
         this.dbServerFactory = dbServerFactory;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.caseService = caseService;
-        this.dao = new CaseDAO(sessionFactory);
+        this.dao = new CaseDAO(entityManagerFactory);
     }
 
     public void run() {
@@ -90,7 +91,7 @@ public class CopyTask extends Task {
             if (DebugLevels.DEBUG_1())
                 System.out.println("Task# " + taskId + " running");
         
-        Session session = null;
+        EntityManager entityManager = null;
         DbServer dbServer = null;
         boolean isDone = false;
         String errorMsg = "";
@@ -99,12 +100,12 @@ public class CopyTask extends Task {
             dbServer = dbServerFactory.getDbServer();
             
             long startTime = System.currentTimeMillis();
-            session = sessionFactory.getSession();
+            entityManager = entityManagerFactory.createEntityManager();
             
             addStartStatus();
             copySingleCaseObj(copyToCase, user);
             numSeconds = (System.currentTimeMillis() - startTime)/1000;
-            //complete(session, "Imported");
+            //complete(entityManager, "Imported");
             isDone = true;
         } catch (Exception e) {
             errorMsg += e.getMessage();
@@ -115,15 +116,15 @@ public class CopyTask extends Task {
             try {
                 if (isDone) {
                     addCompletedStatus();
-//                    session.flush();
+//                    entityManager.flush();
                 } else 
                     addFailedStatus(errorMsg);
             } catch (Exception e2) {
                 log.error("Error setting outputs status.", e2);
             } finally {
                 try {
-                    if (session != null && session.isConnected()) 
-                        session.close();
+                    if (entityManager != null) 
+                        entityManager.close();
                     
                     if (dbServer != null && dbServer.isConnected())
                         dbServer.disconnect();
@@ -140,7 +141,7 @@ public class CopyTask extends Task {
     }
 //
 //    private void updateVersionNReleaseLock(Version locked) throws EmfException {
-//        DataServiceImpl dataServiceImpl = new DataServiceImpl(dbServerFactory, sessionFactory);
+//        DataServiceImpl dataServiceImpl = new DataServiceImpl(dbServerFactory, entityManagerFactory);
 //        try {
 //            dataServiceImpl.updateVersionNReleaseLock(locked);
 //        } catch (Exception e) {
@@ -151,35 +152,35 @@ public class CopyTask extends Task {
 
 //    }
 
-//    protected void prepare(Session session) throws EmfException {
+//    protected void prepare(EntityManager entityManager) throws EmfException {
 //        addStartStatus();
 //        //copyCase.sets.setStatus("Started import");
-//        addCase(copyToCase, session);
+//        addCase(copyToCase, entityManager);
 //    }
 
-//    protected void complete(Session session, String status) {
+//    protected void complete(EntityManager entityManager, String status) {
 //        c.setStatus(status);
-//        updateDataset(dataset, session);
+//        updateDataset(dataset, entityManager);
 //    }
 
 
-    protected void addCase(Case case1, Session session) throws EmfException {
+    protected void addCase(Case case1, EntityManager entityManager) throws EmfException {
         try {
-            if (dao.nameUsed(case1.getName(), Case.class, session))
+            if (dao.nameUsed(case1.getName(), Case.class, entityManager))
                 throw new EmfException("The selected Dataset name is already in use");
         } catch (Exception e) {
             e.printStackTrace();
             throw new EmfException(e.getMessage() == null ? "" : e.getMessage());
         }
 
-        dao.add(case1, session);
+        dao.add(case1, entityManager);
     }
 
 //    private void removeCase(Case case1) {
 //        try {
-//            Session session = sessionFactory.getSession();
-//            dao.remove(case1, session);
-//            session.close();
+//            EntityManager entityManager = entityManagerFactory.createEntityManager();
+//            dao.remove(case1, entityManager);
+//            entityManager.close();
 //        } catch (Exception e) {
 //            logError("Could not get remove Case - " + case1.getName(), e);
 //        }
@@ -236,27 +237,27 @@ public class CopyTask extends Task {
         copyCaseInputs(user, toCopy.getId(), loaded.getId());
         copyCaseParameters(user, toCopy.getId(), loaded.getId());
 
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
 
             // NOTE: Verify why locked?
             // NOTE: it could be being edited by other user, but you still want to copy it
             if (loaded.isLocked())
-                dao.forceReleaseLocked(loaded, session);
+                dao.forceReleaseLocked(loaded, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
 
         //return loaded;
     }
     
     private String getUniqueNewName(String name) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<String> names = new ArrayList<String>();
 
         try {
-            List<Case> allCases = dao.getCases(session);
+            List<Case> allCases = dao.getCases(entityManager);
 
             for (Iterator<Case> iter = allCases.iterator(); iter.hasNext();) {
                 Case caseObj = iter.next();
@@ -268,7 +269,7 @@ public class CopyTask extends Task {
             e.printStackTrace();
             log.error("Could not get all cases.\n" + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
 
         if (names.size() == 0)
@@ -304,20 +305,20 @@ public class CopyTask extends Task {
     }
     
     private synchronized Case addCopiedCase(Case element, User user) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            dao.add(element, session);
-            Case loaded = (Case) dao.load(Case.class, element.getName(), session);
-            Case locked = dao.obtainLocked(user, loaded, session);
+            dao.add(element, entityManager);
+            Case loaded = (Case) dao.load(Case.class, element.getName(), entityManager);
+            Case locked = dao.obtainLocked(user, loaded, entityManager);
             locked.setAbbreviation(new Abbreviation(loaded.getId() + ""));
-            return dao.update(locked, session);
+            return dao.update(locked, entityManager);
         } catch (RuntimeException e) {
             log.error("Could not add case " + element, e);
             throw new EmfException("Could not add case " + element);
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
     
@@ -349,19 +350,19 @@ public class CopyTask extends Task {
         CaseInput copied = (CaseInput) DeepCopy.copy(input);
         copied.setCaseID(copiedCaseId);
 
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            CaseJob job = dao.getCaseJob(input.getCaseJobID(), session);
+            CaseJob job = dao.getCaseJob(input.getCaseJobID(), entityManager);
 
             if (job != null) {
-                CaseJob copiedJob = dao.getCaseJob(copiedCaseId, job, session);
+                CaseJob copiedJob = dao.getCaseJob(copiedCaseId, job, entityManager);
                 copied.setCaseJobID(copiedJob.getId());
             }
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
         } finally {
-            session.close();
+            entityManager.close();
         }
 
         return caseService.addCaseInput(user, copied, true);
@@ -397,17 +398,17 @@ public class CopyTask extends Task {
         CaseParameter copied = (CaseParameter) DeepCopy.copy(parameter);
         copied.setCaseID(copiedCaseId);
 
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            CaseJob job = dao.getCaseJob(parameter.getJobId(), session);
+            CaseJob job = dao.getCaseJob(parameter.getJobId(), entityManager);
 
             if (job != null) {
-                CaseJob copiedJob = dao.getCaseJob(copiedCaseId, job, session);
+                CaseJob copiedJob = dao.getCaseJob(copiedCaseId, job, entityManager);
                 copied.setJobId(copiedJob.getId());
             }
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
 
         return caseService.addCaseParameter(user, copied, true);

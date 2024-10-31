@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
 
 public class DataViewCacheImpl implements DataViewCache {
 
@@ -37,26 +37,26 @@ public class DataViewCacheImpl implements DataViewCache {
 
     }
 
-    public void init(DataAccessToken token, Session session) throws SQLException {
-        init(token, defaultPageSize(session), session);
+    public void init(DataAccessToken token, EntityManager entityManager) throws SQLException {
+        init(token, defaultPageSize(entityManager), entityManager);
     }
 
-    public void init(DataAccessToken token, int pageSize, Session session) throws SQLException {
-        initReader(token, pageSize, session);
+    public void init(DataAccessToken token, int pageSize, EntityManager entityManager) throws SQLException {
+        initReader(token, pageSize, entityManager);
     }
 
     public void init(DataAccessToken token, int pageSize, String columnFilter, String rowFilter, String sortOrder,
-            Session session) throws Exception {
-        reinitialize(token, pageSize, columnFilter, rowFilter, sortOrder, session);
+            EntityManager entityManager) throws Exception {
+        reinitialize(token, pageSize, columnFilter, rowFilter, sortOrder, entityManager);
     }
 
     public void applyConstraints(DataAccessToken token, String columnFilter, String rowFilter, String sortOrder,
-            Session session) throws Exception {
-        reinitialize(token, defaultPageSize(session), columnFilter, rowFilter, sortOrder, session);
+            EntityManager entityManager) throws Exception {
+        reinitialize(token, defaultPageSize(entityManager), columnFilter, rowFilter, sortOrder, entityManager);
     }
 
-    public int defaultPageSize(Session session) {
-        EmfProperty pageSize = properties.getProperty("page-size", session);
+    public int defaultPageSize(EntityManager entityManager) {
+        EmfProperty pageSize = properties.getProperty("page-size", entityManager);
         return Integer.parseInt(pageSize.getValue());
     }
 
@@ -68,12 +68,12 @@ public class DataViewCacheImpl implements DataViewCache {
         closeReaders();
     }
 
-    public void reload(DataAccessToken token, Session session) throws SQLException {
-        close(token, session);
-        init(token, session);
+    public void reload(DataAccessToken token, EntityManager entityManager) throws SQLException {
+        close(token, entityManager);
+        init(token, entityManager);
     }
 
-    public void close(DataAccessToken token, Session session) throws SQLException {
+    public void close(DataAccessToken token, EntityManager entityManager) throws SQLException {
         PageReader reader = (PageReader) readersMap.remove(token.key());
         if (reader != null)
             reader.close();
@@ -90,12 +90,12 @@ public class DataViewCacheImpl implements DataViewCache {
         readersMap.clear();
     }
 
-    private void initReader(DataAccessToken token, int pageSize, Session session) throws SQLException {
+    private void initReader(DataAccessToken token, int pageSize, EntityManager entityManager) throws SQLException {
         if (readersMap.containsKey(token.key()))
             return;
-        int batchSize = batchSize(properties, session);
+        int batchSize = batchSize(properties, entityManager);
         ScrollableVersionedRecords records = recordsReader.optimizedFetch(token.getVersion(), token.getTable(),
-                batchSize, pageSize, session);
+                batchSize, pageSize, entityManager);
         
         PageReader reader = new PageReader(pageSize, records);
 
@@ -113,17 +113,17 @@ public class DataViewCacheImpl implements DataViewCache {
     }
 
     private void reinitialize(DataAccessToken token, int pageSize, String columnFilter, String rowFilter,
-            String sortOrder, Session session) throws Exception {
-        int batchSize = batchSize(properties, session);
+            String sortOrder, EntityManager entityManager) throws Exception {
+        int batchSize = batchSize(properties, entityManager);
         ScrollableVersionedRecords records = recordsReader.optimizedFetch(token.getVersion(), token.getTable(),
-                batchSize, pageSize, columnFilter, rowFilter, sortOrder, session);
+                batchSize, pageSize, columnFilter, rowFilter, sortOrder, entityManager);
 
         PageReader reader = new PageReader(pageSize, records);
         cacheReader(token, reader);
     }
 
-    private int batchSize(EmfPropertiesDAO properties, Session session) {
-        EmfProperty batchSize = properties.getProperty("batch-size", session);
+    private int batchSize(EmfPropertiesDAO properties, EntityManager entityManager) {
+        EmfProperty batchSize = properties.getProperty("batch-size", entityManager);
         return Integer.parseInt(batchSize.getValue());
     }
 }

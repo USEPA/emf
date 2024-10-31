@@ -8,7 +8,8 @@ import gov.epa.emissions.framework.services.Services;
 import gov.epa.emissions.framework.services.basic.LoggingServiceImpl;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
 import gov.epa.emissions.framework.services.data.DataServiceImpl;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+
+import javax.persistence.EntityManagerFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,7 +20,7 @@ public class RunFastAnalysis {
 
     private static Log log = LogFactory.getLog(RunFastAnalysis.class);
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private PooledExecutor threadPool;
 
@@ -27,9 +28,9 @@ public class RunFastAnalysis {
 
     private DbServerFactory dbServerFactory;
 
-    public RunFastAnalysis(HibernateSessionFactory sessionFactory, 
+    public RunFastAnalysis(EntityManagerFactory entityManagerFactory, 
             DbServerFactory dbServerFactory, PooledExecutor threadPool) {
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.threadPool = threadPool;
         this.dbServerFactory = dbServerFactory;
 //        this.services = services();
@@ -38,12 +39,12 @@ public class RunFastAnalysis {
     public void run(User user, FastAnalysis fastAnalysis, FastService service) throws EmfException {
         currentLimitations(user, fastAnalysis);
         try {
-            FastAnalysisTask fastAnalysisTask = new FastAnalysisTask(fastAnalysis, user, dbServerFactory, sessionFactory);
+            FastAnalysisTask fastAnalysisTask = new FastAnalysisTask(fastAnalysis, user, dbServerFactory, entityManagerFactory);
             //factory.create(sectorScenario, user, 
-            //        sessionFactory, dbServerFactory);
+            //        entityManagerFactory, dbServerFactory);
             FastAnalysisRunTask task = new FastAnalysisRunTask( fastAnalysisTask, user, 
                     services(), service, 
-                    sessionFactory);
+                    entityManagerFactory);
             threadPool.execute(new GCEnforcerTask("Run FastRun: " + fastAnalysis.getName(), task));
         } catch (Exception e) {
             log.error("Error running sector scenario: " + fastAnalysis.getName(), e);
@@ -80,9 +81,9 @@ public class RunFastAnalysis {
 
     protected Services services() {
         Services services = new Services();
-        services.setLoggingService(new LoggingServiceImpl(sessionFactory));
-        services.setStatusService(new StatusDAO(sessionFactory));
-        services.setDataService(new DataServiceImpl(dbServerFactory, sessionFactory));
+        services.setLoggingService(new LoggingServiceImpl(entityManagerFactory));
+        services.setStatusService(new StatusDAO(entityManagerFactory));
+        services.setDataService(new DataServiceImpl(dbServerFactory, entityManagerFactory));
 
         return services;
     }

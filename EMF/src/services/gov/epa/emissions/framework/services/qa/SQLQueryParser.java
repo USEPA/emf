@@ -8,11 +8,11 @@ import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.QAStep;
 import gov.epa.emissions.framework.services.data.QAStepResult;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.Hashtable;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class SQLQueryParser {
     // Made extensive changes to this class to handle multiple versioned datasets.
@@ -29,7 +29,7 @@ public class SQLQueryParser {
 
     private String aliasValue;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private Hashtable<String, String[]> tableValuesAliasesVersions;
 
@@ -54,24 +54,24 @@ public class SQLQueryParser {
     private QAServiceImpl qaServiceImpl;
 
     public SQLQueryParser(QAStep qaStep, String tableName, String emissionDatasourceName, EmfDataset dataset,
-            Version version, HibernateSessionFactory sessionFactory) {
+            Version version, EntityManagerFactory entityManagerFactory) {
         this.qaStep = qaStep;
         this.tableName = tableName;
         this.emissionDatasourceName = emissionDatasourceName;
         this.dataset = dataset;
         this.version = version;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         tableValuesAliasesVersions = new Hashtable<String, String[]>();
-        qaServiceImpl = new QAServiceImpl(sessionFactory);
+        qaServiceImpl = new QAServiceImpl(entityManagerFactory);
     }
 
     // New constructor for far fewer arguments.
-    public SQLQueryParser(HibernateSessionFactory sessionFactory, String emissionDatasourceName, String tableName) {
-        this.sessionFactory = sessionFactory; 
+    public SQLQueryParser(EntityManagerFactory entityManagerFactory, String emissionDatasourceName, String tableName) {
+        this.entityManagerFactory = entityManagerFactory; 
         this.emissionDatasourceName = emissionDatasourceName;
         this.tableName = tableName;
         tableValuesAliasesVersions = new Hashtable<String, String[]>();
-        qaServiceImpl = new QAServiceImpl(sessionFactory);
+        qaServiceImpl = new QAServiceImpl(entityManagerFactory);
     }
 
     public String parse() throws EmfException { // BUG3621
@@ -671,13 +671,13 @@ public class SQLQueryParser {
     // Added method to create new version objects associated with the second and third tags.
     private Version version(int dataset_id, int versionNum) {
         // System.out.println("OK");
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             // System.out.println("OK");
-            return new Versions().get(dataset_id, versionNum, session);
+            return new Versions().get(dataset_id, versionNum, entityManager);
 
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -859,7 +859,7 @@ public class SQLQueryParser {
         //System.out.println("Dataset name = \n" + dsName + "\n");
         DatasetDAO dao = new DatasetDAO();
         try {
-            return dao.getDataset(sessionFactory.getSession(), dsName);
+            return dao.getDataset(entityManagerFactory.createEntityManager(), dsName);
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new EmfException("The dataset name " + dsName + " is not valid");

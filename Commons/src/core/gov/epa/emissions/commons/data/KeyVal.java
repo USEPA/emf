@@ -61,7 +61,7 @@ public class KeyVal implements Serializable {
     }
     
     public String getKwname() {
-        kwname = keyword.getName();
+        kwname = (keyword != null ? keyword.getName() : null);
         return kwname;
     }
 

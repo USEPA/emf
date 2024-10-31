@@ -6,12 +6,12 @@ import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.GCEnforcerTask;
 import gov.epa.emissions.framework.services.basic.FileDownloadDAO;
 import gov.epa.emissions.framework.services.data.QAStep;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 
@@ -23,7 +23,7 @@ public class ExportQAStep {
 
     private DbServerFactory dbServerFactory;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private User user;
 
@@ -36,22 +36,22 @@ public class ExportQAStep {
     private String rowFilter;
 
     public ExportQAStep(QAStep step, DbServerFactory dbServerFactory, 
-            User user, HibernateSessionFactory sessionFactory,
+            User user, EntityManagerFactory entityManagerFactory,
             PooledExecutor threadPool, String rowFilter) {
         this.step = step;
         this.dbServerFactory = dbServerFactory;
         this.user = user;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.fileDownloadDAO = new FileDownloadDAO();
         this.threadPool = threadPool;
         this.rowFilter = rowFilter;
     }
 
     public ExportQAStep(QAStep step, DbServerFactory dbServerFactory, 
-            User user, HibernateSessionFactory sessionFactory,
+            User user, EntityManagerFactory entityManagerFactory,
             PooledExecutor threadPool, boolean verboseStatusLogging) {
         this(step, dbServerFactory,
-            user, sessionFactory,
+            user, entityManagerFactory,
             threadPool, null);
         this.verboseStatusLogging = verboseStatusLogging;
     }
@@ -59,7 +59,7 @@ public class ExportQAStep {
     public void export(String dirName, String fileName, boolean overide) throws EmfException {
         ExportQAStepTask task = new ExportQAStepTask(dirName, fileName, 
                 overide, step, 
-                user, sessionFactory, dbServerFactory, verboseStatusLogging, rowFilter);
+                user, entityManagerFactory, dbServerFactory, verboseStatusLogging, rowFilter);
         try {
             threadPool.execute(new GCEnforcerTask("Export QA Step : " + step.getProgram().getName(), task));
         } catch (InterruptedException e) {
@@ -69,11 +69,11 @@ public class ExportQAStep {
     }
 
     public void download(String fileName, boolean overwrite) throws EmfException {
-        Session session = sessionFactory.getSession();
-        ExportQAStepTask task = new ExportQAStepTask(fileDownloadDAO.getDownloadExportFolder(session) + "/" + user.getUsername(), fileName, 
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        ExportQAStepTask task = new ExportQAStepTask(fileDownloadDAO.getDownloadExportFolder(entityManager) + "/" + user.getUsername(), fileName, 
                 overwrite, step, 
-                user, sessionFactory, dbServerFactory, verboseStatusLogging, true, rowFilter);
-        session.close();
+                user, entityManagerFactory, dbServerFactory, verboseStatusLogging, true, rowFilter);
+        entityManager.close();
         try {
             threadPool.execute(new GCEnforcerTask("Export QA Step : " + step.getProgram().getName(), task));
         } catch (InterruptedException e) {

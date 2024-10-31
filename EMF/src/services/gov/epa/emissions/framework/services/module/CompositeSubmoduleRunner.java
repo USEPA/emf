@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
 
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
@@ -33,7 +33,7 @@ class CompositeSubmoduleRunner extends SubmoduleRunner {
     
     protected void execute() {
         ModulesDAO modulesDAO = getModulesDAO();
-        Session session = getSession();
+        EntityManager entityManager = getEntityManager();
         
         Module module = getModule();
         Map<String, ModuleInternalParameter> moduleInternalParameters = module.getModuleInternalParameters();
@@ -78,14 +78,14 @@ class CompositeSubmoduleRunner extends SubmoduleRunner {
                     historyInternalParameters.put(parameterPath, historyInternalParameter);
                 }
             }
-            history = modulesDAO.updateHistory(history, session);
+            history = modulesDAO.updateHistory(history, entityManager);
             
             // there is no setup script for composite submodules
             
             // execute submodules
             historySubmodule.setStatus(History.SUBMODULES);
             historySubmodule.addLogMessage(History.INFO, "Started executing submodules.");
-            historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, session);
+            historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, entityManager);
             
             TreeMap<Integer, SubmoduleRunner>  todoSubmoduleRunners = new TreeMap<Integer, SubmoduleRunner>();
             TreeMap<Integer, SubmoduleRunner> readySubmoduleRunners = new TreeMap<Integer, SubmoduleRunner>();
@@ -257,7 +257,7 @@ class CompositeSubmoduleRunner extends SubmoduleRunner {
             
             historySubmodule.addLogMessage(History.SUCCESS, getFinalStatusMessage());
             
-            historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, session);
+            historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, entityManager);
             
         } catch (Exception e) {
             
@@ -280,10 +280,10 @@ class CompositeSubmoduleRunner extends SubmoduleRunner {
             
             historySubmodule.addLogMessage(History.ERROR, getFinalStatusMessage());
             
-            historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, session);
+            historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, entityManager);
             
         } finally {
-            history = modulesDAO.updateHistory(history, session);
+            history = modulesDAO.updateHistory(history, entityManager);
             
             if (statement != null) {
                 try {

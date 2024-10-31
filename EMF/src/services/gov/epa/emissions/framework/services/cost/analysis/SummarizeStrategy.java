@@ -10,7 +10,8 @@ import gov.epa.emissions.framework.services.basic.StatusDAO;
 import gov.epa.emissions.framework.services.cost.ControlStrategy;
 import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyResultType;
 import gov.epa.emissions.framework.services.data.DataServiceImpl;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+
+import javax.persistence.EntityManagerFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,7 +24,7 @@ public class SummarizeStrategy {
 
     private StrategySummaryFactory factory;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private PooledExecutor threadPool;
 
@@ -31,10 +32,10 @@ public class SummarizeStrategy {
 
     private DbServerFactory dbServerFactory;
 
-    public SummarizeStrategy(StrategySummaryFactory factory, HibernateSessionFactory sessionFactory, 
+    public SummarizeStrategy(StrategySummaryFactory factory, EntityManagerFactory entityManagerFactory, 
             DbServerFactory dbServerFactory, PooledExecutor threadPool) {
         this.factory = factory;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.threadPool = threadPool;
         this.dbServerFactory = dbServerFactory;
         this.services = services();
@@ -46,11 +47,11 @@ public class SummarizeStrategy {
         currentLimitations(controlStrategy);
         try {
             IStrategySummaryTask strategyResult = factory.create(controlStrategy, user, 
-                    strategyResultType, sessionFactory, 
+                    strategyResultType, entityManagerFactory, 
                     dbServerFactory);
             StrategySummaryTask task = new StrategySummaryTask(strategyResult, strategyResultType,
                     user, services, 
-                    sessionFactory);
+                    entityManagerFactory);
             threadPool.execute(new GCEnforcerTask("Run StrategyResult: " + controlStrategy.getName(), task));
         } catch (Exception e) {
             log.error("Error running control strategy result: " + controlStrategy.getName(), e);
@@ -83,9 +84,9 @@ public class SummarizeStrategy {
 
     private Services services() {
         Services services = new Services();
-        services.setLoggingService(new LoggingServiceImpl(sessionFactory));
-        services.setStatusService(new StatusDAO(sessionFactory));
-        services.setDataService(new DataServiceImpl(dbServerFactory, sessionFactory));
+        services.setLoggingService(new LoggingServiceImpl(entityManagerFactory));
+        services.setStatusService(new StatusDAO(entityManagerFactory));
+        services.setDataService(new DataServiceImpl(dbServerFactory, entityManagerFactory));
 
         return services;
     }

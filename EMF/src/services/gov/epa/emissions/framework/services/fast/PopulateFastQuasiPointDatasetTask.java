@@ -17,7 +17,6 @@ import gov.epa.emissions.framework.services.basic.StatusDAO;
 import gov.epa.emissions.framework.services.cost.controlStrategy.FileFormatFactory;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -29,9 +28,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 public class PopulateFastQuasiPointDatasetTask implements Runnable {
 
@@ -41,7 +42,7 @@ public class PopulateFastQuasiPointDatasetTask implements Runnable {
 
     private FastDataset fastDataset;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private DbServerFactory dbServerFactory;
 
@@ -50,12 +51,12 @@ public class PopulateFastQuasiPointDatasetTask implements Runnable {
     private DatasetDAO datasetDAO;
     
     public PopulateFastQuasiPointDatasetTask(User user, FastDataset fastDataset,
-            HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory) {
+            EntityManagerFactory entityManagerFactory, DbServerFactory dbServerFactory) {
         this.user = user;
         this.fastDataset = fastDataset;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.dbServerFactory = dbServerFactory;
-        this.statusDAO = new StatusDAO(sessionFactory);
+        this.statusDAO = new StatusDAO(entityManagerFactory);
         this.datasetDAO = new DatasetDAO(dbServerFactory);
     }
 
@@ -122,23 +123,23 @@ public class PopulateFastQuasiPointDatasetTask implements Runnable {
     }
 
     protected void updateDatasetVersionRecordCount(EmfDataset dataset) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         DbServer dbServer = dbServerFactory.getDbServer();
         try {
             
             if (dataset != null) {
-                Version version = datasetDAO.getVersion(session, dataset.getId(), dataset.getDefaultVersion());
+                Version version = datasetDAO.getVersion(entityManager, dataset.getId(), dataset.getDefaultVersion());
                 
                 if (version != null) {
                     version.setCreator(user);
-                    updateVersion(dataset, version, dbServer, session);
+                    updateVersion(dataset, version, dbServer, entityManager);
                 }
             }
         } catch (Exception e) {
             throw new EmfException("Cannot update dataset (dataset id: " + dataset.getId() + "). " + e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
             try {
                 dbServer.disconnect();
             } catch (Exception e) {
@@ -148,19 +149,19 @@ public class PopulateFastQuasiPointDatasetTask implements Runnable {
         }
     }
     
-    private void updateVersion(EmfDataset dataset, Version version, DbServer dbServer, Session session) throws Exception {
-        version = datasetDAO.obtainLockOnVersion(user, version.getId(), session);
-        version.setNumberRecords((int)datasetDAO.getDatasetRecordsNumber(dbServer, session, dataset, version));
-        datasetDAO.updateVersionNReleaseLock(version, session);
+    private void updateVersion(EmfDataset dataset, Version version, DbServer dbServer, EntityManager entityManager) throws Exception {
+        version = datasetDAO.obtainLockOnVersion(user, version.getId(), entityManager);
+        version.setNumberRecords((int)datasetDAO.getDatasetRecordsNumber(dbServer, entityManager, dataset, version));
+        datasetDAO.updateVersionNReleaseLock(version, entityManager);
     }
 
     private Version version(EmfDataset inputDataset, int datasetVersion) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             Versions versions = new Versions();
-            return versions.get(inputDataset.getId(), datasetVersion, session);
+            return versions.get(inputDataset.getId(), datasetVersion, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 

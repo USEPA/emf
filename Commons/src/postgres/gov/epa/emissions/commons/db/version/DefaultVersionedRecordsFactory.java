@@ -5,7 +5,7 @@ import gov.epa.emissions.commons.db.Datasource;
 import java.sql.SQLException;
 import java.util.StringTokenizer;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
 
 public class DefaultVersionedRecordsFactory implements VersionedRecordsFactory {
     private Datasource datasource;
@@ -17,20 +17,20 @@ public class DefaultVersionedRecordsFactory implements VersionedRecordsFactory {
         versions = new Versions();
     }
 
-    public ScrollableVersionedRecords fetch(Version version, String table, Session session) throws SQLException {
-        return fetch(version, table, null, null, null, session);
+    public ScrollableVersionedRecords fetch(Version version, String table, EntityManager entityManager) throws SQLException {
+        return fetch(version, table, null, null, null, entityManager);
     }
 
     public ScrollableVersionedRecords optimizedFetch(Version version, String table, int batchSize, 
-            int pageSize, Session session) throws SQLException {
-        return optimizedFetch(version, table, batchSize, pageSize, null, null, null, session);
+            int pageSize, EntityManager entityManager) throws SQLException {
+        return optimizedFetch(version, table, batchSize, pageSize, null, null, null, entityManager);
     }
 
     public ScrollableVersionedRecords optimizedFetch(Version version, String table, int batchSize, 
             int pageSize, String columnFilter,
-           String rowFilter, String sortOrder, Session session) throws SQLException {
-        String query = createQuery(version, table, columnFilter, rowFilter, sortOrder, session);
-        String versions = versionsList(version, session);
+           String rowFilter, String sortOrder, EntityManager entityManager) throws SQLException {
+        String query = createQuery(version, table, columnFilter, rowFilter, sortOrder, entityManager);
+        String versions = versionsList(version, entityManager);
         String fullyQualifiedTable = fullyQualifiedTable(table);
         String whereClause = whereClause(version, rowFilter, versions);
 
@@ -38,24 +38,24 @@ public class DefaultVersionedRecordsFactory implements VersionedRecordsFactory {
     }
 
     public ScrollableVersionedRecords fetch(Version version, String table, String columnFilter, String rowFilter,
-            String sortOrder, Session session) throws SQLException {
-        String query = createQuery(version, table, columnFilter, rowFilter, sortOrder, session);
+            String sortOrder, EntityManager entityManager) throws SQLException {
+        String query = createQuery(version, table, columnFilter, rowFilter, sortOrder, entityManager);
         return new SimpleScrollableVersionedRecords(datasource, query);
     }
 
-    VersionedRecord[] fetchAll(Version version, String table, Session session) throws SQLException {
-        return fetchAll(version, table, null, null, null, session);
+    VersionedRecord[] fetchAll(Version version, String table, EntityManager entityManager) throws SQLException {
+        return fetchAll(version, table, null, null, null, entityManager);
     }
 
     VersionedRecord[] fetchAll(Version version, String table, String columnFilter, String rowFilter, String sortOrder,
-            Session session) throws SQLException {
-        ScrollableVersionedRecords records = fetch(version, table, columnFilter, rowFilter, sortOrder, session);
+            EntityManager entityManager) throws SQLException {
+        ScrollableVersionedRecords records = fetch(version, table, columnFilter, rowFilter, sortOrder, entityManager);
         return records.range(0, records.total());
     }
 
     private String createQuery(Version version, String table, String columnFilter, String rowFilter, String sortOrder,
-            Session session) {
-        String versions = versionsList(version, session);
+            EntityManager entityManager) {
+        String versions = versionsList(version, entityManager);
 
         String columnFilterClause = columnFilterClause(columnFilter);
         String rowFilterClause = rowFilterClause(version, rowFilter, versions);
@@ -134,8 +134,8 @@ public class DefaultVersionedRecordsFactory implements VersionedRecordsFactory {
         return buffer.toString();
     }
 
-    private String versionsList(Version finalVersion, Session session) {
-        Version[] path = versions.getPath(finalVersion.getDatasetId(), finalVersion.getVersion(), session);
+    private String versionsList(Version finalVersion, EntityManager entityManager) {
+        Version[] path = versions.getPath(finalVersion.getDatasetId(), finalVersion.getVersion(), entityManager);
 
         StringBuffer result = new StringBuffer();
         for (int i = 0; i < path.length; i++) {

@@ -93,7 +93,7 @@ public class UsersManagerPresenter implements RefreshObserver {
         for (int i = 0; i < users.length; i++) {
             UpdatableUserView updatable = view.getUpdateUserView(users[i]);
             UserView viewable = view.getUserView();
-            doUpdateUser(users[i], updatable, viewable);
+            doUpdateUser(service.getUser(users[i].getUsername()), updatable, viewable);
         }
     }
     

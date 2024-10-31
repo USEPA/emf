@@ -17,14 +17,15 @@ import gov.epa.emissions.framework.services.data.DataCommonsDAO;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.GeoRegion;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.Iterator;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 public class CaseDaoHelper {
 
@@ -66,10 +67,10 @@ public class CaseDaoHelper {
     
     private DatasetDAO dsDao = null;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
-    public CaseDaoHelper(HibernateSessionFactory sessionFactory, CaseDAO caseDao, DataCommonsDAO dataDao, DatasetDAO dsDao) {
-        this.sessionFactory = sessionFactory;
+    public CaseDaoHelper(EntityManagerFactory entityManagerFactory, CaseDAO caseDao, DataCommonsDAO dataDao, DatasetDAO dsDao) {
+        this.entityManagerFactory = entityManagerFactory;
         this.caseDao = caseDao;
         this.dataDao = dataDao;
         this.dsDao = dsDao;
@@ -80,34 +81,34 @@ public class CaseDaoHelper {
     }
 
     public synchronized List<CaseParameter> getCaseParameters(int caseId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            return caseDao.getCaseParameters(caseId, session);
+            return caseDao.getCaseParameters(caseId, entityManager);
         } catch (Exception e) {
             log.error("Error retrieving case parameters.", e);
             throw new EmfException("Couldn't get all CaseParameter objects from database -- " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized CaseParameter addCaseParameter(CaseParameter param) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            CaseParameter existed = caseDao.loadCaseParameter(param, session);
+            CaseParameter existed = caseDao.loadCaseParameter(param, entityManager);
             
             if (existed != null)
                 return existed;
             
-            caseDao.addObject(param, session);
-            return caseDao.loadCaseParameter(param, session);
+            caseDao.addObject(param, entityManager);
+            return caseDao.loadCaseParameter(param, entityManager);
         } catch (Exception e) {
             log.error("Error adding case parameters.", e);
             throw new EmfException("Couldn't get all CaseParameter objects from database -- " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -131,32 +132,32 @@ public class CaseDaoHelper {
     }
 
     public synchronized List<ParameterName> getParameterNames() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            return caseDao.getParameterNames(session);
+            return caseDao.getParameterNames(entityManager);
         } catch (Exception e) {
             log.error("Error retrieving parameter names.", e);
             throw new EmfException("Couldn't get all parameter objects from database -- " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized ParameterName addParameterName(ParameterName param) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            caseDao.addObject(param, session);
+            caseDao.addObject(param, entityManager);
 
-            return (ParameterName) caseDao.loadParameterName(param, session);
+            return (ParameterName) caseDao.loadParameterName(param, entityManager);
         } catch (Exception e) {
             log.error("Error adding parameter name: " + param.getName() + ".", e);
             Throwable error = e.getCause();
             throw new EmfException("Couldn't get all parameter name objects from database -- "
                     + (error == null ? "cuase unknown." : error.getMessage()));
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -188,29 +189,29 @@ public class CaseDaoHelper {
     }
 
     public synchronized List<ParameterEnvVar> getParameterEnvVars() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            return caseDao.getParameterEnvVars(session);
+            return caseDao.getParameterEnvVars(entityManager);
         } catch (Exception e) {
             log.error("Error retrieving parameter environment variables.", e);
             throw new EmfException("Couldn't get all ParameterEnvVar objects from database -- " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized ParameterEnvVar addParameterEnvVar(ParameterEnvVar envVar) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            caseDao.addObject(envVar, session);
-            return caseDao.loadParamEnvVar(envVar, session);
+            caseDao.addObject(envVar, entityManager);
+            return caseDao.loadParamEnvVar(envVar, entityManager);
         } catch (Exception e) {
             log.error("Error adding parameter environment variables.", e);
             throw new EmfException("Couldn't get all ParameterEnvVar objects from database -- " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -242,29 +243,29 @@ public class CaseDaoHelper {
     }
 
     public synchronized List<ValueType> getValueTypes() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            return caseDao.getValueTypes(session);
+            return caseDao.getValueTypes(entityManager);
         } catch (Exception e) {
             log.error("Error retrieving parameter value types.", e);
             throw new EmfException("Couldn't get all ValueType objects from database -- " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized ValueType addValueType(ValueType type) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            caseDao.addObject(type, session);
-            return (ValueType) caseDao.load(ValueType.class, type.getName(), session);
+            caseDao.addObject(type, entityManager);
+            return (ValueType) caseDao.load(ValueType.class, type.getName(), entityManager);
         } catch (Exception e) {
             log.error("Error adding parameter value type: " + type.getName(), e);
             throw new EmfException("Couldn't get all ValueType objects from database -- " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -296,56 +297,56 @@ public class CaseDaoHelper {
     }
 
     public synchronized List<GeoRegion> getGeoRegions() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            return dataDao.getGeoRegions(session);
+            return dataDao.getGeoRegions(entityManager);
         } catch (Exception e) {
             log.error("Error retrieving regions.", e);
             throw new EmfException("Couldn't get all GeoRegion objects from database -- " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
     public synchronized List<Sector> getSectors() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            return dataDao.getSectors(session);
+            return dataDao.getSectors(entityManager);
         } catch (Exception e) {
             log.error("Error retrieving sectors.", e);
             throw new EmfException("Couldn't get all Sector objects from database -- " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized GeoRegion addGeoRegion(GeoRegion region) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            dataDao.add(region, session);
-            return (GeoRegion) dataDao.load(GeoRegion.class, region.getName(), session);
+            dataDao.add(region, entityManager);
+            return (GeoRegion) dataDao.load(GeoRegion.class, region.getName(), entityManager);
         } catch (Exception e) {
             log.error("Error adding region: " + region.getName() + ".", e);
             throw new EmfException("Couldn't get all GeoRegion objects from database -- " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
     public synchronized Sector addSector(Sector sector) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            dataDao.add(sector, session);
-            return (Sector) caseDao.load(Sector.class, sector.getName(), session);
+            dataDao.add(sector, entityManager);
+            return (Sector) caseDao.load(Sector.class, sector.getName(), entityManager);
         } catch (Exception e) {
             log.error("Error adding sector: " + sector.getName() + ".", e);
             throw new EmfException("Couldn't get all Sector objects from database -- " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -411,29 +412,29 @@ public class CaseDaoHelper {
     }
 
     public synchronized List<CaseProgram> getCasePrograms() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            return caseDao.getPrograms(session);
+            return caseDao.getPrograms(entityManager);
         } catch (Exception e) {
             log.error("Error retrieving case programs.", e);
             throw new EmfException("Couldn't get all CaseProgram objects from database -- " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized CaseProgram addCaseProgram(CaseProgram prog) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            caseDao.addObject(prog, session);
-            return caseDao.loadCaseProgram(prog, session);
+            caseDao.addObject(prog, entityManager);
+            return caseDao.loadCaseProgram(prog, entityManager);
         } catch (Exception e) {
             log.error("Error adding case program: " + prog.getName() + ".", e);
             throw new EmfException("Couldn't get all CaseProgram objects from database -- " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -465,29 +466,29 @@ public class CaseDaoHelper {
     }
 
     public synchronized List<InputName> getInputNames() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            return caseDao.getInputNames(session);
+            return caseDao.getInputNames(entityManager);
         } catch (Exception e) {
             log.error("Error retrieving input names.", e);
             throw new EmfException("Couldn't get all InputName objects from database -- " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized InputName addInputName(InputName inputName) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            caseDao.addObject(inputName, session);
-            return caseDao.loadInputName(inputName, session);
+            caseDao.addObject(inputName, entityManager);
+            return caseDao.loadInputName(inputName, entityManager);
         } catch (Exception e) {
             log.error("Error adding input name: " + inputName.getName() + ".", e);
             throw new EmfException("Couldn't get all InputName objects from database -- " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -519,29 +520,29 @@ public class CaseDaoHelper {
     }
 
     public synchronized List<InputEnvtVar> getInputEnvtVars() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            return caseDao.getInputEnvtVars(session);
+            return caseDao.getInputEnvtVars(entityManager);
         } catch (Exception e) {
             log.error("Error retrieving input environment variables.", e);
             throw new EmfException("Couldn't get all InputEnvtVar objects from database -- " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized InputEnvtVar addInputEnvtVar(InputEnvtVar envVar) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            caseDao.addObject(envVar, session);
-            return caseDao.loadInputEnvtVar(envVar, session);
+            caseDao.addObject(envVar, entityManager);
+            return caseDao.loadInputEnvtVar(envVar, entityManager);
         } catch (Exception e) {
             log.error("Error adding input environment variable: " + envVar.getName() + ".", e);
             throw new EmfException("Couldn't get all InputEnvtVar objects from database -- " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -573,15 +574,15 @@ public class CaseDaoHelper {
     }
 
     public synchronized List<DatasetType> getDatasetTypes() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            return dataDao.getDatasetTypes(session);
+            return dataDao.getDatasetTypes(entityManager);
         } catch (Exception e) {
             log.error("Error retrieving dataset types.", e);
             throw new EmfException("Couldn't get all DatasetType objects from database -- " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -616,63 +617,63 @@ public class CaseDaoHelper {
         if (name == null || name.trim().isEmpty())
             return null;
 
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            EmfDataset ds = dsDao.getDataset(session, name);
+            EmfDataset ds = dsDao.getDataset(entityManager, name);
             
             if (ds == null)
                 return null;
             
             if (ds.getDatasetType().equals(type))
-                return dsDao.getDataset(session, name);
+                return dsDao.getDataset(entityManager, name);
         } catch (Exception e) {
             log.error("Error retrieving dataset '" + name + "'.", e);
             return null;
         } finally {
-            session.close();
+            entityManager.close();
         }
         
         return null;
     }
     
     public synchronized Version getDatasetVersion(int dsId, int version) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            return dsDao.getVersion(session, dsId, version);
+            return dsDao.getVersion(entityManager, dsId, version);
         } catch (Exception e) {
             log.error("Error retrieving dataset version for dataset id=" + version + ".", e);
             return null;
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized List<SubDir> getSubDirs() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            return caseDao.getSubDirs(session);
+            return caseDao.getSubDirs(entityManager);
         } catch (Exception e) {
             log.error("Error retrieving sub directory objects.", e);
             throw new EmfException("Couldn't get all SubDir objects from database -- " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized SubDir addSubDir(SubDir subDir) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            caseDao.addObject(subDir, session);
-            return caseDao.loadCaseSubdir(subDir, session);
+            caseDao.addObject(subDir, entityManager);
+            return caseDao.loadCaseSubdir(subDir, entityManager);
         } catch (Exception e) {
             log.error("Error adding sub directory object: " + subDir.getName() + ".", e);
             throw new EmfException("Couldn't get all SubDir objects from database -- " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -704,62 +705,62 @@ public class CaseDaoHelper {
     }
 
     public synchronized List<CaseJob> getCaseJobs(int caseId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            return caseDao.getCaseJobs(caseId, session);
+            return caseDao.getCaseJobs(caseId, entityManager);
         } catch (Exception e) {
             log.error("Error retrieving case jobs.", e);
             throw new EmfException("Couldn't get all CaseJob objects from database -- " + e.getMessage());
         } finally {
-            if (session != null && !session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized CaseJob addCaseJob(CaseJob job) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            if (caseDao.caseJobExists(job, session))
-                return caseDao.loadCaseJob(job, session);
+            if (caseDao.caseJobExists(job, entityManager))
+                return caseDao.loadCaseJob(job, entityManager);
             
-            caseDao.addObject(job, session);
-            session.clear();
+            caseDao.addObject(job, entityManager);
+            entityManager.clear();
             
-            return caseDao.loadCaseJob(job, session);
+            return caseDao.loadCaseJob(job, entityManager);
         } catch (Exception e) {
             log.error("Eerror adding case job: " + job.getName(), e);
             throw new EmfException(e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized List<CaseInput> getCaseInputs(int caseId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            return caseDao.getCaseInputs(caseId, session);
+            return caseDao.getCaseInputs(caseId, entityManager);
         } catch (Exception e) {
             log.error("Error retrieving case inputs.", e);
             throw new EmfException("Couldn't get all CaseInput objects from database -- " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized CaseInput addCaseInput(CaseInput input) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            caseDao.addObject(input, session);
-            return (CaseInput) caseDao.loadCaseInput(input, session);
+            caseDao.addObject(input, entityManager);
+            return (CaseInput) caseDao.loadCaseInput(input, entityManager);
         } catch (Exception e) {
             throw new EmfException("Couldn't get all CaseInput objects from database -- " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -805,16 +806,16 @@ public class CaseDaoHelper {
         if (user == null || user.getUsername() == null || user.getUsername().isEmpty())
             return null;
         
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            return (User)dataDao.load(User.class, user.getUsername(), session);
+            return (User)dataDao.load(User.class, user.getUsername(), entityManager);
         } catch (Exception e) {
             log.error("Error retrieving user: " + user.getName() + ".", e);
             throw new EmfException("Couldn't get user (" + user.getName() + ") from database -- " + e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
     
@@ -822,24 +823,24 @@ public class CaseDaoHelper {
         if (host == null || host.getName() == null || host.getName().isEmpty())
             return null;
         
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            Host existed = (Host)caseDao.load(Host.class, host.getName(), session);
+            Host existed = (Host)caseDao.load(Host.class, host.getName(), entityManager);
             
             if (existed != null)
                 return existed;
             
-            caseDao.add(host, session);
-            session.clear();
+            caseDao.add(host, entityManager);
+            entityManager.clear();
             
-            return (Host)caseDao.load(Host.class, host.getName(), session);
+            return (Host)caseDao.load(Host.class, host.getName(), entityManager);
         } catch (Exception e) {
             log.error("Error retrieving host: " + host.getName() + ".", e);
             throw new EmfException("Couldn't get host (" + host.getName() + ") from database -- " + e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
@@ -847,24 +848,24 @@ public class CaseDaoHelper {
         if (runStatus == null || runStatus.getName() == null || runStatus.getName().isEmpty())
             return null;
         
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            JobRunStatus existed = (JobRunStatus)caseDao.load(JobRunStatus.class, runStatus.getName(), session);
+            JobRunStatus existed = (JobRunStatus)caseDao.load(JobRunStatus.class, runStatus.getName(), entityManager);
             
             if (existed != null)
                 return existed;
             
-            caseDao.addObject(runStatus, session);
-            session.clear();
+            caseDao.addObject(runStatus, entityManager);
+            entityManager.clear();
             
-            return (JobRunStatus)caseDao.load(JobRunStatus.class, runStatus.getName(), session);
+            return (JobRunStatus)caseDao.load(JobRunStatus.class, runStatus.getName(), entityManager);
         } catch (Exception e) {
             log.error("Error retrieving job runstatus: " + runStatus.getName() + ".", e);
             throw new EmfException("Couldn't get runstatus (" + runStatus.getName() + ") from database -- " + e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
@@ -872,24 +873,24 @@ public class CaseDaoHelper {
         if (exec == null || exec.getName() == null || exec.getName().isEmpty())
             return null;
         
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            Executable existed = (Executable)caseDao.load(Executable.class, exec.getName(), session);
+            Executable existed = (Executable)caseDao.load(Executable.class, exec.getName(), entityManager);
             
             if (existed != null)
                 return existed;
             
-            caseDao.addObject(exec, session);
-            session.clear();
+            caseDao.addObject(exec, entityManager);
+            entityManager.clear();
             
-            return (Executable)caseDao.load(Executable.class, exec.getName(), session);
+            return (Executable)caseDao.load(Executable.class, exec.getName(), entityManager);
         } catch (Exception e) {
             log.error("Error adding Executable object.", e);
             throw new EmfException("Error adding Executable object. " + e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 

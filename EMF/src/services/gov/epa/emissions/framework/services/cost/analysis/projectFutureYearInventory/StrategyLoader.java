@@ -5,23 +5,23 @@ import gov.epa.emissions.commons.io.importer.DataTable;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.cost.ControlProgram;
 import gov.epa.emissions.framework.services.cost.ControlStrategy;
 import gov.epa.emissions.framework.services.cost.ControlStrategyInputDataset;
 import gov.epa.emissions.framework.services.cost.analysis.common.AbstractStrategyLoader;
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyResult;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
+import javax.persistence.EntityManagerFactory;
+
 public class StrategyLoader extends AbstractStrategyLoader {
-    public StrategyLoader(User user, DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory,
+    public StrategyLoader(User user, DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory,
             ControlStrategy controlStrategy) throws EmfException {
-        super(user, dbServerFactory, sessionFactory, controlStrategy);
+        super(user, dbServerFactory, entityManagerFactory, controlStrategy);
     }
 
     public ControlStrategyResult loadStrategyResult(ControlStrategyInputDataset controlStrategyInputDataset)
@@ -103,7 +103,7 @@ public class StrategyLoader extends AbstractStrategyLoader {
         } else {
             strategyMessagesResult.setCompletionTime(new Date());
             strategyMessagesResult.setRunStatus("Completed.");
-            saveControlStrategyResult(strategyMessagesResult);
+            updateControlStrategyResult(strategyMessagesResult);
             creator.updateVersionZeroRecordCount((EmfDataset)strategyMessagesResult.getDetailedResultDataset());
         }
     }

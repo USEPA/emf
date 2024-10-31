@@ -1,56 +1,45 @@
 package gov.epa.emissions.framework.services.persistence;
 
+import gov.epa.emissions.commons.data.Lockable;
+
 import java.io.Serializable;
 import java.util.List;
+import java.util.function.Consumer;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.StatelessSession;
-import org.hibernate.Transaction;
-
 public class HibernateFacade {
 
-    public Serializable add(Object obj, Session session) {
-        Transaction tx = null;
-        Serializable id;
-        try {
-            tx = session.beginTransaction();
-            id = session.save(obj);
-            tx.commit();
-        } catch (HibernateException e) {
-            tx.rollback();  //TODO: JIZHEN BUG3316
-            throw e;
-        }
-        return id;
+    public <T extends Lockable> Integer add(T t, EntityManager entityManager) {
+        executeInsideTransaction(em -> {
+            em.persist(t);
+            em.flush();
+        }, entityManager);
+        return t.getId();
     }
 
-    public Serializable add(Object obj, StatelessSession session) {
-        Transaction tx = null;
-        Serializable id;
-        try {
-            tx = session.beginTransaction();
-            id = session.insert(obj);
-            tx.commit();
-        } catch (HibernateException e) {
-            tx.rollback();
-            throw e;
-        }
-        return id;
+    public <T> T add(T t, EntityManager entityManager) {
+        executeInsideTransaction(em -> {
+            em.persist(t);
+            em.flush();
+        }, entityManager);
+        return t;
     }
 
-    public void add(Object[] objects, Session session) {
+    public <T extends Lockable> void add(T[] objects, EntityManager entityManager) {
         for (int i = 0; i < objects.length; i++)
-            add(objects[i], session);
+            add(objects[i], entityManager);
     }
 
-    public <C> boolean exists(int id, Class<C> clazz, Session session) {
-        CriteriaBuilder builder = session.getCriteriaBuilder();
+    public <C> boolean exists(int id, Class<C> clazz, EntityManager entityManager) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<C> criteriaQuery = builder.createQuery(clazz);
         Root<C> root = criteriaQuery.from(clazz);
 
@@ -58,123 +47,88 @@ public class HibernateFacade {
 
         criteriaQuery.where(builder.equal(root.get("id"), Integer.valueOf(id)));
 
-        return session.createQuery(criteriaQuery).getSingleResult() != null;
+        return entityManager.createQuery(criteriaQuery).getSingleResult() != null;
     }
 
-    public <C> boolean exists(CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Predicate[] predicates, Session session) {
+    public <C> boolean exists(CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Predicate[] predicates, EntityManager entityManager) {
         criteriaBuilderQueryRoot.getCriteriaQuery().select(criteriaBuilderQueryRoot.getRoot());
 
         criteriaBuilderQueryRoot.getCriteriaQuery().where(predicates);
 
-        return session.createQuery(criteriaBuilderQueryRoot.getCriteriaQuery()).getSingleResult() != null;
+        return entityManager.createQuery(criteriaBuilderQueryRoot.getCriteriaQuery()).getSingleResult() != null;
     }
 
-    public <C> C current(int id, Class<C> clazz, Session session) {
-        return load(clazz, "id", Integer.valueOf(id), session);
+    public <C> C current(int id, Class<C> clazz, EntityManager entityManager) {
+        return load(clazz, "id", Integer.valueOf(id), entityManager);
     }
 
-    public <C,K> boolean isUsed(String key, K value, Class<C> clazz, Session session) {
-        return load(clazz, key, value, session) != null;
+    public <C,K> boolean isUsed(String key, K value, Class<C> clazz, EntityManager entityManager) {
+        return load(clazz, key, value, entityManager) != null;
     }
     
-    public <C> boolean nameUsed(String name, Class<C> clazz, Session session) {
-        return this.isUsed("name", name, clazz, session);
+    public <C> boolean nameUsed(String name, Class<C> clazz, EntityManager entityManager) {
+        return this.isUsed("name", name, clazz, entityManager);
     }
 
     // save- new object, updates if the objects already exist
-    public void saveOrUpdate(Object object, Session session) {
-        Transaction tx = null;
-        try {
-            tx = session.beginTransaction();
-            session.saveOrUpdate(object);
-            tx.commit();
-        } catch (HibernateException e) {
-            tx.rollback();
-            throw e;
-        }
+    public void saveOrUpdate(Object object, EntityManager entityManager) {
+        executeInsideTransaction(em -> {
+            em.merge(object);
+            em.flush();
+        }, entityManager);
     }
 
-    public void updateOnly(Object object, Session session) {
-        Transaction tx = null;
-        try {
-            tx = session.beginTransaction();
-            session.update(object);
-            tx.commit();
-        } catch (HibernateException e) {
-            tx.rollback();
-            throw e;
-        }
+    public void updateOnly(Object object, EntityManager entityManager) {
+        executeInsideTransaction(em -> em.merge(object), entityManager);
     }
 
-    public void updateOnly(Object object, StatelessSession session) {
-        Transaction tx = null;
-        try {
-            tx = session.beginTransaction();
-            session.update(object);
-            tx.commit();
-        } catch (HibernateException e) {
-            tx.rollback();
-            throw e;
-        }
-    }
-
-    public void update(Object[] objects, Session session) {
+    public void update(Object[] objects, EntityManager entityManager) {
         for (int i = 0; i < objects.length; i++)
-            saveOrUpdate(objects[i], session);
+            saveOrUpdate(objects[i], entityManager);
     }
 
-    public void removeObjects(Object[] objects, Session session) {
-        Transaction tx = null;
-        if ((session == null) || (!session.isConnected())){
-            throw new IllegalArgumentException("Session null or not connected in removeObjects");
-        }
+    public void removeObjects(Object[] objects, EntityManager entityManager) {
+        final EntityTransaction tx = entityManager.getTransaction();
         try {
-            tx = session.beginTransaction();
-
+            tx.begin();
             for (Object obj : objects)
-                session.delete(obj);
-            
-            tx.commit();
-        } catch (HibernateException e) {
+                entityManager.remove(entityManager.contains(obj) ? obj : entityManager.merge(obj));
+            tx.commit(); 
+        }
+        catch (RuntimeException e) {
             tx.rollback();
-            e.printStackTrace();
             throw e;
+        } finally {
+            //
         }
     }
 
-    public void remove(Object[] objects, Session session) {
+    public void remove(Object[] objects, EntityManager entityManager) {
         for (int i = 0; i < objects.length; i++)
-            remove(objects[i], session);
+            remove(objects[i], entityManager);
     }
 
-    public void remove(Object obj, Session session) {
-        Transaction tx = null;
-        try {
-            tx = session.beginTransaction();
-            session.delete(obj);
-            tx.commit();
-        } catch (HibernateException e) {
-            tx.rollback();
-            throw e;
-        }
-
+    public void remove(Object obj, EntityManager entityManager) {
+        executeInsideTransaction(em -> {
+            em.remove(em.contains(obj) ? obj : em.merge(obj));
+        }, entityManager);
     }
 
-    public <C> List<C> getAll(CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Order order, Session session) {
+    public <C> List<C> getAll(CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Order order, EntityManager entityManager) {
         criteriaBuilderQueryRoot.getCriteriaQuery().select(criteriaBuilderQueryRoot.getRoot());
         criteriaBuilderQueryRoot.getCriteriaQuery().orderBy(order);
 
-        return session.createQuery(criteriaBuilderQueryRoot.getCriteriaQuery()).getResultList();
+        return entityManager.createQuery(criteriaBuilderQueryRoot.getCriteriaQuery()).getResultList();
     }
 
-    public <C> List<C> getAll(CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Session session) {
+    public <C> List<C> getAll(CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, EntityManager entityManager) {
         criteriaBuilderQueryRoot.getCriteriaQuery().select(criteriaBuilderQueryRoot.getRoot());
 
-        return session.createQuery(criteriaBuilderQueryRoot.getCriteriaQuery()).getResultList();
+        return entityManager.createQuery(criteriaBuilderQueryRoot.getCriteriaQuery()).getResultList();
     }
 
-    public <C> boolean exists(String name, Class<C> clazz, Session session) {
-        CriteriaBuilder builder = session.getCriteriaBuilder();
+    public <C> boolean exists(String name, Class<C> clazz, EntityManager entityManager) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<C> criteriaQuery = builder.createQuery(clazz);
         Root<C> root = criteriaQuery.from(clazz);
 
@@ -182,19 +136,19 @@ public class HibernateFacade {
 
         criteriaQuery.where(builder.equal(root.get("name"), name));
 
-        return session.createQuery(criteriaQuery).getSingleResult() != null;
+        return entityManager.createQuery(criteriaQuery).getSingleResult() != null;
     }
 
-    public <C> List<C> get(CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Predicate predicate, javax.persistence.criteria.Order order, Session session) {
+    public <C> List<C> get(CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Predicate predicate, javax.persistence.criteria.Order order, EntityManager entityManager) {
         criteriaBuilderQueryRoot.getCriteriaQuery().select(criteriaBuilderQueryRoot.getRoot());
         criteriaBuilderQueryRoot.getCriteriaQuery().where(predicate);
         criteriaBuilderQueryRoot.getCriteriaQuery().orderBy(order);
 
-        return session.createQuery(criteriaBuilderQueryRoot.getCriteriaQuery()).getResultList();
+        return entityManager.createQuery(criteriaBuilderQueryRoot.getCriteriaQuery()).getResultList();
     }
 
-    public <C,K> List<C> get(Class<C> persistentClass, String keyName, K keyValue, Session session) {
-        CriteriaBuilder builder = session.getCriteriaBuilder();
+    public <C,K> List<C> get(Class<C> persistentClass, String keyName, K keyValue, EntityManager entityManager) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<C> criteriaQuery = builder.createQuery(persistentClass);
         Root<C> root = criteriaQuery.from(persistentClass);
 
@@ -202,22 +156,22 @@ public class HibernateFacade {
 
         criteriaQuery.where(builder.equal(root.get(keyName), keyValue));
 
-        return session.createQuery(criteriaQuery).getResultList();
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
     
-    public <C> List<C> get(Session session, CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Predicate predicate) {
+    public <C> List<C> get(EntityManager entityManager, CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Predicate predicate) {
         criteriaBuilderQueryRoot.getCriteriaQuery().select(criteriaBuilderQueryRoot.getRoot());
 
         criteriaBuilderQueryRoot.getCriteriaQuery().where(predicate);
 
-        return session.createQuery(criteriaBuilderQueryRoot.getCriteriaQuery()).getResultList();
+        return entityManager.createQuery(criteriaBuilderQueryRoot.getCriteriaQuery()).getResultList();
     }
 
-//    public List get(Class clazz, Criterion criterion, Session session) {
+//    public List get(Class clazz, Criterion criterion, EntityManager entityManager) {
 //        Transaction tx = null;
 //        try {
-//            tx = session.beginTransaction();
-//            List list = session.createCriteria(clazz).add(criterion).list();
+//            tx = entityManager.beginTransaction();
+//            List list = entityManager.createCriteria(clazz).add(criterion).list();
 //            tx.commit();
 //            return list;
 //        } catch (HibernateException e) {
@@ -226,11 +180,11 @@ public class HibernateFacade {
 //        }
 //    }
 
-//    public Object get(Class clazz, Criterion criterion, StatelessSession session) {
+//    public Object get(Class clazz, Criterion criterion, StatelessSession entityManager) {
 //        Transaction tx = null;
 //        try {
-//            tx = session.beginTransaction();
-//            Object obj = session.get(clazz, criterion);
+//            tx = entityManager.beginTransaction();
+//            Object obj = entityManager.get(clazz, criterion);
 //            tx.commit();
 //            return obj;
 //        } catch (HibernateException e) {
@@ -239,28 +193,28 @@ public class HibernateFacade {
 //        }
 //    }
 //
-    public <C> List<C> get(CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Predicate[] predicate, Session session) {
+    public <C> List<C> get(CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Predicate[] predicate, EntityManager entityManager) {
         criteriaBuilderQueryRoot.getCriteriaQuery().select(criteriaBuilderQueryRoot.getRoot());
 
         criteriaBuilderQueryRoot.getCriteriaQuery().where(predicate);
 
-        return session.createQuery(criteriaBuilderQueryRoot.getCriteriaQuery()).getResultList();
+        return entityManager.createQuery(criteriaBuilderQueryRoot.getCriteriaQuery()).getResultList();
     }
 
-    public <C> List<C> get(CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Predicate[] predicate, Order order, Session session) {
+    public <C> List<C> get(CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Predicate[] predicate, Order order, EntityManager entityManager) {
         criteriaBuilderQueryRoot.getCriteriaQuery().select(criteriaBuilderQueryRoot.getRoot());
 
         criteriaBuilderQueryRoot.getCriteriaQuery().where(predicate);
         criteriaBuilderQueryRoot.getCriteriaQuery().orderBy(order);
 
-        return session.createQuery(criteriaBuilderQueryRoot.getCriteriaQuery()).getResultList();
+        return entityManager.createQuery(criteriaBuilderQueryRoot.getCriteriaQuery()).getResultList();
     }
 
-//    public List get(Class clazz, Criterion[] criterions, Session session) {
+//    public List get(Class clazz, Criterion[] criterions, EntityManager entityManager) {
 //        Transaction tx = null;
 //        try {
-//            tx = session.beginTransaction();
-//            Criteria criteria = session.createCriteria(clazz);
+//            tx = entityManager.beginTransaction();
+//            Criteria criteria = entityManager.createCriteria(clazz);
 //            for (int i = 0; i < criterions.length; i++)
 //                criteria.add(criterions[i]);
 //
@@ -273,80 +227,80 @@ public class HibernateFacade {
 //        }
 //    }
 
-    public <C,K> C load(Class<C> persistentClass, String keyName, K keyValue, Session session) {
-        CriteriaBuilder builder = session.getCriteriaBuilder();
+    public <C,K> C load(Class<C> persistentClass, String keyName, K keyValue, EntityManager entityManager) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<C> criteriaQuery = builder.createQuery(persistentClass);
         Root<C> root = criteriaQuery.from(persistentClass);
 
         criteriaQuery.select(root);
 
         criteriaQuery.where(builder.equal(root.get(keyName), keyValue));
-
-        return session.createQuery(criteriaQuery).getSingleResult();
+        
+        try {
+            return entityManager.createQuery(criteriaQuery).getSingleResult();
+        } catch (NoResultException e) {
+            return null; 
+        }
     }
     
-    public <C> C load(Session session, CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Predicate predicate) {
+    public <C> C load(EntityManager entityManager, CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Predicate predicate) {
         criteriaBuilderQueryRoot.getCriteriaQuery().select(criteriaBuilderQueryRoot.getRoot());
 
         criteriaBuilderQueryRoot.getCriteriaQuery().where(predicate);
 
-        return session.createQuery(criteriaBuilderQueryRoot.getCriteriaQuery()).getSingleResult();
-    }
-
-//    
-//    public Object load(Class clazz, Criterion criterion, Session session) {
-//        Transaction tx = null;
-//
-//        try {
-//            tx = session.beginTransaction();
-//            Criteria crit = session.createCriteria(clazz).add(criterion);
-//            tx.commit();
-//            return crit.uniqueResult();
-//        } catch (HibernateException e) {
-//            tx.rollback();
-//            throw e;
-//        }
-//    }
-//
-//    public Object load(Class clazz, Criterion criterion, StatelessSession session) {
-//        Transaction tx = null;
-//
-//        try {
-//            tx = session.beginTransaction();
-//            Criteria crit = session.createCriteria(clazz).add(criterion);
-//            tx.commit();
-//            return crit.uniqueResult();
-//        } catch (HibernateException e) {
-//            tx.rollback();
-//            throw e;
-//        }
-//    }
-
-    public void delete(Object object, Session session) {
-        Transaction tx = null;
         try {
-            tx = session.beginTransaction();
-            session.delete(object);
-            tx.commit();
-        } catch (HibernateException e) {
-            tx.rollback();
-            throw e;
+            return entityManager.createQuery(criteriaBuilderQueryRoot.getCriteriaQuery()).getSingleResult();
+        } catch (NoResultException e) {
+            return null; 
         }
     }
 
-    public <C> C load(Session session, CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Predicate[] predicate) {
+//    
+//    public Object load(Class clazz, Criterion criterion, EntityManager entityManager) {
+//        Transaction tx = null;
+//
+//        try {
+//            tx = entityManager.beginTransaction();
+//            Criteria crit = entityManager.createCriteria(clazz).add(criterion);
+//            tx.commit();
+//            return crit.uniqueResult();
+//        } catch (HibernateException e) {
+//            tx.rollback();
+//            throw e;
+//        }
+//    }
+//
+//    public Object load(Class clazz, Criterion criterion, StatelessSession entityManager) {
+//        Transaction tx = null;
+//
+//        try {
+//            tx = entityManager.beginTransaction();
+//            Criteria crit = entityManager.createCriteria(clazz).add(criterion);
+//            tx.commit();
+//            return crit.uniqueResult();
+//        } catch (HibernateException e) {
+//            tx.rollback();
+//            throw e;
+//        }
+//    }
+
+    public void delete(Object object, EntityManager entityManager) {
+        executeInsideTransaction(em -> em.remove(em.contains(object) ? object : em.merge(object)), entityManager);
+    }
+
+    public <C> C load(EntityManager entityManager, CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Predicate[] predicate) {
         criteriaBuilderQueryRoot.getCriteriaQuery().select(criteriaBuilderQueryRoot.getRoot());
 
         criteriaBuilderQueryRoot.getCriteriaQuery().where(predicate);
 
-        return session.createQuery(criteriaBuilderQueryRoot.getCriteriaQuery()).getSingleResult();
+        return entityManager.createQuery(criteriaBuilderQueryRoot.getCriteriaQuery()).getSingleResult();
     }
 
-//    public Object load(Class clazz, Criterion[] criterions, Session session) {
+//    public Object load(Class clazz, Criterion[] criterions, EntityManager entityManager) {
 //        Transaction tx = null;
 //        try {
-//            tx = session.beginTransaction();
-//            Criteria criteria = session.createCriteria(clazz);
+//            tx = entityManager.beginTransaction();
+//            Criteria criteria = entityManager.createCriteria(clazz);
 //            for (int i = 0; i < criterions.length; i++)
 //                criteria.add(criterions[i]);
 //
@@ -359,11 +313,11 @@ public class HibernateFacade {
 //        }
 //    }
 
-//    public Object load(Class clazz, Criterion[] criterions, StatelessSession session) {
+//    public Object load(Class clazz, Criterion[] criterions, StatelessSession entityManager) {
 //        Transaction tx = null;
 //        try {
-//            tx = session.beginTransaction();
-//            Criteria criteria = session.createCriteria(clazz);
+//            tx = entityManager.beginTransaction();
+//            Criteria criteria = entityManager.createCriteria(clazz);
 //            for (int i = 0; i < criterions.length; i++)
 //                criteria.add(criterions[i]);
 //
@@ -376,11 +330,11 @@ public class HibernateFacade {
 //        }
 //    }
 
-//    public List getDistinctForColumn(Class clazz, Criterion[] criterions, Session session) {
+//    public List getDistinctForColumn(Class clazz, Criterion[] criterions, EntityManager entityManager) {
 //        Transaction tx = null;
 //        try {
-//            tx = session.beginTransaction();
-//            Criteria criteria = session.createCriteria(clazz);
+//            tx = entityManager.beginTransaction();
+//            Criteria criteria = entityManager.createCriteria(clazz);
 //            for (int i = 0; i < criterions.length; i++)
 //                criteria.add(criterions[i]);
 //
@@ -392,21 +346,12 @@ public class HibernateFacade {
 //        }
 //    }
 
-    public void deleteTask(Object object, Session session) {
-        Transaction tx = null;
-        try {
-            tx = session.beginTransaction();
-            session.delete(object);
-            tx.commit();
-        } catch (HibernateException e) {
-            tx.rollback();
-            throw e;
-        }
-
+    public void deleteTask(Object object, EntityManager entityManager) {
+        executeInsideTransaction(em -> em.remove(em.contains(object) ? object : em.merge(object)), entityManager);
     }
 
-    public <C> CriteriaBuilderQueryRoot<C> getCriteriaBuilderQueryRoot(Class<C> persistentClass, Session session) {
-      return new CriteriaBuilderQueryRoot<C>(persistentClass, session);
+    public <C> CriteriaBuilderQueryRoot<C> getCriteriaBuilderQueryRoot(Class<C> persistentClass, EntityManager entityManager) {
+      return new CriteriaBuilderQueryRoot<C>(persistentClass, entityManager);
   }
 
     public class CriteriaBuilderQueryRoot<C> {
@@ -426,10 +371,25 @@ public class HibernateFacade {
         private CriteriaQuery<C> criteriaQuery;
         private Root<C> root;
     
-        public CriteriaBuilderQueryRoot(Class<C> persistentClass, Session session) {
-            builder = session.getCriteriaBuilder();
+        public CriteriaBuilderQueryRoot(Class<C> persistentClass, EntityManager entityManager) {
+            builder = entityManager.getCriteriaBuilder();
             criteriaQuery = builder.createQuery(persistentClass);
             root = criteriaQuery.from(persistentClass);
         }    
+    }
+
+    public void executeInsideTransaction(Consumer<EntityManager> action, EntityManager entityManager) {
+        final EntityTransaction tx = entityManager.getTransaction();
+        try {
+            tx.begin();
+            action.accept(entityManager);
+            tx.commit(); 
+        }
+        catch (RuntimeException e) {
+            tx.rollback();
+            throw e;
+        } finally {
+            //
+        }
     }
 }

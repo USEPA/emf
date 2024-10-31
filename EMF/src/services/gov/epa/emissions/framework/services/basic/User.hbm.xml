@@ -24,10 +24,12 @@
         <property name="lastResetDate" column="last_reset_date" type="java.util.Date" not-null="false" length="4"/>
         <property name="failedLoginAttempts" column="failed_login_attempts" type="integer" not-null="false"/>
         <property name="loggedIn" column="is_login" type="boolean"/>
-        <array name="excludedDatasetTypes" table="user_excluded_dataset_types" cascade="save-update">
+        <array name="excludedDatasetTypes" table="user_excluded_dataset_types" cascade="save-update" >
             <key column="user_id" not-null="true"/>
             <list-index column="list_index"/>
             <many-to-many class="gov.epa.emissions.commons.data.DatasetType" column="dataset_type_id"/>
+	    	<!--composite-element class="gov.epa.emissions.commons.data.DatasetType">
+	    	</composite-element-->
          </array>
          <array name="excludedUserFeatures" table="user_excluded_features" cascade="save-update">
             <key column="user_id" not-null="true"/>

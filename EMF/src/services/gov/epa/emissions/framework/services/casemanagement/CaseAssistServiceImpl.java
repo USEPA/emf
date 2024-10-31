@@ -10,15 +10,17 @@ import gov.epa.emissions.framework.services.casemanagement.jobs.JobRunStatus;
 import gov.epa.emissions.framework.services.casemanagement.outputs.CaseOutput;
 import gov.epa.emissions.framework.services.exim.ManagedImportService;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import gov.epa.emissions.framework.services.persistence.JpaEntityManagerFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 import gov.epa.emissions.framework.tasks.TaskManagerFactory;
 
 import java.util.Date;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 public class CaseAssistServiceImpl implements CaseAssistService {
     private static Log log = LogFactory.getLog(CaseAssistServiceImpl.class);
@@ -40,44 +42,44 @@ public class CaseAssistServiceImpl implements CaseAssistService {
         return "For label: " + svcLabel + " # of active objects of this type= " + svcCount;
     }
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private DbServerFactory dbFactory;
 
     private boolean useTaskMangerForCaseOutputs;
 
     public CaseAssistServiceImpl() {
-        this(HibernateSessionFactory.get(), DbServerFactory.get());
+        this(JpaEntityManagerFactory.get(), DbServerFactory.get());
     }
 
-    public CaseAssistServiceImpl(HibernateSessionFactory sessionFactory, DbServerFactory dbFactory) {
-        this.sessionFactory = sessionFactory;
+    public CaseAssistServiceImpl(EntityManagerFactory entityManagerFactory, DbServerFactory dbFactory) {
+        this.entityManagerFactory = entityManagerFactory;
         this.dbFactory = dbFactory;
-        this.dao = new CaseDAO(sessionFactory);
+        this.dao = new CaseDAO(entityManagerFactory);
         if (DebugLevels.DEBUG_0())
-            System.out.println("CaseAsistServiceImpl::getCaseService  Is sessionFactory null? "
-                    + (sessionFactory == null));
+            System.out.println("CaseAsistServiceImpl::getCaseService  Is entityManagerFactory null? "
+                    + (entityManagerFactory == null));
 
         myTag();
         if (DebugLevels.DEBUG_0())
             System.out.println(myTag());
 
-        this.useTaskMangerForCaseOutputs = useTaskManagerToRegisterOutputs(sessionFactory.getSession());
+        this.useTaskMangerForCaseOutputs = useTaskManagerToRegisterOutputs(entityManagerFactory.createEntityManager());
     }
 
     @Override
     protected void finalize() throws Throwable {
-        this.sessionFactory = null;
+        this.entityManagerFactory = null;
 
         if (DebugLevels.DEBUG_0())
-            System.out.println("CaseAssistService: garbage collected. sessionFactory = null? "
-                    + (sessionFactory == null));
+            System.out.println("CaseAssistService: garbage collected. entityManagerFactory = null? "
+                    + (entityManagerFactory == null));
 
         super.finalize();
     }
 
     public String printStatusCaseJobTaskManager() throws EmfException {
-        return TaskManagerFactory.getCaseJobTaskManager(sessionFactory).getStatusOfWaitAndRunTable();
+        return TaskManagerFactory.getCaseJobTaskManager(entityManagerFactory).getStatusOfWaitAndRunTable();
     }
 
     public void registerOutputs(CaseOutput[] outputs, String[] jobKeys) throws EmfException {
@@ -112,7 +114,7 @@ public class CaseAssistServiceImpl implements CaseAssistService {
 
         if (importService == null) {
             try {
-                importService = new ManagedImportService(dbFactory, sessionFactory);
+                importService = new ManagedImportService(dbFactory, entityManagerFactory);
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new EmfException(e.getMessage());
@@ -180,7 +182,7 @@ public class CaseAssistServiceImpl implements CaseAssistService {
             if (!status.isEmpty() && !jobStatus.equalsIgnoreCase(status)) {
                 if (!(status.equalsIgnoreCase("Running"))) {
                     // Notify CaseJobTaskManager that the job status has changed to Completed or Failed
-                    TaskManagerFactory.getCaseJobTaskManager(sessionFactory).callBackFromJobRunServer();
+                    TaskManagerFactory.getCaseJobTaskManager(entityManagerFactory).callBackFromJobRunServer();
                 }
             }
         } catch (Exception e) {
@@ -201,11 +203,11 @@ public class CaseAssistServiceImpl implements CaseAssistService {
         return job;
     }
 
-    private boolean useTaskManagerToRegisterOutputs(Session session) {
+    private boolean useTaskManagerToRegisterOutputs(EntityManager entityManager) {
         String value = "true";
 
         try {
-            EmfProperty property = new EmfPropertiesDAO().getProperty("USE_IMPORT_TASK_MANAGER", session);
+            EmfProperty property = new EmfPropertiesDAO().getProperty("USE_IMPORT_TASK_MANAGER", entityManager);
             value = (property.getValue() == null) ? "true" : property.getValue();
         } catch (Exception e) {
             log.error(e);

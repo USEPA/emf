@@ -21,7 +21,7 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
 
 public class DatasetTypesDAO {
 
@@ -34,16 +34,16 @@ public class DatasetTypesDAO {
         hibernateFacade = new HibernateFacade();
     }
 
-    public List<DatasetType> getAll(Session session) {
-        CriteriaBuilderQueryRoot<DatasetType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(DatasetType.class, session);
+    public List<DatasetType> getAll(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<DatasetType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(DatasetType.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<DatasetType> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public List<DatasetType> getDatasetTypes(Session session, BasicSearchFilter searchFilter) {
-        CriteriaBuilder builder = session.getCriteriaBuilder();
+    public List<DatasetType> getDatasetTypes(EntityManager entityManager, BasicSearchFilter searchFilter) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<DatasetType> criteriaQuery = builder.createQuery(DatasetType.class);
         Root<DatasetType> root = criteriaQuery.from(DatasetType.class);
 
@@ -59,65 +59,65 @@ public class DatasetTypesDAO {
             criteriaQuery.where(builder.in(aSubquery));
         }
 
-        return session.createQuery(criteriaQuery).getResultList();
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
-    public List<DatasetType> getLightAll(Session session) {
-        return session.createQuery("select new DatasetType(dT.id, dT.name) " +
-                "from DatasetType dT order by dT.name").list();
-//        return hibernateFacade.getAll(DatasetType.class, Order.asc("name").ignoreCase(), session);
+    public List<DatasetType> getLightAll(EntityManager entityManager) {
+        return entityManager.createQuery("select new DatasetType(dT.id, dT.name) " +
+                "from DatasetType dT order by dT.name").getResultList();
+//        return hibernateFacade.getAll(DatasetType.class, Order.asc("name").ignoreCase(), entityManager);
     }
 
-    public DatasetType obtainLocked(User user, DatasetType type, Session session) {
-        return (DatasetType) lockingScheme.getLocked(user, current(type, session), session);
+    public DatasetType obtainLocked(User user, DatasetType type, EntityManager entityManager) {
+        return (DatasetType) lockingScheme.getLocked(user, current(type, entityManager), entityManager);
     }
 
-    public DatasetType releaseLocked(User user, DatasetType locked, Session session) {
-        return (DatasetType) lockingScheme.releaseLock(user, current(locked, session), session);
+    public DatasetType releaseLocked(User user, DatasetType locked, EntityManager entityManager) {
+        return (DatasetType) lockingScheme.releaseLock(user, current(locked, entityManager), entityManager);
     }
 
-    public DatasetType update(DatasetType type, Session session) throws EmfException {
-        return (DatasetType) lockingScheme.releaseLockOnUpdate(type, current(type, session), session);
+    public DatasetType update(DatasetType type, EntityManager entityManager) throws EmfException {
+        return (DatasetType) lockingScheme.releaseLockOnUpdate(type, current(type, entityManager), entityManager);
     }
 
-    public DatasetType get(String name, Session session) {
-        List<DatasetType> list = hibernateFacade.get(DatasetType.class, "name", name, session);
+    public DatasetType get(String name, EntityManager entityManager) {
+        List<DatasetType> list = hibernateFacade.get(DatasetType.class, "name", name, entityManager);
         return (list == null || list.size() == 0) ? null : list.get(0);
     }
 
-    public void add(DatasetType datasetType, Session session) {
-        hibernateFacade.add(datasetType, session);
+    public void add(DatasetType datasetType, EntityManager entityManager) {
+        hibernateFacade.add(datasetType, entityManager);
     }
 
-    public boolean canUpdate(DatasetType datasetType, Session session) {
-        if (!exists(datasetType.getId(), session)) {
+    public boolean canUpdate(DatasetType datasetType, EntityManager entityManager) {
+        if (!exists(datasetType.getId(), entityManager)) {
             return false;
         }
 
-        DatasetType current = current(datasetType.getId(), session);
-        // The current object is saved in the session. Hibernate cannot persist our
+        DatasetType current = current(datasetType.getId(), entityManager);
+        // The current object is saved in the entityManager. Hibernate cannot persist our
         // object with the same id.
-        session.clear();
+        entityManager.clear();
         if (current.getName().equals(datasetType.getName()))
             return true;
 
-        return !nameUsed(datasetType.getName(), session);
+        return !nameUsed(datasetType.getName(), entityManager);
     }
 
-    private boolean exists(int id, Session session) {
-        return hibernateFacade.exists(id, DatasetType.class, session);
+    private boolean exists(int id, EntityManager entityManager) {
+        return hibernateFacade.exists(id, DatasetType.class, entityManager);
     }
 
-    private boolean nameUsed(String name, Session session) {
-        return hibernateFacade.nameUsed(name, DatasetType.class, session);
+    private boolean nameUsed(String name, EntityManager entityManager) {
+        return hibernateFacade.nameUsed(name, DatasetType.class, entityManager);
     }
 
-    public DatasetType current(int id, Session session) {
-        return hibernateFacade.current(id, DatasetType.class, session);
+    public DatasetType current(int id, EntityManager entityManager) {
+        return hibernateFacade.current(id, DatasetType.class, entityManager);
     }
 
-    private DatasetType current(DatasetType datasetType, Session session) {
-        return current(datasetType.getId(), session);
+    private DatasetType current(DatasetType datasetType, EntityManager entityManager) {
+        return current(datasetType.getId(), entityManager);
     }
 
     public void validateDatasetTypeIndicesKeyword(DatasetType datasetType, Column[] cols) throws EmfException {

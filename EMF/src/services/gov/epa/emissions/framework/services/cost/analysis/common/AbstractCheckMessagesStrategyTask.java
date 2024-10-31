@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.EntityManagerFactory;
+
 public abstract class AbstractCheckMessagesStrategyTask extends AbstractStrategyTask {
 
     private static final String STATUS_COLUMN_LABEL = "status";
@@ -23,9 +25,9 @@ public abstract class AbstractCheckMessagesStrategyTask extends AbstractStrategy
     private static final String MESSAGE_COLUMN_LABEL = "message";
 
     public AbstractCheckMessagesStrategyTask(ControlStrategy controlStrategy, User user,
-            DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory, StrategyLoader loader)
+            DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory, StrategyLoader loader)
             throws EmfException {
-        super(controlStrategy, user, dbServerFactory, sessionFactory, loader);
+        super(controlStrategy, user, dbServerFactory, entityManagerFactory, loader);
     }
 
     protected boolean checkMessagesForErrors() throws EmfException {

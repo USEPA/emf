@@ -1,63 +1,33 @@
 package gov.epa.emissions.framework.services.basic;
 
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 
 import java.util.List;
 
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import javax.persistence.EntityManager;
 
 public class LoggingDAO {
 
     private static final String GET_ACCESS_LOG_QUERY = "from AccessLog as alog where alog.datasetId=:datasetid";
 
-    public void insertAccessLog(AccessLog accesslog, Session session) { // BUG3589 root
-        Transaction tx = null;
-        try {
-            tx = session.beginTransaction();
-            session.save(accesslog);
-            tx.commit();
-        } catch (HibernateException e) {
-            tx.rollback();
-            throw e;
-        }
-
+    public void insertAccessLog(AccessLog accesslog, EntityManager entityManager) { // BUG3589 root
+        new HibernateFacade().executeInsideTransaction(em -> {
+            entityManager.merge(accesslog);
+        }, entityManager);
     }
 
-    public List getAccessLogs(long datasetid, Session session) {
-        Transaction tx = null;
-        try {
-            tx = session.beginTransaction();
-            List allLogs = session.createQuery(GET_ACCESS_LOG_QUERY).setLong("datasetid", datasetid).list();
-            tx.commit();
-
-            return allLogs;
-
-        } catch (HibernateException e) {
-            tx.rollback();
-            throw e;
-        }
-
+    public List getAccessLogs(int datasetid, EntityManager entityManager) {
+        return entityManager.createQuery(GET_ACCESS_LOG_QUERY).setParameter("datasetid", datasetid).getResultList();
     }
 
-    public String getLastExportedFileName(int datasetId, Session session) throws EmfException {
-        Transaction tx = null;
-        try {
-            tx = session.beginTransaction();
-            String query = "from AccessLog as alog where alog.datasetId=" + datasetId
-                    + " order by alog.timestamp desc ";
-            List<AccessLog> allLogs = session.createQuery(query, AccessLog.class).list();
-            tx.commit();
-            if (allLogs.isEmpty()) {
-                throw new EmfException("Please export the dataset first");
-            }
-            return allLogs.get(0).getFolderPath();
-
-        } catch (HibernateException e) {
-            tx.rollback();
-            throw e;
+    public String getLastExportedFileName(int datasetId, EntityManager entityManager) throws EmfException {
+        String query = "from AccessLog as alog where alog.datasetId=" + datasetId
+                + " order by alog.timestamp desc ";
+        List<AccessLog> allLogs = entityManager.createQuery(query, AccessLog.class).getResultList();
+        if (allLogs.isEmpty()) {
+            throw new EmfException("Please export the dataset first");
         }
-
+        return allLogs.get(0).getFolderPath();
     }
 }

@@ -10,27 +10,24 @@ import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 public class TemporalAllocationDAO {
     private LockingScheme lockingScheme;
 
     private HibernateFacade hibernateFacade;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private DbServerFactory dbServerFactory;
     
@@ -42,125 +39,125 @@ public class TemporalAllocationDAO {
         datasetDao = new DatasetDAO();
     }
     
-    public TemporalAllocationDAO(DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory) {
+    public TemporalAllocationDAO(DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory) {
         this();
         this.dbServerFactory = dbServerFactory;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
     }
 
-    public int add(TemporalAllocation element, Session session) {
-        return addObject(element, session);
+    public int add(TemporalAllocation element, EntityManager entityManager) {
+        return addObject(element, entityManager);
     }
 
-    private int addObject(Object obj, Session session) {
-        return (Integer)hibernateFacade.add(obj, session);
+    private int addObject(Object obj, EntityManager entityManager) {
+        return (Integer)hibernateFacade.add(obj, entityManager);
     }
 
-    public List<TemporalAllocation> all(Session session) {
-        CriteriaBuilderQueryRoot<TemporalAllocation> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(TemporalAllocation.class, session);
+    public List<TemporalAllocation> all(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<TemporalAllocation> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(TemporalAllocation.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<TemporalAllocation> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public TemporalAllocation obtainLocked(User owner, int id, Session session) {
-        return (TemporalAllocation) lockingScheme.getLocked(owner, current(id, session), session);
+    public TemporalAllocation obtainLocked(User owner, int id, EntityManager entityManager) {
+        return (TemporalAllocation) lockingScheme.getLocked(owner, current(id, entityManager), entityManager);
     }
 
-    public void releaseLocked(User user, int id, Session session) {
-        TemporalAllocation current = getTemporalAllocation(id, session);
-        lockingScheme.releaseLock(user, current, session);
+    public void releaseLocked(User user, int id, EntityManager entityManager) {
+        TemporalAllocation current = getTemporalAllocation(id, entityManager);
+        lockingScheme.releaseLock(user, current, entityManager);
     }
 
-    public TemporalAllocation updateWithLock(TemporalAllocation locked, Session session) throws EmfException {
-        return (TemporalAllocation) lockingScheme.renewLockOnUpdate(locked, current(locked, session), session);
+    public TemporalAllocation updateWithLock(TemporalAllocation locked, EntityManager entityManager) throws EmfException {
+        return (TemporalAllocation) lockingScheme.renewLockOnUpdate(locked, current(locked, entityManager), entityManager);
     }
 
-    private TemporalAllocation current(TemporalAllocation temporalAllocation, Session session) {
-        return current(temporalAllocation.getId(), session);
+    private TemporalAllocation current(TemporalAllocation temporalAllocation, EntityManager entityManager) {
+        return current(temporalAllocation.getId(), entityManager);
     }
 
-    public boolean canUpdate(TemporalAllocation temporalAllocation, Session session) {
-        if (!exists(temporalAllocation.getId(), session)) {
+    public boolean canUpdate(TemporalAllocation temporalAllocation, EntityManager entityManager) {
+        if (!exists(temporalAllocation.getId(), entityManager)) {
             return false;
         }
 
-        TemporalAllocation current = current(temporalAllocation.getId(), session);
+        TemporalAllocation current = current(temporalAllocation.getId(), entityManager);
 
-        session.clear(); // clear to flush current
+        entityManager.clear(); // clear to flush current
 
         if (current.getName().equals(temporalAllocation.getName()))
             return true;
 
-        return !nameUsed(temporalAllocation.getName(), session);
+        return !nameUsed(temporalAllocation.getName(), entityManager);
     }
 
-    public boolean nameUsed(String name, Session session) {
-        return hibernateFacade.nameUsed(name, TemporalAllocation.class, session);
+    public boolean nameUsed(String name, EntityManager entityManager) {
+        return hibernateFacade.nameUsed(name, TemporalAllocation.class, entityManager);
     }
 
-    private TemporalAllocation current(int id, Session session) {
-        return hibernateFacade.current(id, TemporalAllocation.class, session);
+    private TemporalAllocation current(int id, EntityManager entityManager) {
+        return hibernateFacade.current(id, TemporalAllocation.class, entityManager);
     }
 
-    public boolean exists(int id, Session session) {
-        return hibernateFacade.exists(id, TemporalAllocation.class, session);
+    public boolean exists(int id, EntityManager entityManager) {
+        return hibernateFacade.exists(id, TemporalAllocation.class, entityManager);
     }
 
-    public TemporalAllocation getById(int id, Session session) {
-        TemporalAllocation element = hibernateFacade.load(TemporalAllocation.class, "id", Integer.valueOf(id), session);
+    public TemporalAllocation getById(int id, EntityManager entityManager) {
+        TemporalAllocation element = hibernateFacade.load(TemporalAllocation.class, "id", Integer.valueOf(id), entityManager);
         return element;
     }
 
-    public TemporalAllocation getByName(String name, Session session) {
-        TemporalAllocation element = hibernateFacade.load(TemporalAllocation.class, "name", new String(name), session);
+    public TemporalAllocation getByName(String name, EntityManager entityManager) {
+        TemporalAllocation element = hibernateFacade.load(TemporalAllocation.class, "name", new String(name), entityManager);
         return element;
     }
 
-    public TemporalAllocation getTemporalAllocation(int id, Session session) {
-        return hibernateFacade.load(TemporalAllocation.class, "id", Integer.valueOf(id), session);
+    public TemporalAllocation getTemporalAllocation(int id, EntityManager entityManager) {
+        return hibernateFacade.load(TemporalAllocation.class, "id", Integer.valueOf(id), entityManager);
     }
     
-    public List<TemporalAllocationResolution> allResolutions(Session session) {
-        CriteriaBuilderQueryRoot<TemporalAllocationResolution> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(TemporalAllocationResolution.class, session);
+    public List<TemporalAllocationResolution> allResolutions(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<TemporalAllocationResolution> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(TemporalAllocationResolution.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<TemporalAllocationResolution> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public Long getTemporalAllocationRunningCount(Session session) {
-        return (Long)session.createQuery("SELECT COUNT(*) FROM TemporalAllocation WHERE runStatus = 'Running'").uniqueResult();
+    public Long getTemporalAllocationRunningCount(EntityManager entityManager) {
+        return (Long)entityManager.createQuery("SELECT COUNT(*) FROM TemporalAllocation WHERE runStatus = 'Running'").getSingleResult();
     }
     
-    public List<TemporalAllocation> getTemporalAllocationsByRunStatus(String runStatus, Session session) {
-      return session.createQuery("SELECT new TemporalAllocation(ta.id, ta.name) FROM TemporalAllocation ta WHERE ta.runStatus = :runStatus order by ta.lastModifiedDate").setString("runStatus", runStatus).list();
+    public List<TemporalAllocation> getTemporalAllocationsByRunStatus(String runStatus, EntityManager entityManager) {
+      return entityManager.createQuery("SELECT new TemporalAllocation(ta.id, ta.name) FROM TemporalAllocation ta WHERE ta.runStatus = :runStatus order by ta.lastModifiedDate").setParameter("runStatus", runStatus).getResultList();
     }
     
-    public String getTemporalAllocationRunStatus(int id, Session session) {
-        return (String)session.createQuery("SELECT runStatus FROM TemporalAllocation WHERE id = " + id).uniqueResult();
+    public String getTemporalAllocationRunStatus(int id, EntityManager entityManager) {
+        return (String)entityManager.createQuery("SELECT runStatus FROM TemporalAllocation WHERE id = " + id).getSingleResult();
     }
     
-    public void updateTemporalAllocationOutput(TemporalAllocationOutput output, Session session) {
-        hibernateFacade.saveOrUpdate(output, session);
+    public void updateTemporalAllocationOutput(TemporalAllocationOutput output, EntityManager entityManager) {
+        hibernateFacade.saveOrUpdate(output, entityManager);
     }
     
-    public TemporalAllocationOutputType getTemporalAllocationOutputType(String name, Session session) {
-        return hibernateFacade.load(TemporalAllocationOutputType.class, "name", name, session);
+    public TemporalAllocationOutputType getTemporalAllocationOutputType(String name, EntityManager entityManager) {
+        return hibernateFacade.load(TemporalAllocationOutputType.class, "name", name, entityManager);
     }
     
-    public List<TemporalAllocationOutput> getTemporalAllocationOutputs(int temporalAllocationId, Session session) {
-        CriteriaBuilderQueryRoot<TemporalAllocationOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(TemporalAllocationOutput.class, session);
+    public List<TemporalAllocationOutput> getTemporalAllocationOutputs(int temporalAllocationId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<TemporalAllocationOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(TemporalAllocationOutput.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<TemporalAllocationOutput> root = criteriaBuilderQueryRoot.getRoot();
 
         return hibernateFacade
-                .get(criteriaBuilderQueryRoot, new Predicate[] { builder.equal(root.get("temporalAllocationId"), Integer.valueOf(temporalAllocationId)) }, session);
+                .get(criteriaBuilderQueryRoot, new Predicate[] { builder.equal(root.get("temporalAllocationId"), Integer.valueOf(temporalAllocationId)) }, entityManager);
     }
     
-    public EmfDataset[] getTemporalAllocationOutputDatasets(int temporalAllocationId, Session session) {
-        List<TemporalAllocationOutput> outputs = getTemporalAllocationOutputs(temporalAllocationId, session);
+    public EmfDataset[] getTemporalAllocationOutputDatasets(int temporalAllocationId, EntityManager entityManager) {
+        List<TemporalAllocationOutput> outputs = getTemporalAllocationOutputs(temporalAllocationId, entityManager);
         List<EmfDataset> datasets = new ArrayList<EmfDataset>();
         if (outputs != null) {
             for (TemporalAllocationOutput output : outputs) {
@@ -175,45 +172,45 @@ public class TemporalAllocationDAO {
         return null;
     }
     
-    public void removeOutputs(int temporalAllocationId, Session session) {
-        List<TemporalAllocationOutput> outputs = getTemporalAllocationOutputs(temporalAllocationId, session);
-        hibernateFacade.remove(outputs.toArray(), session);
+    public void removeOutputs(int temporalAllocationId, EntityManager entityManager) {
+        List<TemporalAllocationOutput> outputs = getTemporalAllocationOutputs(temporalAllocationId, entityManager);
+        hibernateFacade.remove(outputs.toArray(), entityManager);
     }
 
-    public void removeOutputDatasets(EmfDataset[] datasets, User user, Session session, DbServer dbServer) throws EmfException {
+    public void removeOutputDatasets(EmfDataset[] datasets, User user, EntityManager entityManager, DbServer dbServer) throws EmfException {
         if (datasets != null) {
             try {
-                deleteDatasets(datasets, user, session);
-                datasetDao.deleteDatasets(datasets, dbServer, session);
+                deleteDatasets(datasets, user, entityManager);
+                datasetDao.deleteDatasets(datasets, dbServer, entityManager);
             } catch (EmfException e) {
                 throw new EmfException(e.getMessage());
             }
         }
     }
     
-    public void deleteDatasets(EmfDataset[] datasets, User user, Session session) throws EmfException {
-        EmfDataset[] lockedDatasets = getLockedDatasets(datasets, user, session);
+    public void deleteDatasets(EmfDataset[] datasets, User user, EntityManager entityManager) throws EmfException {
+        EmfDataset[] lockedDatasets = getLockedDatasets(datasets, user, entityManager);
         
         if (lockedDatasets == null)
             return;
         
         try {
-            new DataServiceImpl(dbServerFactory, sessionFactory).deleteDatasets(user, lockedDatasets, DeleteType.TEMPORAL_ALLOCATION);
+            new DataServiceImpl(dbServerFactory, entityManagerFactory).deleteDatasets(user, lockedDatasets, DeleteType.TEMPORAL_ALLOCATION);
         } catch (EmfException e) {
             if (!e.getType().equals(EmfException.MSG_TYPE))
                 throw new EmfException(e.getMessage());
         } finally {
-            releaseLocked(lockedDatasets, user, session);
+            releaseLocked(lockedDatasets, user, entityManager);
         }
     }
     
-    private EmfDataset[] getLockedDatasets(EmfDataset[] datasets, User user, Session session) {
+    private EmfDataset[] getLockedDatasets(EmfDataset[] datasets, User user, EntityManager entityManager) {
         List lockedList = new ArrayList();
         
         for (int i = 0; i < datasets.length; i++) {
-            EmfDataset locked = obtainLockedDataset(datasets[i], user, session);
+            EmfDataset locked = obtainLockedDataset(datasets[i], user, entityManager);
             if (locked == null) {
-                releaseLocked((EmfDataset[])lockedList.toArray(new EmfDataset[0]), user, session);
+                releaseLocked((EmfDataset[])lockedList.toArray(new EmfDataset[0]), user, entityManager);
                 return null;
             }
             
@@ -223,41 +220,35 @@ public class TemporalAllocationDAO {
         return (EmfDataset[])lockedList.toArray(new EmfDataset[0]);
     }
 
-    private EmfDataset obtainLockedDataset(EmfDataset dataset, User user, Session session) {
-        EmfDataset locked = datasetDao.obtainLocked(user, dataset, session);
+    private EmfDataset obtainLockedDataset(EmfDataset dataset, User user, EntityManager entityManager) {
+        EmfDataset locked = datasetDao.obtainLocked(user, dataset, entityManager);
         return locked;
     }
     
-    private void releaseLocked(EmfDataset[] lockedDatasets, User user, Session session) {
+    private void releaseLocked(EmfDataset[] lockedDatasets, User user, EntityManager entityManager) {
         if (lockedDatasets.length == 0)
             return;
         
         for(int i = 0; i < lockedDatasets.length; i++)
-            datasetDao.releaseLocked(user, lockedDatasets[i], session);
+            datasetDao.releaseLocked(user, lockedDatasets[i], entityManager);
     }
     
-    public void remove(TemporalAllocation element, Session session) {
-        hibernateFacade.remove(element, session);
+    public void remove(TemporalAllocation element, EntityManager entityManager) {
+        hibernateFacade.remove(element, entityManager);
     }
     
-    public void remove(TemporalAllocationOutput output, Session session) {
-        hibernateFacade.remove(output, session);
+    public void remove(TemporalAllocationOutput output, EntityManager entityManager) {
+        hibernateFacade.remove(output, entityManager);
     }
 
-    public void setRunStatusAndCompletionDate(TemporalAllocation element, String runStatus, Date completionDate, Session session) {
-        Transaction tx = null;
-        try {
-            tx = session.beginTransaction();
-            session.createQuery("update TemporalAllocation set runStatus = :status, lastModifiedDate = :date, completionDate = :completionDate where id = :id")
-            .setString("status", runStatus)
-            .setTimestamp("date", new Date())
-            .setTimestamp("completionDate", completionDate)
-            .setInteger("id", element.getId())
-            .executeUpdate();
-            tx.commit();
-        } catch (HibernateException e) {
-            tx.rollback();
-            throw e;
-        }
+    public void setRunStatusAndCompletionDate(TemporalAllocation element, String runStatus, Date completionDate, EntityManager entityManager) {
+        hibernateFacade.executeInsideTransaction(em -> {
+            entityManager.createQuery("update TemporalAllocation set runStatus = :status, lastModifiedDate = :date, completionDate = :completionDate where id = :id")
+                .setParameter("status", runStatus)
+                .setParameter("date", new Date())
+                .setParameter("completionDate", completionDate)
+                .setParameter("id", element.getId())
+                .executeUpdate();
+        }, entityManager);
     }
 }

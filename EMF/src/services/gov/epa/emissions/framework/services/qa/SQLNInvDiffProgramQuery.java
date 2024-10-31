@@ -2,17 +2,18 @@ package gov.epa.emissions.framework.services.qa;
 
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.QAStep;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+
+import javax.persistence.EntityManagerFactory;
 
 public class SQLNInvDiffProgramQuery extends SQLQAProgramQuery{
     
     ArrayList<String> allDatasetNames = new ArrayList<String>();
     
-    public SQLNInvDiffProgramQuery(HibernateSessionFactory sessionFactory, String emissioDatasourceName, String tableName, QAStep qaStep) {
-        super(sessionFactory,emissioDatasourceName,tableName,qaStep);
+    public SQLNInvDiffProgramQuery(EntityManagerFactory entityManagerFactory, String emissioDatasourceName, String tableName, QAStep qaStep) {
+        super(entityManagerFactory,emissioDatasourceName,tableName,qaStep);
     }
 
     public String createInvDiffProgramQuery() throws EmfException {
@@ -207,7 +208,7 @@ public class SQLNInvDiffProgramQuery extends SQLQAProgramQuery{
 
     private String query(String partialQuery, boolean createClause) throws EmfException {
 
-        SQLQueryParser parser = new SQLQueryParser(sessionFactory, emissionDatasourceName, tableName );
+        SQLQueryParser parser = new SQLQueryParser(entityManagerFactory, emissionDatasourceName, tableName );
         return parser.parse(partialQuery, createClause);
     }
 

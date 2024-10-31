@@ -3,39 +3,38 @@ package gov.epa.emissions.framework.services.cost.controlmeasure.io;
 import gov.epa.emissions.commons.data.SourceGroup;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Root;
 
-import org.hibernate.Session;
-
 public class SourceGroups {
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private HibernateFacade facade;
 
-    private List sourceGroupList;
+    private List<SourceGroup> sourceGroupList;
 
-    public SourceGroups(HibernateSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public SourceGroups(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
         this.facade = new HibernateFacade();
-        sourceGroupList = sourceGroups(sessionFactory);
+        sourceGroupList = sourceGroups(entityManagerFactory);
     }
 
-    private List<SourceGroup> sourceGroups(HibernateSessionFactory sessionFactory) {
-        Session session = sessionFactory.getSession();
+    private List<SourceGroup> sourceGroups(EntityManagerFactory entityManagerFactory) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            CriteriaBuilderQueryRoot<SourceGroup> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(SourceGroup.class, session);
+            CriteriaBuilderQueryRoot<SourceGroup> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(SourceGroup.class, entityManager);
             CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
             Root<SourceGroup> root = criteriaBuilderQueryRoot.getRoot();
 
-            return facade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+            return facade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -44,7 +43,7 @@ public class SourceGroups {
         sourceGroup.setName(name);
         int index = sourceGroupList.indexOf(sourceGroup);
         if (index != -1) {
-            return (SourceGroup) sourceGroupList.get(index);
+            return sourceGroupList.get(index);
         }
 
         sourceGroup = saveAndLoad(sourceGroup);
@@ -62,21 +61,21 @@ public class SourceGroups {
     }
 
     private void save(SourceGroup sourceGroup) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            facade.add(sourceGroup, session);
+            facade.add(sourceGroup, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private SourceGroup load(String name) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return facade.load(SourceGroup.class, "name", name, session);
+            return facade.load(SourceGroup.class, "name", name, entityManager);
 
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 

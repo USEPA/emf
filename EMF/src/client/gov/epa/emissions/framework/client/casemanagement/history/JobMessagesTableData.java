@@ -20,9 +20,12 @@ public class JobMessagesTableData extends ChangeableTableData {
     
     private EmfSession session;
     
-    public JobMessagesTableData(JobMessage[] values, EmfSession session) {
+    private CaseJob[] caseJobs;
+    
+    public JobMessagesTableData(JobMessage[] values, EmfSession session, CaseJob[] caseJobs) {
         this.values = values;
         this.session = session;
+        this.caseJobs = caseJobs;
         this.rows = createRows(values);
     }
 
@@ -64,13 +67,18 @@ public class JobMessagesTableData extends ChangeableTableData {
     }
     
     private String getJob(JobMessage msg) {
-        try {
-            CaseJob job = session.caseService().getCaseJob(msg.getJobId());
-            return job.toString();
-        } catch (EmfException e) {
-            e.printStackTrace();
-            return "";
+        for (CaseJob caseJob : caseJobs) {
+            if (caseJob.getId() == msg.getJobId())
+                return caseJob.toString();
         }
+//        try {
+//            CaseJob job = session.caseService().getCaseJob(msg.getJobId());
+//            return job.toString();
+//        } catch (EmfException e) {
+//            e.printStackTrace();
+//            return "";
+//        }
+        return "";
     }
 
     public boolean isEditable(int col) {

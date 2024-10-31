@@ -1,21 +1,5 @@
 package gov.epa.emissions.framework.services.module;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
-import org.hibernate.Session;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.data.InternalSource;
 import gov.epa.emissions.commons.data.KeyVal;
@@ -39,7 +23,24 @@ import gov.epa.emissions.framework.services.basic.StatusDAO;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.persistence.DataSourceFactory;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
+import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 
 abstract class ModuleRunner {
     
@@ -90,12 +91,12 @@ abstract class ModuleRunner {
         
         DbServer dbServer = getDbServer();
         User user = getUser();
-        HibernateSessionFactory sessionFactory = getHibernateSessionFactory();
+        EntityManagerFactory entityManagerFactory = getEntityManagerFactory();
         DbServerFactory dbServerFactory = getDbServerFactory();
         Datasource datasource = getDatasource();
         Connection connection = getConnection();
         DatasetDAO datasetDAO = getDatasetDAO();
-        Session session = getSession();
+        EntityManager entityManager = getEntityManager();
         
         Module module = getModule();
         History history = getHistory();
@@ -115,10 +116,10 @@ abstract class ModuleRunner {
             if (moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.OUT)) {
                 if (moduleDataset.getOutputMethod().equals(ModuleDataset.NEW)) {
                     DatasetType datasetType = moduleTypeVersionDataset.getDatasetType();
-                    DatasetCreator datasetCreator = new DatasetCreator(module, placeholderName, user, sessionFactory, dbServerFactory, datasource);
+                    DatasetCreator datasetCreator = new DatasetCreator(module, placeholderName, user, entityManagerFactory, dbServerFactory, datasource);
                     String newDatasetName = getNewDatasetName(moduleDataset.getDatasetNamePattern(), user, startDate, history);
                     boolean newDataset = true;
-                    dataset = datasetDAO.getDataset(session, newDatasetName);
+                    dataset = datasetDAO.getDataset(entityManager, newDatasetName);
                     if (dataset == null) { // dataset doesn't exists, create NEW
                         TableFormat tableFormat = getTableFormat(moduleTypeVersionDataset, dbServer);
                         String description = "New dataset created by the '" + module.getName() + "' module for the '" + placeholderName + "' placeholder.";
@@ -140,7 +141,7 @@ abstract class ModuleRunner {
                             history.addLogMessage(History.WARNING, warnings.toString());
                         boolean must_unlock = false;
                         if (!dataset.isLocked()) {
-                            dataset = datasetDAO.obtainLocked(user, dataset, session);
+                            dataset = datasetDAO.obtainLocked(user, dataset, entityManager);
                             must_unlock = true;
                         } else if (!dataset.isLocked(user)) {
                             errorMessage = String.format("Could not replace dataset '%s' for placeholder '%s'. The dataset is locked by %s.",
@@ -149,11 +150,11 @@ abstract class ModuleRunner {
                         }
                         
                         try {
-                            datasetCreator.replaceDataset(session, connection, dataset, module.getIsFinal());
+                            datasetCreator.replaceDataset(entityManager, connection, dataset, module.getIsFinal());
                             newDataset = false;
                         } finally {
                             if (must_unlock)
-                                dataset = datasetDAO.releaseLocked(user, dataset, session);
+                                dataset = datasetDAO.releaseLocked(user, dataset, entityManager);
                         }
                     }
                     
@@ -166,7 +167,7 @@ abstract class ModuleRunner {
 
                     setOutputDataset(placeholderName, new DatasetVersion(dataset, versionNumber));
                 } else { // REPLACE
-                    dataset = datasetDAO.getDataset(sessionFactory.getSession(), moduleDataset.getDatasetId());
+                    dataset = datasetDAO.getDataset(entityManagerFactory.createEntityManager(), moduleDataset.getDatasetId());
                     if (dataset == null) {
                         errorMessage = String.format("Failed to find dataset with ID %d for placeholder '%s'.",
                                                      moduleDataset.getDatasetId(), placeholderName);
@@ -181,7 +182,7 @@ abstract class ModuleRunner {
 
                     boolean must_unlock = false;
                     if (!dataset.isLocked()) {
-                        dataset = datasetDAO.obtainLocked(user, dataset, session);
+                        dataset = datasetDAO.obtainLocked(user, dataset, entityManager);
                         must_unlock = true;
                     } else if (!dataset.isLocked(user)) {
                         errorMessage = String.format("Could not replace dataset '%s' for placeholder '%s'. The dataset is locked by %s.",
@@ -190,11 +191,11 @@ abstract class ModuleRunner {
                     }
                     
                     try {
-                        DatasetCreator datasetCreator = new DatasetCreator(module, placeholderName, user, sessionFactory, dbServerFactory, datasource);
-                        datasetCreator.replaceDataset(session, connection, dataset, module.getIsFinal());
+                        DatasetCreator datasetCreator = new DatasetCreator(module, placeholderName, user, entityManagerFactory, dbServerFactory, datasource);
+                        datasetCreator.replaceDataset(entityManager, connection, dataset, module.getIsFinal());
                     } finally {
                         if (must_unlock)
-                            dataset = datasetDAO.releaseLocked(user, dataset, session);
+                            dataset = datasetDAO.releaseLocked(user, dataset, entityManager);
                     }
                     
                     InternalSource internalSource = getInternalSource(dataset);
@@ -222,7 +223,7 @@ abstract class ModuleRunner {
                                                              moduleTypeVersionDataset.getMode(), placeholderName));
                     }
                 } else {
-                    dataset = datasetDAO.getDataset(sessionFactory.getSession(), moduleDataset.getDatasetId());
+                    dataset = datasetDAO.getDataset(entityManagerFactory.createEntityManager(), moduleDataset.getDatasetId());
                     versionNumber = moduleDataset.getVersion();
                     
                     InternalSource internalSource = getInternalSource(dataset);
@@ -304,12 +305,12 @@ abstract class ModuleRunner {
         return moduleRunnerContext.getModulesDAO();
     }
     
-    public HibernateSessionFactory getHibernateSessionFactory() {
-        return moduleRunnerContext.getHibernateSessionFactory();
+    public EntityManagerFactory getEntityManagerFactory() {
+        return moduleRunnerContext.getEntityManagerFactory();
     }
 
-    public Session getSession() {
-        return moduleRunnerContext.getSession();
+    public EntityManager getEntityManager() {
+        return moduleRunnerContext.getEntityManager();
     }
 
     public DbServerFactory getDbServerFactory() {
@@ -474,17 +475,17 @@ abstract class ModuleRunner {
     
     //-----------------------------------------------------------------
     
-    protected static Version getVersion(EmfDataset dataset, int versionNumber, Session session) {
+    protected static Version getVersion(EmfDataset dataset, int versionNumber, EntityManager entityManager) {
         Versions versions = new Versions();
-        return versions.get(dataset.getId(), versionNumber, session);
+        return versions.get(dataset.getId(), versionNumber, entityManager);
     }
 
-    protected static int updateVersion(EmfDataset dataset, Version version, DbServer dbServer, Session session, DatasetDAO datasetDAO, User user) throws Exception {
-        version = datasetDAO.obtainLockOnVersion(user, version.getId(), session);
-        int recordCount = (int)datasetDAO.getDatasetRecordsNumber(dbServer, session, dataset, version);
+    protected static int updateVersion(EmfDataset dataset, Version version, DbServer dbServer, EntityManager entityManager, DatasetDAO datasetDAO, User user) throws Exception {
+        version = datasetDAO.obtainLockOnVersion(user, version.getId(), entityManager);
+        int recordCount = (int)datasetDAO.getDatasetRecordsNumber(dbServer, entityManager, dataset, version);
         version.setNumberRecords(recordCount);
         version.setCreator(user);
-        datasetDAO.updateVersionNReleaseLock(version, session);
+        datasetDAO.updateVersionNReleaseLock(version, entityManager);
         return recordCount;
     }
 
@@ -513,12 +514,12 @@ abstract class ModuleRunner {
         ModulesDAO modulesDAO = moduleRunnerContext.getModulesDAO();
         DbServer dbServer = moduleRunnerContext.getDbServer();
         User user = moduleRunnerContext.getUser();
-        Session session = moduleRunnerContext.getSession();
+        EntityManager entityManager = moduleRunnerContext.getEntityManager();
         
         // 5. if any dataset version is final
         // ==> error: cannot delete or replace
         Versions versions = new Versions();
-        Version[] datasetVersions = versions.get(dataset.getId(), session);
+        Version[] datasetVersions = versions.get(dataset.getId(), entityManager);
         for (Version version : datasetVersions) {
             if (version.isFinalVersion()) {
                 String errorMessage = String.format("Cannot delete or replace dataset '%s': the dataset version %d is final.",
@@ -536,19 +537,19 @@ abstract class ModuleRunner {
         }
         
         // check if dataset is used
-        boolean isUsedByCases = datasetDAO.isUsedByCases(session, dataset);
-        boolean isUsedByControlStrategies = datasetDAO.isUsedByControlStrategies(session, dataset);
-        boolean isUsedByControlPrograms = datasetDAO.isUsedByControlPrograms(dataset.getId(), session);
+        boolean isUsedByCases = datasetDAO.isUsedByCases(entityManager, dataset);
+        boolean isUsedByControlStrategies = datasetDAO.isUsedByControlStrategies(entityManager, dataset);
+        boolean isUsedByControlPrograms = datasetDAO.isUsedByControlPrograms(dataset.getId(), entityManager);
         boolean isUsedByFast;
         try {
-            isUsedByFast = datasetDAO.isUsedByFast(dataset.getId(), user, dbServer, session);
+            isUsedByFast = datasetDAO.isUsedByFast(dataset.getId(), user, dbServer, entityManager);
         } catch (Exception e) {
             e.printStackTrace();
             throw new EmfException("Error checking if dataset '" + dataset.getName() + "' is used by FAST: " + e.getMessage());
         }
         boolean isUsedByTemporalAllocations;
         try {
-            isUsedByTemporalAllocations = datasetDAO.isUsedByTemporalAllocations(dataset.getId(), user, session);
+            isUsedByTemporalAllocations = datasetDAO.isUsedByTemporalAllocations(dataset.getId(), user, entityManager);
         } catch (Exception e) {
             e.printStackTrace();
             throw new EmfException("Error checking if dataset '" + dataset.getName() + "' is used by Temporal Allocations: " + e.getMessage());
@@ -594,7 +595,7 @@ abstract class ModuleRunner {
         if (isUsedByOtherModules) {
             StringBuilder consumerModuleNames = new StringBuilder(); 
             for(int consumerModuleId : consumerModuleIds) {
-                Module consumerModule = modulesDAO.getModule(consumerModuleId, session);
+                Module consumerModule = modulesDAO.getModule(consumerModuleId, entityManager);
                 if (consumerModuleNames.length() > 0) {
                     consumerModuleNames.append("\n");
                 }
@@ -1078,13 +1079,12 @@ abstract class ModuleRunner {
         String jdbcDriverClassName = basicDataSource.getDriverClassName();
         String jdbcURL = basicDataSource.getUrl();
 
-        DriverManagerDataSource ds = new DriverManagerDataSource();
-        ds.setDriverClassName(jdbcDriverClassName); 
-        ds.setUsername(username); 
-        ds.setPassword(password);
-        ds.setUrl(jdbcURL + "&ApplicationName=Module%20Runner&logUnclosedConnections=true&loglevel=2");
+        DriverManager.registerDriver(basicDataSource.getDriver());
+        Connection ds = DriverManager.getConnection(jdbcURL + "&ApplicationName=Module%20Runner&logUnclosedConnections=true&loglevel=2", 
+                username, 
+                password);
         
-        return ds.getConnection();
+        return ds;
     }
 
     protected static String getLineNumberedScript(String script) {
@@ -1108,7 +1108,7 @@ abstract class ModuleRunner {
     protected void executeTeardownScript(@SuppressWarnings("unused") List<String> outputDatasetTables) throws EmfException {
         Connection connection = moduleRunnerContext.getConnection();
         ModulesDAO modulesDAO = moduleRunnerContext.getModulesDAO();
-        Session session = moduleRunnerContext.getSession();
+        EntityManager entityManager = moduleRunnerContext.getEntityManager();
         History history = moduleRunnerContext.getHistory();
         
         String teardownScript = getTempUserTeardownScript(moduleRunnerContext.getUserTimeStamp());
@@ -1119,7 +1119,7 @@ abstract class ModuleRunner {
             
             history.addLogMessage(History.INFO, "Starting teardown script.");
             
-            history = modulesDAO.updateHistory(history, session);
+            history = modulesDAO.updateHistory(history, entityManager);
             
             statement = connection.createStatement();
             int count = 3;
@@ -1226,8 +1226,8 @@ abstract class ModuleRunner {
     protected final void deleteDatasets(EmfDataset[] datasets) throws EmfException {
         DbServer dbServer = getDbServer();
         DatasetDAO datasetDAO = getDatasetDAO();
-        Session session = getSession();
-        datasetDAO.deleteDatasets(datasets, dbServer, session);
+        EntityManager entityManager = getEntityManager();
+        datasetDAO.deleteDatasets(datasets, dbServer, entityManager);
     }
     
     protected void collectTemporaryDatasets(Map<String, EmfDataset> datasets) {

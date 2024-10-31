@@ -1,7 +1,5 @@
 package gov.epa.emissions.framework.services.editor;
 
-import java.sql.SQLException;
-
 import gov.epa.emissions.commons.CommonDebugLevel;
 import gov.epa.emissions.commons.PerformanceMetrics;
 import gov.epa.emissions.commons.db.Datasource;
@@ -15,8 +13,11 @@ import gov.epa.emissions.commons.io.TableMetadata;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.EmfServiceImpl;
 import gov.epa.emissions.framework.services.InfrastructureException;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import gov.epa.emissions.framework.services.persistence.JpaEntityManagerFactory;
 
+import java.sql.SQLException;
+
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
@@ -30,26 +31,26 @@ public class DataViewServiceImpl extends EmfServiceImpl implements DataViewServi
     public DataViewServiceImpl() throws Exception {
         super("Data View Service");
         try {
-            init(dbServer, dbServer.getEmissionsDatasource(), HibernateSessionFactory.get());
+            init(dbServer, dbServer.getEmissionsDatasource(), JpaEntityManagerFactory.get());
         } catch (Exception ex) {
             LOG.error("Could not initialize DataView Service", ex);
             throw new InfrastructureException("Could not initialize DataView Service");
         }
     }
 
-    public DataViewServiceImpl(DataSource datasource, DbServer dbServer, HibernateSessionFactory sessionFactory)
+    public DataViewServiceImpl(DataSource datasource, DbServer dbServer, EntityManagerFactory entityManagerFactory)
             throws Exception {
         super(datasource, dbServer);
-        init(dbServer, dbServer.getEmissionsDatasource(), sessionFactory);
+        init(dbServer, dbServer.getEmissionsDatasource(), entityManagerFactory);
     }
 
-    private void init(DbServer dbServer, Datasource datasource, HibernateSessionFactory sessionFactory) {
+    private void init(DbServer dbServer, Datasource datasource, EntityManagerFactory entityManagerFactory) {
         VersionedRecordsFactory factory = new DefaultVersionedRecordsFactory(datasource);
         VersionedRecordsWriterFactory writerFactory = new DefaultVersionedRecordsWriterFactory();
         DataAccessCacheImpl cache = new DataAccessCacheImpl(factory, writerFactory, datasource, dbServer
                 .getSqlDataTypes());
 
-        accessor = new DataAccessorImpl(cache, sessionFactory);
+        accessor = new DataAccessorImpl(cache, entityManagerFactory);
     }
 
     public Page applyConstraints(DataAccessToken token, String rowFilter, String sortOrder) throws EmfException {
@@ -97,9 +98,9 @@ public class DataViewServiceImpl extends EmfServiceImpl implements DataViewServi
         try {
             return accessor.openSession(token);
         } catch (Exception e) {
-            LOG.error("Could not open Session for Dataset: " + token.datasetId() + ", Version: "
+            LOG.error("Could not open EntityManager for Dataset: " + token.datasetId() + ", Version: "
                     + token.getVersion().getVersion(), e);
-            throw new EmfException("Could not open Session for Dataset: " + token.datasetId() + ", Version: "
+            throw new EmfException("Could not open EntityManager for Dataset: " + token.datasetId() + ", Version: "
                     + token.getVersion().getVersion(), e);
         }
     }
@@ -108,12 +109,12 @@ public class DataViewServiceImpl extends EmfServiceImpl implements DataViewServi
         try {
             accessor.closeSession(token);
         } finally {
-            new PerformanceMetrics().gc("Closing Data View session - (" + token+ ")");
+            new PerformanceMetrics().gc("Closing Data View entityManager - (" + token+ ")");
         }
     }
 
     /**
-     * This method is for cleaning up session specific objects within this service.
+     * This method is for cleaning up entityManager specific objects within this service.
      */
     protected void finalize() throws Throwable {
         accessor.shutdown();

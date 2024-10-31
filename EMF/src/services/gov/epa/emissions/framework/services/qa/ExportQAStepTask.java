@@ -6,7 +6,6 @@ import gov.epa.emissions.commons.io.Exporter;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.basic.FileDownload;
 import gov.epa.emissions.framework.services.basic.FileDownloadDAO;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
@@ -16,13 +15,12 @@ import gov.epa.emissions.framework.services.data.QAStepResult;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class ExportQAStepTask implements Runnable {
 
@@ -38,7 +36,7 @@ public class ExportQAStepTask implements Runnable {
 
     private File file;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
     
     private DbServerFactory dbServerFactory;
 
@@ -58,43 +56,43 @@ public class ExportQAStepTask implements Runnable {
 
     public ExportQAStepTask(String dirName, String fileName, 
             boolean overide, QAStep qaStep, 
-            User user, HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory) {
+            User user, EntityManagerFactory entityManagerFactory, DbServerFactory dbServerFactory) {
         this.dirName = dirName;
         this.fileName = fileName;
         this.overide = overide;
         this.qastep = qaStep;
         this.user = user;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.dbServerFactory = dbServerFactory;
-        this.statusDao = new StatusDAO(sessionFactory);
+        this.statusDao = new StatusDAO(entityManagerFactory);
         this.fileDownloadDao = new FileDownloadDAO();
     }
 
     public ExportQAStepTask(String dirName, String fileName, 
             boolean overide, QAStep qaStep, 
-            User user, HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory, boolean verboseStatusLogging, String rowFilter) {
+            User user, EntityManagerFactory entityManagerFactory, DbServerFactory dbServerFactory, boolean verboseStatusLogging, String rowFilter) {
         this(dirName, fileName, 
                 overide, qaStep, 
-                user, sessionFactory, dbServerFactory);
+                user, entityManagerFactory, dbServerFactory);
         this.rowFilter = rowFilter;
         this.verboseStatusLogging = verboseStatusLogging;
     }
 
     public ExportQAStepTask(String dirName, String fileName, 
             boolean overide, QAStep qaStep, 
-            User user, HibernateSessionFactory sessionFactory, 
+            User user, EntityManagerFactory entityManagerFactory, 
             DbServerFactory dbServerFactory, boolean verboseStatusLogging,
             boolean download, String rowFilter) {
         this(dirName, fileName, 
                 overide, qaStep, 
-                user, sessionFactory, dbServerFactory, verboseStatusLogging, rowFilter);
+                user, entityManagerFactory, dbServerFactory, verboseStatusLogging, rowFilter);
         this.download  = download;
     }
 
     public void run() {        
         String suffix = "";
         DbServer dbServer = dbServerFactory.getDbServer();
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             getStepResult();
             file = exportFile(dirName);
@@ -109,7 +107,7 @@ public class ExportQAStepTask implements Runnable {
 
             if (download) {
                 //lets add a filedownload item for the user, so they can download the file
-                fileDownloadDao.add(user, new Date(), file.getName(), "QA Step - CSV", overide, session);
+                fileDownloadDao.add(user, new Date(), file.getName(), "QA Step - CSV", overide, entityManager);
             }
 
             complete(suffix);
@@ -117,7 +115,7 @@ public class ExportQAStepTask implements Runnable {
             logError("Failed to export QA step : " + qastep.getName() + suffix, e);
             setStatus("Failed to export QA step " + qastep.getName() + suffix + ". Reason: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
             disconnect(dbServer); // Note: to disconnect db server from within the exporter (not obvious).
         }
     }
@@ -164,32 +162,32 @@ public class ExportQAStepTask implements Runnable {
     }
 
     private String versionName() {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return new Versions().get(qastep.getDatasetId(), qastep.getVersion(), session).getName();
+            return new Versions().get(qastep.getDatasetId(), qastep.getVersion(), entityManager).getName();
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private String datasetName() {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             DatasetDAO dao = new DatasetDAO();
-            return dao.getDataset(session, qastep.getDatasetId()).getName();
+            return dao.getDataset(entityManager, qastep.getDatasetId()).getName();
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private void getStepResult() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            result = new QADAO().qaStepResult(qastep, session);
+            result = new QADAO().qaStepResult(qastep, entityManager);
             if (result == null || result.getTable() == null)
                 throw new EmfException("You have to first run the QA Step before export");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 

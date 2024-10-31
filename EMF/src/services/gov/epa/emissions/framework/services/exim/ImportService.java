@@ -14,22 +14,23 @@ import gov.epa.emissions.framework.services.basic.StatusDAO;
 import gov.epa.emissions.framework.services.data.DataServiceImpl;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 
 public class ImportService {
     private static Log log = LogFactory.getLog(ImportService.class);
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private PooledExecutor threadPool;
 
@@ -37,18 +38,18 @@ public class ImportService {
 
     private Services services;
 
-    public ImportService(ImporterFactory importerFactory, HibernateSessionFactory sessionFactory,
+    public ImportService(ImporterFactory importerFactory, EntityManagerFactory entityManagerFactory,
             PooledExecutor threadPool) {
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.threadPool = threadPool;
         this.services = services();
     }
 
     private Services services() {
         Services services = new Services();
-        services.setLoggingService(new LoggingServiceImpl(sessionFactory));
-        services.setStatusService(new StatusDAO(sessionFactory));
-        services.setDataService(new DataServiceImpl(sessionFactory));
+        services.setLoggingService(new LoggingServiceImpl(entityManagerFactory));
+        services.setStatusService(new StatusDAO(entityManagerFactory));
+        services.setDataService(new DataServiceImpl(entityManagerFactory));
 
         return services;
     }
@@ -65,14 +66,14 @@ public class ImportService {
 
     private void isNameUnique(String name) throws Exception {
         DatasetDAO dao = new DatasetDAO();
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            if (dao.datasetNameUsed(name, session))
+            if (dao.datasetNameUsed(name, entityManager))
                 throw new EmfException("Dataset name is already used");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
@@ -82,7 +83,7 @@ public class ImportService {
 
             isNameUnique(dataset.getName());
             ImportTask eximTask = new ImportTask(dataset, fileNames, path, user, services, DbServerFactory.get(),
-                    sessionFactory);
+                    entityManagerFactory);
 
             threadPool.execute(new GCEnforcerTask("Import of Dataset: " + dataset.getName(), eximTask));
         } catch (Exception e) {

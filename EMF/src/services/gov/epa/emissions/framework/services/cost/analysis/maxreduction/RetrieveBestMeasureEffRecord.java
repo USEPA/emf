@@ -12,7 +12,8 @@ import gov.epa.emissions.framework.services.cost.analysis.common.RetrieveBestEff
 import gov.epa.emissions.framework.services.cost.controlStrategy.CostYearTable;
 import gov.epa.emissions.framework.services.cost.controlStrategy.SccControlMeasuresMap;
 import gov.epa.emissions.framework.services.cost.data.EfficiencyRecord;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+
+import javax.persistence.EntityManagerFactory;
 
 public class RetrieveBestMeasureEffRecord {
 
@@ -34,13 +35,13 @@ public class RetrieveBestMeasureEffRecord {
     
     public RetrieveBestMeasureEffRecord(SccControlMeasuresMap map, CostYearTable costYearTable,
             ControlStrategy controlStrategy, DbServer dbServer, 
-            HibernateSessionFactory sessionFactory) {
+            EntityManagerFactory entityManagerFactory) {
         this.map = map;
         this.costYearTable = costYearTable;
         this.controlStrategy = controlStrategy;
         this.retrieveBestEffRecord = new RetrieveBestEffRecord(costYearTable);
         this.effRecordUtil = new EfficiencyRecordUtil();
-        this.regionFilter = new RegionFilter(dbServer, sessionFactory);
+        this.regionFilter = new RegionFilter(dbServer, entityManagerFactory);
     }
 
     //gets the best measure for the target pollutant

@@ -11,19 +11,20 @@ import gov.epa.emissions.framework.services.cost.analysis.common.AbstractStrateg
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyResult;
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyTargetPollutant;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
+import javax.persistence.EntityManagerFactory;
+
 public class StrategyLoader extends AbstractStrategyLoader {
 
     public StrategyLoader(User user, DbServerFactory dbServerFactory, 
-            HibernateSessionFactory sessionFactory, ControlStrategy controlStrategy) throws EmfException {
+            EntityManagerFactory entityManagerFactory, ControlStrategy controlStrategy) throws EmfException {
         super(user, dbServerFactory, 
-                sessionFactory, controlStrategy);
+                entityManagerFactory, controlStrategy);
     }
 
     public ControlStrategyResult loadStrategyResult(ControlStrategyInputDataset controlStrategyInputDataset) throws Exception {
@@ -76,7 +77,7 @@ public class StrategyLoader extends AbstractStrategyLoader {
         } else {
             strategyMessagesResult.setCompletionTime(new Date());
             strategyMessagesResult.setRunStatus("Completed.");
-            saveControlStrategyResult(strategyMessagesResult);
+            updateControlStrategyResult(strategyMessagesResult);
             creator.updateVersionZeroRecordCount((EmfDataset)strategyMessagesResult.getDetailedResultDataset());
         }
 

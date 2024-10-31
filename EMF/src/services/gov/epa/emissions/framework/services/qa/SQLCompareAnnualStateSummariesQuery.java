@@ -7,13 +7,14 @@ import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.DateUtil;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.QAStep;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+
+import javax.persistence.EntityManagerFactory;
 
 public class SQLCompareAnnualStateSummariesQuery extends SQLQAProgramQuery {
 
@@ -27,9 +28,9 @@ public class SQLCompareAnnualStateSummariesQuery extends SQLQAProgramQuery {
 
     public static final String coStCyTag = "-costcy";
 
-    public SQLCompareAnnualStateSummariesQuery(HibernateSessionFactory sessionFactory, DbServer dbServer,
+    public SQLCompareAnnualStateSummariesQuery(EntityManagerFactory entityManagerFactory, DbServer dbServer,
             String emissioDatasourceName, String tableName, QAStep qaStep) {
-        super(sessionFactory,emissioDatasourceName,tableName,qaStep);
+        super(entityManagerFactory,emissioDatasourceName,tableName,qaStep);
         this.dbServer = dbServer;
     }
 
@@ -317,7 +318,7 @@ public class SQLCompareAnnualStateSummariesQuery extends SQLQAProgramQuery {
 
     protected String query(String partialQuery, boolean createClause) throws EmfException {
 
-        SQLQueryParser parser = new SQLQueryParser(sessionFactory, emissionDatasourceName, tableName);
+        SQLQueryParser parser = new SQLQueryParser(entityManagerFactory, emissionDatasourceName, tableName);
         return parser.parse(partialQuery, createClause);
     }
 

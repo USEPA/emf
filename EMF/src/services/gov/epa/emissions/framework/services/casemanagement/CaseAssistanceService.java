@@ -24,7 +24,6 @@ import gov.epa.emissions.framework.services.data.DataCommonsDAO;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.GeoRegion;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.io.File;
@@ -36,9 +35,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 public class CaseAssistanceService {
     private static Log log = LogFactory.getLog(ManagedCaseService.class);
@@ -63,17 +64,17 @@ public class CaseAssistanceService {
 
     private DatasetDAO dsDao;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
-    public CaseAssistanceService(HibernateSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public CaseAssistanceService(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
         this.caseDao = new CaseDAO();
         this.dataDao = new DataCommonsDAO();
         this.dsDao = new DatasetDAO();
 
         if (DebugLevels.DEBUG_9())
-            System.out.println("In CaseAssistanceService constructor: Is the session Factory null? "
-                    + (sessionFactory == null));
+            System.out.println("In CaseAssistanceService constructor: Is the entityManager Factory null? "
+                    + (entityManagerFactory == null));
 
         myTag();
 
@@ -81,12 +82,12 @@ public class CaseAssistanceService {
             System.out.println(">>>> " + myTag());
 
         log.info("CaseAssistanceService");
-        log.info("Session factory null? " + (sessionFactory == null));
+        log.info("EntityManager factory null? " + (entityManagerFactory == null));
     }
 
     public synchronized void importCase(String folder, String[] files, User user) throws EmfException {
-        Session session = sessionFactory.getSession();
-        CaseDaoHelper helper = new CaseDaoHelper(sessionFactory, caseDao, dataDao, dsDao);
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        CaseDaoHelper helper = new CaseDaoHelper(entityManagerFactory, caseDao, dataDao, dsDao);
         String[][] cases = sortCaseFiles(getFiles(folder, files));
 
         Case newCase = null;
@@ -105,25 +106,25 @@ public class CaseAssistanceService {
                 if (newCase.getModel() == null || newCase.getModel().getName().isEmpty())
                     throw new EmfException("Case run model not specified.");
 
-                Case existedCase = caseDao.getCaseFromName(newCase.getName(), session);
+                Case existedCase = caseDao.getCaseFromName(newCase.getName(), entityManager);
 
                 if (existedCase != null)
                     throw new EmfException("Case (" + newCase.getName()
                             + ") to import has a duplicate name in cases table.");
 
-                session.clear();
-                resetCaseValues(user, newCase, session);
-                session.clear(); // NOTE: to clear up the old object images
-                //session.flush();
+                entityManager.clear();
+                resetCaseValues(user, newCase, entityManager);
+                entityManager.clear(); // NOTE: to clear up the old object images
+                //entityManager.flush();
                 addNewCaseObject(newCase);
 
-                session.clear(); // NOTE: to clear up the old object images
-                Case loadedCase = caseDao.getCaseFromName(newCase.getName(), session);
+                entityManager.clear(); // NOTE: to clear up the old object images
+                Case loadedCase = caseDao.getCaseFromName(newCase.getName(), entityManager);
                 int caseId = loadedCase.getId();
                 int modId = loadedCase.getModel().getId();
                 insertJobs(caseId, user, caseParser.getJobs(), helper); // NOTE: Have to insert jobs before inserting
                                                                         // inputs/parameters
-                HashMap<String, Integer> jobIds = getJobIds(caseDao.getCaseJobs(caseId, session));
+                HashMap<String, Integer> jobIds = getJobIds(caseDao.getCaseJobs(caseId, entityManager));
                 insertParameters(caseId, modId, caseParser.getParameters(), helper, jobIds);
                 insertInputs(caseId, modId, caseParser.getInputs(), helper, jobIds);
             }
@@ -140,7 +141,7 @@ public class CaseAssistanceService {
 
             throw new EmfException(e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -156,14 +157,14 @@ public class CaseAssistanceService {
     }
 
     private void addNewCaseObject(Case newCase) throws Exception {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            caseDao.add(newCase, session);
+            caseDao.add(newCase, entityManager);
         } catch (Exception e) {
             throw e;
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -210,54 +211,54 @@ public class CaseAssistanceService {
         return null;
     }
 
-    private void resetCaseValues(User user, Case newCase, Session session) {
+    private void resetCaseValues(User user, Case newCase, EntityManager entityManager) {
         Abbreviation abbr = newCase.getAbbreviation();
 
         if (abbr == null)
             abbr = new Abbreviation(newCase.getName());
 
-        loadNSetObject(newCase, abbr, Abbreviation.class, abbr.getName(), session);
+        loadNSetObject(newCase, abbr, Abbreviation.class, abbr.getName(), entityManager);
 
         CaseCategory cat = newCase.getCaseCategory();
-        loadNSetObject(newCase, cat, CaseCategory.class, cat == null ? "" : cat.getName(), session);
+        loadNSetObject(newCase, cat, CaseCategory.class, cat == null ? "" : cat.getName(), entityManager);
 
         Project proj = newCase.getProject();
-        loadNSetObject(newCase, proj, Project.class, proj == null ? "" : proj.getName(), session);
+        loadNSetObject(newCase, proj, Project.class, proj == null ? "" : proj.getName(), entityManager);
 
         ModelToRun model = newCase.getModel();
-        loadNSetObject(newCase, model, ModelToRun.class, model == null ? "" : model.getName(), session);
+        loadNSetObject(newCase, model, ModelToRun.class, model == null ? "" : model.getName(), entityManager);
 
         Region modRegion = newCase.getModelingRegion();
-        loadNSetObject(newCase, modRegion, Region.class, modRegion == null ? "" : modRegion.getName(), session);
+        loadNSetObject(newCase, modRegion, Region.class, modRegion == null ? "" : modRegion.getName(), entityManager);
 
         AirQualityModel airMod = newCase.getAirQualityModel();
-        loadNSetObject(newCase, airMod, AirQualityModel.class, airMod == null ? "" : airMod.getName(), session);
+        loadNSetObject(newCase, airMod, AirQualityModel.class, airMod == null ? "" : airMod.getName(), entityManager);
 
         Speciation spec = newCase.getSpeciation();
-        loadNSetObject(newCase, spec, Speciation.class, spec == null ? "" : spec.getName(), session);
+        loadNSetObject(newCase, spec, Speciation.class, spec == null ? "" : spec.getName(), entityManager);
 
         MeteorlogicalYear metYear = newCase.getMeteorlogicalYear();
-        loadNSetObject(newCase, metYear, MeteorlogicalYear.class, metYear == null ? "" : metYear.getName(), session);
+        loadNSetObject(newCase, metYear, MeteorlogicalYear.class, metYear == null ? "" : metYear.getName(), entityManager);
         
         EmissionsYear emisYear = newCase.getEmissionsYear();
-        loadNSetObject(newCase, emisYear, EmissionsYear.class, emisYear == null ? "" : emisYear.getName(), session);
+        loadNSetObject(newCase, emisYear, EmissionsYear.class, emisYear == null ? "" : emisYear.getName(), entityManager);
 
         Sector[] sectors = newCase.getSectors();
-        loadNSetSectors(newCase, sectors, session);
+        loadNSetSectors(newCase, sectors, entityManager);
 
         GeoRegion[] regions = newCase.getRegions();
-        loadNSetRegions(newCase, regions, session);
+        loadNSetRegions(newCase, regions, entityManager);
 
         newCase.setLastModifiedBy(user);
         newCase.setLastModifiedDate(new Date());
         newCase.setCreator(user);
     }
 
-    private synchronized void loadNSetObject(Case newCase, Object obj, Class<?> clazz, String name, Session session) {
+    private synchronized void loadNSetObject(Case newCase, Object obj, Class<?> clazz, String name, EntityManager entityManager) {
         Object temp = null;
 
         if (obj != null && name != null && !name.isEmpty())
-            temp = checkDB(obj, clazz, name, session);
+            temp = checkDB(obj, clazz, name, entityManager);
 
         if (obj instanceof Abbreviation) {
             newCase.setAbbreviation((Abbreviation) temp);
@@ -305,21 +306,21 @@ public class CaseAssistanceService {
         }
     }
 
-    private void loadNSetRegions(Case newCase, GeoRegion[] regions, Session session) {
+    private void loadNSetRegions(Case newCase, GeoRegion[] regions, EntityManager entityManager) {
         if (regions == null || regions.length == 0)
             return;
 
         List<GeoRegion> all = new ArrayList<GeoRegion>();
 
         for (GeoRegion region : regions) {
-            GeoRegion temp = (GeoRegion) checkDB(region, GeoRegion.class, region.getName(), session);
+            GeoRegion temp = (GeoRegion) checkDB(region, GeoRegion.class, region.getName(), entityManager);
             all.add(temp);
         }
 
         newCase.setRegions(all.toArray(new GeoRegion[0]));
     }
 
-    private void loadNSetSectors(Case newCase, Sector[] sectors, Session session) {
+    private void loadNSetSectors(Case newCase, Sector[] sectors, EntityManager entityManager) {
         if (sectors == null || sectors.length == 0)
             return;
 
@@ -330,7 +331,7 @@ public class CaseAssistanceService {
                 //System.out.print("name = " +sector.getName()+"\n");
                 if (sector.getName().toLowerCase().contains("all sectors"))
                     sector = new Sector("All Sectors", "All Sectors");
-                Sector temp = (Sector) checkDB(sector, Sector.class, sector.getName(), session);
+                Sector temp = (Sector) checkDB(sector, Sector.class, sector.getName(), entityManager);
                 all.add(temp);
             }
         }
@@ -338,33 +339,33 @@ public class CaseAssistanceService {
         newCase.setSectors(all.toArray(new Sector[0]));
     }
 
-    private Object checkDB(Object obj, Class<?> clazz, String name, Session session) {
-        session.clear();
-        //session.flush();
-        Object temp = caseDao.load(clazz, name, session);
+    private Object checkDB(Object obj, Class<?> clazz, String name, EntityManager entityManager) {
+        entityManager.clear();
+        //entityManager.flush();
+        Object temp = caseDao.load(clazz, name, entityManager);
         
         if (obj instanceof ModelToRun)
-            temp = caseDao.loadModelTorun(name, session);
+            temp = caseDao.loadModelTorun(name, entityManager);
 
         if (temp != null && temp instanceof Abbreviation) {
             String random = Math.random() + "";
             String uniqueName = name + "_" + random.substring(2);
             ((Abbreviation) obj).setName(uniqueName);
-            session.clear();
-            //session.flush();
-            caseDao.addObject(obj, session);
-            session.clear();
-            //session.flush();
-            temp = caseDao.load(clazz, uniqueName, session);
+            entityManager.clear();
+            //entityManager.flush();
+            caseDao.addObject(obj, entityManager);
+            entityManager.clear();
+            //entityManager.flush();
+            temp = caseDao.load(clazz, uniqueName, entityManager);
         }
         
         if (temp == null) {
-            session.clear();
-            //session.flush();
-            caseDao.addObject(obj, session);
-            session.clear();
-            //session.flush();
-            temp = caseDao.load(clazz, name, session);
+            entityManager.clear();
+            //entityManager.flush();
+            caseDao.addObject(obj, entityManager);
+            entityManager.clear();
+            //entityManager.flush();
+            temp = caseDao.load(clazz, name, entityManager);
         }
 
         return temp;
@@ -610,8 +611,8 @@ public class CaseAssistanceService {
 
     private void resetSummaryValues(List<String> paramEnvs, EMFCaseFile caseFile, StringBuffer sb, String lineSep,
             int caseId) throws Exception {
-        Session session = sessionFactory.getSession();
-        Case caze = caseDao.getCase(caseId, session);
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        Case caze = caseDao.getCase(caseId, entityManager);
 
         for (Iterator<String> iter = paramEnvs.iterator(); iter.hasNext();) {
             String envVar = iter.next();
@@ -631,7 +632,7 @@ public class CaseAssistanceService {
 
                 proj = new Project();
                 proj.setName(value);
-                proj = (Project) caseDao.load(Project.class, proj.getName(), session);
+                proj = (Project) caseDao.load(Project.class, proj.getName(), entityManager);
 
                 caze.setProject(proj);
             }
@@ -768,12 +769,12 @@ public class CaseAssistanceService {
         }
 
         try {
-            caseDao.updateWithLock(caze, session);
+            caseDao.updateWithLock(caze, entityManager);
         } catch (Exception e) {
             throw new EmfException(e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
@@ -836,24 +837,24 @@ public class CaseAssistanceService {
     }
 
     private synchronized List<CaseInput> getValidInputs(int jobId, int caseId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            CaseJob job = caseDao.getCaseJob(jobId, session);
+            CaseJob job = caseDao.getCaseJob(jobId, entityManager);
             Sector sector = (job == null) ? null : job.getSector();
 
-            List<CaseInput> jobSpecInputs = caseDao.getCaseInputsByJobIds(caseId, new int[] { jobId }, session);
-            List<CaseInput> sectorSpecInputs = (sector != null) ? caseDao.getInputsBySector(caseId, sector, session)
-                    : caseDao.getInputsForAllSectors(caseId, session);
-            List<CaseInput> inputs4AllSectorsAllJobs = caseDao.getInputs4AllJobsAllSectors(caseId, session);
+            List<CaseInput> jobSpecInputs = caseDao.getCaseInputsByJobIds(caseId, new int[] { jobId }, entityManager);
+            List<CaseInput> sectorSpecInputs = (sector != null) ? caseDao.getInputsBySector(caseId, sector, entityManager)
+                    : caseDao.getInputsForAllSectors(caseId, entityManager);
+            List<CaseInput> inputs4AllSectorsAllJobs = caseDao.getInputs4AllJobsAllSectors(caseId, entityManager);
 
             return selectValidInputs(jobSpecInputs, sectorSpecInputs, inputs4AllSectorsAllJobs);
         } catch (Exception e) {
             log.error("Error reading case inputs for case id = " + caseId + " and job id = " + jobId + ".", e);
             throw new EmfException("Error reading case inputs for case id = " + caseId + " and job id = " + jobId + ".");
         } finally {
-            if (session != null && session.isOpen())
-                session.close();
+            if (entityManager != null && entityManager.isOpen())
+                entityManager.close();
         }
     }
 
@@ -935,10 +936,10 @@ public class CaseAssistanceService {
     private void checkNSetInputDataset(StringBuffer sb, String lineSep, User user, String[] values, String massDir,
             CaseInput input) throws EmfException {
         String[] firstSrc = this.reconstructSources(new String[] { values[0], values[1] }, values[0]);
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            int[] dsIds = caseDao.getExternalDatasetIds(firstSrc[0], session);
+            int[] dsIds = caseDao.getExternalDatasetIds(firstSrc[0], entityManager);
 
             if (dsIds == null || dsIds.length == 0) {
                 checkMassStorage(sb, lineSep, user, values, massDir, input);
@@ -952,14 +953,14 @@ public class CaseAssistanceService {
             throw new EmfException(e.getMessage() == null ? "Error resetting input values." : e.getClass().toString()
                     + ": " + e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     private void setInputDatasetValues(User user, String[] values, CaseInput input, EmfDataset dataset)
             throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
             if (dataset == null)
@@ -968,7 +969,7 @@ public class CaseAssistanceService {
             DatasetType type = dataset.getDatasetType();
             input.setDataset(dataset);
             int dsVersion = dataset.getDefaultVersion();
-            Version version = dsDao.getVersion(session, dataset.getId(), dsVersion);
+            Version version = dsDao.getVersion(entityManager, dataset.getId(), dsVersion);
             input.setVersion(version);
 
             if (!type.equals(input.getDatasetType()))
@@ -977,14 +978,14 @@ public class CaseAssistanceService {
             log.error("Error resetting input values.", e);
             throw new EmfException("Error resetting input values. " + (e.getMessage() == null ? "" : e.getMessage()));
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     private EmfDataset getUniqueDataset(StringBuffer sb, String lineSep, User user, String massDir, String[] values,
             CaseInput input, int[] dsIds) throws Exception {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
             String[] srcs = reconstructSources(values, values[0]);
@@ -992,13 +993,13 @@ public class CaseAssistanceService {
             EmfDataset latest = null;
 
             for (int id : dsIds) {
-                EmfDataset ds = dsDao.getDataset(session, id);
+                EmfDataset ds = dsDao.getDataset(entityManager, id);
 
                 if (ds == null)
                     continue;
 
                 Date modDate = ds.getModifiedDateTime();
-                ExternalSource[] tempSrcs = dsDao.getExternalSrcs(id, -1, null, session);
+                ExternalSource[] tempSrcs = dsDao.getExternalSrcs(id, -1, null, entityManager);
 
                 if (containsAllSrcs(tempSrcs, srcs)) {
                     dsWithAllSrcs.add(ds);
@@ -1031,14 +1032,14 @@ public class CaseAssistanceService {
         } catch (Exception e) {
             throw e;
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     private void checkMassStorage(StringBuffer sb, String lineSep, User user, String[] values, String massdir,
             CaseInput input) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
             EmfDataset dataset = null;
@@ -1046,7 +1047,7 @@ public class CaseAssistanceService {
 
             if (massdir != null && !massdir.trim().isEmpty()) {
                 String[] massSrcs = reconstructSources(values, massdir);
-                dsIds = caseDao.getExternalDatasetIds(massSrcs[0], session);
+                dsIds = caseDao.getExternalDatasetIds(massSrcs[0], entityManager);
             }
 
             if (dsIds != null && dsIds.length > 0)
@@ -1067,8 +1068,8 @@ public class CaseAssistanceService {
             throw new EmfException(e.getMessage() == null ? "Error resetting input values." : e.getClass().toString()
                     + ": " + e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
@@ -1108,12 +1109,12 @@ public class CaseAssistanceService {
 
     private synchronized EmfDataset add2tables(int caseId, String name, ExternalSource[] extSrcs, DatasetType type,
             User user, boolean moved, String preloc, String massloc) throws Exception {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         if (type == null)
-            type = dataDao.getDatasetType("External File (External)", session);
+            type = dataDao.getDatasetType("External File (External)", entityManager);
 
-        if (dsDao.nameUsed(name, EmfDataset.class, session))
+        if (dsDao.nameUsed(name, EmfDataset.class, entityManager))
             name += "_caseID(" + caseId + ")_" + Math.abs(new Random().nextInt());
 
         Date date = new Date();
@@ -1135,23 +1136,23 @@ public class CaseAssistanceService {
         external.setDefaultVersion(0);
 
         if (moved && massloc != null && !massloc.trim().isEmpty()) {
-            Keyword massLocKeyword = (Keyword) dataDao.load(Keyword.class, "MASS_STORAGE_LOCATION", session);
-            Keyword prevLocKeyword = (Keyword) dataDao.load(Keyword.class, "PREVIOUS_LOCATION", session);
+            Keyword massLocKeyword = (Keyword) dataDao.load(Keyword.class, "MASS_STORAGE_LOCATION", entityManager);
+            Keyword prevLocKeyword = (Keyword) dataDao.load(Keyword.class, "PREVIOUS_LOCATION", entityManager);
             KeyVal massKeyVal = new KeyVal(massLocKeyword, massloc);
             KeyVal prevLocKeyVal = new KeyVal(prevLocKeyword, preloc);
             external.addKeyVal(new KeyVal[] { massKeyVal, prevLocKeyVal });
         }
 
-        dsDao.add(external, session);
+        dsDao.add(external, entityManager);
 
         try {
-            session.clear();
-            EmfDataset ds = dsDao.getDataset(session, external.getName());
+            entityManager.clear();
+            EmfDataset ds = dsDao.getDataset(entityManager, external.getName());
 
             for (int i = 0; i < extSrcs.length; i++)
                 extSrcs[i].setDatasetId(ds.getId());
 
-            dsDao.addExternalSources(extSrcs, session);
+            dsDao.addExternalSources(extSrcs, entityManager);
 
             Version version = new Version(0);
             version.setCreator(user);
@@ -1160,14 +1161,14 @@ public class CaseAssistanceService {
             version.setFinalVersion(true);
             version.setLastModifiedDate(date);
             version.setPath("");
-            dsDao.add(version, session);
+            dsDao.add(version, entityManager);
 
             return ds;
         } catch (Exception e) {
             throw e;
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
@@ -1229,17 +1230,17 @@ public class CaseAssistanceService {
     }
 
     private synchronized List<CaseParameter> getValidParameters(int jobId, int caseId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            CaseJob job = caseDao.getCaseJob(jobId, session);
+            CaseJob job = caseDao.getCaseJob(jobId, entityManager);
             Sector sector = (job == null) ? null : job.getSector();
 
-            List<CaseParameter> jobSpecParams = caseDao.getCaseParametersByJobId(caseId, jobId, session);
+            List<CaseParameter> jobSpecParams = caseDao.getCaseParametersByJobId(caseId, jobId, entityManager);
             List<CaseParameter> sectorSpecParams = (sector != null) ? caseDao.getCaseParametersBySector(caseId, sector,
-                    session) : caseDao.getCaseParametersForAllSectors(caseId, session);
+                    entityManager) : caseDao.getCaseParametersForAllSectors(caseId, entityManager);
             List<CaseParameter> params4AllSectorsAllJobs = caseDao.getCaseParametersForAllSectorsAllJobs(caseId,
-                    session);
+                    entityManager);
 
             return selectValidParameters(jobSpecParams, sectorSpecParams, params4AllSectorsAllJobs);
         } catch (Exception e) {
@@ -1247,8 +1248,8 @@ public class CaseAssistanceService {
             throw new EmfException("Error reading case parameters for case id = " + caseId + " and job id = " + jobId
                     + ".");
         } finally {
-            if (session != null && session.isOpen())
-                session.close();
+            if (entityManager != null && entityManager.isOpen())
+                entityManager.close();
         }
     }
 
@@ -1294,68 +1295,68 @@ public class CaseAssistanceService {
     }
 
     public synchronized AirQualityModel addAirQualityModel(AirQualityModel airQModel) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            AirQualityModel temp = (AirQualityModel) caseDao.load(AirQualityModel.class, airQModel.getName(), session);
+            AirQualityModel temp = (AirQualityModel) caseDao.load(AirQualityModel.class, airQModel.getName(), entityManager);
 
             if (temp != null)
                 return temp;
-            caseDao.add(airQModel, session);
-            return (AirQualityModel) caseDao.load(AirQualityModel.class, airQModel.getName(), session);
+            caseDao.add(airQModel, entityManager);
+            return (AirQualityModel) caseDao.load(AirQualityModel.class, airQModel.getName(), entityManager);
         } catch (Exception e) {
             log.error("Could not add new AirQualityModel '" + airQModel.getName() + "'\n", e);
             throw new EmfException("Could not add new AirQualityModel '" + airQModel.getName() + "'");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
     public synchronized EmissionsYear addEmissionsYear(EmissionsYear emisyr) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            EmissionsYear temp = (EmissionsYear) caseDao.load(EmissionsYear.class, emisyr.getName(), session);
+            EmissionsYear temp = (EmissionsYear) caseDao.load(EmissionsYear.class, emisyr.getName(), entityManager);
 
             if (temp != null)
                 return temp;
-            caseDao.add(emisyr, session);
-            return (EmissionsYear) caseDao.load(EmissionsYear.class, emisyr.getName(), session);
+            caseDao.add(emisyr, entityManager);
+            return (EmissionsYear) caseDao.load(EmissionsYear.class, emisyr.getName(), entityManager);
         } catch (Exception e) {
             log.error("Could not add new EmissionsYear '" + emisyr.getName() + "'\n", e);
             throw new EmfException("Could not add new EmissionsYear '" + emisyr.getName() + "'");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized GeoRegion addGrid(GeoRegion grid) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            GeoRegion temp = (GeoRegion) caseDao.load(GeoRegion.class, grid.getName(), session);
+            GeoRegion temp = (GeoRegion) caseDao.load(GeoRegion.class, grid.getName(), entityManager);
 
             if (temp != null)
                 return temp;
 
-            caseDao.add(grid, session);
-            return (GeoRegion) caseDao.load(GeoRegion.class, grid.getName(), session);
+            caseDao.add(grid, entityManager);
+            return (GeoRegion) caseDao.load(GeoRegion.class, grid.getName(), entityManager);
         } catch (Exception e) {
             log.error("Could not add new Grid '" + grid.getName() + "'\n", e);
             throw new EmfException("Could not add new Grid '" + grid.getName() + "'");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized ModelToRun addModelToRun(ModelToRun model) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         
         if (DebugLevels.DEBUG_20())
             System.out.println("Before insert ModelToRun: " + model.getName());
         
         try {
             if (DebugLevels.DEBUG_20())
-                System.out.println("ModelToRun: " + model.getName() + " existed? " + (caseDao.load(ModelToRun.class, model.getName(), session) == null));
+                System.out.println("ModelToRun: " + model.getName() + " existed? " + (caseDao.load(ModelToRun.class, model.getName(), entityManager) == null));
             
-            ModelToRun temp = caseDao.loadModelTorun(model.getName(), session);
+            ModelToRun temp = caseDao.loadModelTorun(model.getName(), entityManager);
             
             if (DebugLevels.DEBUG_20())
                 System.out.println("Does " + model.getName() + " have a similar one in DB? " + (temp != null));
@@ -1363,40 +1364,40 @@ public class CaseAssistanceService {
             if (temp != null)
                 return temp;
 
-            caseDao.add(model, session);
+            caseDao.add(model, entityManager);
 
             if (DebugLevels.DEBUG_20())
                 System.out.println(model.getName() + " has been added into DB.");
 
-            return (ModelToRun) caseDao.load(ModelToRun.class, model.getName(), session);
+            return (ModelToRun) caseDao.load(ModelToRun.class, model.getName(), entityManager);
         } catch (Exception e) {
             log.error("Could not add new model to run '" + model.getName() + "'\n", e);
             throw new EmfException("Could not add new model to run '" + model.getName() + "'");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized Speciation addSpeciation(Speciation speciation) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            Speciation temp = (Speciation) caseDao.load(Speciation.class, speciation.getName(), session);
+            Speciation temp = (Speciation) caseDao.load(Speciation.class, speciation.getName(), entityManager);
 
             if (temp != null)
                 return temp;
 
-            caseDao.add(speciation, session);
-            return (Speciation) caseDao.load(Speciation.class, speciation.getName(), session);
+            caseDao.add(speciation, entityManager);
+            return (Speciation) caseDao.load(Speciation.class, speciation.getName(), entityManager);
         } catch (Exception e) {
             log.error("Could not add new speciation '" + speciation.getName() + "'\n", e);
             throw new EmfException("Could not add new speciation '" + speciation.getName() + "'");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized void updateCaseInput(User user, CaseInput input) throws EmfException {
-        Session localSession = sessionFactory.getSession();
+        EntityManager localSession = entityManagerFactory.createEntityManager();
 
         try {
             CaseInput loaded = (CaseInput) caseDao.loadCaseInput(input, localSession);
@@ -1417,7 +1418,7 @@ public class CaseAssistanceService {
     }
 
     public synchronized void updateCaseParameter(User user, CaseParameter parameter) throws EmfException {
-        Session localSession = sessionFactory.getSession();
+        EntityManager localSession = entityManagerFactory.createEntityManager();
 
         try {
             CaseParameter loaded = caseDao.loadCaseParameter(parameter, localSession);

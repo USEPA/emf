@@ -10,25 +10,25 @@ import gov.epa.emissions.framework.services.cost.ControlStrategy;
 import gov.epa.emissions.framework.services.cost.ControlStrategyInputDataset;
 import gov.epa.emissions.framework.services.cost.analysis.common.AbstractCheckMessagesStrategyTask;
 import gov.epa.emissions.framework.services.cost.analysis.common.AbstractStrategyLoader;
-import gov.epa.emissions.framework.services.cost.analysis.common.AbstractStrategyTask;
 import gov.epa.emissions.framework.services.cost.analysis.common.StrategyLoader;
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyResult;
 import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyResultType;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.persistence.EntityManagerFactory;
+
 public class StrategyTask extends AbstractCheckMessagesStrategyTask {
 
     gov.epa.emissions.framework.services.cost.analysis.projectFutureYearInventory.StrategyLoader projectLoader;
     
     public StrategyTask(ControlStrategy controlStrategy, User user, DbServerFactory dbServerFactory,
-            HibernateSessionFactory sessionFactory, StrategyLoader loader) throws EmfException {
-        super(controlStrategy, user, dbServerFactory, sessionFactory, loader);
+            EntityManagerFactory entityManagerFactory, StrategyLoader loader) throws EmfException {
+        super(controlStrategy, user, dbServerFactory, entityManagerFactory, loader);
         projectLoader = 
             ((gov.epa.emissions.framework.services.cost.analysis.projectFutureYearInventory.StrategyLoader) this.getLoader());
     }

@@ -5,7 +5,7 @@ import java.util.List;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Root;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
 
 import gov.epa.emissions.commons.data.Country;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
@@ -19,21 +19,21 @@ public class CountriesDAO {
         hibernateFacade = new HibernateFacade();
     }
 
-    public List<Country> getAll(Session session) {
-        CriteriaBuilderQueryRoot<Country> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Country.class, session);
+    public List<Country> getAll(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<Country> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Country.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<Country> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
     
-    public Country getCountry(String name, Session session) {
-        return hibernateFacade.load(Country.class, "name", name, session);
+    public Country getCountry(String name, EntityManager entityManager) {
+        return hibernateFacade.load(Country.class, "name", name, entityManager);
     }
     
-    public Country addCountry(Country country, Session session) {
-        hibernateFacade.add(country, session);
-        return getCountry(country.getName(), session);
+    public Country addCountry(Country country, EntityManager entityManager) {
+        hibernateFacade.add(country, entityManager);
+        return getCountry(country.getName(), entityManager);
     }
 
 }

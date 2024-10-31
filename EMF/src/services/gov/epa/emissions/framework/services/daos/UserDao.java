@@ -26,10 +26,12 @@ public class UserDao extends AbstractDao<User> {
             CriteriaQuery<User> criteriaQuery = builder.createQuery(User.class);
             Root<User> root = criteriaQuery.from(User.class);
 
+            criteriaQuery.select(root);
             criteriaQuery.where(builder.equal(root.get("username"), username));
             
             users = entityManager.createQuery(criteriaQuery).getResultList();
         } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
             e.printStackTrace();
         } finally {
             entityManager.close();
@@ -50,6 +52,7 @@ public class UserDao extends AbstractDao<User> {
             Predicate crit1 = builder.equal(root.get("email"), email);
             Predicate crit2 = builder.notEqual(root.get("id"), Integer.valueOf(id));
             
+            criteriaQuery.select(root);
             criteriaQuery.where(new Predicate[]{crit1, crit2});
             
             users = entityManager.createQuery(criteriaQuery).getResultList();

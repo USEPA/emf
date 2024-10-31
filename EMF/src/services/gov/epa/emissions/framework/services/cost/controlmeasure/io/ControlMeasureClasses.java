@@ -3,39 +3,38 @@ package gov.epa.emissions.framework.services.cost.controlmeasure.io;
 import gov.epa.emissions.framework.services.cost.ControlMeasureClass;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Root;
 
-import org.hibernate.Session;
-
 public class ControlMeasureClasses {
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private HibernateFacade facade;
 
     private List classList;
 
-    public ControlMeasureClasses(HibernateSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public ControlMeasureClasses(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
         this.facade = new HibernateFacade();
         classList = controlMeasureClasses();
     }
 
     private List<ControlMeasureClass> controlMeasureClasses() {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            CriteriaBuilderQueryRoot<ControlMeasureClass> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(ControlMeasureClass.class, session);
+            CriteriaBuilderQueryRoot<ControlMeasureClass> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(ControlMeasureClass.class, entityManager);
             CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
             Root<ControlMeasureClass> root = criteriaBuilderQueryRoot.getRoot();
 
-            return facade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+            return facade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -67,20 +66,20 @@ public class ControlMeasureClasses {
     }
 
     private void save(ControlMeasureClass controlMeasureClass) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            facade.add(controlMeasureClass, session);
+            facade.add(controlMeasureClass, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private ControlMeasureClass load(String name) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return (ControlMeasureClass) facade.load(ControlMeasureClass.class, Restrictions.eq("name", name), session);
+            return (ControlMeasureClass) facade.load(ControlMeasureClass.class, Restrictions.eq("name", name), entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
  */

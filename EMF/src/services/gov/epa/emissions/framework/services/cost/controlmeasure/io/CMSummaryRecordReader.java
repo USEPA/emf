@@ -12,13 +12,14 @@ import gov.epa.emissions.framework.services.cost.ControlMeasureClass;
 import gov.epa.emissions.framework.services.cost.ControlMeasureMonth;
 import gov.epa.emissions.framework.services.cost.ControlMeasureNEIDevice;
 import gov.epa.emissions.framework.services.cost.data.ControlTechnology;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
+
+import javax.persistence.EntityManagerFactory;
 
 public class CMSummaryRecordReader {
 
@@ -44,14 +45,14 @@ public class CMSummaryRecordReader {
 
     private int errorLimit = 100;
 
-    public CMSummaryRecordReader(CMFileFormat fileFormat, User user, HibernateSessionFactory sessionFactory) {
+    public CMSummaryRecordReader(CMFileFormat fileFormat, User user, EntityManagerFactory entityManagerFactory) {
         this.fileFormat = fileFormat;
-        this.cmAddImportStatus = new CMAddImportStatus(user, sessionFactory);
-        pollutants = new Pollutants(sessionFactory);
-        controlTechnologies = new ControlTechnologies(sessionFactory);
-        sourceGroups = new SourceGroups(sessionFactory);
-        sectors = new Sectors(sessionFactory);
-        controlMeasureClasses = new ControlMeasureClasses(sessionFactory);
+        this.cmAddImportStatus = new CMAddImportStatus(user, entityManagerFactory);
+        pollutants = new Pollutants(entityManagerFactory);
+        controlTechnologies = new ControlTechnologies(entityManagerFactory);
+        sourceGroups = new SourceGroups(entityManagerFactory);
+        sectors = new Sectors(entityManagerFactory);
+        controlMeasureClasses = new ControlMeasureClasses(entityManagerFactory);
         this.namesList = new ArrayList();
         this.abbrevList = new ArrayList();
     }

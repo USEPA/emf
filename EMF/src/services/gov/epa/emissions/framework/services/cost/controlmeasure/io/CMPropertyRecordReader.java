@@ -6,9 +6,10 @@ import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.cost.ControlMeasure;
 import gov.epa.emissions.framework.services.cost.ControlMeasureProperty;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.Map;
+
+import javax.persistence.EntityManagerFactory;
 
 public class CMPropertyRecordReader {
 
@@ -20,15 +21,15 @@ public class CMPropertyRecordReader {
     
     private int errorLimit = 100;
     
-//    private HibernateSessionFactory sessionFactory;
+//    private EntityManagerFactory entityManagerFactory;
 
     private ControlMeasurePropertyCategories categories;
 
-    public CMPropertyRecordReader(CMPropertyFileFormat fileFormat, User user, HibernateSessionFactory sessionFactory) {
+    public CMPropertyRecordReader(CMPropertyFileFormat fileFormat, User user, EntityManagerFactory entityManagerFactory) {
         this.fileFormat = fileFormat;
-        this.status = new CMAddImportStatus(user, sessionFactory);
-//        this.sessionFactory = sessionFactory;
-        this.categories = new ControlMeasurePropertyCategories(sessionFactory);
+        this.status = new CMAddImportStatus(user, entityManagerFactory);
+//        this.entityManagerFactory = entityManagerFactory;
+        this.categories = new ControlMeasurePropertyCategories(entityManagerFactory);
     }
 
     public void parse(Map controlMeasures, Record record, int lineNo) throws ImporterException {

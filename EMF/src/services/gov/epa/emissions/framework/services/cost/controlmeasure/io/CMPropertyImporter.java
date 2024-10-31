@@ -6,13 +6,14 @@ import gov.epa.emissions.commons.io.importer.ImporterException;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Date;
 import java.util.Map;
+
+import javax.persistence.EntityManagerFactory;
 
 public class CMPropertyImporter{
 
@@ -22,14 +23,14 @@ public class CMPropertyImporter{
 
     private User user;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
     
     public CMPropertyImporter(File file, CMPropertyFileFormat fileFormat, 
-            User user, HibernateSessionFactory sessionFactory) {
+            User user, EntityManagerFactory entityManagerFactory) {
         this.file = file;
         this.user = user;
-        this.sessionFactory = sessionFactory;
-        this.propertyReader = new CMPropertyRecordReader(fileFormat, user, sessionFactory);
+        this.entityManagerFactory = entityManagerFactory;
+        this.propertyReader = new CMPropertyRecordReader(fileFormat, user, entityManagerFactory);
     }
 
     public void run(Map controlMeasures) throws ImporterException, FileNotFoundException {
@@ -59,7 +60,7 @@ public class CMPropertyImporter{
         endStatus.setMessage(message + "\n");
         endStatus.setTimestamp(new Date());
 
-        new StatusDAO(sessionFactory).add(endStatus);
+        new StatusDAO(entityManagerFactory).add(endStatus);
     }
 
 }

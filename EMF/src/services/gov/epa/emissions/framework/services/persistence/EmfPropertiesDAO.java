@@ -1,6 +1,6 @@
 package gov.epa.emissions.framework.services.persistence;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
 
 import gov.epa.emissions.framework.services.basic.EmfProperty;
 
@@ -12,7 +12,7 @@ public class EmfPropertiesDAO {
         hibernateFacade = new HibernateFacade();
     }
 
-    public EmfProperty getProperty(String name, Session session) {
-        return hibernateFacade.load(EmfProperty.class, "name", name, session);
+    public EmfProperty getProperty(String name, EntityManager entityManager) {
+        return hibernateFacade.load(EmfProperty.class, "name", name, entityManager);
     }
 }

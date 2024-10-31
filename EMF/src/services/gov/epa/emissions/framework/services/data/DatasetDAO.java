@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
+import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -56,8 +57,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 public class DatasetDAO {
 
@@ -83,48 +82,48 @@ public class DatasetDAO {
         this.dbServerFactory = dbServerFactory;
     }
 
-    public <C> boolean exists(int id, Class<C> clazz, Session session) {
-        return hibernateFacade.exists(id, clazz, session);
+    public <C> boolean exists(int id, Class<C> clazz, EntityManager entityManager) {
+        return hibernateFacade.exists(id, clazz, entityManager);
     }
 
     /*
      * Return true if the name is already used
      */
-    public <C> boolean nameUsed(String name, Class<C> clazz, Session session) {
-        return hibernateFacade.nameUsed(name, clazz, session); // case insensitive comparison
+    public <C> boolean nameUsed(String name, Class<C> clazz, EntityManager entityManager) {
+        return hibernateFacade.nameUsed(name, clazz, entityManager); // case insensitive comparison
     }
 
-    public <C> C current(int id, Class<C> clazz, Session session) {
-        return hibernateFacade.current(id, clazz, session);
+    public <C> C current(int id, Class<C> clazz, EntityManager entityManager) {
+        return hibernateFacade.current(id, clazz, entityManager);
     }
 
-    public boolean canUpdate(EmfDataset dataset, Session session) throws Exception {
-        return canUpdate(dataset.getId(), dataset.getName(), session);
+    public boolean canUpdate(EmfDataset dataset, EntityManager entityManager) throws Exception {
+        return canUpdate(dataset.getId(), dataset.getName(), entityManager);
     }
 
-    private boolean canUpdate(int id, String newName, Session session) throws Exception {
-        if (!exists(id, EmfDataset.class, session)) {
+    private boolean canUpdate(int id, String newName, EntityManager entityManager) throws Exception {
+        if (!exists(id, EmfDataset.class, entityManager)) {
             throw new EmfException("Dataset with id=" + id + " does not exist.");
         }
 
-        EmfDataset current = (EmfDataset) current(id, EmfDataset.class, session);
-        session.clear();// clear to flush current
+        EmfDataset current = (EmfDataset) current(id, EmfDataset.class, entityManager);
+        entityManager.clear();// clear to flush current
         if (current.getName().equalsIgnoreCase(newName))
             return true;
 
-        return !datasetNameUsed(newName, session);
+        return !datasetNameUsed(newName, entityManager);
     }
 
-    public boolean exists(String name, Session session) {
-        return hibernateFacade.exists(name, EmfDataset.class, session);
+    public boolean exists(String name, EntityManager entityManager) {
+        return hibernateFacade.exists(name, EmfDataset.class, entityManager);
     }
 
-    public List all(Session session) {
-        CriteriaBuilderQueryRoot<EmfDataset> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EmfDataset.class, session);
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, session);
+    public List all(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<EmfDataset> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EmfDataset.class, entityManager);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, entityManager);
     }
 
-    public int getNumOfDatasets(int userId, Session session) {
+    public int getNumOfDatasets(int userId, EntityManager entityManager) {
         String dsts = "( select DT from DatasetType as DT " 
             + "where "
             + " DT.id not in (select EDT.id from User as U "
@@ -132,13 +131,13 @@ public class DatasetDAO {
             + userId + ")" 
             + " order by DT.name )";
         
-        List<?> num = session.createQuery("SELECT COUNT(ds.id) from EmfDataset as ds " 
+        List<?> num = entityManager.createQuery("SELECT COUNT(ds.id) from EmfDataset as ds " 
                 + " where ds.status <> 'Deleted' and ds.datasetType.id in " + dsts )
-                .list();
+                .getResultList();
         return Integer.parseInt(num.get(0).toString());
     }
 
-    public int getNumOfDatasets(Session session, String name, int userId) {
+    public int getNumOfDatasets(EntityManager entityManager, String name, int userId) {
         String ns = Utils.getPattern(name.toLowerCase().trim());
         String dsts = "( select DT from DatasetType as DT " 
             + "where "
@@ -147,45 +146,45 @@ public class DatasetDAO {
             + userId + ")" 
             + " order by DT.name )";
       
-        List<?> num = session.createQuery(
+        List<?> num = entityManager.createQuery(
                 "SELECT COUNT(ds.id) from EmfDataset as ds where ds.status <> 'Deleted' " + " AND lower(ds.name) like "
-                        + ns + " and ds.datasetType.id in " + dsts ).list();
+                        + ns + " and ds.datasetType.id in " + dsts ).getResultList();
         return Integer.parseInt(num.get(0).toString());
     }
 
-    public int getNumOfDatasets(Session session, int dsTypeId) {
-        List<?> num = session.createQuery(
+    public int getNumOfDatasets(EntityManager entityManager, int dsTypeId) {
+        List<?> num = entityManager.createQuery(
                 "SELECT COUNT(ds.id) from EmfDataset as ds where ds.status <> 'Deleted' " + " AND ds.datasetType.id = "
-                        + dsTypeId).list();
+                        + dsTypeId).getResultList();
 
         return Integer.parseInt(num.get(0).toString());
     }
 
-    public int getNumOfDatasets(Session session, int dsTypeId, String name) {
+    public int getNumOfDatasets(EntityManager entityManager, int dsTypeId, String name) {
         String ns = Utils.getPattern(name.toLowerCase().trim());
-        List<?> num = session.createQuery(
+        List<?> num = entityManager.createQuery(
                 "SELECT COUNT(ds.id) from EmfDataset as ds where ds.status <> 'Deleted' " + " AND ds.datasetType.id = "
-                        + dsTypeId + " AND lower(ds.name) like " + ns).list();
+                        + dsTypeId + " AND lower(ds.name) like " + ns).getResultList();
 
         return Integer.parseInt(num.get(0).toString());
     }
 
     // FIXME: to be deleted after dataset removed from db
-    public List allNonDeleted(Session session, int userId) {
+    public List allNonDeleted(EntityManager entityManager, int userId) {
         String dsts = "( select DT from DatasetType as DT " 
             + "where "
             + " DT.id not in (select EDT.id from User as U "
             + " inner join U.excludedDatasetTypes as EDT where U.id = "
             + userId + ")" 
             + " order by DT.name )";
-        return session
+        return entityManager
                 .createQuery(
                         "select new EmfDataset(DS.id, DS.name, DS.defaultVersion, DS.modifiedDateTime, DS.datasetType.id, DS.datasetType.name, DS.status, DS.creator, DS.creatorFullName, IU.name, P.name, R.name, DS.startDateTime, DS.stopDateTime, DS.temporalResolution) "
                                 + " from EmfDataset as DS left join DS.intendedUse as IU left join DS.project as P left join DS.region as R "
-                                + " where DS.status <> 'Deleted' and DS.datasetType.id in " + dsts + "order by DS.name").list();
+                                + " where DS.status <> 'Deleted' and DS.datasetType.id in " + dsts + "order by DS.name").getResultList();
     }
 
-    public List allNonDeleted(Session session, String nameContains, int userId) {
+    public List allNonDeleted(EntityManager entityManager, String nameContains, int userId) {
         String ns = Utils.getPattern(nameContains.toLowerCase().trim());
         String dsts = " (select DT from DatasetType as DT " 
             + "where "
@@ -193,17 +192,17 @@ public class DatasetDAO {
             + " inner join U.excludedDatasetTypes as EDT where U.id = "
             + userId + ")" 
             + " order by DT.name ) ";
-        return session
+        return entityManager
                 .createQuery(
                         "select new EmfDataset(DS.id, DS.name, DS.defaultVersion, DS.modifiedDateTime, DS.datasetType.id, DS.datasetType.name, DS.status, DS.creator, DS.creatorFullName, IU.name, P.name, R.name, DS.startDateTime, DS.stopDateTime, DS.temporalResolution) "
                                 + " from EmfDataset as DS left join DS.intendedUse as IU left join DS.project as P left join DS.region as R "
                                 + " where lower(DS.name) like "
                                 + ns
                                 + " and DS.status <> 'Deleted' and DS.datasetType.id in " + dsts 
-                                + " order by DS.name").list();
+                                + " order by DS.name").getResultList();
     }
 
-    public void add(EmfDataset dataset, Session session) throws EmfException {
+    public void add(EmfDataset dataset, EntityManager entityManager) throws EmfException {
         //NOTE: to trim the leading and trailing spaces???
         String name = dataset.getName();
         
@@ -215,48 +214,48 @@ public class DatasetDAO {
         }
         dataset.setName(newName);
         
-        hibernateFacade.add(dataset, session);
+        hibernateFacade.add(dataset, entityManager);
     }
 
-    public void add(Version version, Session session) {
-        hibernateFacade.add(version, session);
+    public void add(Version version, EntityManager entityManager) {
+        hibernateFacade.add(version, entityManager);
     }
 
     // NOTE: make sure dataset has no changes in name, emission table name(s)
     // when call this update method. Not for updating status to be 'Deleted'.
-    public void updateDSPropNoLocking(EmfDataset dataset, Session session) throws Exception {
-        hibernateFacade.updateOnly(dataset, session);
+    public void updateDSPropNoLocking(EmfDataset dataset, EntityManager entityManager) throws Exception {
+        hibernateFacade.updateOnly(dataset, entityManager);
     }
 
-    public void updateWithoutLocking(EmfDataset dataset, Session session) throws Exception {
+    public void updateWithoutLocking(EmfDataset dataset, EntityManager entityManager) throws Exception {
 //        try {
-//            renameEmissionTable(dataset, getDataset(session, dataset.getId()), session);
+//            renameEmissionTable(dataset, getDataset(entityManager, dataset.getId()), entityManager);
 //        } catch (Exception e) {
 //            LOG.info("Can not rename emission table: " + dataset.getInternalSources()[0].getTable());
 //        } finally {
-            session.clear();
-            hibernateFacade.updateOnly(dataset, session);
+            entityManager.clear();
+            hibernateFacade.updateOnly(dataset, entityManager);
 //        }
     }
 
-    public void remove(EmfDataset dataset, Session session) {
+    public void remove(EmfDataset dataset, EntityManager entityManager) {
         if (DebugLevels.DEBUG_12())
-            System.out.println("dataset dao remove(dataset, session) called: " + dataset.getId() + " "
+            System.out.println("dataset dao remove(dataset, entityManager) called: " + dataset.getId() + " "
                     + dataset.getName());
 
         ExternalSource[] extSrcs = null;
 
         if (dataset.isExternal())
-            extSrcs = getExternalSrcs(dataset.getId(), -1, null, session);
+            extSrcs = getExternalSrcs(dataset.getId(), -1, null, entityManager);
 
         if (extSrcs != null && extSrcs.length > 0)
-            hibernateFacade.removeObjects(extSrcs, session);
+            hibernateFacade.removeObjects(extSrcs, entityManager);
 
-        hibernateFacade.remove(dataset, session);
+        hibernateFacade.remove(dataset, entityManager);
     }
 
     // FIXME: change this method name to indicate mark deleted
-    public void remove(User user, EmfDataset dataset, Session session) throws EmfException {
+    public void remove(User user, EmfDataset dataset, EntityManager entityManager) throws EmfException {
         if (DebugLevels.DEBUG_14())
             System.out.println("DatasetDAO starts removing dataset " + dataset.getName() + " " + new Date());
 
@@ -271,16 +270,16 @@ public class DatasetDAO {
                     + dataset.getLockOwner());
 
         if (DebugLevels.DEBUG_12()) {
-            System.out.println("dataset dao remove(user, dataset, session) called: " + dataset.getId() + " "
+            System.out.println("dataset dao remove(user, dataset, entityManager) called: " + dataset.getId() + " "
                     + datasetName);
             System.out.println("Dataset status: " + dataset.getStatus() + " dataset retrieved null? "
-                    + (getDataset(session, dataset.getId()) == null));
+                    + (getDataset(entityManager, dataset.getId()) == null));
         }
 
-        checkIfUsedByCases(new int[] { dataset.getId() }, session);
+        checkIfUsedByCases(new int[] { dataset.getId() }, entityManager);
 
         // Disabled temporarily according to Alison's request 1/15/2008
-        // if (isUsedByControlStrategies(session, dataset))
+        // if (isUsedByControlStrategies(entityManager, dataset))
         // throw new EmfException("Cannot delete \"" + dataset.getName() + "\" - it is use by a control strategy.");
 
         String prefix = "DELETED_" + new Date().getTime() + "_";
@@ -288,7 +287,7 @@ public class DatasetDAO {
         try {
             String newName = prefix + datasetName;
 
-            if (!canUpdate(dataset.getId(), newName, session)) // Check to see if the new name is available
+            if (!canUpdate(dataset.getId(), newName, entityManager)) // Check to see if the new name is available
                 throw new EmfException("The Dataset name is already in use: " + dataset.getName());
 
             DatasetType type = dataset.getDatasetType();
@@ -296,7 +295,7 @@ public class DatasetDAO {
             if (type != null && type.getTablePerDataset() > 1)
                 LOG.info("Renaming emission tables for dataset " + dataset.getName() + " is not allowed.");
 
-            EmfDataset locked = obtainLocked(user, dataset, session);
+            EmfDataset locked = obtainLocked(user, dataset, entityManager);
 
             if (locked == null) {
                 LOG.info("Could not get lock on dataset " + dataset.getName() + " to remove it.");
@@ -313,7 +312,7 @@ public class DatasetDAO {
             
             locked.setStatus("Deleted");
 
-            updateToRemove(locked, dataset, session);
+            updateToRemove(locked, dataset, entityManager);
         } catch (Exception e) {
             LOG.error("Could not remove dataset " + datasetName + ".", e);
             throw new EmfException("Could not remove dataset " + datasetName + ". Reason: " + e.getMessage());
@@ -323,48 +322,48 @@ public class DatasetDAO {
             System.out.println("DatasetDAO has finished removing dataset " + dataset.getName() + " " + new Date());
     }
 
-    public EmfDataset obtainLocked(User user, EmfDataset dataset, Session session) {
-        return (EmfDataset) lockingScheme.getLocked(user, current(dataset, session), session);
+    public EmfDataset obtainLocked(User user, EmfDataset dataset, EntityManager entityManager) {
+        return (EmfDataset) lockingScheme.getLocked(user, current(dataset, entityManager), entityManager);
     }
 
-    public EmfDataset releaseLocked(User user, EmfDataset locked, Session session) {
-        return (EmfDataset) lockingScheme.releaseLock(user, current(locked, session), session);
+    public EmfDataset releaseLocked(User user, EmfDataset locked, EntityManager entityManager) {
+        return (EmfDataset) lockingScheme.releaseLock(user, current(locked, entityManager), entityManager);
     }
 
-    public Revision update(Revision revision, Session session) throws EmfException {
-        return (Revision) lockingScheme.releaseLockOnUpdate(revision, current(revision, session), session);
+    public Revision update(Revision revision, EntityManager entityManager) throws EmfException {
+        return (Revision) lockingScheme.releaseLockOnUpdate(revision, current(revision, entityManager), entityManager);
     }
 
-    public Revision obtainLocked(User user, Revision revision, Session session) {
-        return (Revision) lockingScheme.getLocked(user, current(revision, session), session);
+    public Revision obtainLocked(User user, Revision revision, EntityManager entityManager) {
+        return (Revision) lockingScheme.getLocked(user, current(revision, entityManager), entityManager);
     }
 
-    public Revision releaseLocked(User user, Revision revision, Session session) {
-        return (Revision) lockingScheme.releaseLock(user, current(revision, session), session);
+    public Revision releaseLocked(User user, Revision revision, EntityManager entityManager) {
+        return (Revision) lockingScheme.releaseLock(user, current(revision, entityManager), entityManager);
     }
 
-    public EmfDataset update(EmfDataset locked, Session session) throws Exception {
+    public EmfDataset update(EmfDataset locked, EntityManager entityManager) throws Exception {
         EmfDataset toReturn = null;
 
 //        try {
-//            renameEmissionTable(locked, getDataset(session, locked.getId()), session);
+//            renameEmissionTable(locked, getDataset(entityManager, locked.getId()), entityManager);
 //        } catch (Exception e) {
 //            LOG.error("Can not rename emission table: " + locked.getInternalSources()[0].getTable(), e);
 //        } finally { // to ignore if the rename fails
             if (DebugLevels.DEBUG_12())
                 System.out.println("Update dataset " + locked.getName() + " with id: " + locked.getId());
 
-            toReturn = (EmfDataset) lockingScheme.releaseLockOnUpdate(locked, current(locked, session), session);
+            toReturn = (EmfDataset) lockingScheme.releaseLockOnUpdate(locked, current(locked, entityManager), entityManager);
 //        }
 
         return toReturn;
     }
 
-    private void updateToRemove(EmfDataset locked, EmfDataset oldDataset, Session session) throws Exception {
+    private void updateToRemove(EmfDataset locked, EmfDataset oldDataset, EntityManager entityManager) throws Exception {
         try {
             if (DebugLevels.DEBUG_14())
                 System.out.println("DatasetDAO starts renaming emission table for dataset: " + oldDataset.getName());
-            renameEmissionTable(locked, oldDataset, session);
+            renameEmissionTable(locked, oldDataset, entityManager);
             if (DebugLevels.DEBUG_14())
                 System.out.println("DatasetDAO has finished renaming emission table for dataset: "
                         + oldDataset.getName());
@@ -374,20 +373,20 @@ public class DatasetDAO {
             if (DebugLevels.DEBUG_12())
                 System.out.println("Update to remove " + locked.getName() + " with id: " + locked.getId());
 
-            lockingScheme.releaseLockOnUpdate(locked, current(locked, session), session);
+            lockingScheme.releaseLockOnUpdate(locked, current(locked, entityManager), entityManager);
         }
     }
 
-    private EmfDataset current(EmfDataset dataset, Session session) {
-        return (EmfDataset) current(dataset.getId(), EmfDataset.class, session);
+    private EmfDataset current(EmfDataset dataset, EntityManager entityManager) {
+        return (EmfDataset) current(dataset.getId(), EmfDataset.class, entityManager);
     }
 
-    private Revision current(Revision revision, Session session) {
-        return (Revision) current(revision.getId(), Revision.class, session);
+    private Revision current(Revision revision, EntityManager entityManager) {
+        return (Revision) current(revision.getId(), Revision.class, entityManager);
     }
 
-    public List getDatasets(Session session, DatasetType datasetType) {
-        CriteriaBuilderQueryRoot<EmfDataset> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EmfDataset.class, session);
+    public List getDatasets(EntityManager entityManager, DatasetType datasetType) {
+        CriteriaBuilderQueryRoot<EmfDataset> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EmfDataset.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<EmfDataset> root = criteriaBuilderQueryRoot.getRoot();
 
@@ -396,22 +395,22 @@ public class DatasetDAO {
         Predicate typeCrit = builder.equal(root.get("datasetType"), datasetType);
         Predicate criterion = builder.and(statusCrit, typeCrit);
         javax.persistence.criteria.Order order = builder.asc(root.get("name"));
-        return hibernateFacade.get(criteriaBuilderQueryRoot, criterion, order, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, criterion, order, entityManager);
     }
 
-    public List getDatasets(Session session, int datasetTypeId) {
-        return session
+    public List getDatasets(EntityManager entityManager, int datasetTypeId) {
+        return entityManager
                 .createQuery(
                         "select new EmfDataset(DS.id, DS.name, DS.defaultVersion, DS.modifiedDateTime, DS.datasetType.id, DS.datasetType.name, DS.status, DS.creator, DS.creatorFullName, IU.name, P.name, R.name, DS.startDateTime,DS.stopDateTime, DS.temporalResolution) "
                                 + " from EmfDataset as DS left join DS.intendedUse as IU left join DS.project as P left join DS.region as R "
                                 + " where DS.datasetType.id = "
                                 + datasetTypeId
-                                + " and DS.status <> 'Deleted' order by DS.name").list();
+                                + " and DS.status <> 'Deleted' order by DS.name").getResultList();
     }
 
-    public List getDatasetsWithFilter(Session session, int datasetTypeId, String nameContains) {
+    public List getDatasetsWithFilter(EntityManager entityManager, int datasetTypeId, String nameContains) {
         String ns = Utils.getPattern(nameContains.toLowerCase().trim());
-        return session
+        return entityManager
                 .createQuery(
                         "select new EmfDataset(DS.id, DS.name, DS.defaultVersion, DS.modifiedDateTime, DS.datasetType.id, DS.datasetType.name, DS.status, DS.creator, DS.creatorFullName, IU.name, P.name, R.name, DS.startDateTime, DS.stopDateTime, DS.temporalResolution) "
                                 + " from EmfDataset as DS left join DS.intendedUse as IU left join DS.project as P left join DS.region as R "
@@ -419,27 +418,27 @@ public class DatasetDAO {
                                 + datasetTypeId
                                 + " and lower(DS.name) like "
                                 + ns
-                                + " and DS.status <> 'Deleted' " + " order by DS.name").list();
+                                + " and DS.status <> 'Deleted' " + " order by DS.name").getResultList();
     }
 
-    public List getDatasets(Session session, int datasetTypeId, String nameContains) {
+    public List getDatasets(EntityManager entityManager, int datasetTypeId, String nameContains) {
         String ns = Utils.getPattern(nameContains.toLowerCase().trim());
-        return session
+        return entityManager
                 .createQuery(
                         "select new EmfDataset( DS.id, DS.name, DS.defaultVersion, DS.datasetType.id, DS.datasetType.name) from EmfDataset as DS where DS.datasetType.id = "
                                 + datasetTypeId
                                 + " and lower(DS.name) like "
                                 + ns
                                 + " and DS.status <> 'Deleted' "
-                                + " order by DS.name").list();
+                                + " order by DS.name").getResultList();
     }
 
-    public void addExternalSources(ExternalSource[] srcs, Session session) {
-        hibernateFacade.add(srcs, session);
+    public void addExternalSources(ExternalSource[] srcs, EntityManager entityManager) {
+        hibernateFacade.add(srcs, entityManager);
     }
 
     // NOTE: limit < 0 will return all external sources
-    public ExternalSource[] getExternalSrcs(int datasetId, int limit, String filter, Session session) {
+    public ExternalSource[] getExternalSrcs(int datasetId, int limit, String filter, EntityManager entityManager) {
         String query = " FROM " + ExternalSource.class.getSimpleName() + " as ext WHERE ext.datasetId=" + datasetId;
 
         if (filter != null && !filter.trim().isEmpty() && !filter.trim().equals("*"))
@@ -448,24 +447,24 @@ public class DatasetDAO {
         List<ExternalSource> srcsList = new ArrayList<ExternalSource>();
 
         if (limit < 0)
-            srcsList = session.createQuery(query).list();
+            srcsList = entityManager.createQuery(query).getResultList();
 
         if (limit > 0)
-            srcsList = session.createQuery(query).setMaxResults(limit).list();
+            srcsList = entityManager.createQuery(query).setMaxResults(limit).getResultList();
 
         return srcsList.toArray(new ExternalSource[0]);
     }
 
-    public boolean isExternal(int datasetId, Session session) {
+    public boolean isExternal(int datasetId, EntityManager entityManager) {
         String query = "SELECT COUNT(ext) FROM " + ExternalSource.class.getSimpleName()
                 + " as ext WHERE ext.datasetId=" + datasetId;
-        List count = session.createSQLQuery(query).list();
+        List count = entityManager.createQuery(query).getResultList();
 
         return count != null && count.size() > 0;
     }
 
-    public EmfDataset getDataset(Session session, String name) {
-        CriteriaBuilderQueryRoot<EmfDataset> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EmfDataset.class, session);
+    public EmfDataset getDataset(EntityManager entityManager, String name) {
+        CriteriaBuilderQueryRoot<EmfDataset> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EmfDataset.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<EmfDataset> root = criteriaBuilderQueryRoot.getRoot();
 
@@ -474,7 +473,7 @@ public class DatasetDAO {
         Predicate nameCrit = builder.equal(root.get("name"), name);
         Predicate criterion = builder.and(statusCrit, nameCrit);
 
-        List<EmfDataset> list = hibernateFacade.get(criteriaBuilderQueryRoot, criterion, builder.asc(root.get("name")), session);
+        List<EmfDataset> list = hibernateFacade.get(criteriaBuilderQueryRoot, criterion, builder.asc(root.get("name")), entityManager);
 
         if (list == null || list.size() == 0)
             return null;
@@ -482,20 +481,20 @@ public class DatasetDAO {
         return list.get(0);
     }
     
-    public EmfDataset getDataset(Session session, int id) {
-        return getDataset(session, id, true);
+    public EmfDataset getDataset(EntityManager entityManager, int id) {
+        return getDataset(entityManager, id, true);
     }
 
-    public EmfDataset getDataset(Session session, int id, boolean clearSession) {
+    public EmfDataset getDataset(EntityManager entityManager, int id, boolean clearSession) {
         if (clearSession)
-            session.clear(); // to clear the cached objects in session if any
+            entityManager.clear(); // to clear the cached objects in entityManager if any
 
-        CriteriaBuilderQueryRoot<EmfDataset> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EmfDataset.class, session);
+        CriteriaBuilderQueryRoot<EmfDataset> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EmfDataset.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<EmfDataset> root = criteriaBuilderQueryRoot.getRoot();
 
         return hibernateFacade.load(
-                session, 
+                entityManager, 
                 criteriaBuilderQueryRoot, 
                 builder.and(
                         builder.notEqual(root.get("status"), "Deleted"), 
@@ -504,13 +503,13 @@ public class DatasetDAO {
             );
     }
 
-    public Version getVersion(Session session, int datasetId, int version) {
-        CriteriaBuilderQueryRoot<Version> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Version.class, session);
+    public Version getVersion(EntityManager entityManager, int datasetId, int version) {
+        CriteriaBuilderQueryRoot<Version> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Version.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<Version> root = criteriaBuilderQueryRoot.getRoot();
 
         return hibernateFacade.load(
-                session, 
+                entityManager, 
                 criteriaBuilderQueryRoot, 
                 builder.and(
                         builder.equal(root.get("datasetId"), Integer.valueOf(datasetId)), 
@@ -519,9 +518,9 @@ public class DatasetDAO {
             );
     }
 
-    public boolean isUsedByControlStrategies(Session session, EmfDataset dataset) {
-        CriteriaBuilderQueryRoot<ControlStrategy> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlStrategy.class, session);
-        List<ControlStrategy> strategies = hibernateFacade.getAll(criteriaBuilderQueryRoot, session);
+    public boolean isUsedByControlStrategies(EntityManager entityManager, EmfDataset dataset) {
+        CriteriaBuilderQueryRoot<ControlStrategy> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlStrategy.class, entityManager);
+        List<ControlStrategy> strategies = hibernateFacade.getAll(criteriaBuilderQueryRoot, entityManager);
 
         if (strategies == null || strategies.isEmpty())
             return false;
@@ -535,10 +534,10 @@ public class DatasetDAO {
         return false;
     }
 
-    public boolean isUsedByCases(Session session, EmfDataset dataset) {
+    public boolean isUsedByCases(EntityManager entityManager, EmfDataset dataset) {
         CaseDAO caseDao = new CaseDAO();
 
-        List caseInputs = caseDao.getAllCaseInputs(session);
+        List caseInputs = caseDao.getAllCaseInputs(entityManager);
 
         if (caseInputs == null || caseInputs.isEmpty())
             return false;
@@ -567,17 +566,17 @@ public class DatasetDAO {
         return false;
     }
 
-    public long getDatasetRecordsNumber(DbServer dbServer, Session session, EmfDataset dataset, Version version)
+    public long getDatasetRecordsNumber(DbServer dbServer, EntityManager entityManager, EmfDataset dataset, Version version)
             throws SQLException {
         DatasetType type = dataset.getDatasetType();
 
         if (type.getExporterClassName().endsWith("ExternalFilesExporter"))
-            return getExternalSrcs(dataset.getId(), -1, null, session).length;
+            return getExternalSrcs(dataset.getId(), -1, null, entityManager).length;
 
         Datasource datasource = dbServer.getEmissionsDatasource();
         InternalSource source = dataset.getInternalSources()[0];
         String qualifiedTable = datasource.getName() + "." + source.getTable();
-        String countQuery = "SELECT count(*) FROM " + qualifiedTable + getWhereClause(version, session);
+        String countQuery = "SELECT count(*) FROM " + qualifiedTable + getWhereClause(version, entityManager);
         long totalCount = 0;
 
         try {
@@ -596,12 +595,12 @@ public class DatasetDAO {
         return totalCount;
     }
 
-    public Integer[] getDatasetRecordsNumber(DbServer dbServer, Session session, EmfDataset dataset, Version[] versions, String tableName)
+    public Integer[] getDatasetRecordsNumber(DbServer dbServer, EntityManager entityManager, EmfDataset dataset, Version[] versions, String tableName)
     throws SQLException {
         DatasetType type = dataset.getDatasetType();
 
         if (type.getExporterClassName().endsWith("ExternalFilesExporter"))
-            return new Integer[]{getExternalSrcs(dataset.getId(), -1, null, session).length};
+            return new Integer[]{getExternalSrcs(dataset.getId(), -1, null, entityManager).length};
 
         int nVersions = versions.length;
         Integer[] totalCount = new Integer[nVersions];
@@ -611,7 +610,7 @@ public class DatasetDAO {
         for ( int i =0 ; i < versions.length; i++ ){
             //source = dataset.getInternalSources()[sIndex];
             String qualifiedTable = datasource.getName() + "." + tableName;
-            String countQuery = "SELECT count(*) FROM " + qualifiedTable + getWhereClause(versions[i], session);
+            String countQuery = "SELECT count(*) FROM " + qualifiedTable + getWhereClause(versions[i], entityManager);
             totalCount[i] = 0;
 
             try {
@@ -630,8 +629,8 @@ public class DatasetDAO {
         return totalCount;
     }
 
-    private String getWhereClause(Version version, Session session) {
-        String versions = versionsList(version, session);
+    private String getWhereClause(Version version, EntityManager entityManager) {
+        String versions = versionsList(version, entityManager);
         String deleteClause = createDeleteClause(versions);
 
         String whereClause = " WHERE dataset_id = " + version.getDatasetId() + " AND version IN (" + versions + ")"
@@ -662,9 +661,9 @@ public class DatasetDAO {
         return buffer.toString();
     }
 
-    private String versionsList(Version finalVersion, Session session) {
+    private String versionsList(Version finalVersion, EntityManager entityManager) {
         Versions versions = new Versions();
-        Version[] path = versions.getPath(finalVersion.getDatasetId(), finalVersion.getVersion(), session);
+        Version[] path = versions.getPath(finalVersion.getDatasetId(), finalVersion.getVersion(), entityManager);
 
         StringBuffer result = new StringBuffer();
         for (int i = 0; i < path.length; i++) {
@@ -675,14 +674,14 @@ public class DatasetDAO {
         return result.toString();
     }
 
-    private void renameEmissionTable(EmfDataset dataset, EmfDataset oldDataset, Session session) throws Exception {
+    private void renameEmissionTable(EmfDataset dataset, EmfDataset oldDataset, EntityManager entityManager) throws Exception {
         if (DebugLevels.DEBUG_0()) {
             System.out.println("Check to rename. Dataset name: " + dataset.getName() + " Status: "
                     + dataset.getStatus() + " id: " + dataset.getId());
             System.out.println("Old dataset is null? " + (oldDataset == null));
             System.out.println("Old dataset name: " + ((oldDataset == null) ? "" : oldDataset.getName()));
             System.out.println("Old dataset status: " + ((oldDataset == null) ? "" : oldDataset.getStatus()));
-            System.out.println("Old dataset exists? " + exists(dataset.getId(), EmfDataset.class, session));
+            System.out.println("Old dataset exists? " + exists(dataset.getId(), EmfDataset.class, entityManager));
         }
 
         if (!continueToRename(dataset, oldDataset))
@@ -749,8 +748,9 @@ public class DatasetDAO {
         sources[0].setTable(newTableName);
     }
 
-    public boolean datasetNameUsed(String name, Session session) throws Exception {
-        EmfDataset ds = hibernateFacade.load(EmfDataset.class, "name", name, session);
+    public boolean datasetNameUsed(String name, EntityManager entityManager) throws Exception {
+        LOG.info("hibernateFacade.load(EmfDataset.class, \"name\", \"" + name + "\", entityManager);");
+        EmfDataset ds = hibernateFacade.load(EmfDataset.class, "name", name, entityManager);
 
         if (ds == null)
             return false;
@@ -768,25 +768,25 @@ public class DatasetDAO {
         return dbServer;
     }
 
-    public void updateVersionNReleaseLock(Version target, Session session) throws EmfException {
-        lockingScheme.releaseLockOnUpdate(target, (Version) current(target.getId(), Version.class, session), session);
+    public void updateVersionNReleaseLock(Version target, EntityManager entityManager) throws EmfException {
+        lockingScheme.releaseLockOnUpdate(target, (Version) current(target.getId(), Version.class, entityManager), entityManager);
     }
     
-    public void updateVersion(Version target, Session session) throws EmfException {
-        hibernateFacade.updateOnly(target, session);
+    public void updateVersion(Version target, EntityManager entityManager) throws EmfException {
+        hibernateFacade.updateOnly(target, entityManager);
     }
 
-    public Version obtainLockOnVersion(User user, int id, Session session) {
-        return (Version) lockingScheme.getLocked(user, (Version) current(id, Version.class, session), session);
+    public Version obtainLockOnVersion(User user, int id, EntityManager entityManager) {
+        return (Version) lockingScheme.getLocked(user, (Version) current(id, Version.class, entityManager), entityManager);
     }
 
-    public void deleteDatasets(EmfDataset[] datasets, DbServer dbServer, Session session) throws EmfException {
+    public void deleteDatasets(EmfDataset[] datasets, DbServer dbServer, EntityManager entityManager) throws EmfException {
 
         // The following line is commented out because the necessary check has been done
-        // EmfDataset[] deletableDatasets = getCaseFreeDatasets(datasets, session);
+        // EmfDataset[] deletableDatasets = getCaseFreeDatasets(datasets, entityManager);
         // NOTE: wait till decided by EPA OAQPS
-        // checkIfUsedByStrategies(datasetIDs, session);
-        // EmfDataset[] deletableDatasets = getControlStrateyFreeDatasets(datasets, session);
+        // checkIfUsedByStrategies(datasetIDs, entityManager);
+        // EmfDataset[] deletableDatasets = getControlStrateyFreeDatasets(datasets, entityManager);
 
         if (datasets == null || datasets.length == 0)
             return;
@@ -816,7 +816,7 @@ public class DatasetDAO {
             // Need to search all the items associated with datasets and remove them properly
             // before remove the underlying datasets
             try {
-                deleteFromOutputsTable(datasetIDs, session);
+                deleteFromOutputsTable(datasetIDs, entityManager);
             } catch (Exception e) {
                 LOG.error(e);
                 e.printStackTrace();
@@ -824,7 +824,7 @@ public class DatasetDAO {
             }
 
             try {
-                deleteFromEmfTables(datasetIDs, emissionTableTool, session);
+                deleteFromEmfTables(datasetIDs, emissionTableTool, entityManager);
             } catch (Exception e) {
                 LOG.error(e);
                 e.printStackTrace();
@@ -832,7 +832,7 @@ public class DatasetDAO {
             }
 
             try {
-                decoupleDSFromModules(datasetIDs, session);
+                decoupleDSFromModules(datasetIDs, entityManager);
             } catch (Exception e) {
                 LOG.error(e);
                 e.printStackTrace();
@@ -841,7 +841,7 @@ public class DatasetDAO {
         }
 
         try {
-            dropDataTables(datasets, emissionTableTool, session);
+            dropDataTables(datasets, emissionTableTool, entityManager);
         } catch (Exception e) {
             LOG.error(e);
             e.printStackTrace();
@@ -852,7 +852,7 @@ public class DatasetDAO {
             dataset.setKeyVals(new KeyVal[]{});
             dataset.setInternalSources(new InternalSource[]{});
             try {
-                updateDSPropNoLocking(dataset, session);
+                updateDSPropNoLocking(dataset, entityManager);
             } catch (Exception e) {
                 LOG.error(e);
                 e.printStackTrace();
@@ -861,8 +861,8 @@ public class DatasetDAO {
         }
         
         try {
-            session.clear();
-            hibernateFacade.remove(datasets, session);
+            entityManager.clear();
+            hibernateFacade.remove(datasets, entityManager);
         } catch (Exception e) {
             LOG.error(e);
             e.printStackTrace();
@@ -875,30 +875,30 @@ public class DatasetDAO {
         }
     }
 
-    public void checkIfUsedByCases(int[] datasetIDs, Session session) throws EmfException {
+    public void checkIfUsedByCases(int[] datasetIDs, EntityManager entityManager) throws EmfException {
         List list = null;
 
         // check if dataset is an input dataset for some cases (via the cases.cases_caseinputs table)
-        list = session.createQuery(
+        list = entityManager.createQuery(
                 "select CI.caseID from CaseInput as CI " + "where (CI.dataset.id = "
-                        + getAndOrClause(datasetIDs, "CI.dataset.id") + ")").list();
+                        + getAndOrClause(datasetIDs, "CI.dataset.id") + ")").getResultList();
 
         if (list != null && list.size() > 0) {
-            CriteriaBuilderQueryRoot<Case> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Case.class, session);
-            Case usedCase = hibernateFacade.get(session, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("id"), list.get(0))).get(0);
+            CriteriaBuilderQueryRoot<Case> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Case.class, entityManager);
+            Case usedCase = hibernateFacade.get(entityManager, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("id"), list.get(0))).get(0);
             throw new EmfException("Dataset used by case " + usedCase.getName() + ".");
         }
     }
     
-    public List<Integer> notUsedByCases(int[] datasetIDs, User user, Session session) throws Exception{
+    public List<Integer> notUsedByCases(int[] datasetIDs, User user, EntityManager entityManager) throws Exception{
         if (datasetIDs == null || datasetIDs.length == 0)
             return new ArrayList<Integer>();
         
         // check if dataset is an input dataset for some cases (via the cases.cases_caseinputs table)
         @SuppressWarnings("unchecked")
-        List<Object[]> list = session.createQuery(
+        List<Object[]> list = entityManager.createQuery(
                 "select DISTINCT CI.dataset, c.name from CaseInput as CI, Case as c " + "where CI.caseID = c.id AND (CI.dataset.id = "
-                        + getAndOrClause(datasetIDs, "CI.dataset.id") + ")").list();
+                        + getAndOrClause(datasetIDs, "CI.dataset.id") + ")").getResultList();
 
         List<Integer> all = EmfArrays.convert(datasetIDs);
         
@@ -906,64 +906,64 @@ public class DatasetDAO {
             return all;
         
         String usedby = "used by case";
-        List<Integer> ids = getUsedDatasetIds(user, session, list, usedby);
+        List<Integer> ids = getUsedDatasetIds(user, entityManager, list, usedby);
         all.removeAll(ids);
         
         return all;
     }
 
-    public void checkIfUsedByStrategies(int[] datasetIDs, Session session) throws EmfException {
+    public void checkIfUsedByStrategies(int[] datasetIDs, EntityManager entityManager) throws EmfException {
         // check if dataset is an input inventory for some strategy (via the StrategyInputDataset table)
-        strategyList = session.createQuery(
+        strategyList = entityManager.createQuery(
                 "select cS.name from ControlStrategy as cS inner join cS.controlStrategyInputDatasets "
                         + "as iDs inner join iDs.inputDataset as iD with (iD.id = "
-                        + getAndOrClause(datasetIDs, "iD.id") + ")").list();
+                        + getAndOrClause(datasetIDs, "iD.id") + ")").getResultList();
 
         if (strategyList != null && strategyList.size() > 0)
             throw new EmfException("Error: dataset used by control strategy " + strategyList.get(0) + ".");
 
         // check if dataset is an input inventory for some strategy (via the StrategyResult table, could be here for
         // historical reasons)
-        strategyList = session.createQuery(
+        strategyList = entityManager.createQuery(
                 "select cS.name from ControlStrategyResult sR, ControlStrategy cS where "
                         + "sR.controlStrategyId = cS.id and (sR.inputDataset.id = "
-                        + getAndOrClause(datasetIDs, "sR.inputDataset.id") + ")").list();
+                        + getAndOrClause(datasetIDs, "sR.inputDataset.id") + ")").getResultList();
 
         if (strategyList != null && strategyList.size() > 0)
             throw new EmfException("Error: dataset used by control strategy " + strategyList.get(0) + ".");
 
         // check if dataset is used as a region/county dataset for specific strategy measures
-        strategyList = session.createQuery(
+        strategyList = entityManager.createQuery(
                 "select cS.name from ControlStrategy as cS inner join cS.controlMeasures as cM inner join "
-                        + "cM.regionDataset as rD with (rD.id = " + getAndOrClause(datasetIDs, "rD.id") + ")").list();
+                        + "cM.regionDataset as rD with (rD.id = " + getAndOrClause(datasetIDs, "rD.id") + ")").getResultList();
 
         if (strategyList != null && strategyList.size() > 0)
             throw new EmfException("Error: dataset used by control strategy " + strategyList.get(0) + ".");
 
         // check if dataset is used as a region/county dataset for specific strategy
-        strategyList = session.createQuery(
+        strategyList = entityManager.createQuery(
                 "select cS.name from ControlStrategy cS where (cS.countyDataset.id = "
-                        + getAndOrClause(datasetIDs, "cS.countyDataset.id") + ")").list();
+                        + getAndOrClause(datasetIDs, "cS.countyDataset.id") + ")").getResultList();
 
         if (strategyList != null && strategyList.size() > 0)
             throw new EmfException("Dataset used by control strategy " + strategyList.get(0) + ".");
     }
     
     @SuppressWarnings("unchecked")
-    public List<Integer> notUsedByStrategies(int[] datasetIDs, User user, Session session) throws Exception {
+    public List<Integer> notUsedByStrategies(int[] datasetIDs, User user, EntityManager entityManager) throws Exception {
         if (datasetIDs == null || datasetIDs.length == 0)
             return new ArrayList<Integer>();
         
         // check if dataset is an input inventory for some strategy (via the StrategyInputDataset table)
-        List<Object[]> list = session.createQuery(
+        List<Object[]> list = entityManager.createQuery(
                 "select DISTINCT iDs.inputDataset, cS.name from ControlStrategy as cS inner join cS.controlStrategyInputDatasets "
                         + "as iDs inner join iDs.inputDataset as iD with (iD.id = "
-                        + getAndOrClause(datasetIDs, "iD.id") + ")").list();
+                        + getAndOrClause(datasetIDs, "iD.id") + ")").getResultList();
 
         List<Integer> all = EmfArrays.convert(datasetIDs);
         String usedby = "used by control strategy";
         
-        List<Integer> ids = getUsedDatasetIds(user, session, list, usedby);
+        List<Integer> ids = getUsedDatasetIds(user, entityManager, list, usedby);
         all.removeAll(ids);
         
         if (all.size() == 0)
@@ -971,47 +971,47 @@ public class DatasetDAO {
         
         // check if dataset is an input inventory for some strategy (via the StrategyResult table, could be here for
         // historical reasons)
-        list = session.createQuery(
+        list = entityManager.createQuery(
                 "select DISTINCT sR.inputDataset, cS.name from ControlStrategyResult sR, ControlStrategy cS where "
                         + "sR.controlStrategyId = cS.id and (sR.inputDataset.id = "
-                        + getAndOrClause(EmfArrays.convert(all), "sR.inputDataset.id") + ")").list();
+                        + getAndOrClause(EmfArrays.convert(all), "sR.inputDataset.id") + ")").getResultList();
 
-        ids = getUsedDatasetIds(user, session, list, usedby);
+        ids = getUsedDatasetIds(user, entityManager, list, usedby);
         all.removeAll(ids);
 
         if (all.size() == 0)
             return all;
         
         // check if dataset is used as a region/county dataset for specific strategy measures
-        list = session.createQuery(
+        list = entityManager.createQuery(
                 "select DISTINCT cM.regionDataset, cS.name from ControlStrategy as cS inner join cS.controlMeasures as cM inner join "
-                        + "cM.regionDataset as rD with (rD.id = " + getAndOrClause(EmfArrays.convert(all), "rD.id") + ")").list();
+                        + "cM.regionDataset as rD with (rD.id = " + getAndOrClause(EmfArrays.convert(all), "rD.id") + ")").getResultList();
 
-        ids = getUsedDatasetIds(user, session, list, usedby);
+        ids = getUsedDatasetIds(user, entityManager, list, usedby);
         all.removeAll(ids);
         
         if (all.size() == 0)
             return all;
         
         // check if dataset is used as a region/county dataset for specific strategy
-        list = session.createQuery(
+        list = entityManager.createQuery(
                 "select DISTINCT cS.countyDataset, cS.name from ControlStrategy cS where (cS.countyDataset.id = "
-                        + getAndOrClause(EmfArrays.convert(all), "cS.countyDataset.id") + ")").list();
+                        + getAndOrClause(EmfArrays.convert(all), "cS.countyDataset.id") + ")").getResultList();
 
-        ids = getUsedDatasetIds(user, session, list, usedby);
+        ids = getUsedDatasetIds(user, entityManager, list, usedby);
         all.removeAll(ids);
         
         return all;
     }
 
-    private List<Integer> getUsedDatasetIds(User user, Session session, List<Object[]> list, String usedby) {
+    private List<Integer> getUsedDatasetIds(User user, EntityManager entityManager, List<Object[]> list, String usedby) {
         List<Integer> ids = new ArrayList<Integer>();
         
         if (list != null && list.size() != 0) {
             for (int i = 0; i < list.size(); i++) {
                 EmfDataset ds = (EmfDataset)list.get(i)[0];
                 ids.add(ds.getId());
-                setStatus(user.getUsername(), "Dataset \"" + ds.getName() + "\" " + usedby + ": " + list.get(i)[1] + ".", "Delete Dataset", session);
+                setStatus(user.getUsername(), "Dataset \"" + ds.getName() + "\" " + usedby + ": " + list.get(i)[1] + ".", "Delete Dataset", entityManager);
             }
         }
         
@@ -1052,115 +1052,115 @@ public class DatasetDAO {
     }
     
     
-    public void checkIfUsedByControlPrograms(int[] datasetIDs, Session session) throws EmfException {
+    public void checkIfUsedByControlPrograms(int[] datasetIDs, EntityManager entityManager) throws EmfException {
         // check if dataset is an input inventory for some control program (via the control_programs table)
-        controlProgList = session.createQuery(
+        controlProgList = entityManager.createQuery(
                 "select cP.name from ControlProgram as cP inner join cP.dataset as d with (d.id = "
-                        + getAndOrClause(datasetIDs, "d.id") + ")").list();
+                        + getAndOrClause(datasetIDs, "d.id") + ")").getResultList();
 
         if (controlProgList != null && controlProgList.size() > 0)
             throw new EmfException("Error: dataset used by control program " + controlProgList.get(0) + ".");
 
     }
     
-    public boolean isUsedByControlPrograms(int datasetID, Session session) throws EmfException {
+    public boolean isUsedByControlPrograms(int datasetID, EntityManager entityManager) throws EmfException {
         // check if dataset is an input inventory for some control program (via the control_programs table)
-        controlProgList = session.createQuery(
-                "select cP.name from ControlProgram as cP inner join cP.dataset as d with (d.id = " + datasetID + ")").list();
+        controlProgList = entityManager.createQuery(
+                "select cP.name from ControlProgram as cP inner join cP.dataset as d with (d.id = " + datasetID + ")").getResultList();
 
         return (controlProgList != null && controlProgList.size() > 0);
     }
     
-    public List<Integer> notUsedByControlPrograms(int[] datasetIDs, User user, Session session) throws Exception {
+    public List<Integer> notUsedByControlPrograms(int[] datasetIDs, User user, EntityManager entityManager) throws Exception {
         // check if dataset is an input inventory for some control program (via the control_programs table)
         if (datasetIDs == null || datasetIDs.length == 0)
             return new ArrayList<Integer>();
         
         @SuppressWarnings("unchecked")
-        List<Object[]> list = session.createQuery(
+        List<Object[]> list = entityManager.createQuery(
                 "select DISTINCT cP.dataset, cP.name from ControlProgram as cP inner join cP.dataset as d with (d.id = "
-                        + getAndOrClause(datasetIDs, "d.id") + ")").list();
+                        + getAndOrClause(datasetIDs, "d.id") + ")").getResultList();
 
         List<Integer> all = EmfArrays.convert(datasetIDs);
         
         if (list == null || list.size() == 0)
             return all;
         
-        List<Integer> ids = getUsedDatasetIds(user, session, list, "used by control program");
+        List<Integer> ids = getUsedDatasetIds(user, entityManager, list, "used by control program");
         all.removeAll(ids);
         
         return all;
     }
     
     @SuppressWarnings("unchecked")
-    public List<Integer> notUsedBySectorScnarios(int[] datasetIDs, User user, Session session) throws Exception {
+    public List<Integer> notUsedBySectorScnarios(int[] datasetIDs, User user, EntityManager entityManager) throws Exception {
         if (datasetIDs == null || datasetIDs.length == 0)
             return new ArrayList<Integer>();
         
         // check if dataset is an eecsMapppingDataset in SectorScenarion table
-        List<Object[]> list = session.createQuery(
+        List<Object[]> list = entityManager.createQuery(
                 "select DISTINCT SS.eecsMapppingDataset, SS.name from SectorScenario as SS inner join SS.eecsMapppingDataset "
                         + "as eMD with (eMD.id = "
-                        + getAndOrClause(datasetIDs, "eMD.id") + ")").list();
+                        + getAndOrClause(datasetIDs, "eMD.id") + ")").getResultList();
 
         List<Integer> all = EmfArrays.convert(datasetIDs);
         String usedby = "used by SectorScenario";
         
-        List<Integer> ids = getUsedDatasetIds(user, session, list, usedby);
+        List<Integer> ids = getUsedDatasetIds(user, entityManager, list, usedby);
         all.removeAll(ids);
         
         if (all.size() == 0)
             return all;
         
         // check if dataset is an sectorMapppingDataset in SectorScenario table
-        list = session.createQuery(
+        list = entityManager.createQuery(
                 "select DISTINCT SS.sectorMapppingDataset, SS.name from SectorScenario as SS inner join SS.sectorMapppingDataset "
                         + "as sMD with (sMD.id = "
-                        + getAndOrClause(EmfArrays.convert(all), "sMD.id") + ")").list();
+                        + getAndOrClause(EmfArrays.convert(all), "sMD.id") + ")").getResultList();
 
-        ids = getUsedDatasetIds(user, session, list, usedby);
+        ids = getUsedDatasetIds(user, entityManager, list, usedby);
         all.removeAll(ids);
 
         if (all.size() == 0)
             return all;
         
         // check if dataset is used as inputDataset for specific SectorScenarioInventory
-        list = session.createQuery(
+        list = entityManager.createQuery(
                 "select DISTINCT invs.dataset, SS.name from SectorScenario as SS inner join SS.inventories "
                         + "as invs inner join invs.dataset as ds with (ds.id = "
-                        + getAndOrClause(EmfArrays.convert(all), "ds.id") + ")").list();
+                        + getAndOrClause(EmfArrays.convert(all), "ds.id") + ")").getResultList();
 
-        ids = getUsedDatasetIds(user, session, list, usedby);
+        ids = getUsedDatasetIds(user, entityManager, list, usedby);
         all.removeAll(ids);
         
         if (all.size() == 0)
             return all;
         
         // check if dataset is used as an inventory dataset for specific SectorScenarioOutput
-        list = session.createQuery(
+        list = entityManager.createQuery(
                 "select DISTINCT SSO.inventoryDataset, SS.name from SectorScenario SS, SectorScenarioOutput SSO where "
                 + "SS.id = SSO.sectorScenarioId AND (SSO.inventoryDataset.id = "
-                + getAndOrClause(EmfArrays.convert(all), "SSO.inventoryDataset.id") + ")").list();
+                + getAndOrClause(EmfArrays.convert(all), "SSO.inventoryDataset.id") + ")").getResultList();
 
-        ids = getUsedDatasetIds(user, session, list, usedby);
+        ids = getUsedDatasetIds(user, entityManager, list, usedby);
         all.removeAll(ids);
         
         if (all.size() == 0)
             return all;
         
         // check if dataset is used as an output dataset for specific SectorScenarioOutput
-        list = session.createQuery(
+        list = entityManager.createQuery(
                 "select DISTINCT SSO.outputDataset, SS.name from SectorScenario SS, SectorScenarioOutput SSO where "
                 + "SS.id = SSO.sectorScenarioId AND (SSO.outputDataset.id = "
-                + getAndOrClause(EmfArrays.convert(all), "SSO.outputDataset.id") + ")").list();
+                + getAndOrClause(EmfArrays.convert(all), "SSO.outputDataset.id") + ")").getResultList();
 
-        ids = getUsedDatasetIds(user, session, list, usedby);
+        ids = getUsedDatasetIds(user, entityManager, list, usedby);
         all.removeAll(ids);
         
         return all;
     }
     
-    public List<Integer> notUsedByFast(int[] datasetIDs, User user, DbServer dbServer, Session session) throws Exception {
+    public List<Integer> notUsedByFast(int[] datasetIDs, User user, DbServer dbServer, EntityManager entityManager) throws Exception {
         Datasource fast = dbServer.getFastDatasource();
         DataQuery dataQuery = fast.query();
         List<Integer> all = EmfArrays.convert(datasetIDs);
@@ -1175,7 +1175,7 @@ public class DatasetDAO {
                 + "LEFT JOIN fast.fast_analyses as fa ON far.fast_analysis_id = fa.id "
                 + "WHERE fr.cancer_risk_dataset_id="
                 + getAndOrClause(EmfArrays.convert(all), "fr.cancer_risk_dataset_id");
-        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "cancer_risk_dataset_id", session);
+        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "cancer_risk_dataset_id", entityManager);
         all.removeAll(ids);
         
         if (all.size() == 0)
@@ -1188,7 +1188,7 @@ public class DatasetDAO {
                 + "LEFT JOIN fast.fast_analyses as fa ON far.fast_analysis_id = fa.id "
                 + "WHERE fr.species_mapping_dataset_id="
                 + getAndOrClause(EmfArrays.convert(all), "fr.species_mapping_dataset_id");
-        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "species_mapping_dataset_id", session);
+        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "species_mapping_dataset_id", entityManager);
         all.removeAll(ids);
         
         if (all.size() == 0)
@@ -1201,7 +1201,7 @@ public class DatasetDAO {
                 + "LEFT JOIN fast.fast_analyses as fa ON far.fast_analysis_id = fa.id "
                 + "WHERE fr.transfer_coefficients_dataset_id="
                 + getAndOrClause(EmfArrays.convert(all), "fr.transfer_coefficients_dataset_id");
-        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "transfer_coefficients_dataset_id", session);
+        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "transfer_coefficients_dataset_id", entityManager);
         all.removeAll(ids);
         
         if (all.size() == 0)
@@ -1214,7 +1214,7 @@ public class DatasetDAO {
                 + "LEFT JOIN fast.fast_analyses as fa ON far.fast_analysis_id = fa.id "
                 + "WHERE fr.domain_population_dataset_id="
                 + getAndOrClause(EmfArrays.convert(all), "fr.domain_population_dataset_id");
-        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "domain_population_dataset_id", session);
+        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "domain_population_dataset_id", entityManager);
         all.removeAll(ids);
         
         if (all.size() == 0)
@@ -1227,7 +1227,7 @@ public class DatasetDAO {
                 + "LEFT JOIN fast.fast_analyses as fa ON far.fast_analysis_id = fa.id "
         		+ "WHERE fr.invtable_dataset_id="
                 + getAndOrClause(EmfArrays.convert(all), "fr.invtable_dataset_id");
-        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "invtable_dataset_id", session);
+        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "invtable_dataset_id", entityManager);
         all.removeAll(ids);
         
         if (all.size() == 0)
@@ -1238,7 +1238,7 @@ public class DatasetDAO {
         		+ "JOIN emf.datasets as ds ON fa.cancer_risk_dataset_id = ds.id " 
                 + "WHERE fa.cancer_risk_dataset_id="
                 + getAndOrClause(EmfArrays.convert(all), "fa.cancer_risk_dataset_id");
-        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "cancer_risk_dataset_id", session);
+        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "cancer_risk_dataset_id", entityManager);
         all.removeAll(ids);
         
         if (all.size() == 0)
@@ -1250,7 +1250,7 @@ public class DatasetDAO {
                 + "JOIN fast.fast_analyses as fa ON fao.fast_analysis_id = fa.id "
         		+ "WHERE fao.output_dataset_id="
         		+ getAndOrClause(EmfArrays.convert(all), "fao.output_dataset_id");
-        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "output_dataset_id", session);
+        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "output_dataset_id", entityManager);
         all.removeAll(ids);
         
         if (all.size() == 0)
@@ -1265,7 +1265,7 @@ public class DatasetDAO {
                 + "LEFT JOIN fast.fast_analyses as fa ON far.fast_analysis_id = fa.id "
         		+ "WHERE fd.dataset_id="
         		+ getAndOrClause(EmfArrays.convert(all), "fd.dataset_id");
-        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "dataset_id", session);
+        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "dataset_id", entityManager);
         all.removeAll(ids);
         
         if (all.size() == 0)
@@ -1281,7 +1281,7 @@ public class DatasetDAO {
                 + "LEFT JOIN fast.fast_analyses as fa ON far.fast_analysis_id = fa.id "
         		+ "WHERE fnpd.gridded_smk_dataset_id="
         		+ getAndOrClause(EmfArrays.convert(all), "fnpd.gridded_smk_dataset_id");
-        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "gridded_smk_dataset_id", session);
+        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "gridded_smk_dataset_id", entityManager);
         all.removeAll(ids);
         
         if (all.size() == 0)
@@ -1295,7 +1295,7 @@ public class DatasetDAO {
                 + "LEFT JOIN fast.fast_analyses as fa ON far.fast_analysis_id = fa.id "
         		+ "WHERE fnpd.base_nonpoint_dataset_id="
         		+ getAndOrClause(EmfArrays.convert(all), "fnpd.base_nonpoint_dataset_id");
-        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "base_nonpoint_dataset_id", session);
+        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "base_nonpoint_dataset_id", entityManager);
         all.removeAll(ids);
         
         if (all.size() == 0)
@@ -1309,7 +1309,7 @@ public class DatasetDAO {
                 + "LEFT JOIN fast.fast_analyses as fa ON far.fast_analysis_id = fa.id "
         		+ "WHERE fnpd.invtable_dataset_id="
             + getAndOrClause(EmfArrays.convert(all), "fnpd.invtable_dataset_id");
-        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "invtable_dataset_id", session);
+        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "invtable_dataset_id", entityManager);
         all.removeAll(ids);
         
         if (all.size() == 0)
@@ -1323,7 +1323,7 @@ public class DatasetDAO {
                 + "LEFT JOIN fast.fast_analyses as fa ON far.fast_analysis_id = fa.id "
         		+ "WHERE fri.inventory_dataset_id="
         		+ getAndOrClause(EmfArrays.convert(all), "fri.inventory_dataset_id");
-        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "inventory_dataset_id", session);
+        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "inventory_dataset_id", entityManager);
         all.removeAll(ids);
         
         if (all.size() == 0)
@@ -1337,86 +1337,86 @@ public class DatasetDAO {
                 + "LEFT JOIN fast.fast_analyses as fa ON far.fast_analysis_id = fa.id "
         		+ "WHERE fro.output_dataset_id="
         		+ getAndOrClause(EmfArrays.convert(all), "fro.output_dataset_id");
-        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "output_dataset_id", session);
+        ids = getRefdDatasetIds(user, EmfArrays.convert(all), dataQuery, query, "output_dataset_id", entityManager);
         all.removeAll(ids);
         
         return all;
     }
 
-    public boolean isUsedByFast(int datasetId, User user, DbServer dbServer, Session session) throws Exception {
+    public boolean isUsedByFast(int datasetId, User user, DbServer dbServer, EntityManager entityManager) throws Exception {
         int[] datasetIDs = new int[] { datasetId };
-        List<Integer> list = notUsedByFast(datasetIDs, user, dbServer, session);
+        List<Integer> list = notUsedByFast(datasetIDs, user, dbServer, entityManager);
         return (list.size() == 0);
     }
         
     @SuppressWarnings("unchecked")
-    public List<Integer> notUsedByTemporalAllocations(int[] datasetIDs, User user, Session session) throws Exception {
+    public List<Integer> notUsedByTemporalAllocations(int[] datasetIDs, User user, EntityManager entityManager) throws Exception {
         if (datasetIDs == null || datasetIDs.length == 0)
             return new ArrayList<Integer>();
         
         // check if dataset is an input inventory (via the TemporalAllocationInputDataset table)
-        List<Object[]> list = session.createQuery(
+        List<Object[]> list = entityManager.createQuery(
                 "select DISTINCT iDs.inputDataset, tA.name from TemporalAllocation as tA inner join tA.temporalAllocationInputDatasets "
                         + "as iDs inner join iDs.inputDataset as iD with (iD.id = "
-                        + getAndOrClause(datasetIDs, "iD.id") + ")").list();
+                        + getAndOrClause(datasetIDs, "iD.id") + ")").getResultList();
 
         List<Integer> all = EmfArrays.convert(datasetIDs);
         String usedby = "used by temporal allocation";
         
-        List<Integer> ids = getUsedDatasetIds(user, session, list, usedby);
+        List<Integer> ids = getUsedDatasetIds(user, entityManager, list, usedby);
         all.removeAll(ids);
         
         if (all.size() == 0)
             return all;
         
         // check if dataset is an output (via the TemporalAllocationOutputDataset table)
-        list = session.createQuery(
+        list = entityManager.createQuery(
                 "select DISTINCT oDs.outputDataset, tA.name from TemporalAllocationOutput oDs, TemporalAllocation tA where "
                         + "oDs.temporalAllocationId = tA.id and (oDs.outputDataset.id = "
-                        + getAndOrClause(EmfArrays.convert(all), "oDs.outputDataset.id") + ")").list();
+                        + getAndOrClause(EmfArrays.convert(all), "oDs.outputDataset.id") + ")").getResultList();
 
-        ids = getUsedDatasetIds(user, session, list, usedby);
+        ids = getUsedDatasetIds(user, entityManager, list, usedby);
         all.removeAll(ids);
         
         if (all.size() == 0)
             return all;
         
         // check if dataset is a profile or xref (via the TemporalAllocation table)
-        list = session.createQuery(
+        list = entityManager.createQuery(
                 "select DISTINCT tA.monthlyProfileDataset, tA.name from TemporalAllocation tA where "
                         + "(tA.monthlyProfileDataset.id = "
-                        + getAndOrClause(EmfArrays.convert(all), "tA.monthlyProfileDataset.id") + ")").list();
-        ids = getUsedDatasetIds(user, session, list, usedby);
+                        + getAndOrClause(EmfArrays.convert(all), "tA.monthlyProfileDataset.id") + ")").getResultList();
+        ids = getUsedDatasetIds(user, entityManager, list, usedby);
         all.removeAll(ids);
         
         if (all.size() == 0)
             return all;
 
-        list = session.createQuery(
+        list = entityManager.createQuery(
                 "select DISTINCT tA.weeklyProfileDataset, tA.name from TemporalAllocation tA where "
                         + "(tA.weeklyProfileDataset.id = "
-                        + getAndOrClause(EmfArrays.convert(all), "tA.weeklyProfileDataset.id") + ")").list();
-        ids = getUsedDatasetIds(user, session, list, usedby);
+                        + getAndOrClause(EmfArrays.convert(all), "tA.weeklyProfileDataset.id") + ")").getResultList();
+        ids = getUsedDatasetIds(user, entityManager, list, usedby);
         all.removeAll(ids);
         
         if (all.size() == 0)
             return all;
         
-        list = session.createQuery(
+        list = entityManager.createQuery(
                 "select DISTINCT tA.dailyProfileDataset, tA.name from TemporalAllocation tA where "
                         + "(tA.dailyProfileDataset.id = "
-                        + getAndOrClause(EmfArrays.convert(all), "tA.dailyProfileDataset.id") + ")").list();
-        ids = getUsedDatasetIds(user, session, list, usedby);
+                        + getAndOrClause(EmfArrays.convert(all), "tA.dailyProfileDataset.id") + ")").getResultList();
+        ids = getUsedDatasetIds(user, entityManager, list, usedby);
         all.removeAll(ids);
         
         if (all.size() == 0)
             return all;
 
-        list = session.createQuery(
+        list = entityManager.createQuery(
                 "select DISTINCT tA.xrefDataset, tA.name from TemporalAllocation tA where "
                         + "(tA.xrefDataset.id = "
-                        + getAndOrClause(EmfArrays.convert(all), "tA.xrefDataset.id") + ")").list();
-        ids = getUsedDatasetIds(user, session, list, usedby);
+                        + getAndOrClause(EmfArrays.convert(all), "tA.xrefDataset.id") + ")").getResultList();
+        ids = getUsedDatasetIds(user, entityManager, list, usedby);
         all.removeAll(ids);
         
         if (all.size() == 0)
@@ -1425,36 +1425,36 @@ public class DatasetDAO {
         return all;
     }
 
-    public boolean isUsedByTemporalAllocations(int datasetId, User user, Session session) throws Exception {
+    public boolean isUsedByTemporalAllocations(int datasetId, User user, EntityManager entityManager) throws Exception {
         int[] datasetIDs = new int[] { datasetId };
-        List<Integer> list = notUsedByTemporalAllocations(datasetIDs, user, session);
+        List<Integer> list = notUsedByTemporalAllocations(datasetIDs, user, entityManager);
         return (list.size() == 0);
     }
     
     @SuppressWarnings("unchecked")
-    public List<Integer> notUsedByModules(int[] datasetIDs, User user, Session session) throws Exception {
+    public List<Integer> notUsedByModules(int[] datasetIDs, User user, EntityManager entityManager) throws Exception {
         if (datasetIDs == null || datasetIDs.length == 0)
             return new ArrayList<Integer>();
         
         // check if dataset is in the modules.modules_datasets table
-        List<Object[]> list = session.createQuery(
+        List<Object[]> list = entityManager.createQuery(
                 "SELECT DISTINCT dataset, m.name " +
                   "FROM Module as m, ModuleDataset as md, EmfDataset as dataset " +
                  "WHERE md.module.id = m.id " +
                    "AND dataset.id = md.datasetId " +
-                   "AND (md.datasetId = " + getAndOrClause(datasetIDs, "md.datasetId") + ")").list();
+                   "AND (md.datasetId = " + getAndOrClause(datasetIDs, "md.datasetId") + ")").getResultList();
         
         List<Integer> all = EmfArrays.convert(datasetIDs);
         String usedby = "used by module";
         
-        List<Integer> ids = getUsedDatasetIds(user, session, list, usedby);
+        List<Integer> ids = getUsedDatasetIds(user, entityManager, list, usedby);
         all.removeAll(ids);
         
         if (all.size() == 0)
             return all;
         
         // check for OUT NEW datasets in most recent history records
-        list = session.createSQLQuery(
+        list = entityManager.createNativeQuery(
                 "SELECT d.id, d.name, m.name AS module " +
                   "FROM (SELECT h.module_id, MAX(h.id) AS history_id " +
                           "FROM modules.history h " +
@@ -1472,13 +1472,13 @@ public class DatasetDAO {
                  "WHERE h.result = 'SUCCESS' " +
                    "AND md.output_method = 'NEW' " +
                    "AND hd.placeholder_name = md.placeholder_name " +
-                   "AND (hd.dataset_id = " + getAndOrClause(datasetIDs, "hd.dataset_id") + ")").list();
+                   "AND (hd.dataset_id = " + getAndOrClause(datasetIDs, "hd.dataset_id") + ")").getResultList();
         ids = new ArrayList<Integer>();
         
         if (list != null && list.size() != 0) {
             for (int i = 0; i < list.size(); i++) {
                 ids.add((Integer)list.get(i)[0]);
-                setStatus(user.getUsername(), "Dataset \"" + list.get(i)[1] + "\" " + usedby + ": " + list.get(i)[2] + ".", "Delete Dataset", session);
+                setStatus(user.getUsername(), "Dataset \"" + list.get(i)[1] + "\" " + usedby + ": " + list.get(i)[2] + ".", "Delete Dataset", entityManager);
             }
         }
         all.removeAll(ids);
@@ -1486,7 +1486,7 @@ public class DatasetDAO {
         return all;
     }
         
-    private List<Integer> getRefdDatasetIds(User user, int[] idArray, DataQuery dataQuery, String query, String dsId, Session session)
+    private List<Integer> getRefdDatasetIds(User user, int[] idArray, DataQuery dataQuery, String query, String dsId, EntityManager entityManager)
             throws SQLException {
         ResultSet resultSet = null;
         List<Integer> ids = null;
@@ -1511,7 +1511,7 @@ public class DatasetDAO {
                     msg = "fast run \"" + fastRunName + "\"";
                 
                 setStatus(user.getUsername(), "Dataset \"" + resultSet.getString("name") + "\" is used by "
-                        + msg + ".", "Delete Dataset", session);
+                        + msg + ".", "Delete Dataset", entityManager);
             }
             
             ids = temp;
@@ -1525,56 +1525,54 @@ public class DatasetDAO {
         return ids;
     }
 
-    private void deleteFromEmfTables(int[] datasetIDs, TableCreator tableTool, Session session) {
-        deleteFromObjectTable(datasetIDs, Version.class, "datasetId", session);
-        deleteFromObjectTable(datasetIDs, AccessLog.class, "datasetId", session);
-        deleteFromObjectTable(datasetIDs, DatasetNote.class, "datasetId", session);
-        deleteFromObjectTable(datasetIDs, Revision.class, "datasetId", session);
-        deleteFromObjectTable(datasetIDs, ExternalSource.class, "datasetId", session);
+    private void deleteFromEmfTables(int[] datasetIDs, TableCreator tableTool, EntityManager entityManager) {
+        deleteFromObjectTable(datasetIDs, Version.class, "datasetId", entityManager);
+        deleteFromObjectTable(datasetIDs, AccessLog.class, "datasetId", entityManager);
+        deleteFromObjectTable(datasetIDs, DatasetNote.class, "datasetId", entityManager);
+        deleteFromObjectTable(datasetIDs, Revision.class, "datasetId", entityManager);
+        deleteFromObjectTable(datasetIDs, ExternalSource.class, "datasetId", entityManager);
 
         try {
-            dropQAStepResultTable(datasetIDs, tableTool, session);
+            dropQAStepResultTable(datasetIDs, tableTool, entityManager);
         } catch (Exception e) {
             LOG.error(e);
         }
 
-        deleteFromObjectTable(datasetIDs, QAStepResult.class, "datasetId", session);
-        deleteFromObjectTable(datasetIDs, QAStep.class, "datasetId", session);
-        deleteFromObjectTable(datasetIDs, ControlStrategyResult.class, "detailedResultDataset.id", session);
-        deleteFromObjectTable(datasetIDs, ControlStrategyResult.class, "controlledInventoryDataset.id", session);
+        deleteFromObjectTable(datasetIDs, QAStepResult.class, "datasetId", entityManager);
+        deleteFromObjectTable(datasetIDs, QAStep.class, "datasetId", entityManager);
+        deleteFromObjectTable(datasetIDs, ControlStrategyResult.class, "detailedResultDataset.id", entityManager);
+        deleteFromObjectTable(datasetIDs, ControlStrategyResult.class, "controlledInventoryDataset.id", entityManager);
     }
 
-    int deleteFromObjectTable(int[] datasetIDs, Class<?> clazz, String attrName, Session session) {
-        int deletedEntities = 0;
+    int deleteFromObjectTable(int[] datasetIDs, Class<?> clazz, String attrName, EntityManager entityManager) {
+        int[] deletedEntities = {0};
 
         try {
-            Transaction tx = session.beginTransaction();
-
             String hqlDelete = "DELETE FROM " + clazz.getSimpleName() + " obj WHERE obj." + attrName + " = "
                     + getAndOrClause(datasetIDs, "obj." + attrName);
 
             if (DebugLevels.DEBUG_16())
                 System.out.println("hql delete string: " + hqlDelete);
 
-            deletedEntities = session.createQuery(hqlDelete).executeUpdate();
-            tx.commit();
+            hibernateFacade
+                .executeInsideTransaction(em -> {
+                    deletedEntities[0] = em.createQuery(hqlDelete).executeUpdate();
+                    }, entityManager);
 
-            return deletedEntities;
+            return deletedEntities[0];
         } catch (HibernateException e) {
             LOG.error(e);
             return 0;
         } finally {
             if (DebugLevels.DEBUG_16())
-                LOG.warn(deletedEntities + " items deleted from " + clazz.getName() + " table.");
+                LOG.warn(deletedEntities[0] + " items deleted from " + clazz.getName() + " table.");
         }
     }
 
-    public void deleteFromOutputsTable(int[] datasetIDs, Session session) throws EmfException {
-        int updatedItems = 0;
+    public void deleteFromOutputsTable(int[] datasetIDs, EntityManager entityManager) throws EmfException {
+        int[] updatedItems = {0};
 
         try {
-            Transaction tx = session.beginTransaction();
-
             String firstPart = "UPDATE " + CaseOutput.class.getSimpleName() + " obj SET ";
             String secondPart = " WHERE obj.datasetId = " + getAndOrClause(datasetIDs, "obj.datasetId");
             String updateQuery = firstPart + "obj.message = :msg, obj.datasetId = :id" + secondPart;
@@ -1582,32 +1580,39 @@ public class DatasetDAO {
             if (DebugLevels.DEBUG_16())
                 System.out.println("hql update string: " + updateQuery);
 
-            updatedItems = session.createQuery(updateQuery).setString("msg", "Associated dataset deleted").setInteger(
-                    "id", 0).executeUpdate();
-            tx.commit();
+            hibernateFacade
+                .executeInsideTransaction(em -> {
+                    updatedItems[0] = 
+                        em
+                            .createQuery(updateQuery)
+                            .setParameter("msg", "Associated dataset deleted")
+                            .setParameter("id", 0)
+                            .executeUpdate();
+                    }, entityManager);
+            
 
             if (DebugLevels.DEBUG_16())
-                System.out.println(updatedItems + " items updated.");
+                System.out.println(updatedItems[0] + " items updated.");
         } catch (HibernateException e) {
             throw new EmfException(e.getMessage());
         } finally {
             if (DebugLevels.DEBUG_16())
-                LOG.warn(updatedItems + " items updated from " + CaseOutput.class.getName() + " table.");
+                LOG.warn(updatedItems[0] + " items updated from " + CaseOutput.class.getName() + " table.");
         }
     }
 
-    private void dropDataTables(EmfDataset[] datasets, TableCreator tableTool, Session session) {
+    private void dropDataTables(EmfDataset[] datasets, TableCreator tableTool, EntityManager entityManager) {
         for (int i = 0; i < datasets.length; i++) {
             try {
-                dropDataTables(tableTool, datasets[i], session);
+                dropDataTables(tableTool, datasets[i], entityManager);
             } catch (Exception exc) {
                 LOG.error(exc);
-                setStatus(datasets[0].getCreator(), exc.getMessage(), "Delete Dataset", session);
+                setStatus(datasets[0].getCreator(), exc.getMessage(), "Delete Dataset", entityManager);
             }
         }
     }
 
-    private void dropDataTables(TableCreator tableTool, EmfDataset dataset, Session session) {
+    private void dropDataTables(TableCreator tableTool, EmfDataset dataset, EntityManager entityManager) {
         DatasetType type = dataset.getDatasetType();
 
         if (type != null && type.isExternal())
@@ -1617,16 +1622,16 @@ public class DatasetDAO {
 
         for (int i = 0; i < sources.length; i++) {
             try {
-                dropIndividualTable(tableTool, sources[i], type, dataset.getId(), dataset.getCreator(), session);
+                dropIndividualTable(tableTool, sources[i], type, dataset.getId(), dataset.getCreator(), entityManager);
             } catch (Exception exc) { // if there is a problem with one table, keep going
                 LOG.error(exc);
-                setStatus(dataset.getCreator(), exc.getMessage(), "Delete Dataset", session);
+                setStatus(dataset.getCreator(), exc.getMessage(), "Delete Dataset", entityManager);
             }
         }
     }
 
     private void dropIndividualTable(TableCreator tableTool, InternalSource source, DatasetType type, 
-            int dsID, String user, Session session) {
+            int dsID, String user, EntityManager entityManager) {
         String table = source.getTable();
         String importerclass = (type == null ? "" : type.getImporterClassName());
         importerclass = (importerclass == null ? "" : importerclass.trim());
@@ -1648,14 +1653,14 @@ public class DatasetDAO {
                     System.out.println("Data table  " + table + " dropped.");
             }
         } catch (Exception e) {
-            setStatus(user, "Error deleting emission table: " + table + ".", "Delete Dataset", session);
+            setStatus(user, "Error deleting emission table: " + table + ".", "Delete Dataset", entityManager);
         }
     }
 
-    private void dropQAStepResultTable(int[] datasetIDs, TableCreator tableTool, Session session) {
-        List tables = session.createQuery(
+    private void dropQAStepResultTable(int[] datasetIDs, TableCreator tableTool, EntityManager entityManager) {
+        List tables = entityManager.createQuery(
                 "SELECT obj.table from " + QAStepResult.class.getSimpleName() + " as obj WHERE obj.datasetId = "
-                        + getAndOrClause(datasetIDs, "obj.datasetId")).list();
+                        + getAndOrClause(datasetIDs, "obj.datasetId")).getResultList();
 
         for (Iterator<String> iter = tables.iterator(); iter.hasNext();) {
             String table = iter.next();
@@ -1670,7 +1675,7 @@ public class DatasetDAO {
                     System.out.println("QA step result table " + table + " dropped.");
             } catch (Exception e) {
                 LOG.error(e);
-                setStatus("", "Error deleting emission table: " + table + ".", "Delete Dataset", session);
+                setStatus("", "Error deleting emission table: " + table + ".", "Delete Dataset", entityManager);
             }
         }
     }
@@ -1702,12 +1707,12 @@ public class DatasetDAO {
         return ids;
     }
 
-    public EmfDataset[] getCaseFreeDatasets(EmfDataset[] datasets, Session session) {
+    public EmfDataset[] getCaseFreeDatasets(EmfDataset[] datasets, EntityManager entityManager) {
         List<EmfDataset> list = new ArrayList<EmfDataset>();
 
         for (EmfDataset dataset : datasets) {
             try {
-                checkIfUsedByCases(new int[] { dataset.getId() }, session);
+                checkIfUsedByCases(new int[] { dataset.getId() }, entityManager);
                 list.add(dataset);
             } catch (Exception e) {
                 LOG.warn(e.getMessage());
@@ -1717,12 +1722,12 @@ public class DatasetDAO {
         return list.toArray(new EmfDataset[0]);
     }
 
-    public EmfDataset[] getControlStrateyFreeDatasets(EmfDataset[] datasets, Session session) {
+    public EmfDataset[] getControlStrateyFreeDatasets(EmfDataset[] datasets, EntityManager entityManager) {
         List<EmfDataset> list = new ArrayList<EmfDataset>();
 
         for (EmfDataset dataset : datasets) {
             try {
-                checkIfUsedByStrategies(new int[] { dataset.getId() }, session);
+                checkIfUsedByStrategies(new int[] { dataset.getId() }, entityManager);
                 list.add(dataset);
             } catch (Exception e) {
                 LOG.warn(e.getMessage());
@@ -1732,8 +1737,8 @@ public class DatasetDAO {
         return list.toArray(new EmfDataset[0]);
     }
 
-    public List<EmfDataset> deletedDatasets(User user, Session session) {
-        CriteriaBuilderQueryRoot<EmfDataset> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EmfDataset.class, session);
+    public List<EmfDataset> deletedDatasets(User user, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<EmfDataset> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EmfDataset.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<EmfDataset> root = criteriaBuilderQueryRoot.getRoot();
         Predicate statusPred = builder.equal(root.get("status"), "Deleted");
@@ -1743,10 +1748,10 @@ public class DatasetDAO {
         if (!user.isAdmin())
             predicate = builder.and(statusPred, namePred);
 
-        return hibernateFacade.get(session, criteriaBuilderQueryRoot, predicate);
+        return hibernateFacade.get(entityManager, criteriaBuilderQueryRoot, predicate);
     }
 
-    public void removeEmptyDatasets(User user, DbServer dbServer, Session session) throws EmfException, SQLException {
+    public void removeEmptyDatasets(User user, DbServer dbServer, EntityManager entityManager) throws EmfException, SQLException {
         int[] dsIDsWithNoEmisData = getAllDatasetsWithNoEmissionData(dbServer);
         int len = dsIDsWithNoEmisData.length;
         int remainder = len % 600;
@@ -1765,9 +1770,9 @@ public class DatasetDAO {
             else
                 tempIds = subArray(dsIDsWithNoEmisData, start, len - 1);
 
-            deleteControlStrategies(tempIds, session);
-            decoupleDSFromCases(tempIds, session);
-            setDSAsDeleted(tempIds, session);
+            deleteControlStrategies(tempIds, entityManager);
+            decoupleDSFromCases(tempIds, entityManager);
+            setDSAsDeleted(tempIds, entityManager);
 
         }
     }
@@ -1811,10 +1816,10 @@ public class DatasetDAO {
         return ids;
     }
 
-    private void deleteControlStrategies(int[] dsIDsWithNoEmisData, Session session) throws EmfException {
+    private void deleteControlStrategies(int[] dsIDsWithNoEmisData, EntityManager entityManager) throws EmfException {
         try {
-            checkIfUsedByStrategies(dsIDsWithNoEmisData, session);
-            // checkIfUsedByControlPrograms(dsIDsWithNoEmisData, session);
+            checkIfUsedByStrategies(dsIDsWithNoEmisData, entityManager);
+            // checkIfUsedByControlPrograms(dsIDsWithNoEmisData, entityManager);
         } catch (Exception e) {
             String name = "";
 
@@ -1828,12 +1833,10 @@ public class DatasetDAO {
         }
     }
 
-    private void decoupleDSFromCases(int[] dsIDsWithNoEmisData, Session session) throws EmfException {
-        int updatedItems = 0;
+    private void decoupleDSFromCases(int[] dsIDsWithNoEmisData, EntityManager entityManager) throws EmfException {
+        int[] updatedItems = {0};
 
         try {
-            Transaction tx = session.beginTransaction();
-
             String firstPart = "UPDATE " + CaseInput.class.getSimpleName()
                     + " obj SET obj.dataset = null, obj.version = null";
             String secondPart = " WHERE obj.dataset.id = " + getAndOrClause(dsIDsWithNoEmisData, "obj.dataset.id");
@@ -1842,25 +1845,25 @@ public class DatasetDAO {
             if (DebugLevels.DEBUG_16())
                 System.out.println("hql update string: " + updateQuery);
 
-            updatedItems = session.createQuery(updateQuery).executeUpdate();
-            tx.commit();
+            hibernateFacade
+                .executeInsideTransaction(em -> {
+                    updatedItems[0] = em.createQuery(updateQuery).executeUpdate();
+                    }, entityManager);
 
             if (DebugLevels.DEBUG_16())
-                System.out.println(updatedItems + " items updated.");
+                System.out.println(updatedItems[0] + " items updated.");
         } catch (HibernateException e) {
             throw new EmfException(e.getMessage());
         } finally {
             if (DebugLevels.DEBUG_16())
-                LOG.warn(updatedItems + " items updated from " + CaseInput.class.getName() + " table.");
+                LOG.warn(updatedItems[0] + " items updated from " + CaseInput.class.getName() + " table.");
         }
     }
 
-    private void decoupleDSFromModules(int[] dsIDs, Session session) throws EmfException {
-        int updatedItems = 0;
+    private void decoupleDSFromModules(int[] dsIDs, EntityManager entityManager) throws EmfException {
+        int updatedItems[] = {0};
 
         try {
-            Transaction tx = session.beginTransaction();
-
             String firstPart = "UPDATE " + ModuleDataset.class.getSimpleName()
                     + " obj SET obj.datasetId = null, obj.version = null";
             String secondPart = " WHERE obj.datasetId = " + getAndOrClause(dsIDs, "obj.datasetId");
@@ -1869,63 +1872,61 @@ public class DatasetDAO {
             if (DebugLevels.DEBUG_16())
                 System.out.println("hql update string: " + updateQuery);
 
-            updatedItems = session.createQuery(updateQuery).executeUpdate();
-            tx.commit();
+            hibernateFacade
+                .executeInsideTransaction(em -> {
+                    updatedItems[0] = em.createQuery(updateQuery).executeUpdate();
+                    }, entityManager);
 
             if (DebugLevels.DEBUG_16())
-                System.out.println(updatedItems + " items updated.");
+                System.out.println(updatedItems[0] + " items updated.");
         } catch (HibernateException e) {
             throw new EmfException(e.getMessage());
         } finally {
             if (DebugLevels.DEBUG_16())
-                LOG.warn(updatedItems + " items updated from " + ModuleDataset.class.getName() + " table.");
+                LOG.warn(updatedItems[0] + " items updated from " + ModuleDataset.class.getName() + " table.");
         }
     }
 
-    private void setDSAsDeleted(int[] dsIDsWithNoEmisData, Session session) throws EmfException {
-        int updatedItems = 0;
+    private void setDSAsDeleted(int[] dsIDsWithNoEmisData, EntityManager entityManager) throws EmfException {
+        int[] updatedItems = {0};
 
         try {
-            Transaction tx = session.beginTransaction();
-
             String firstPart = "UPDATE " + EmfDataset.class.getSimpleName() + " obj SET ";
             String secondPart = " WHERE obj.id = " + getAndOrClause(dsIDsWithNoEmisData, "obj.id");
             String updateQuery = firstPart + "obj.status = :sts" + secondPart;
 
             if (DebugLevels.DEBUG_16())
                 System.out.println("hql update string: " + updateQuery);
-
-            updatedItems = session.createQuery(updateQuery).setString("sts", "Deleted").executeUpdate();
-            tx.commit();
+            hibernateFacade.executeInsideTransaction(em -> {updatedItems[0] = em.createQuery(updateQuery).setParameter("sts", "Deleted").executeUpdate();}, entityManager);
 
             if (DebugLevels.DEBUG_16())
-                System.out.println(updatedItems + " items updated.");
+                System.out.println(updatedItems[0] + " items updated.");
         } catch (HibernateException e) {
             throw new EmfException(e.getMessage());
         } finally {
             if (DebugLevels.DEBUG_16())
-                LOG.warn(updatedItems + " items updated from " + EmfDataset.class.getName() + " table.");
+                LOG.warn(updatedItems[0] + " items updated from " + EmfDataset.class.getName() + " table.");
         }
     }
 
-    public List<String> getDatasetNamesStartWith(String start, Session session) {
+    public List<String> getDatasetNamesStartWith(String start, EntityManager entityManager) {
         String query = "SELECT DS.name FROM " + EmfDataset.class.getSimpleName() + " AS DS WHERE lower(DS.name) LIKE "
                 + "'%" + start.toLowerCase().trim() + "%' ORDER BY DS.name";
-        return session.createQuery(query).list();
+        return entityManager.createQuery(query).getResultList();
     }
 
-    public void updateExternalSrcsWithoutLocking(ExternalSource[] srcs, Session session) {
+    public void updateExternalSrcsWithoutLocking(ExternalSource[] srcs, EntityManager entityManager) {
         // NOTE: update without locking objects
-        hibernateFacade.update(srcs, session);
+        hibernateFacade.update(srcs, entityManager);
     }
 
     public String[] getTableColumnDistinctValues(int datasetId, int datasetVersion, String columnName,
-            String whereFilter, String sortOrder, Session session, DbServer dbServer) throws EmfException {
+            String whereFilter, String sortOrder, EntityManager entityManager, DbServer dbServer) throws EmfException {
         List<String> values = new ArrayList<String>();
         ResultSet rs = null;
         try {
-            EmfDataset dataset = getDataset(session, datasetId);
-            Version version = version(session, datasetId, dataset.getDefaultVersion());
+            EmfDataset dataset = getDataset(entityManager, datasetId);
+            Version version = version(entityManager, datasetId, dataset.getDefaultVersion());
             String datasetVersionedQuery = new VersionedQuery(version).query();
             String query = "select distinct " + columnName + " from " + qualifiedEmissionTableName(dataset) + " where "
                     + datasetVersionedQuery
@@ -1946,9 +1947,9 @@ public class DatasetDAO {
         return values.toArray(new String[0]);
     }
 
-    private Version version(Session session, int datasetId, int version) {
+    private Version version(EntityManager entityManager, int datasetId, int version) {
         Versions versions = new Versions();
-        return versions.get(datasetId, version, session);
+        return versions.get(datasetId, version, entityManager);
     }
 
     private String qualifiedEmissionTableName(Dataset dataset) throws EmfException {
@@ -1976,7 +1977,7 @@ public class DatasetDAO {
     }
     
     public List<EmfDataset> findSimilarDatasets(EmfDataset ds, String qaStep, String qaArgument, 
-            int[] usedByCasesId, String dataValueFilter, boolean unconditional, int userId, Session session) throws Exception {
+            int[] usedByCasesId, String dataValueFilter, boolean unconditional, int userId, EntityManager entityManager) throws Exception {
     
         if (ds.getDatasetType() == null && dataValueFilter != null && !dataValueFilter.trim().isEmpty()) {
             throw new Exception("Dataset Type must be set if you want to use Data Value Filter.");
@@ -2032,7 +2033,7 @@ public class DatasetDAO {
         if ( DebugLevels.DEBUG_12())
             System.out.print(dsquery+ "\n");
 
-        List<EmfDataset> ds1 = session.createQuery(dsquery).list();
+        List<EmfDataset> ds1 = entityManager.createQuery(dsquery).getResultList();
 
         String dsTypeKeyStr = getDSTypeKeyStr(ds.getKeyVals());
         String dstypequery = "SELECT new EmfDataset(DS.id, DS.name, DS.defaultVersion, DS.modifiedDateTime, DS.datasetType.id, DS.datasetType.name, DS.status,"
@@ -2056,7 +2057,7 @@ public class DatasetDAO {
         if ( DebugLevels.DEBUG_12())
             System.out.print(dstypequery);
 
-        List<EmfDataset> ds2 = session.createQuery(dstypequery).list();
+        List<EmfDataset> ds2 = entityManager.createQuery(dstypequery).getResultList();
         List<EmfDataset> all = new ArrayList<EmfDataset>();
         all.addAll(ds1);
         all.addAll(ds2);
@@ -2064,7 +2065,7 @@ public class DatasetDAO {
         TreeSet<EmfDataset> set = new TreeSet<EmfDataset>(all);
         List<EmfDataset> total = new ArrayList<EmfDataset>(set);
         
-        total = filter(total, dataValueFilter, session );
+        total = filter(total, dataValueFilter, entityManager );
 
         if (total.size() > 300 && !unconditional) {
             total.get(0).setName("Alert!!! More than 300 datasets selected.");
@@ -2074,7 +2075,7 @@ public class DatasetDAO {
         return total;
     }
     
-    private List<EmfDataset> filter( List<EmfDataset> datasets, String dataValueFilter, Session session) throws SQLException, EmfException {
+    private List<EmfDataset> filter( List<EmfDataset> datasets, String dataValueFilter, EntityManager entityManager) throws SQLException, EmfException {
         if ( datasets == null || dataValueFilter==null || dataValueFilter.trim().isEmpty()) {
             return datasets;
         }
@@ -2086,7 +2087,7 @@ public class DatasetDAO {
         List<EmfDataset> filteredDatasets = new ArrayList<EmfDataset>();
         int count = 0;
         for ( EmfDataset dataset : datasets) {
-            EmfDataset ds = this.getDataset(session, dataset.getId());
+            EmfDataset ds = this.getDataset(entityManager, dataset.getId());
             String sqlStr = "SELECT * FROM " + this.qualifiedEmissionTableName(ds) + " WHERE " + dataValueFilter + " LIMIT 1;";
             try {
                 Statement statement = connection.createStatement();
@@ -2163,19 +2164,19 @@ public class DatasetDAO {
         return str.replaceAll("\\\\", "\\\\\\\\");
     }
     
-    public synchronized void setStatus(String username, String message, String msgType, Session session) {
+    public synchronized void setStatus(String username, String message, String msgType, EntityManager entityManager) {
         Status endStatus = new Status();
         endStatus.setUsername(username);
         endStatus.setType(msgType);
         endStatus.setMessage(message);
         endStatus.setTimestamp(new Date());
 
-        hibernateFacade.add(endStatus, session);
+        hibernateFacade.add(endStatus, entityManager);
     }
 
-    public boolean checkBizzareCharInColumn(DbServer dbServer, Session session, int datasetId, int version, String colName) throws SQLException, EmfException { 
+    public boolean checkBizzareCharInColumn(DbServer dbServer, EntityManager entityManager, int datasetId, int version, String colName) throws SQLException, EmfException { 
         // only for dataset that has column PLANT BUG3588
-        EmfDataset dataset = this.getDataset(session, datasetId);
+        EmfDataset dataset = this.getDataset(entityManager, datasetId);
         DatasetType type = dataset.getDatasetType();
 
         if (type.getExporterClassName().endsWith("ExternalFilesExporter"))
@@ -2188,7 +2189,7 @@ public class DatasetDAO {
         if ("emissions.versions".equalsIgnoreCase(qualifiedTable) ) {
             throw new EmfException("Table versions moved to schema emf."); // VERSIONS TABLE
         }
-        String countQuery = "SELECT count(*) FROM " + qualifiedTable + getWhereClause(version(session,datasetId,version), session) + " and " + colName + " ~* '[[:cntrl:]]'"; //consider unicode?? |chr(127)-chr(65535)]'";
+        String countQuery = "SELECT count(*) FROM " + qualifiedTable + getWhereClause(version(entityManager,datasetId,version), entityManager) + " and " + colName + " ~* '[[:cntrl:]]'"; //consider unicode?? |chr(127)-chr(65535)]'";
         long totalCount = 0;
 
         try {

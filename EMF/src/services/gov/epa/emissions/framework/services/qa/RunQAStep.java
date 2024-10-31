@@ -4,7 +4,8 @@ import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.QAStep;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+
+import javax.persistence.EntityManagerFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,23 +16,23 @@ public class RunQAStep implements Runnable {
 
     private DbServerFactory dbServerFactory;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private User user;
 
     private Log log = LogFactory.getLog(RunQAStep.class);
 
     public RunQAStep(QAStep[] steps, User user, 
-            DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory) {
+            DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory) {
         this.user = user;
         this.qaSteps = steps;
         this.dbServerFactory = dbServerFactory;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     public void run() {
         try {
-            RunQAStepTask task = new RunQAStepTask(qaSteps, user, dbServerFactory, sessionFactory);
+            RunQAStepTask task = new RunQAStepTask(qaSteps, user, dbServerFactory, entityManagerFactory);
             task.run();
         } catch (EmfException e) {
             logError("Could not run all QA steps", e);

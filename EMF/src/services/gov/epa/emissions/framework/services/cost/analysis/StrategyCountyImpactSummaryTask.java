@@ -14,11 +14,12 @@ import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategy
 import gov.epa.emissions.framework.services.cost.controlStrategy.DatasetCreator;
 import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyResultType;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.sql.SQLException;
 import java.util.Date;
+
+import javax.persistence.EntityManagerFactory;
 
 public class StrategyCountyImpactSummaryTask extends AbstractStrategySummaryTask {
 
@@ -29,8 +30,8 @@ public class StrategyCountyImpactSummaryTask extends AbstractStrategySummaryTask
     private ControlStrategyResult countyImpactSummaryResult;
 
     public StrategyCountyImpactSummaryTask(ControlStrategy controlStrategy, User user, DbServerFactory dbServerFactory,
-            HibernateSessionFactory sessionFactory) throws EmfException {
-        super(controlStrategy, user, dbServerFactory, sessionFactory);
+            EntityManagerFactory entityManagerFactory) throws EmfException {
+        super(controlStrategy, user, dbServerFactory, entityManagerFactory);
         this.controlStrategy = controlStrategy;
         DbServer dbServer = dbServerFactory.getDbServer();
         this.datasource = dbServer.getEmissionsDatasource();

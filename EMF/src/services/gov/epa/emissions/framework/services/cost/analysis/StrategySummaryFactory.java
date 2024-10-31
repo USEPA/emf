@@ -1,13 +1,14 @@
 package gov.epa.emissions.framework.services.cost.analysis;
 
-import java.lang.reflect.Constructor;
-
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.cost.ControlStrategy;
 import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyResultType;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+
+import java.lang.reflect.Constructor;
+
+import javax.persistence.EntityManagerFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,7 +22,7 @@ public class StrategySummaryFactory {
     }
 
     public IStrategySummaryTask create(ControlStrategy controlStrategy, User user,
-            StrategyResultType strategyResultType, HibernateSessionFactory sessionFactory,
+            StrategyResultType strategyResultType, EntityManagerFactory entityManagerFactory,
             DbServerFactory dbServerFactory) throws EmfException {
         try {
 
@@ -32,16 +33,16 @@ public class StrategySummaryFactory {
                 throw new EmfException("Summary task is missing strategy result summary to run.");
             
             return doCreate(controlStrategy, user, 
-                    strategyResultType, sessionFactory, 
+                    strategyResultType, entityManagerFactory, 
                     dbServerFactory);
 //            
 //            if (strategyResultType.getName().equalsIgnoreCase(StrategyResultType.rsmPercentReduction))
 //                return new StrategyRSMPctRedSummaryTask(controlStrategy, user, 
-//                        dbServerFactory, sessionFactory);
+//                        dbServerFactory, entityManagerFactory);
 //
 //            if (strategyResultType.getName().equalsIgnoreCase(StrategyResultType.strategyImpactSummary))
 //                return new StrategyCountyImpactSummaryTask(controlStrategy, user, 
-//                        dbServerFactory, sessionFactory);
+//                        dbServerFactory, entityManagerFactory);
 //
 //            //Don't assume a summary task, throw an error.
 //            throw new EmfException("Summary task can not be run for, " + strategyResultType.getName());
@@ -53,14 +54,14 @@ public class StrategySummaryFactory {
     }
     
     private IStrategySummaryTask doCreate(ControlStrategy controlStrategy, User user,
-            StrategyResultType strategyResultType, HibernateSessionFactory sessionFactory,
+            StrategyResultType strategyResultType, EntityManagerFactory entityManagerFactory,
             DbServerFactory dbServerFactory) throws Exception {
         String className = strategyResultType.getClassName();
         Class strategySummaryClass = Class.forName(className);
         Class[] classParams = new Class[] { ControlStrategy.class, User.class, 
-                DbServerFactory.class, HibernateSessionFactory.class};
+                DbServerFactory.class, EntityManagerFactory.class};
         Object[] params = new Object[] { controlStrategy, user, 
-                dbServerFactory, sessionFactory};
+                dbServerFactory, entityManagerFactory};
         Constructor strategyConstructor = strategySummaryClass.getDeclaredConstructor(classParams);
 
         return (IStrategySummaryTask)strategyConstructor.newInstance(params);

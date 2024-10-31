@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
 
 import gov.epa.emissions.commons.data.InternalSource;
 import gov.epa.emissions.commons.db.DbServer;
@@ -35,7 +35,7 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
         Connection connection = getConnection();
         DatasetDAO datasetDAO = getDatasetDAO();
         ModulesDAO modulesDAO = getModulesDAO();
-        Session session = getSession();
+        EntityManager entityManager = getEntityManager();
         
         Module module = getModule();
         ModuleTypeVersionSubmodule moduleTypeVersionSubmodule = getModuleTypeVersionSubmodule();
@@ -88,7 +88,7 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
                     int versionNumber = datasetVersion.getVersion();
                     InternalSource internalSource = getInternalSource(dataset);
                     if (!moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.IN)) {
-                        Version version = getVersion(dataset, versionNumber, session);
+                        Version version = getVersion(dataset, versionNumber, entityManager);
                         outputDatasetVersions.add(version);
                         outputDatasetTables.add(datasetTablesSchema + "." + internalSource.getTable());
                     }
@@ -155,7 +155,7 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
                     }
                 }
             }
-            history = modulesDAO.updateHistory(history, session);
+            history = modulesDAO.updateHistory(history, entityManager);
             
             // return the values of all INOUT and OUT parameters as a result set
             String outputParameters = "";
@@ -199,7 +199,7 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
                 
                 historySubmodule.addLogMessage(History.INFO, "Starting setup script.");
                 
-                historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, session);
+                historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, entityManager);
 
                 statement = connection.createStatement();
                 statement.execute(setupScript);
@@ -228,7 +228,7 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
                 
                 historySubmodule.addLogMessage(History.INFO, "Starting user script (algorithm).");
                 
-                historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, session);
+                historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, entityManager);
                 
                 userConnection = getUserConnection(userTimeStamp, getTempUserPassword());
                 userConnection.setAutoCommit(true);
@@ -257,8 +257,8 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
                 if (outputDatasetVersions.size() > 0) {
                     historySubmodule.addLogMessage(History.INFO, "Updating the number of records for the OUT and INOUT datasets:");
                     for(Version version : outputDatasetVersions) {
-                        EmfDataset dataset = datasetDAO.getDataset(session, version.getDatasetId());
-                        int recordCount = updateVersion(dataset, version, dbServer, session, datasetDAO, user);
+                        EmfDataset dataset = datasetDAO.getDataset(entityManager, version.getDatasetId());
+                        int recordCount = updateVersion(dataset, version, dbServer, entityManager, datasetDAO, user);
                         String message = String.format("Dataset \"%s\" version %d has %d records.", dataset.getName(), version.getVersion(), recordCount);
                         historySubmodule.addLogMessage(History.INFO, message);
                     }
@@ -294,7 +294,7 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
             
             historySubmodule.addLogMessage(History.SUCCESS, getFinalStatusMessage());
             
-            historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, session);
+            historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, entityManager);
             
         } catch (Exception e) {
             
@@ -332,10 +332,10 @@ class SimpleSubmoduleRunner extends SubmoduleRunner {
             
             historySubmodule.addLogMessage(History.ERROR, getFinalStatusMessage());
             
-            historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, session);
+            historySubmodule = modulesDAO.updateHistorySubmodule(historySubmodule, entityManager);
             
         } finally {
-            history = modulesDAO.updateHistory(history, session);
+            history = modulesDAO.updateHistory(history, entityManager);
             if (statement != null) {
                 try {
                     statement.close();

@@ -23,7 +23,7 @@ import gov.epa.emissions.framework.services.data.DatasetVersion;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.GeoRegion;
 import gov.epa.emissions.framework.services.editor.Revision;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import gov.epa.emissions.framework.services.persistence.JpaEntityManagerFactory;
 import gov.epa.emissions.framework.services.qa.QueryToString;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
@@ -34,9 +34,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 import org.hibernate.exception.ConstraintViolationException;
 
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
@@ -63,7 +65,7 @@ public class CaseServiceImpl implements CaseService {
         return "For label: " + svcLabel + " # of active objects of this type= " + svcCount;
     }
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private DbServerFactory dbFactory;
 
@@ -72,17 +74,17 @@ public class CaseServiceImpl implements CaseService {
     private CaseAssistanceService assistanceService;
     
     public CaseServiceImpl() {
-        this(HibernateSessionFactory.get(), DbServerFactory.get());
+        this(JpaEntityManagerFactory.get(), DbServerFactory.get());
     }
 
-    public CaseServiceImpl(HibernateSessionFactory sessionFactory, DbServerFactory dbFactory) {
-        this.sessionFactory = sessionFactory;
+    public CaseServiceImpl(EntityManagerFactory entityManagerFactory, DbServerFactory dbFactory) {
+        this.entityManagerFactory = entityManagerFactory;
         this.dbFactory = dbFactory;
         this.dao = new CaseDAO();
         this.dataCommonsDao = new DataCommonsDAO();
         
         if (DebugLevels.DEBUG_0())
-            System.out.println("CaseServiceImpl::getCaseService  Is sessionFactory null? " + (sessionFactory == null));
+            System.out.println("CaseServiceImpl::getCaseService  Is entityManagerFactory null? " + (entityManagerFactory == null));
 
         myTag();
         if (DebugLevels.DEBUG_0())
@@ -101,7 +103,7 @@ public class CaseServiceImpl implements CaseService {
 
     @Override
     protected void finalize() throws Throwable {
-        this.sessionFactory = null;
+        this.entityManagerFactory = null;
         this.dbFactory = null;
         this.dao = null;
         this.dataCommonsDao = null;
@@ -117,7 +119,7 @@ public class CaseServiceImpl implements CaseService {
         if (caseService == null) {
             try {
 
-                caseService = new ManagedCaseService(dbFactory, sessionFactory);
+                caseService = new ManagedCaseService(dbFactory, entityManagerFactory);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -132,7 +134,7 @@ public class CaseServiceImpl implements CaseService {
 
         if (assistanceService == null) {
             try {
-                assistanceService = new CaseAssistanceService(sessionFactory);
+                assistanceService = new CaseAssistanceService(entityManagerFactory);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -629,17 +631,17 @@ public class CaseServiceImpl implements CaseService {
     }
 
     public synchronized Case updateCaseWithLock(Case caseObj) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {           
-            dao.canUpdate(caseObj, session);
+            dao.canUpdate(caseObj, entityManager);
 
-            //            Case caseWithSameAbbr = dao.getCaseFromAbbr(caseObj.getAbbreviation(), session);
+            //            Case caseWithSameAbbr = dao.getCaseFromAbbr(caseObj.getAbbreviation(), entityManager);
             //
             //            if (caseWithSameAbbr != null && caseWithSameAbbr.getId() != caseObj.getId())
             //                throw new EmfException("the same case abbreviation has been used by another case: "
 //                        + caseWithSameAbbr.getName());
-            Case caseWithLock = dao.updateWithLock(caseObj, session);
+            Case caseWithLock = dao.updateWithLock(caseObj, entityManager);
 
             return caseWithLock;
              
@@ -651,8 +653,8 @@ public class CaseServiceImpl implements CaseService {
             log.error("Could not update Case: " + caseObj, e);
             throw new EmfException("Could not update Case: " + e.getMessage() + ".");
         }  finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
 
     }
@@ -726,20 +728,20 @@ public class CaseServiceImpl implements CaseService {
     }
     
     public Case[] getCasesThatInputToOtherCases(int caseId) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getCasesThatInputToOtherCases(caseId, session).toArray(new Case[0]);
+            return dao.getCasesThatInputToOtherCases(caseId, entityManager).toArray(new Case[0]);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
     public Case[] getCasesThatOutputToOtherCases(int caseId) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getCasesThatOutputToOtherCases(caseId, session).toArray(new Case[0]);
+            return dao.getCasesThatOutputToOtherCases(caseId, entityManager).toArray(new Case[0]);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -752,20 +754,20 @@ public class CaseServiceImpl implements CaseService {
     }
 
     public Case[] getCasesByOutputDatasets(int[] datasetIds) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getCasesByOutputDatasets(datasetIds, session).toArray(new Case[0]);
+            return dao.getCasesByOutputDatasets(datasetIds, entityManager).toArray(new Case[0]);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public Case[] getCasesByInputDataset(int datasetId) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getCasesByInputDataset(datasetId, session).toArray(new Case[0]);
+            return dao.getCasesByInputDataset(datasetId, entityManager).toArray(new Case[0]);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
@@ -798,10 +800,10 @@ public class CaseServiceImpl implements CaseService {
     public String getCaseComparisonDatasetRevisionResult(int[] caseIds) throws EmfException {
 
         DbServer dbServer = dbFactory.getDbServer();
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             StringBuffer stringBuffer = new StringBuffer();
-            ResultSet rs = dbServer.getEmfDatasource().query().executeQuery("SELECT * FROM (" + new SQLCompareCasesQuery(sessionFactory).createCompareQuery(caseIds) + " ) AS foo WHERE tab = 'Inputs' and match = 'false' ");
+            ResultSet rs = dbServer.getEmfDatasource().query().executeQuery("SELECT * FROM (" + new SQLCompareCasesQuery(entityManagerFactory).createCompareQuery(caseIds) + " ) AS foo WHERE tab = 'Inputs' and match = 'false' ");
             int columnCount = rs.getMetaData().getColumnCount();
 
             String colTypes = "#COLUMN_TYPES=varchar(255)|varchar(2147483647)|int|int|timestamp|text(2147483647)|text(2147483647)";
@@ -844,9 +846,9 @@ public class CaseServiceImpl implements CaseService {
                     if (minVersion != maxVersion) {
                         //let's look up revisions, we are also assuming the different versions are based on the
                         //same revision branch
-                        EmfDataset dataset = dataCommonsDao.get(EmfDataset.class, "name", datasetName, session).get(0);
-                        List<Revision> revisions = dataCommonsDao.getRevisions(dataset.getId(), session);
-                        Version version = dataCommonsDao.getVersion(dataset.getId(), maxVersion, session);
+                        EmfDataset dataset = dataCommonsDao.get(EmfDataset.class, "name", datasetName, entityManager).get(0);
+                        List<Revision> revisions = dataCommonsDao.getRevisions(dataset.getId(), entityManager);
+                        Version version = dataCommonsDao.getVersion(dataset.getId(), maxVersion, entityManager);
                         for (Revision revision : revisions) {
                             int versionNumber = revision.getVersion();
                             if (versionNumber <= maxVersion && versionNumber > minVersion) {
@@ -874,8 +876,8 @@ public class CaseServiceImpl implements CaseService {
             try {
                 if (dbServer != null && dbServer.isConnected())
                     dbServer.disconnect();
-                if (session != null)
-                    session.close();
+                if (entityManager != null)
+                    entityManager.close();
 
             } catch (Exception e) {
                 throw new EmfException("ManagedCaseService: error closing db server. " + e.getMessage());
@@ -897,7 +899,7 @@ public class CaseServiceImpl implements CaseService {
     public String getCaseComparisonResult(int[] caseIds) throws EmfException {
         DbServer dbServer = dbFactory.getDbServer();
         try {
-            return new QueryToString(dbServer, new SQLCompareCasesQuery(sessionFactory).createCompareQuery(caseIds), ",").toString();
+            return new QueryToString(dbServer, new SQLCompareCasesQuery(entityManagerFactory).createCompareQuery(caseIds), ",").toString();
         } catch (RuntimeException e) {
             throw new EmfException("Could not retrieve case comparison result: " + e.getMessage(), e);
         } catch (ExporterException e) {
@@ -921,7 +923,7 @@ public class CaseServiceImpl implements CaseService {
             long startTime = System.currentTimeMillis();
             
             RunQACaseReports runQACaseReports = new RunQACaseReports(user, dbFactory, dao, 
-                    sessionFactory, serverDir);
+                    entityManagerFactory, serverDir);
             long endTime = System.currentTimeMillis();
             System.out.println("Ran QA Case Report in " + ((endTime - startTime) / (1000))  + " secs");
             String validationIssues = runQACaseReports.validateAndBuildReportSQL(caseIds, gridName, sectors, 

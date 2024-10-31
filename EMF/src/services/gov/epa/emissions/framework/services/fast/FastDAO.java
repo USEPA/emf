@@ -1,23 +1,5 @@
 package gov.epa.emissions.framework.services.fast;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.db.version.Version;
@@ -38,17 +20,33 @@ import gov.epa.emissions.framework.services.data.Keywords;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.hibernate.HibernateException;
 
 public class FastDAO {
     private LockingScheme lockingScheme;
 
     private HibernateFacade hibernateFacade;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private DbServerFactory dbServerFactory;
     
@@ -63,164 +61,166 @@ public class FastDAO {
         this.dataCommonsDao = new DataCommonsDAO();
     }
 
-    public FastDAO(DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory) {
+    public FastDAO(DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory) {
         this();
         this.dbServerFactory = dbServerFactory;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
     }
 
-    public int add(FastRun element, Session session) {
-        return addObject(element, session);
+    public int add(FastRun element, EntityManager entityManager) {
+        hibernateFacade.add(element, entityManager);
+        return element.getId();
     }
 
-    public int add(FastRunOutput element, Session session) {
-        return addObject(element, session);
+    public int add(FastRunOutput element, EntityManager entityManager) {
+        hibernateFacade.add(element, entityManager);
+        return element.getId();
     }
 
-    public int add(FastAnalysis element, Session session) {
-        return addObject(element, session);
+    public int add(FastAnalysis element, EntityManager entityManager) {
+        hibernateFacade.add(element, entityManager);
+        return element.getId();
     }
 
-    public int add(FastAnalysisOutput element, Session session) {
-        return addObject(element, session);
+    public int add(FastAnalysisOutput element, EntityManager entityManager) {
+        hibernateFacade.add(element, entityManager);
+        return element.getId();
     }
 
-    private int addObject(Object obj, Session session) {
-        return (Integer)hibernateFacade.add(obj, session);
+    public String getFastRunRunStatus(int fastRunId, EntityManager entityManager) {
+        return (String)entityManager.createQuery("select cS.runStatus from FastRun cS where cS.id = " + fastRunId).getSingleResult();
     }
 
-    public String getFastRunRunStatus(int fastRunId, Session session) {
-        return (String)session.createQuery("select cS.runStatus from FastRun cS where cS.id = " + fastRunId).uniqueResult();
-    }
-
-    public Long getFastRunRunningCount(Session session) {
-        Long count = (Long)session.createQuery("select count(*) as total from FastRun cS where cS.runStatus = 'Running'").uniqueResult();
+    public Long getFastRunRunningCount(EntityManager entityManager) {
+        Long count = (Long)entityManager.createQuery("select count(*) as total from FastRun cS where cS.runStatus = 'Running'").getSingleResult();
         return count != null ? count : 0L;
     }
 
-    public List<FastRun> getFastRunsByRunStatus(String runStatus, Session session) {
+    public List<FastRun> getFastRunsByRunStatus(String runStatus, EntityManager entityManager) {
 //        Criterion critRunStatus = Restrictions.eq("runStatus", runStatus);
-//        return hibernateFacade.get(FastRun.class, critRunStatus, Order.asc("lastModifiedDate"), session);
+//        return hibernateFacade.get(FastRun.class, critRunStatus, Order.asc("lastModifiedDate"), entityManager);
 //
-        return session.createQuery("select new FastRun(cS.id, cS.name) from FastRun cS where cS.runStatus = :runStatus order by cS.lastModifiedDate").setString("runStatus", runStatus).list();
+        return entityManager
+                .createQuery("select new FastRun(cS.id, cS.name) from FastRun cS where cS.runStatus = :runStatus order by cS.lastModifiedDate")
+                .setParameter("runStatus", runStatus)
+                .getResultList();
     }
 
-    public void setFastRunRunStatusAndCompletionDate(int fastRunId, String runStatus, Date completionDate, Session session) {
-        Transaction tx = null;
+    public void setFastRunRunStatusAndCompletionDate(int fastRunId, String runStatus, Date completionDate, EntityManager entityManager) {
         try {
-            tx = session.beginTransaction();
-            session.createQuery("update FastRun set runStatus = :status, lastModifiedDate = :date, completionDate = :completionDate where id = :id")
-            .setParameter("status", runStatus)
-            .setParameter("date", new Date())
-            .setParameter("completionDate", completionDate)
-            .setParameter("id", Integer.valueOf(fastRunId))
-            .executeUpdate();
-            tx.commit();
+            hibernateFacade.executeInsideTransaction(em -> {
+                em
+                    .createQuery("update FastRun set runStatus = :status, lastModifiedDate = :date, completionDate = :completionDate where id = :id")
+                    .setParameter("status", runStatus)
+                    .setParameter("date", new Date())
+                    .setParameter("completionDate", completionDate)
+                    .setParameter("id", Integer.valueOf(fastRunId))
+                    .executeUpdate();
+            }, entityManager);
         } catch (HibernateException e) {
-            tx.rollback();
             throw e;
         }
     }
 
     // return FastRuns orderby name
-    public List<FastRun> getFastRuns(Session session) {
-        CriteriaBuilderQueryRoot<FastRun> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastRun.class, session);
+    public List<FastRun> getFastRuns(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<FastRun> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastRun.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<FastRun> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
     // return FastRuns by Grid and orderby name
-    public List<FastRun> getFastRuns(int gridId, Session session) {
-        CriteriaBuilderQueryRoot<FastRun> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastRun.class, session);
+    public List<FastRun> getFastRuns(int gridId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<FastRun> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastRun.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<FastRun> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.get(criteriaBuilderQueryRoot, builder.equal(root.get("grid.id"), Integer.valueOf(gridId)), builder.asc(root.get("name")), session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, builder.equal(root.get("grid.id"), Integer.valueOf(gridId)), builder.asc(root.get("name")), entityManager);
     }
 
-    public List<FastRunOutputType> getFastRunOutputTypes(Session session) {
-        CriteriaBuilderQueryRoot<FastRunOutputType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastRunOutputType.class, session);
+    public List<FastRunOutputType> getFastRunOutputTypes(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<FastRunOutputType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastRunOutputType.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<FastRunOutputType> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
 //    // TODO: gettig all the strategies to obtain the lock--- is it a good idea?
-//    public FastRun obtainLocked(User owner, FastRun element, Session session) {
-//        return (FastRun) lockingScheme.getLocked(owner, current(element, session), session);
+//    public FastRun obtainLocked(User owner, FastRun element, EntityManager entityManager) {
+//        return (FastRun) lockingScheme.getLocked(owner, current(element, entityManager), entityManager);
 //    }
 //
-    public FastRun obtainLockedFastRun(User owner, int id, Session session) {
-        return (FastRun) lockingScheme.getLocked(owner, getFastRun(id, session), session);
+    public FastRun obtainLockedFastRun(User owner, int id, EntityManager entityManager) {
+        return (FastRun) lockingScheme.getLocked(owner, getFastRun(id, entityManager), entityManager);
     }
 
-//    public void releaseLocked(FastRun locked, Session session) {
-//        FastRun current = current(locked, session);
+//    public void releaseLocked(FastRun locked, EntityManager entityManager) {
+//        FastRun current = current(locked, entityManager);
 //        String runStatus = current.getRunStatus();
 //        if (runStatus == null || !runStatus.equalsIgnoreCase("Running"))
-//            lockingScheme.releaseLock(current, session);
+//            lockingScheme.releaseLock(current, entityManager);
 //    }
 
-    public void releaseLockedFastRun(User user, int id, Session session) {
-        FastRun current = getFastRun(id, session);
+    public void releaseLockedFastRun(User user, int id, EntityManager entityManager) {
+        FastRun current = getFastRun(id, entityManager);
         String runStatus = current.getRunStatus();
         if (runStatus == null || !runStatus.equalsIgnoreCase("Running"))
-            lockingScheme.releaseLock(user, current, session);
+            lockingScheme.releaseLock(user, current, entityManager);
     }
 
-    public FastRun updateFastRun(FastRun locked, Session session) throws EmfException {
-        return (FastRun) lockingScheme.releaseLockOnUpdate(locked, getFastRun(locked.getId(), session), session);
+    public FastRun updateFastRun(FastRun locked, EntityManager entityManager) throws EmfException {
+        return (FastRun) lockingScheme.releaseLockOnUpdate(locked, getFastRun(locked.getId(), entityManager), entityManager);
     }
 
-    public FastRun updateFastRunWithLock(FastRun locked, Session session) throws EmfException {
-        return (FastRun) lockingScheme.renewLockOnUpdate(locked, getFastRun(locked.getId(), session), session);
+    public FastRun updateFastRunWithLock(FastRun locked, EntityManager entityManager) throws EmfException {
+        return (FastRun) lockingScheme.renewLockOnUpdate(locked, getFastRun(locked.getId(), entityManager), entityManager);
     }
 
-    public boolean canUpdateFastRun(FastRun fastRun, Session session) {
-        if (!exists(fastRun.getId(), FastRun.class, session)) {
+    public boolean canUpdateFastRun(FastRun fastRun, EntityManager entityManager) {
+        if (!exists(fastRun.getId(), FastRun.class, entityManager)) {
             return false;
         }
 
-        FastRun current = getFastRun(fastRun.getId(), session);
+        FastRun current = getFastRun(fastRun.getId(), entityManager);
 
-        session.clear();// clear to flush current
+        entityManager.clear();// clear to flush current
 
         if (current.getName().equals(fastRun.getName()))
             return true;
 
-        return !nameUsed(fastRun.getName(), FastRun.class, session);
+        return !nameUsed(fastRun.getName(), FastRun.class, entityManager);
     }
 
-    public <C> boolean nameUsed(String name, Class<C> clazz, Session session) {
-        return hibernateFacade.nameUsed(name, clazz, session);
+    public <C> boolean nameUsed(String name, Class<C> clazz, EntityManager entityManager) {
+        return hibernateFacade.nameUsed(name, clazz, entityManager);
     }
 
-//    private FastRun current(int id, Class clazz, Session session) {
-//        return (FastRun) hibernateFacade.current(id, clazz, session);
+//    private FastRun current(int id, Class clazz, EntityManager entityManager) {
+//        return (FastRun) hibernateFacade.current(id, clazz, entityManager);
 //    }
 
-    public boolean exists(int id, Class clazz, Session session) {
-        return hibernateFacade.exists(id, clazz, session);
+    public boolean exists(int id, Class clazz, EntityManager entityManager) {
+        return hibernateFacade.exists(id, clazz, entityManager);
     }
 
-    public void remove(FastRun strategy, Session session) {
-        hibernateFacade.remove(strategy, session);
+    public void remove(FastRun strategy, EntityManager entityManager) {
+        hibernateFacade.remove(strategy, entityManager);
     }
 
-    public void remove(FastRunOutput result, Session session) {
-        hibernateFacade.remove(result, session);
+    public void remove(FastRunOutput result, EntityManager entityManager) {
+        hibernateFacade.remove(result, entityManager);
     }
 
-    public FastRunOutputType getFastRunOutputType(String name, Session session) {
-        return hibernateFacade.load(FastRunOutputType.class, "name", name, session);
+    public FastRunOutputType getFastRunOutputType(String name, EntityManager entityManager) {
+        return hibernateFacade.load(FastRunOutputType.class, "name", name, entityManager);
     }
 
     public FastRunOutput getFastRunOutput(int fastRunId, int inputDatasetId, 
-            int detailedResultDatasetId, Session session) {
-        CriteriaBuilderQueryRoot<FastRunOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastRunOutput.class, session);
+            int detailedResultDatasetId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<FastRunOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastRunOutput.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<FastRunOutput> root = criteriaBuilderQueryRoot.getRoot();
         Join<EmfDataset, FastRunOutput> odJoin = root.join("outputDataset", javax.persistence.criteria.JoinType.INNER);
@@ -228,73 +228,73 @@ public class FastDAO {
         Predicate critFastRunId = builder.equal(root.get("fastRunId"), fastRunId);
         Predicate critInputDatasetId = builder.equal(root.get("inputDatasetId"), inputDatasetId);
         Predicate critDetailedResultDatasetId = builder.equal(odJoin.get("id"), detailedResultDatasetId);
-        return hibernateFacade.load(session, criteriaBuilderQueryRoot, new Predicate[] {critFastRunId, critInputDatasetId, critDetailedResultDatasetId});
+        return hibernateFacade.load(entityManager, criteriaBuilderQueryRoot, new Predicate[] {critFastRunId, critInputDatasetId, critDetailedResultDatasetId});
     }
 
-    public FastRunOutput getFastRunOutput(int id, Session session) {
-        return hibernateFacade.load(FastRunOutput.class, "id", Integer.valueOf(id), session);
+    public FastRunOutput getFastRunOutput(int id, EntityManager entityManager) {
+        return hibernateFacade.load(FastRunOutput.class, "id", Integer.valueOf(id), entityManager);
     }
 
-//    private void updateFastRunIds(FastRun fastRun, Session session) {
+//    private void updateFastRunIds(FastRun fastRun, EntityManager entityManager) {
 //        Criterion c1 = Restrictions.eq("name", fastRun.getName());
-//        List list = hibernateFacade.get(FastRun.class, c1, session);
+//        List list = hibernateFacade.get(FastRun.class, c1, entityManager);
 //        if (!list.isEmpty()) {
 //            FastRun cs = (FastRun) list.get(0);
 //            fastRun.setId(cs.getId());
 //        }
 //    }
 //
-    public void updateFastRunOutput(FastRunOutput result, Session session) {
-        hibernateFacade.saveOrUpdate(result, session);
+    public void updateFastRunOutput(FastRunOutput result, EntityManager entityManager) {
+        hibernateFacade.saveOrUpdate(result, entityManager);
     }
 
-    public String fastRunRunStatus(int id, Session session) {
-        FastRun fastRun = hibernateFacade.current(id, FastRun.class, session);
+    public String fastRunRunStatus(int id, EntityManager entityManager) {
+        FastRun fastRun = hibernateFacade.current(id, FastRun.class, entityManager);
         return fastRun.getRunStatus();
     }
 
-//    public void removeFastRunResult(FastRun fastRun, Session session) {
+//    public void removeFastRunResult(FastRun fastRun, EntityManager entityManager) {
 //        Criterion c = Restrictions.eq("fastRunId", Integer.valueOf(fastRun.getId()));
-//        List list = hibernateFacade.get(FastRunResult.class, c, session);
+//        List list = hibernateFacade.get(FastRunResult.class, c, entityManager);
 //        for (int i = 0; i < list.size(); i++) {
 //            FastRunResult result = (FastRunResult) list.get(i);
-//            hibernateFacade.delete(result,session);
+//            hibernateFacade.delete(result,entityManager);
 //        }
 //    }
 
-    public void removeFastRunResults(int fastRunId, Session session) {
+    public void removeFastRunResults(int fastRunId, EntityManager entityManager) {
 //        String hqlDelete = "delete FastRunOutput sr where sr.fastRunId = :fastRunId";
-//        session.createQuery( hqlDelete )
+//        entityManager.createQuery( hqlDelete )
 //             .setInteger("fastRunId", fastRunId)
 //             .executeUpdate();
-//        session.flush();
-        List<FastRunOutput> outputs = hibernateFacade.get(FastRunOutput.class, "fastRunId", Integer.valueOf(fastRunId), session);
-        hibernateFacade.remove(outputs.toArray(), session);
+//        entityManager.flush();
+        List<FastRunOutput> outputs = hibernateFacade.get(FastRunOutput.class, "fastRunId", Integer.valueOf(fastRunId), entityManager);
+        hibernateFacade.remove(outputs.toArray(), entityManager);
     }
 
-    public FastRun getFastRun(String name, Session session) {
-        FastRun cs = hibernateFacade.load(FastRun.class, "name", new String(name), session);
+    public FastRun getFastRun(String name, EntityManager entityManager) {
+        FastRun cs = hibernateFacade.load(FastRun.class, "name", new String(name), entityManager);
         return cs;
     }
 
-    public FastRun getFastRun(int id, Session session) {
-        FastRun cs = hibernateFacade.load(FastRun.class, "id", Integer.valueOf(id), session);
+    public FastRun getFastRun(int id, EntityManager entityManager) {
+        FastRun cs = hibernateFacade.load(FastRun.class, "id", Integer.valueOf(id), entityManager);
         return cs;
     }
 
-    public List<FastRunOutput> getFastRunOutputs(int fastRunId, Session session) {
-        CriteriaBuilderQueryRoot<FastRunOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastRunOutput.class, session);
+    public List<FastRunOutput> getFastRunOutputs(int fastRunId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<FastRunOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastRunOutput.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<FastRunOutput> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.get(criteriaBuilderQueryRoot, builder.equal(root.get("fastRunId"), Integer.valueOf(fastRunId)), builder.asc(root.get("startDate")), session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, builder.equal(root.get("fastRunId"), Integer.valueOf(fastRunId)), builder.asc(root.get("startDate")), entityManager);
     }
     
-    public void removeResultDatasets(EmfDataset[] datasets, User user, Session session, DbServer dbServer) throws EmfException {
+    public void removeResultDatasets(EmfDataset[] datasets, User user, EntityManager entityManager, DbServer dbServer) throws EmfException {
         if (datasets != null) {
             try {
-                deleteDatasets(datasets, user, session);
-                datasetDao.deleteDatasets(datasets, dbServer, session);
+                deleteDatasets(datasets, user, entityManager);
+                datasetDao.deleteDatasets(datasets, dbServer, entityManager);
             } catch (EmfException e) {
                 if (DebugLevels.DEBUG_12())
                     System.out.println(e.getMessage());
@@ -304,29 +304,29 @@ public class FastDAO {
         }
     }
     
-    public void deleteDatasets(EmfDataset[] datasets, User user, Session session) throws EmfException {
-        EmfDataset[] lockedDatasets = getLockedDatasets(datasets, user, session);
+    public void deleteDatasets(EmfDataset[] datasets, User user, EntityManager entityManager) throws EmfException {
+        EmfDataset[] lockedDatasets = getLockedDatasets(datasets, user, entityManager);
         
         if (lockedDatasets == null)
             return;
         
         try {
-            new DataServiceImpl(dbServerFactory, sessionFactory).deleteDatasets(user, datasets, DeleteType.FAST);
+            new DataServiceImpl(dbServerFactory, entityManagerFactory).deleteDatasets(user, datasets, DeleteType.FAST);
         } catch (EmfException e) {
             if (!e.getType().equals(EmfException.MSG_TYPE))
                 throw new EmfException(e.getMessage());
         } finally {
-            releaseLocked(lockedDatasets, user, session);
+            releaseLocked(lockedDatasets, user, entityManager);
         }
     }
     
-    private EmfDataset[] getLockedDatasets(EmfDataset[] datasets, User user, Session session) {
+    private EmfDataset[] getLockedDatasets(EmfDataset[] datasets, User user, EntityManager entityManager) {
         List lockedList = new ArrayList();
         
         for (int i = 0; i < datasets.length; i++) {
-            EmfDataset locked = obtainLockedDataset(datasets[i], user, session);
+            EmfDataset locked = obtainLockedDataset(datasets[i], user, entityManager);
             if (locked == null) {
-                releaseLocked((EmfDataset[])lockedList.toArray(new EmfDataset[0]), user, session);
+                releaseLocked((EmfDataset[])lockedList.toArray(new EmfDataset[0]), user, entityManager);
                 return null;
             }
             
@@ -336,29 +336,29 @@ public class FastDAO {
         return (EmfDataset[])lockedList.toArray(new EmfDataset[0]);
     }
 
-    private EmfDataset obtainLockedDataset(EmfDataset dataset, User user, Session session) {
-        EmfDataset locked = datasetDao.obtainLocked(user, dataset, session);
+    private EmfDataset obtainLockedDataset(EmfDataset dataset, User user, EntityManager entityManager) {
+        EmfDataset locked = datasetDao.obtainLocked(user, dataset, entityManager);
         return locked;
     }
     
-    private void releaseLocked(EmfDataset[] lockedDatasets, User user, Session session) {
+    private void releaseLocked(EmfDataset[] lockedDatasets, User user, EntityManager entityManager) {
         if (lockedDatasets.length == 0)
             return;
         
         for(int i = 0; i < lockedDatasets.length; i++)
-            datasetDao.releaseLocked(user, lockedDatasets[i], session);
+            datasetDao.releaseLocked(user, lockedDatasets[i], entityManager);
     }
-//    public void removeResultDatasets(Integer[] ids, User user, Session session, DbServer dbServer) throws EmfException {
+//    public void removeResultDatasets(Integer[] ids, User user, EntityManager entityManager, DbServer dbServer) throws EmfException {
 //        DatasetDAO dsDao = new DatasetDAO();
 //        for (Integer id : ids ) {
-//            EmfDataset dataset = dsDao.getDataset(session, id);
+//            EmfDataset dataset = dsDao.getDataset(entityManager, id);
 //
 //            if (dataset != null) {
 //                try {
-//                    dsDao.remove(user, dataset, session);
-//                    purgeDeletedDatasets(dataset, session, dbServer);
-//                    session.flush();
-//                    session.clear();
+//                    dsDao.remove(user, dataset, entityManager);
+//                    purgeDeletedDatasets(dataset, entityManager, dbServer);
+//                    entityManager.flush();
+//                    entityManager.clear();
 //                } catch (EmfException e) {
 //                    if (DebugLevels.DEBUG_12())
 //                        System.out.println(e.getMessage());
@@ -369,10 +369,10 @@ public class FastDAO {
 //        }
 //    }
     
-//    private void purgeDeletedDatasets(EmfDataset dataset, Session session, DbServer dbServer) throws EmfException {
+//    private void purgeDeletedDatasets(EmfDataset dataset, EntityManager entityManager, DbServer dbServer) throws EmfException {
 //        try {
 //            DatasetDAO dao = new DatasetDAO();
-//            dao.deleteDatasets(new EmfDataset[] {dataset}, dbServer, session);
+//            dao.deleteDatasets(new EmfDataset[] {dataset}, dbServer, entityManager);
 //        } catch (Exception e) {
 //            throw new EmfException(e.getMessage());
 //        } finally {
@@ -380,8 +380,8 @@ public class FastDAO {
 //        }
 //    }
 
-    public Integer[] getResultDatasetIds(int fastRunId, Session session) {
-        List<FastRunOutput> results = getFastRunOutputs(fastRunId, session);
+    public Integer[] getResultDatasetIds(int fastRunId, EntityManager entityManager) {
+        List<FastRunOutput> results = getFastRunOutputs(fastRunId, entityManager);
         List<Integer> datasetLists = new ArrayList<Integer>();
         if(results != null){
             System.out.println(results.size());
@@ -395,8 +395,8 @@ public class FastDAO {
     }
 
     
-    public EmfDataset[] getOutputDatasets(int fastRunId, Session session) {
-        List<FastRunOutput> results = getFastRunOutputs(fastRunId, session);
+    public EmfDataset[] getOutputDatasets(int fastRunId, EntityManager entityManager) {
+        List<FastRunOutput> results = getFastRunOutputs(fastRunId, entityManager);
         List<EmfDataset> datasets = new ArrayList<EmfDataset>();
         if(results != null){
             for (int i=0; i<results.size(); i++){
@@ -409,93 +409,91 @@ public class FastDAO {
         return null; 
     }
 
-    public void setFastRunRunStatus(int id, String runStatus, Date completionDate, Session session) {
+    public void setFastRunRunStatus(int id, String runStatus, Date completionDate, EntityManager entityManager) {
         // NOTE Auto-generated method stub
         
     }
 
-    public String getDefaultExportDirectory(Session session) {
-        EmfProperty tmpDir = new EmfPropertiesDAO().getProperty("ImportExportTempDir", session);
+    public String getDefaultExportDirectory(EntityManager entityManager) {
+        EmfProperty tmpDir = new EmfPropertiesDAO().getProperty("ImportExportTempDir", entityManager);
         String dir = "";
         if (tmpDir != null)
             dir = tmpDir.getValue();
         return dir;
     }
 
-    public String getStrategyRunStatus(Session session, int id) {
-        return (String)session.createQuery("select cS.runStatus " +
-                "from FastRun cS where cS.id = " + id).uniqueResult();
+    public String getStrategyRunStatus(EntityManager entityManager, int id) {
+        return (String)entityManager.createQuery("select cS.runStatus " +
+                "from FastRun cS where cS.id = " + id).getSingleResult();
     }
     
-    public List<FastDataset> getFastDatasets(Session session) {
-        CriteriaBuilderQueryRoot<FastDataset> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastDataset.class, session);
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, session);
+    public List<FastDataset> getFastDatasets(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<FastDataset> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastDataset.class, entityManager);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, entityManager);
     }
 
-    public FastDataset getFastDataset(Session session, int fastDatasetId) {
-        return hibernateFacade.load(FastDataset.class, "id", Integer.valueOf(fastDatasetId), session);
+    public FastDataset getFastDataset(EntityManager entityManager, int fastDatasetId) {
+        return hibernateFacade.load(FastDataset.class, "id", Integer.valueOf(fastDatasetId), entityManager);
     }
 
-    public int addFastDataset(FastDataset fastDataset, Session session) {
-        return addObject(fastDataset, session);
+    public int addFastDataset(FastDataset fastDataset, EntityManager entityManager) {
+        hibernateFacade.add(fastDataset, entityManager);
+        return fastDataset.getId();
     }
 
-    public void removeFastDataset(int fastDatasetId, Session session) {
+    public void removeFastDataset(int fastDatasetId, EntityManager entityManager) {
         String hqlDelete = "delete FastDataset fd where fd.id = :fastDatasetId";
-        Transaction tx = null;
         try {
-            tx = session.
-                    beginTransaction();
-            session.createQuery( hqlDelete )
-                .setInteger("fastDatasetId", fastDatasetId)
-                .executeUpdate();
-            tx.commit();
+            hibernateFacade.executeInsideTransaction(em -> {
+                em
+                    .createQuery( hqlDelete )
+                    .setParameter("fastDatasetId", fastDatasetId)
+                    .executeUpdate();
+            }, entityManager);
         } catch (RuntimeException e) {
-            tx.rollback();
             throw e;
         }
     }
 
-    public List<FastNonPointDataset> getFastNonPointDatasets(Session session) {
-        CriteriaBuilderQueryRoot<FastNonPointDataset> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastNonPointDataset.class, session);
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, session);
+    public List<FastNonPointDataset> getFastNonPointDatasets(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<FastNonPointDataset> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastNonPointDataset.class, entityManager);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, entityManager);
     }
 
-    public FastNonPointDataset getFastNonPointDataset(Session session, int fastNonPointDatasetId) {
-        return hibernateFacade.load(FastNonPointDataset.class, "id", Integer.valueOf(fastNonPointDatasetId), session);
+    public FastNonPointDataset getFastNonPointDataset(EntityManager entityManager, int fastNonPointDatasetId) {
+        return hibernateFacade.load(FastNonPointDataset.class, "id", Integer.valueOf(fastNonPointDatasetId), entityManager);
     }
 
-    public int addFastNonPointDataset(FastNonPointDataset fastNonPointDataset, Session session) {
-        return addObject(fastNonPointDataset, session);
+    public int addFastNonPointDataset(FastNonPointDataset fastNonPointDataset, EntityManager entityManager) {
+        hibernateFacade.add(fastNonPointDataset, entityManager);
+        return fastNonPointDataset.getId();
     }
 
-    public void removeFastNonPointDataset(int fastNonPointDatasetId, Session session) {
+    public void removeFastNonPointDataset(int fastNonPointDatasetId, EntityManager entityManager) {
         String hqlDelete = "delete FastNonPointDataset fd where fd.id = :fastNonPointDatasetId";
-        Transaction tx = null;
         try {
-            tx = session.
-                    beginTransaction();
-            session.createQuery( hqlDelete )
-                .setInteger("fastNonPointDatasetId", fastNonPointDatasetId)
-                .executeUpdate();
-            tx.commit();
+            hibernateFacade.executeInsideTransaction(em -> {
+                em
+                    .createQuery( hqlDelete )
+                    .setParameter("fastNonPointDatasetId", fastNonPointDatasetId)
+                    .executeUpdate();
+            }, entityManager);
         } catch (RuntimeException e) {
-            tx.rollback();
             throw e;
         }
     }
 
-    public List<Grid> getGrids(Session session) {
-        CriteriaBuilderQueryRoot<Grid> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Grid.class, session);
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, session);
+    public List<Grid> getGrids(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<Grid> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Grid.class, entityManager);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, entityManager);
     }
 
-    public Grid getGrid(Session session, String name) {
-        return hibernateFacade.load(Grid.class, "name", name, session);
+    public Grid getGrid(EntityManager entityManager, String name) {
+        return hibernateFacade.load(Grid.class, "name", name, entityManager);
     }
 
-    public Grid getGrid(Session session, int id) {
-        return hibernateFacade.load(Grid.class, "id", id, session);
+    public Grid getGrid(EntityManager entityManager, int id) {
+        return hibernateFacade.load(Grid.class, "id", id, entityManager);
     }
 
 
@@ -528,114 +526,112 @@ public class FastDAO {
     
     
 
-    public String getFastAnalysisRunStatus(int fastAnalysisId, Session session) {
-        return (String)session.createQuery("select cS.runStatus from FastAnalysis cS where cS.id = " + fastAnalysisId).uniqueResult();
+    public String getFastAnalysisRunStatus(int fastAnalysisId, EntityManager entityManager) {
+        return (String)entityManager.createQuery("select cS.runStatus from FastAnalysis cS where cS.id = " + fastAnalysisId).getSingleResult();
     }
 
-    public Long getFastAnalysisRunningCount(Session session) {
-        Long count = (Long)session.createQuery("select count(*) as total from FastAnalysis cS where cS.runStatus = 'Running'").uniqueResult();
+    public Long getFastAnalysisRunningCount(EntityManager entityManager) {
+        Long count = (Long)entityManager.createQuery("select count(*) as total from FastAnalysis cS where cS.runStatus = 'Running'").getSingleResult();
         return count != null ? count : 0L;
     }
 
-    public List<FastAnalysis> getFastAnalysesByRunStatus(String runStatus, Session session) {
-        return session
+    public List<FastAnalysis> getFastAnalysesByRunStatus(String runStatus, EntityManager entityManager) {
+        return entityManager
                 .createQuery("select new FastAnalysis(cS.id, cS.name) from FastAnalysis cS where cS.runStatus = :runStatus order by cS.lastModifiedDate", FastAnalysis.class)
                 .setParameter("runStatus", runStatus)
-                .list();
+                .getResultList();
     }
 
-    public void setFastAnalysisRunStatusAndCompletionDate(int fastAnalysisId, String runStatus, Date completionDate, Session session) {
-        Transaction tx = null;
+    public void setFastAnalysisRunStatusAndCompletionDate(int fastAnalysisId, String runStatus, Date completionDate, EntityManager entityManager) {
         try {
-            tx = session.beginTransaction();
-            session
-                .createQuery("update FastAnalysis set runStatus = :status, lastModifiedDate = :date, completionDate = :completionDate where id = :id")
-                .setParameter("status", runStatus)
-                .setParameter("date", new Date())
-                .setParameter("completionDate", completionDate)
-                .setParameter("id", Integer.valueOf(fastAnalysisId))
-                .executeUpdate();
-            tx.commit();
+            hibernateFacade.executeInsideTransaction(em -> {
+                em
+                    .createQuery("update FastAnalysis set runStatus = :status, lastModifiedDate = :date, completionDate = :completionDate where id = :id")
+                    .setParameter("status", runStatus)
+                    .setParameter("date", new Date())
+                    .setParameter("completionDate", completionDate)
+                    .setParameter("id", Integer.valueOf(fastAnalysisId))
+                    .executeUpdate();
+            }, entityManager);
         } catch (HibernateException e) {
-            tx.rollback();
             throw e;
         }
     }
 
     // return FastAnalyses orderby name
-    public List<FastAnalysis> getFastAnalyses(Session session) {
-        CriteriaBuilderQueryRoot<FastAnalysis> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastAnalysis.class, session);
+    public List<FastAnalysis> getFastAnalyses(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<FastAnalysis> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastAnalysis.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<FastAnalysis> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public List<FastAnalysisOutputType> getAllFastAnalysisOuputTypes(Session session) {
-        CriteriaBuilderQueryRoot<FastAnalysisOutputType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastAnalysisOutputType.class, session);
+    public List<FastAnalysisOutputType> getAllFastAnalysisOuputTypes(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<FastAnalysisOutputType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastAnalysisOutputType.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<FastAnalysisOutputType> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public FastAnalysis obtainLockedFastAnalysis(User owner, int id, Session session) {
-        return (FastAnalysis) lockingScheme.getLocked(owner, getFastAnalysis(id, session), session);
+    public FastAnalysis obtainLockedFastAnalysis(User owner, int id, EntityManager entityManager) {
+        return (FastAnalysis) lockingScheme.getLocked(owner, getFastAnalysis(id, entityManager), entityManager);
     }
 
-    public void releaseLockedFastAnalysis(User user, int id, Session session) {
-        FastAnalysis current = getFastAnalysis(id, session);
+    public void releaseLockedFastAnalysis(User user, int id, EntityManager entityManager) {
+        FastAnalysis current = getFastAnalysis(id, entityManager);
         String runStatus = current.getRunStatus();
         if (runStatus == null || !runStatus.equalsIgnoreCase("Running"))
-            lockingScheme.releaseLock(user, current, session);
+            lockingScheme.releaseLock(user, current, entityManager);
     }
 
-    public FastAnalysis updateFastAnalysis(FastAnalysis locked, Session session) throws EmfException {
-        return (FastAnalysis) lockingScheme.releaseLockOnUpdate(locked, getFastAnalysis(locked.getId(), session), session);
+    public FastAnalysis updateFastAnalysis(FastAnalysis locked, EntityManager entityManager) throws EmfException {
+        return (FastAnalysis) lockingScheme.releaseLockOnUpdate(locked, getFastAnalysis(locked.getId(), entityManager), entityManager);
     }
 
-    public FastAnalysis updateWithLock(FastAnalysis locked, Session session) throws EmfException {
-        return (FastAnalysis) lockingScheme.renewLockOnUpdate(locked, getFastAnalysis(locked.getId(), session), session);
+    public FastAnalysis updateWithLock(FastAnalysis locked, EntityManager entityManager) throws EmfException {
+        return (FastAnalysis) lockingScheme.renewLockOnUpdate(locked, getFastAnalysis(locked.getId(), entityManager), entityManager);
     }
 
-    public boolean canUpdate(FastAnalysis fastAnalysis, Session session) {
-        if (!exists(fastAnalysis.getId(), FastAnalysis.class, session)) {
+    public boolean canUpdate(FastAnalysis fastAnalysis, EntityManager entityManager) {
+        if (!exists(fastAnalysis.getId(), FastAnalysis.class, entityManager)) {
             return false;
         }
 
-        FastAnalysis current = getFastAnalysis(fastAnalysis.getId(), session);
+        FastAnalysis current = getFastAnalysis(fastAnalysis.getId(), entityManager);
 
-        session.clear();// clear to flush current
+        entityManager.clear();// clear to flush current
 
         if (current.getName().equals(fastAnalysis.getName()))
             return true;
 
-        return !nameUsed(fastAnalysis.getName(), FastAnalysis.class, session);
+        return !nameUsed(fastAnalysis.getName(), FastAnalysis.class, entityManager);
     }
 
-    public void remove(FastAnalysis strategy, Session session) {
-        hibernateFacade.remove(strategy, session);
+    public void remove(FastAnalysis strategy, EntityManager entityManager) {
+        hibernateFacade.remove(strategy, entityManager);
     }
 
-    public void remove(FastAnalysisOutput result, Session session) {
-        hibernateFacade.remove(result, session);
+    public void remove(FastAnalysisOutput result, EntityManager entityManager) {
+        hibernateFacade.remove(result, entityManager);
     }
 
-    public FastAnalysisOutputType getFastAnalysisOutputType(String name, Session session) {
-        return hibernateFacade.load(FastAnalysisOutputType.class, "name", name, session);
+    public FastAnalysisOutputType getFastAnalysisOutputType(String name, EntityManager entityManager) {
+        return hibernateFacade.load(FastAnalysisOutputType.class, "name", name, entityManager);
     }
 
-    public List<FastAnalysisOutputType> getFastAnalysisOutputTypes(Session session) {
-        CriteriaBuilderQueryRoot<FastAnalysisOutputType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastAnalysisOutputType.class, session);
+    public List<FastAnalysisOutputType> getFastAnalysisOutputTypes(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<FastAnalysisOutputType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastAnalysisOutputType.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<FastAnalysisOutputType> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
     public FastAnalysisOutput getFastAnalysisOutput(int fastAnalysisId, int inputDatasetId, 
-            int detailedResultDatasetId, Session session) {
-        CriteriaBuilderQueryRoot<FastAnalysisOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastAnalysisOutput.class, session);
+            int detailedResultDatasetId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<FastAnalysisOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastAnalysisOutput.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<FastAnalysisOutput> root = criteriaBuilderQueryRoot.getRoot();
         Join<EmfDataset, FastAnalysisOutput> odJoin = root.join("outputDataset", javax.persistence.criteria.JoinType.INNER);
@@ -643,80 +639,80 @@ public class FastDAO {
         Predicate critFastAnalysisId = builder.equal(root.get("fastAnalysisId"), fastAnalysisId);
         Predicate critInputDatasetId = builder.equal(root.get("inputDatasetId"), inputDatasetId);
         Predicate critDetailedResultDatasetId = builder.equal(odJoin.get("id"), detailedResultDatasetId);
-        return hibernateFacade.load(session, criteriaBuilderQueryRoot, new Predicate[] {critFastAnalysisId, critInputDatasetId, critDetailedResultDatasetId});
+        return hibernateFacade.load(entityManager, criteriaBuilderQueryRoot, new Predicate[] {critFastAnalysisId, critInputDatasetId, critDetailedResultDatasetId});
     }
 
-    public FastAnalysisOutput getFastAnalysisOutput(int id, Session session) {
-        return hibernateFacade.load(FastAnalysisOutput.class, "id", Integer.valueOf(id), session);
+    public FastAnalysisOutput getFastAnalysisOutput(int id, EntityManager entityManager) {
+        return hibernateFacade.load(FastAnalysisOutput.class, "id", Integer.valueOf(id), entityManager);
     }
 
-//    private void updateFastAnalysisIds(FastAnalysis fastAnalysis, Session session) {
+//    private void updateFastAnalysisIds(FastAnalysis fastAnalysis, EntityManager entityManager) {
 //        Criterion c1 = Restrictions.eq("name", fastAnalysis.getName());
-//        List list = hibernateFacade.get(FastAnalysis.class, c1, session);
+//        List list = hibernateFacade.get(FastAnalysis.class, c1, entityManager);
 //        if (!list.isEmpty()) {
 //            FastAnalysis cs = (FastAnalysis) list.get(0);
 //            fastAnalysis.setId(cs.getId());
 //        }
 //    }
 //
-    public void updateFastAnalysisOutput(FastAnalysisOutput result, Session session) {
-        hibernateFacade.saveOrUpdate(result, session);
+    public void updateFastAnalysisOutput(FastAnalysisOutput result, EntityManager entityManager) {
+        hibernateFacade.saveOrUpdate(result, entityManager);
     }
 
-    public String fastAnalysisRunStatus(int id, Session session) {
-        FastAnalysis fastAnalysis = hibernateFacade.current(id, FastAnalysis.class, session);
+    public String fastAnalysisRunStatus(int id, EntityManager entityManager) {
+        FastAnalysis fastAnalysis = hibernateFacade.current(id, FastAnalysis.class, entityManager);
         return fastAnalysis.getRunStatus();
     }
 
-//    public void removeFastAnalysisResult(FastAnalysis fastAnalysis, Session session) {
+//    public void removeFastAnalysisResult(FastAnalysis fastAnalysis, EntityManager entityManager) {
 //        Criterion c = Restrictions.eq("fastAnalysisId", Integer.valueOf(fastAnalysis.getId()));
-//        List list = hibernateFacade.get(FastAnalysisResult.class, c, session);
+//        List list = hibernateFacade.get(FastAnalysisResult.class, c, entityManager);
 //        for (int i = 0; i < list.size(); i++) {
 //            FastAnalysisResult result = (FastAnalysisResult) list.get(i);
-//            hibernateFacade.delete(result,session);
+//            hibernateFacade.delete(result,entityManager);
 //        }
 //    }
 
-    public void removeFastAnalysisOutputs(int fastAnalysisId, Session session) {
+    public void removeFastAnalysisOutputs(int fastAnalysisId, EntityManager entityManager) {
 //        String hqlDelete = "delete FastAnalysisOutput sr where sr.fastAnalysisId = :fastAnalysisId";
-//        session.createQuery( hqlDelete )
+//        entityManager.createQuery( hqlDelete )
 //             .setInteger("fastAnalysisId", fastAnalysisId)
 //             .executeUpdate();
-//        session.flush();
+//        entityManager.flush();
         
-        List<FastAnalysisOutput> outputs = hibernateFacade.get(FastAnalysisOutput.class, "fastAnalysisId", Integer.valueOf(fastAnalysisId), session);
-        hibernateFacade.remove(outputs.toArray(), session);
+        List<FastAnalysisOutput> outputs = hibernateFacade.get(FastAnalysisOutput.class, "fastAnalysisId", Integer.valueOf(fastAnalysisId), entityManager);
+        hibernateFacade.remove(outputs.toArray(), entityManager);
     }
 
-    public FastAnalysis getFastAnalysis(String name, Session session) {
-        FastAnalysis cs = hibernateFacade.load(FastAnalysis.class, "name", new String(name), session);
+    public FastAnalysis getFastAnalysis(String name, EntityManager entityManager) {
+        FastAnalysis cs = hibernateFacade.load(FastAnalysis.class, "name", new String(name), entityManager);
         return cs;
     }
 
-    public FastAnalysis getFastAnalysis(int id, Session session) {
-        FastAnalysis cs = hibernateFacade.load(FastAnalysis.class, "id", Integer.valueOf(id), session);
+    public FastAnalysis getFastAnalysis(int id, EntityManager entityManager) {
+        FastAnalysis cs = hibernateFacade.load(FastAnalysis.class, "id", Integer.valueOf(id), entityManager);
         return cs;
     }
 
-    public List<FastAnalysisOutput> getFastAnalysisOutputs(int fastAnalysisId, Session session) {
-        CriteriaBuilderQueryRoot<FastAnalysisOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastAnalysisOutput.class, session);
+    public List<FastAnalysisOutput> getFastAnalysisOutputs(int fastAnalysisId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<FastAnalysisOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(FastAnalysisOutput.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<FastAnalysisOutput> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.get(criteriaBuilderQueryRoot, builder.equal(root.get("fastAnalysisId"), Integer.valueOf(fastAnalysisId)), builder.asc(root.get("startDate")), session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, builder.equal(root.get("fastAnalysisId"), Integer.valueOf(fastAnalysisId)), builder.asc(root.get("startDate")), entityManager);
     }
     
-//    public void removeResultDatasets(Integer[] ids, User user, Session session, DbServer dbServer) throws EmfException {
+//    public void removeResultDatasets(Integer[] ids, User user, EntityManager entityManager, DbServer dbServer) throws EmfException {
 //        DatasetDAO dsDao = new DatasetDAO();
 //        for (Integer id : ids ) {
-//            EmfDataset dataset = dsDao.getDataset(session, id);
+//            EmfDataset dataset = dsDao.getDataset(entityManager, id);
 //
 //            if (dataset != null) {
 //                try {
-//                    dsDao.remove(user, dataset, session);
-//                    purgeDeletedDatasets(dataset, session, dbServer);
-//                    session.flush();
-//                    session.clear();
+//                    dsDao.remove(user, dataset, entityManager);
+//                    purgeDeletedDatasets(dataset, entityManager, dbServer);
+//                    entityManager.flush();
+//                    entityManager.clear();
 //                } catch (EmfException e) {
 //                    if (DebugLevels.DEBUG_12())
 //                        System.out.println(e.getMessage());
@@ -727,10 +723,10 @@ public class FastDAO {
 //        }
 //    }
     
-//    private void purgeDeletedDatasets(EmfDataset dataset, Session session, DbServer dbServer) throws EmfException {
+//    private void purgeDeletedDatasets(EmfDataset dataset, EntityManager entityManager, DbServer dbServer) throws EmfException {
 //        try {
 //            DatasetDAO dao = new DatasetDAO();
-//            dao.deleteDatasets(new EmfDataset[] {dataset}, dbServer, session);
+//            dao.deleteDatasets(new EmfDataset[] {dataset}, dbServer, entityManager);
 //        } catch (Exception e) {
 //            throw new EmfException(e.getMessage());
 //        } finally {
@@ -738,8 +734,8 @@ public class FastDAO {
 //        }
 //    }
 
-    public Integer[] getFastAnalysisResultDatasetIds(int fastAnalysisId, Session session) {
-        List<FastAnalysisOutput> results = getFastAnalysisOutputs(fastAnalysisId, session);
+    public Integer[] getFastAnalysisResultDatasetIds(int fastAnalysisId, EntityManager entityManager) {
+        List<FastAnalysisOutput> results = getFastAnalysisOutputs(fastAnalysisId, entityManager);
         List<Integer> datasetLists = new ArrayList<Integer>();
         if(results != null){
             System.out.println(results.size());
@@ -753,8 +749,8 @@ public class FastDAO {
     }
 
     
-    public EmfDataset[] getFastAnalysisOutputDatasets(int fastAnalysisId, Session session) {
-        List<FastAnalysisOutput> results = getFastAnalysisOutputs(fastAnalysisId, session);
+    public EmfDataset[] getFastAnalysisOutputDatasets(int fastAnalysisId, EntityManager entityManager) {
+        List<FastAnalysisOutput> results = getFastAnalysisOutputs(fastAnalysisId, entityManager);
         List<EmfDataset> datasets = new ArrayList<EmfDataset>();
         if(results != null){
             for (int i=0; i<results.size(); i++){
@@ -767,37 +763,37 @@ public class FastDAO {
         return null; 
     }
 
-    public void setFastAnalysisRunStatus(int id, String runStatus, Date completionDate, Session session) {
+    public void setFastAnalysisRunStatus(int id, String runStatus, Date completionDate, EntityManager entityManager) {
         // NOTE Auto-generated method stub
         
     }
 
-    public String getFastAnalysisRunStatus(Session session, int id) {
-        return (String)session.createQuery("select cS.runStatus " +
-                "from FastAnalysis cS where cS.id = " + id).uniqueResult();
+    public String getFastAnalysisRunStatus(EntityManager entityManager, int id) {
+        return (String)entityManager.createQuery("select cS.runStatus " +
+                "from FastAnalysis cS where cS.id = " + id).getSingleResult();
     }
 
-//    private EmfDataset getDataset(String name, Session session) {
-//        return datasetDao.getDataset(session, name);
+//    private EmfDataset getDataset(String name, EntityManager entityManager) {
+//        return datasetDao.getDataset(entityManager, name);
 //    }
 
-    private EmfDataset getDataset(int id, Session session) {
-        return datasetDao.getDataset(session, id);
+    private EmfDataset getDataset(int id, EntityManager entityManager) {
+        return datasetDao.getDataset(entityManager, id);
     }
 
-    private DatasetType getDatasetType(String name, Session session) {
-        return dataCommonsDao.getDatasetType(name, session);
+    private DatasetType getDatasetType(String name, EntityManager entityManager) {
+        return dataCommonsDao.getDatasetType(name, entityManager);
     }
 
-//    private User getUser(String name, Session session) {
-//        return new UserDAO().get(name, session);
+//    private User getUser(String name, EntityManager entityManager) {
+//        return new UserDAO().get(name, entityManager);
 //    }
 
     public int addFastNonPointDataset(FastNonPointDataset fastNonPointDataset, User user, 
-            Session session, DbServer dbServer) throws EmfException {
+            EntityManager entityManager, DbServer dbServer) throws EmfException {
         
-        EmfDataset dataset = createFastQuasiPointDataset(fastNonPointDataset.getBaseNonPointDataset(), fastNonPointDataset.getName(), user, session, dbServer);
-//            getDataset("ptnonipm_xportfrac_cap2005v2_20nov2008_revised_20jan2009_v0", session);
+        EmfDataset dataset = createFastQuasiPointDataset(fastNonPointDataset.getBaseNonPointDataset(), fastNonPointDataset.getName(), user, entityManager, dbServer);
+//            getDataset("ptnonipm_xportfrac_cap2005v2_20nov2008_revised_20jan2009_v0", entityManager);
 
         FastDataset fastDataset = new FastDataset();
         fastDataset.setDataset(dataset);
@@ -807,15 +803,15 @@ public class FastDAO {
         fastNonPointDataset.setFastDataset(fastDataset);
 //        fastNonPointDataset.setId(fastService.addFastNonPointDataset(fastNonPointDataset));
         fastDataset.setFastNonPointDataset(fastNonPointDataset);
-        addFastNonPointDataset(fastNonPointDataset, session);
+        addFastNonPointDataset(fastNonPointDataset, entityManager);
         return dataset.getId();
     }
     
-    private EmfDataset createFastQuasiPointDataset(EmfDataset base, String newInventoryDatasetName, User user, Session session, DbServer dbServer) throws EmfException {
-        DatasetType datasetType = getDatasetType(DatasetType.orlPointInventory, session);
-        Keywords keywords = new Keywords(new DataCommonsServiceImpl(sessionFactory).getKeywords());
+    private EmfDataset createFastQuasiPointDataset(EmfDataset base, String newInventoryDatasetName, User user, EntityManager entityManager, DbServer dbServer) throws EmfException {
+        DatasetType datasetType = getDatasetType(DatasetType.orlPointInventory, entityManager);
+        Keywords keywords = new Keywords(new DataCommonsServiceImpl(entityManagerFactory).getKeywords());
         DatasetCreator creator = new DatasetCreator(null, user, 
-                sessionFactory, dbServerFactory,
+                entityManagerFactory, dbServerFactory,
                 dbServer.getEmissionsDatasource(), keywords);
         if (creator.isDatasetNameUsed(newInventoryDatasetName))
             throw new EmfException("Dataset name is already used, " + newInventoryDatasetName);
@@ -832,12 +828,12 @@ public class FastDAO {
     }
 
     private Version version(int datasetId, int version) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             Versions versions = new Versions();
-            return versions.get(datasetId, version, session);
+            return versions.get(datasetId, version, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -846,12 +842,12 @@ public class FastDAO {
         ResultSet rs = null;
         Statement statement = null;
         DbServer dbServer = dbServerFactory.getDbServer();
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         Connection con = dbServer.getConnection();
 
         VersionedQuery versionedQuery = new VersionedQuery(version(datasetId,
                 datasetVersion));
-        String tableName = getDataset(datasetId, session).getInternalSources()[0].getTable();
+        String tableName = getDataset(datasetId, entityManager).getInternalSources()[0].getTable();
 
         String query = "select distinct cmaq_pollutant from emissions." + tableName + " where "
                 + versionedQuery.query() + " order by cmaq_pollutant;";
@@ -887,14 +883,14 @@ public class FastDAO {
                 }
                 dbServer = null;
             }
-            if (session != null) {
+            if (entityManager != null) {
                 try {
-                    session.close();
+                    entityManager.close();
                 } catch (Exception e) {
                     // NOTE Auto-generated catch block
                     e.printStackTrace();
                 }
-                session = null;
+                entityManager = null;
             }
             
         }

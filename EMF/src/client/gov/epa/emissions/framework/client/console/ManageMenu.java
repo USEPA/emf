@@ -270,8 +270,8 @@ public class ManageMenu extends JMenu implements ManageMenuView {
         UpdateUserWindow updatable = new UpdateUserWindow(new AddAdminOption(false), desktopManager, parent);
         UserView viewable = new ViewUserWindow(desktopManager);
 
-        UpdateUserPresenter presenter = new UpdateUserPresenterImpl(session, session.user(), session.userService());
         try {
+            UpdateUserPresenter presenter = new UpdateUserPresenterImpl(session, session.userService().getUser(session.user().getUsername()), session.userService());
             presenter.display(updatable, viewable);
         } catch (EmfException e) {
             messagePanel.setError(e.getMessage());

@@ -19,7 +19,6 @@ import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.fast.FastDAO;
 import gov.epa.emissions.framework.services.fast.Grid;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,9 +34,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 public class ExportFastOutputToNetCDFFileTask implements Runnable {
 
@@ -49,7 +50,7 @@ public class ExportFastOutputToNetCDFFileTask implements Runnable {
 
     private File file;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private String dirName;
 
@@ -66,7 +67,7 @@ public class ExportFastOutputToNetCDFFileTask implements Runnable {
     private boolean windowsOS;
 
     public ExportFastOutputToNetCDFFileTask(int datasetId, int datasetVersion, int gridId, String userName, String dirName,
-            String pollutant, DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory) {
+            String pollutant, DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory) {
 //        super(getDataset(datasetId), dbServerFactory.getDbServer(), getDataset(datasetId).getDatasetType().getFileFormat(), new NonVersionedDataFormatFactory(), 0);
         
         this.datasetId = datasetId;
@@ -74,8 +75,8 @@ public class ExportFastOutputToNetCDFFileTask implements Runnable {
         this.gridId = gridId;
         this.dirName = dirName;
         this.userName = userName;
-        this.sessionFactory = sessionFactory;
-        this.statusDao = new StatusDAO(sessionFactory);
+        this.entityManagerFactory = entityManagerFactory;
+        this.statusDao = new StatusDAO(entityManagerFactory);
         this.dbServerFactory = dbServerFactory;
         if (System.getProperty("os.name").toUpperCase().startsWith("WINDOWS"))
             this.windowsOS = true;
@@ -109,7 +110,7 @@ public class ExportFastOutputToNetCDFFileTask implements Runnable {
             
 //            PostgresSQLToShapeFile exporter = new PostgresSQLToShapeFile(dbServer);
 //            // Exporter exporter = new DatabaseTableCSVExporter(result.getTable(), dbServer.getEmissionsDatasource(),
-//            // batchSize(sessionFactory));
+//            // batchSize(entityManagerFactory));
 //            
 //            //generate a file per sector
 //            for (String sector : getDatasetSectors(dataset, datasetVersion)) {
@@ -138,40 +139,40 @@ public class ExportFastOutputToNetCDFFileTask implements Runnable {
     }
 
 //    private String getProperty(String propertyName) {
-//        Session session = sessionFactory.getSession();
+//        EntityManager entityManager = entityManagerFactory.createEntityManager();
 //        try {
-//            EmfProperty property = new EmfPropertiesDAO().getProperty(propertyName, session);
+//            EmfProperty property = new EmfPropertiesDAO().getProperty(propertyName, entityManager);
 //            return property.getValue();
 //        } finally {
-//            session.close();
+//            entityManager.close();
 //        }
 //    }
 
     private EmfDataset getDataset(int datasetId) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return new DatasetDAO().getDataset(session, datasetId);
+            return new DatasetDAO().getDataset(entityManager, datasetId);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private Grid getGrid(int gridId) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return new FastDAO().getGrid(session, gridId);
+            return new FastDAO().getGrid(entityManager, gridId);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private Version version(int datasetId, int version) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             Versions versions = new Versions();
-            return versions.get(datasetId, version, session);
+            return versions.get(datasetId, version, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -463,11 +464,11 @@ public class ExportFastOutputToNetCDFFileTask implements Runnable {
     }
 
     private String versionName() {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return new Versions().get(this.datasetId, this.datasetVersion, session).getName();
+            return new Versions().get(this.datasetId, this.datasetVersion, entityManager).getName();
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -500,10 +501,10 @@ public class ExportFastOutputToNetCDFFileTask implements Runnable {
 
 
     private void setProperties() {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            EmfProperty batchSize = new EmfPropertiesDAO().getProperty("export-batch-size", session);
-            EmfProperty eximTempDir = new EmfPropertiesDAO().getProperty("ImportExportTempDir", session);
+            EmfProperty batchSize = new EmfPropertiesDAO().getProperty("export-batch-size", entityManager);
+            EmfProperty eximTempDir = new EmfPropertiesDAO().getProperty("ImportExportTempDir", entityManager);
 
             if (eximTempDir != null)
                 System.setProperty("IMPORT_EXPORT_TEMP_DIR", eximTempDir.getValue());
@@ -511,7 +512,7 @@ public class ExportFastOutputToNetCDFFileTask implements Runnable {
             if (batchSize != null)
                 System.setProperty("EXPORT_BATCH_SIZE", batchSize.getValue());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     public void export(File file) throws ExporterException {

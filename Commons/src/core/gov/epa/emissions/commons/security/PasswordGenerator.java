@@ -52,5 +52,9 @@ public class PasswordGenerator implements Serializable {
         System.out.println(pwd + " " + passwordGenerator.encrypt(pwd));
         pwd = "Yo090968gi!";
         System.out.println(pwd + " " + passwordGenerator.encrypt(pwd));
+        pwd = "Yo112515gi!@";
+        System.out.println(pwd + " " + passwordGenerator.encrypt(pwd));
+        pwd = "Yo090968gi!";
+        System.out.println(pwd + " " + passwordGenerator.encrypt(pwd));
     }
 }

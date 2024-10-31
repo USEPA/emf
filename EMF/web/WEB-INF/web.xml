@@ -109,6 +109,26 @@
             <url-pattern>/uploadFile</url-pattern>
         </servlet-mapping>
 
+	    <servlet>
+	        <servlet-name>MyApplication</servlet-name>
+	        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+			<init-param>
+			    <param-name>jersey.config.server.provider.packages</param-name>
+			    <param-value>
+			        gov.epa.emissions.framework.services.rest
+			    </param-value>
+			</init-param>
+			<init-param>
+			    <param-name>jersey.config.server.provider.scanning.recursive</param-name>
+			    <param-value>false</param-value>
+			</init-param>
+	    </servlet>
+
+	    <servlet-mapping>
+	        <servlet-name>MyApplication</servlet-name>
+	        <url-pattern>/rest/*</url-pattern>
+	    </servlet-mapping>
+
         <!--    <servlet-mapping>
                 <servlet-name>EMFLoginServlet</servlet-name>
                 <url-pattern>/login</url-pattern>

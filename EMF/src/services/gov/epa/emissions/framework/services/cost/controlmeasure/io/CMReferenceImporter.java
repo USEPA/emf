@@ -8,7 +8,6 @@ import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
 import gov.epa.emissions.framework.services.cost.ReferencesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,7 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class CMReferenceImporter {
 
@@ -30,18 +30,18 @@ public class CMReferenceImporter {
 
     private User user;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private ReferencesDAO referencesDAO;
 
     public CMReferenceImporter(File file, CMReferenceFileFormat fileFormat, User user,
-            HibernateSessionFactory sessionFactory) {
+            EntityManagerFactory entityManagerFactory) {
 
         this.file = file;
         this.user = user;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.referencesDAO = new ReferencesDAO();
-        this.referenceReader = new CMReferenceRecordReader(fileFormat, user, sessionFactory);
+        this.referenceReader = new CMReferenceRecordReader(fileFormat, user, entityManagerFactory);
     }
 
     public void run(Map<Integer, Reference> referenceMap, Map<Integer, Integer> idMap) throws ImporterException, FileNotFoundException {
@@ -78,8 +78,8 @@ public class CMReferenceImporter {
 
         Set<Integer> keySet = initialReferenceMap.keySet();
 
-        Session session = this.referencesDAO.getSession();
-        List<Reference> existingReferences = this.referencesDAO.getReferences(session);
+        EntityManager entityManager = this.referencesDAO.getSession();
+        List<Reference> existingReferences = this.referencesDAO.getReferences(entityManager);
         for (Integer id : keySet) {
 
             Reference newReference = initialReferenceMap.get(id);
@@ -87,7 +87,7 @@ public class CMReferenceImporter {
             /*
              * check case where reference already exists
              */
-            if (this.referencesDAO.descriptionUsed(description, session)) {
+            if (this.referencesDAO.descriptionUsed(description, entityManager)) {
 
                 /*
                  * we know it exists, so find the right one
@@ -113,7 +113,7 @@ public class CMReferenceImporter {
                 /*
                  * it didn't already exist, so add it to the database
                  */
-                this.referencesDAO.addReference(newReference, session);
+                this.referencesDAO.addReference(newReference, entityManager);
 
                 /*
                  * use the generated id for the map
@@ -142,7 +142,7 @@ public class CMReferenceImporter {
         endStatus.setMessage(message + "\n");
         endStatus.setTimestamp(new Date());
 
-        new StatusDAO(sessionFactory).add(endStatus);
+        new StatusDAO(entityManagerFactory).add(endStatus);
     }
 
     public String getFileName() {

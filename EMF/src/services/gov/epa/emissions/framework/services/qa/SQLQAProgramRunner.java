@@ -4,19 +4,18 @@ import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.db.TableCreator;
 import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.db.version.Versions;
-import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.commons.util.UniqueID;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.QAStep;
 import gov.epa.emissions.framework.services.data.QAStepResult;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.util.Date;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class SQLQAProgramRunner implements QAProgramRunner {
 
@@ -26,11 +25,11 @@ public class SQLQAProgramRunner implements QAProgramRunner {
 
     protected TableCreator tableCreator;
 
-    protected HibernateSessionFactory sessionFactory;
+    protected EntityManagerFactory entityManagerFactory;
 
-    public SQLQAProgramRunner(DbServer dbServer, HibernateSessionFactory sessionFactory, QAStep qaStep) {
+    public SQLQAProgramRunner(DbServer dbServer, EntityManagerFactory entityManagerFactory, QAStep qaStep) {
         this.dbServer = dbServer;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.qaStep = qaStep;
         this.tableCreator = new TableCreator(dbServer.getEmissionsDatasource());
     }
@@ -84,47 +83,47 @@ public class SQLQAProgramRunner implements QAProgramRunner {
     }
     
     private void updateQAStepResult(QAStep qaStep, String status, String tableName, Date date) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             QADAO qadao = new QADAO();
-            QAStepResult result = qadao.qaStepResult(qaStep, session);
+            QAStepResult result = qadao.qaStepResult(qaStep, entityManager);
             if (result == null) {
                 result = new QAStepResult(qaStep);
             }
             result.setTableCreationStatus(status);
             result.setTable(tableName);
             result.setTableCreationDate(date);
-            qadao.updateQAStepResult(result, session);
+            qadao.updateQAStepResult(result, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     // Modified SQLQueryParser constructor to reflect the changes to the actual class -- added arguments
-    // for version and sessionFactory
+    // for version and entityManagerFactory
 
     protected String query(DbServer dbServer, QAStep qaStep, String tableName) throws EmfException {
         SQLQueryParser parser = new SQLQueryParser(qaStep, tableName, dbServer.getEmissionsDatasource().getName(),
-                dataset(qaStep), version(qaStep), sessionFactory);
+                dataset(qaStep), version(qaStep), entityManagerFactory);
         return parser.parse();
     }
 
     protected EmfDataset dataset(QAStep qaStep) {
         DatasetDAO dao = new DatasetDAO();
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getDataset(session, qaStep.getDatasetId());
+            return dao.getDataset(entityManager, qaStep.getDatasetId());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     protected Version version(QAStep qaStep) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return new Versions().get(qaStep.getDatasetId(), qaStep.getVersion(), session);
+            return new Versions().get(qaStep.getDatasetId(), qaStep.getVersion(), entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -163,13 +162,13 @@ public class SQLQAProgramRunner implements QAProgramRunner {
     }
 
     private QAStepResult getResult(QAStep qaStep) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
             QADAO qadao = new QADAO();
-            return qadao.qaStepResult(qaStep, session);
+            return qadao.qaStepResult(qaStep, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 

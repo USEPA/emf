@@ -7,18 +7,18 @@ import gov.epa.emissions.framework.services.cost.ControlStrategy;
 import gov.epa.emissions.framework.services.cost.ControlStrategyInputDataset;
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyResult;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.Date;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class StrategyLoader extends LeastCostAbstractStrategyLoader {
     
     public StrategyLoader(User user, DbServerFactory dbServerFactory, 
-            HibernateSessionFactory sessionFactory, ControlStrategy controlStrategy) throws EmfException {
+            EntityManagerFactory entityManagerFactory, ControlStrategy controlStrategy) throws EmfException {
         super(user, dbServerFactory, 
-                sessionFactory, controlStrategy);
+                entityManagerFactory, controlStrategy);
     }
 
     public ControlStrategyResult loadStrategyResult(ControlStrategyInputDataset controlStrategyInputDataset) throws Exception {
@@ -72,7 +72,7 @@ public class StrategyLoader extends LeastCostAbstractStrategyLoader {
         } else {
             strategyMessagesResult.setCompletionTime(new Date());
             strategyMessagesResult.setRunStatus("Completed.");
-            saveControlStrategyResult(strategyMessagesResult);
+            updateControlStrategyResult(strategyMessagesResult);
             creator.updateVersionZeroRecordCount((EmfDataset)strategyMessagesResult.getDetailedResultDataset());
         }
 
@@ -88,15 +88,15 @@ public class StrategyLoader extends LeastCostAbstractStrategyLoader {
 
     // return ControlStrategies orderby name
     public Double getTargetEmissionReduction() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return (Double)session.createQuery("select coalesce(cS.domainWideEmisReduction, 0.0) " +
+            return (Double)entityManager.createQuery("select coalesce(cS.domainWideEmisReduction, 0.0) " +
                     "from ControlStrategyConstraint cS " +
-                    "where cS.controlStrategyId = " + controlStrategy.getId()).uniqueResult();
+                    "where cS.controlStrategyId = " + controlStrategy.getId()).getSingleResult();
         } catch (RuntimeException e) {
             throw new EmfException("Could not get strategy target emission reduction");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 }

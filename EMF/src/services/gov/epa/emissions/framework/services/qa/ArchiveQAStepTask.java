@@ -1,7 +1,6 @@
 package gov.epa.emissions.framework.services.qa;
 
 import gov.epa.emissions.commons.db.DbServer;
-import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.Status;
@@ -10,13 +9,15 @@ import gov.epa.emissions.framework.services.data.QAStep;
 import gov.epa.emissions.framework.services.data.QAStepResult;
 import gov.epa.emissions.framework.services.db.PostgresDump;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 import java.io.File;
 import java.util.Date;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class ArchiveQAStepTask implements Runnable {
 
@@ -24,7 +25,7 @@ public class ArchiveQAStepTask implements Runnable {
 
     private boolean windowsOS = false;
     private DbServerFactory dbServerFactory;
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
     private QADAO qaDAO;
     private Integer qaStepResultId;
     private EmfPropertiesDAO propertyDao;
@@ -37,53 +38,53 @@ public class ArchiveQAStepTask implements Runnable {
     }
 
     public ArchiveQAStepTask(DbServerFactory dbServerFactory,
-                              HibernateSessionFactory sessionFactory,
+                              EntityManagerFactory entityManagerFactory,
                               Integer qaStepResultId,
                               String username) {
         this();
         this.dbServerFactory = dbServerFactory;
-        this.sessionFactory =sessionFactory;
+        this.entityManagerFactory =entityManagerFactory;
         this.qaDAO = new QADAO();
         this.propertyDao = new EmfPropertiesDAO();
         this.qaStepResultId = qaStepResultId;
-        this.statusDAO = new StatusDAO(sessionFactory);
+        this.statusDAO = new StatusDAO(entityManagerFactory);
         this.username = username;
     }
 
     private QAStepResult getQAStepResult() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return this.qaDAO.getQAStepResult(qaStepResultId, session);
+            return this.qaDAO.getQAStepResult(qaStepResultId, entityManager);
         } catch (RuntimeException e) {
             log.error("Could not get QA Step Result with id=" + qaStepResultId, e);
             throw new EmfException("Could not get QA Step Result with id=" + qaStepResultId);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private QAStep getQAStep(Integer qaStepId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return this.qaDAO.getQAStep(qaStepId, session);
+            return this.qaDAO.getQAStep(qaStepId, entityManager);
         } catch (RuntimeException e) {
             log.error("Could not get QA Step Result with id=" + qaStepResultId, e);
             throw new EmfException("Could not get QA Step Result with id=" + qaStepResultId);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private String getProperty(String name) {
-        Session session = null;
+        EntityManager entityManager = null;
         try {
-            session = sessionFactory.getSession();
-            return propertyDao.getProperty(name, session).getValue();
+            entityManager = entityManagerFactory.createEntityManager();
+            return propertyDao.getProperty(name, entityManager).getValue();
         } catch (Exception e) {
             e.printStackTrace();
 //            throw new EmfException(e.getMessage());
         } finally {
-            if (session != null) session.close();
+            if (entityManager != null) entityManager.close();
         }
         return null;
     }
@@ -100,11 +101,11 @@ public class ArchiveQAStepTask implements Runnable {
 
     public void run() {
         DbServer dbServer = null;
-        Session session = null;
+        EntityManager entityManager = null;
         try {
 
             dbServer = dbServerFactory.getDbServer();
-            session = sessionFactory.getSession();
+            entityManager = entityManagerFactory.createEntityManager();
 
             QAStepResult qAStepResult = getQAStepResult();
             QAStep qAStep = getQAStep(qAStepResult.getQaStepId());
@@ -146,8 +147,8 @@ public class ArchiveQAStepTask implements Runnable {
 
             //set dataset Status to "Archived"
             qAStepResult.setTableCreationStatus("Archived");
-            session.clear();
-            this.qaDAO.updateQAStepResult(qAStepResult, session);
+            entityManager.clear();
+            this.qaDAO.updateQAStepResult(qAStepResult, entityManager);
 
             setStatus("Completed archiving QA Step Result, " + qAStep.getName() + ".");
 
@@ -156,7 +157,7 @@ public class ArchiveQAStepTask implements Runnable {
             e.printStackTrace();
 //            throw new EmfException(e.getMessage());
         } finally {
-            if (session != null) session.close();
+            if (entityManager != null) entityManager.close();
             try {
                 if (dbServer != null && dbServer.isConnected())
                     dbServer.disconnect();

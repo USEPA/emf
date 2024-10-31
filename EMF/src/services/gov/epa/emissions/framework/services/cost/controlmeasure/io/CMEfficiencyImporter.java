@@ -10,13 +10,14 @@ import gov.epa.emissions.framework.services.basic.StatusDAO;
 import gov.epa.emissions.framework.services.cost.controlStrategy.CostYearTable;
 import gov.epa.emissions.framework.services.cost.controlStrategy.CostYearTableReader;
 import gov.epa.emissions.framework.services.cost.data.EfficiencyRecord;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import javax.persistence.EntityManagerFactory;
 
 public class CMEfficiencyImporter {
 
@@ -26,7 +27,7 @@ public class CMEfficiencyImporter {
 
     private User user;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private CMCSVFileReader reader;
     
@@ -35,10 +36,10 @@ public class CMEfficiencyImporter {
     private int recordParseCount;
 
     public CMEfficiencyImporter(File file, CMFileFormat fileFormat, User user,
-            HibernateSessionFactory sessionFactory, DbServer dbServer) throws EmfException {
+            EntityManagerFactory entityManagerFactory, DbServer dbServer) throws EmfException {
         this.file = file;
         this.user = user;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         CostYearTable costYearTable = null;
         try {
             CostYearTableReader reader = new CostYearTableReader(dbServer, CostYearTable.REFERENCE_COST_YEAR);
@@ -47,7 +48,7 @@ public class CMEfficiencyImporter {
         } catch (Exception e) {
             throw new EmfException(e.getMessage());
         } 
-        this.cmEfficiencyReader = new CMEfficiencyRecordReader(fileFormat, user, sessionFactory, costYearTable);
+        this.cmEfficiencyReader = new CMEfficiencyRecordReader(fileFormat, user, entityManagerFactory, costYearTable);
     }
 
 //    public void run(Map controlMeasures) throws ImporterException {
@@ -102,7 +103,7 @@ public class CMEfficiencyImporter {
         endStatus.setMessage(message + "\n");
         endStatus.setTimestamp(new Date());
 
-        new StatusDAO(sessionFactory).add(endStatus);
+        new StatusDAO(entityManagerFactory).add(endStatus);
     }
 
 }

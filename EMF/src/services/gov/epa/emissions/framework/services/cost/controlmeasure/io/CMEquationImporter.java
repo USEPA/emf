@@ -6,11 +6,12 @@ import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.io.File;
 import java.util.Date;
 import java.util.Map;
+
+import javax.persistence.EntityManagerFactory;
 
 public class CMEquationImporter{
 
@@ -20,13 +21,13 @@ public class CMEquationImporter{
 
     private User user;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
     
-    public CMEquationImporter(File file, CMEquationFileFormat fileFormat, User user, HibernateSessionFactory sessionFactory) throws EmfException {
+    public CMEquationImporter(File file, CMEquationFileFormat fileFormat, User user, EntityManagerFactory entityManagerFactory) throws EmfException {
         this.file = file;
         this.user = user;
-        this.sessionFactory = sessionFactory;
-        this.equationReader = new CMEquationRecordReader(fileFormat, user, sessionFactory);
+        this.entityManagerFactory = entityManagerFactory;
+        this.equationReader = new CMEquationRecordReader(fileFormat, user, entityManagerFactory);
     }
 
     public void run(Map controlMeasures) throws ImporterException {
@@ -54,7 +55,7 @@ public class CMEquationImporter{
         endStatus.setMessage(message + "\n");
         endStatus.setTimestamp(new Date());
 
-        new StatusDAO(sessionFactory).add(endStatus);
+        new StatusDAO(entityManagerFactory).add(endStatus);
     }
 
 }

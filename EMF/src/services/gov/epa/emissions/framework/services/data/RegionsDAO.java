@@ -5,7 +5,7 @@ import java.util.List;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Root;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
 
 import gov.epa.emissions.commons.data.Region;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
@@ -19,21 +19,21 @@ public class RegionsDAO {
         hibernateFacade = new HibernateFacade();
     }
 
-    public List getAll(Session session) {
-        CriteriaBuilderQueryRoot<Region> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Region.class, session);
+    public List getAll(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<Region> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Region.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<Region> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
     
-    public Region getRegion(String name, Session session) {
-        return hibernateFacade.load(Region.class, "name", name, session);
+    public Region getRegion(String name, EntityManager entityManager) {
+        return hibernateFacade.load(Region.class, "name", name, entityManager);
     }
     
-    public Region addRegion(Region region, Session session) {
-        hibernateFacade.add(region, session);
-        return getRegion(region.getName(), session);
+    public Region addRegion(Region region, EntityManager entityManager) {
+        hibernateFacade.add(region, entityManager);
+        return getRegion(region.getName(), entityManager);
     }
 
 }

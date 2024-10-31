@@ -5,12 +5,13 @@ import gov.epa.emissions.commons.db.Page;
 import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 public class DataAccessorImpl implements DataAccessor {
     private Log LOG = LogFactory.getLog(DataAccessorImpl.class);
@@ -21,19 +22,19 @@ public class DataAccessorImpl implements DataAccessor {
 
     private SessionLifecycle sessionLifecycle;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
-    public DataAccessorImpl(DataAccessCache cache, HibernateSessionFactory sessionFactory) {
+    public DataAccessorImpl(DataAccessCache cache, EntityManagerFactory entityManagerFactory) {
         this.cache = cache;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         pageFetch = new PageFetch(cache);
-        sessionLifecycle = new SessionLifecycle(cache, sessionFactory);
+        sessionLifecycle = new SessionLifecycle(cache, entityManagerFactory);
     }
 
     public int defaultPageSize() {
-        Session session = sessionFactory.getSession();
-        int result = pageFetch.defaultPageSize(session);
-        session.close();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        int result = pageFetch.defaultPageSize(entityManager);
+        entityManager.close();
 
         return result;
     }
@@ -47,9 +48,9 @@ public class DataAccessorImpl implements DataAccessor {
         }
         
         try {
-            Session session = sessionFactory.getSession();
-            cache.applyConstraints(token, columnFilter, rowFilter, sortOrder, session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            cache.applyConstraints(token, columnFilter, rowFilter, sortOrder, entityManager);
+            entityManager.close();
         } catch (Exception e) {
             // don't need to log this to file
             //LOG.error("Could not apply sort or filter constraints for Dataset: " + token.datasetId(), e);
@@ -65,9 +66,9 @@ public class DataAccessorImpl implements DataAccessor {
         }
         
         try {
-            Session session = sessionFactory.getSession();
-            Page result = pageFetch.getPage(token, pageNumber, session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Page result = pageFetch.getPage(token, pageNumber, entityManager);
+            entityManager.close();
             
             if ( CommonDebugLevel.DEBUG_PAGE_3){
                 result.print();
@@ -92,9 +93,9 @@ public class DataAccessorImpl implements DataAccessor {
 
     public Page getPageWithRecord(DataAccessToken token, int record) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            Page page = pageFetch.getPageWithRecord(token, record, session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Page page = pageFetch.getPageWithRecord(token, record, entityManager);
+            entityManager.close();
 
             if ( CommonDebugLevel.DEBUG_PAGE_3){
                 page.print();
@@ -109,9 +110,9 @@ public class DataAccessorImpl implements DataAccessor {
 
     public int getTotalRecords(DataAccessToken token) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            int result = pageFetch.getTotalRecords(token, session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            int result = pageFetch.getTotalRecords(token, entityManager);
+            entityManager.close();
 
             return result;
         } catch (Exception e) {

@@ -3,39 +3,38 @@ package gov.epa.emissions.framework.services.cost.controlmeasure.io;
 import gov.epa.emissions.commons.data.Sector;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Root;
 
-import org.hibernate.Session;
-
 public class Sectors {
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private HibernateFacade facade;
 
-    private List sectorsList;
+    private List<Sector> sectorsList;
 
-    public Sectors(HibernateSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public Sectors(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
         this.facade = new HibernateFacade();
-        sectorsList = sectors(sessionFactory);
+        sectorsList = sectors(entityManagerFactory);
     }
 
-    private List<Sector> sectors(HibernateSessionFactory sessionFactory) {
-        Session session = sessionFactory.getSession();
+    private List<Sector> sectors(EntityManagerFactory entityManagerFactory) {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            CriteriaBuilderQueryRoot<Sector> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(Sector.class, session);
+            CriteriaBuilderQueryRoot<Sector> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(Sector.class, entityManager);
             CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
             Root<Sector> root = criteriaBuilderQueryRoot.getRoot();
 
-            return facade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+            return facade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -45,7 +44,7 @@ public class Sectors {
         sector.setName(name);
         int index = sectorsList.indexOf(sector);
         if (index != -1) {
-            return (Sector) sectorsList.get(index);
+            return sectorsList.get(index);
         }
 
         sector = saveAndLoad(sector);
@@ -63,20 +62,20 @@ public class Sectors {
     }
 
     private void save(Sector sector) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            facade.add(sector, session);
+            facade.add(sector, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private Sector load(String name) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return facade.load(Sector.class, "name", name, session);
+            return facade.load(Sector.class, "name", name, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 

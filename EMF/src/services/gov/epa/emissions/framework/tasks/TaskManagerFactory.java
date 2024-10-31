@@ -1,6 +1,6 @@
 package gov.epa.emissions.framework.tasks;
 
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import javax.persistence.EntityManagerFactory;
 
 public class TaskManagerFactory {
 	private static TaskManagerFactory ref;
@@ -21,8 +21,8 @@ public class TaskManagerFactory {
 		return ExportTaskManager.getExportTaskManager();
 	}
 	
-    public static synchronized CaseJobTaskManager getCaseJobTaskManager(HibernateSessionFactory sessionFactory){
-        return CaseJobTaskManager.getCaseJobTaskManager(sessionFactory);
+    public static synchronized CaseJobTaskManager getCaseJobTaskManager(EntityManagerFactory entityManagerFactory){
+        return CaseJobTaskManager.getCaseJobTaskManager(entityManagerFactory);
     }
 
     public static synchronized ImportTaskManager getImportTaskManager() {

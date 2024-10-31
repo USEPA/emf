@@ -25,7 +25,6 @@ import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.DatasetTypesDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.Keywords;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -37,7 +36,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class FastRunTask {
 
@@ -45,7 +45,7 @@ public class FastRunTask {
 
     protected Datasource datasource;
 
-    protected HibernateSessionFactory sessionFactory;
+    protected EntityManagerFactory entityManagerFactory;
 
     protected DbServerFactory dbServerFactory;
 
@@ -78,17 +78,17 @@ public class FastRunTask {
     private Grid domain;
 
     public FastRunTask(FastRun fastRun, User user, DbServerFactory dbServerFactory,
-            HibernateSessionFactory sessionFactory) throws EmfException {
+            EntityManagerFactory entityManagerFactory) throws EmfException {
         this.fastRun = fastRun;
         this.dbServerFactory = dbServerFactory;
         this.dbServer = dbServerFactory.getDbServer();
         this.datasource = dbServer.getEmissionsDatasource();
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.user = user;
-        this.statusDAO = new StatusDAO(sessionFactory);
-        this.fastRunDAO = new FastDAO(dbServerFactory, sessionFactory);
-        this.keywords = new Keywords(new DataCommonsServiceImpl(sessionFactory).getKeywords());
-        this.creator = new DatasetCreator(null, user, sessionFactory, dbServerFactory, datasource, keywords);
+        this.statusDAO = new StatusDAO(entityManagerFactory);
+        this.fastRunDAO = new FastDAO(dbServerFactory, entityManagerFactory);
+        this.keywords = new Keywords(new DataCommonsServiceImpl(entityManagerFactory).getKeywords());
+        this.creator = new DatasetCreator(null, user, entityManagerFactory, dbServerFactory, datasource, keywords);
         this.fastRunOutputList = new ArrayList<FastRunOutput>();
         this.invTableDataset = fastRun.getInvTableDataset();
         this.invTableDatasetVersion = fastRun.getInvTableDatasetVersion();
@@ -351,12 +351,12 @@ public class FastRunTask {
 
     protected void deleteRunOutputs() throws EmfException {
 
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             List<EmfDataset> dsList = new ArrayList<EmfDataset>();
 
             // first get the datasets to delete
-            EmfDataset[] datasets = fastRunDAO.getOutputDatasets(fastRun.getId(), session);
+            EmfDataset[] datasets = fastRunDAO.getOutputDatasets(fastRun.getId(), entityManager);
             if (datasets != null) {
                 for (EmfDataset dataset : datasets) {
                     if (!user.isAdmin() && !dataset.getCreator().equalsIgnoreCase(user.getUsername())) {
@@ -373,13 +373,13 @@ public class FastRunTask {
 
             // delete and purge datasets
             if (dsList != null && dsList.size() > 0) {
-                fastRunDAO.removeResultDatasets(dsList.toArray(new EmfDataset[0]), user, session, dbServer);
+                fastRunDAO.removeResultDatasets(dsList.toArray(new EmfDataset[0]), user, entityManager, dbServer);
             }
         } catch (RuntimeException e) {
             e.printStackTrace();
             throw new EmfException("Could not remove sector scenario outputs.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -402,13 +402,13 @@ public class FastRunTask {
     }
 
     protected boolean isRunStatusCancelled() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return fastRunDAO.getFastRunRunStatus(fastRun.getId(), session).equals("Cancelled");
+            return fastRunDAO.getFastRunRunStatus(fastRun.getId(), entityManager).equals("Cancelled");
         } catch (RuntimeException e) {
             throw new EmfException("Could not check if strategy run was cancelled.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -507,134 +507,134 @@ public class FastRunTask {
 
     protected FastRunOutputType getFastRunOutputType(String name) throws EmfException {
         FastRunOutputType resultType = null;
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            resultType = fastRunDAO.getFastRunOutputType(name, session);
+            resultType = fastRunDAO.getFastRunOutputType(name, entityManager);
         } catch (RuntimeException e) {
             throw new EmfException("Could not get detailed strategy result type");
         } finally {
-            session.close();
+            entityManager.close();
         }
         return resultType;
     }
 
     protected EmfDataset getDataset(int id) {
         EmfDataset dataset = null;
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dataset = new DatasetDAO().getDataset(session, id);
+            dataset = new DatasetDAO().getDataset(entityManager, id);
         } finally {
-            session.close();
+            entityManager.close();
         }
         return dataset;
     }
 
     protected DatasetType getDatasetType(String name) {
         DatasetType datasetType = null;
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            datasetType = new DatasetTypesDAO().get(name, session);
+            datasetType = new DatasetTypesDAO().get(name, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
         return datasetType;
     }
 
     protected FastRunOutput[] getFastRunOutputs() {
         FastRunOutput[] results = new FastRunOutput[] {};
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            results = fastRunDAO.getFastRunOutputs(fastRun.getId(), session).toArray(new FastRunOutput[0]);
+            results = fastRunDAO.getFastRunOutputs(fastRun.getId(), entityManager).toArray(new FastRunOutput[0]);
         } finally {
-            session.close();
+            entityManager.close();
         }
         return results;
     }
 
     protected void saveFastRunOutput(FastRunOutput fastRunOutput) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            fastRunDAO.updateFastRunOutput(fastRunOutput, session);
+            fastRunDAO.updateFastRunOutput(fastRunOutput, entityManager);
             // runQASteps(fastRunOutput);
         } catch (RuntimeException e) {
             throw new EmfException("Could not save control strategy results: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     protected void saveFastRun(FastRun fastRun) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            fastRunDAO.updateFastRun(fastRun, session);
+            fastRunDAO.updateFastRun(fastRun, entityManager);
         } catch (RuntimeException e) {
             throw new EmfException("Could not save sector scenario: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     protected void saveFastRunSummaryOutput(FastRunOutput fastRunOutput) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            fastRunDAO.updateFastRunOutput(fastRunOutput, session);
+            fastRunDAO.updateFastRunOutput(fastRunOutput, entityManager);
         } catch (Exception e) {
             throw new EmfException("Could not save control strategy results: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     protected void updateOutputDatasetVersionRecordCount(FastRunOutput fastRunOutput) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         DatasetDAO dao = new DatasetDAO();
 
         try {
             EmfDataset result = fastRunOutput.getOutputDataset();
 
             if (result != null) {
-                Version version = dao.getVersion(session, result.getId(), result.getDefaultVersion());
+                Version version = dao.getVersion(entityManager, result.getId(), result.getDefaultVersion());
 
                 if (version != null) {
 //                    version.setCreator(user);
-                    updateVersion(result, version, dbServer, session, dao);
+                    updateVersion(result, version, dbServer, entityManager, dao);
                 }
             }
         } catch (Exception e) {
             throw new EmfException("Cannot update result datasets (strategy id: " + fastRunOutput.getFastRunId()
                     + "). " + e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
-    private void updateVersion(EmfDataset dataset, Version version, DbServer dbServer, Session session, DatasetDAO dao)
+    private void updateVersion(EmfDataset dataset, Version version, DbServer dbServer, EntityManager entityManager, DatasetDAO dao)
             throws Exception {
-        version = dao.obtainLockOnVersion(user, version.getId(), session);
-        version.setNumberRecords((int) dao.getDatasetRecordsNumber(dbServer, session, dataset, version));
-        dao.updateVersionNReleaseLock(version, session);
+        version = dao.obtainLockOnVersion(user, version.getId(), entityManager);
+        version.setNumberRecords((int) dao.getDatasetRecordsNumber(dbServer, entityManager, dataset, version));
+        dao.updateVersionNReleaseLock(version, entityManager);
     }
 
     private void removeFastRunOutputs() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            fastRunDAO.removeFastRunResults(fastRun.getId(), session);
+            fastRunDAO.removeFastRunResults(fastRun.getId(), entityManager);
         } catch (RuntimeException e) {
             throw new EmfException("Could not remove previous control strategy result(s)");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     // private void removeFastRunOutput(int resultId) throws EmfException {
-    // Session session = sessionFactory.getSession();
+    // EntityManager entityManager = entityManagerFactory.createEntityManager();
     // try {
-    // controlStrategyDAO.removeFastRunOutput(fastRun.getId(), resultId, session);
+    // controlStrategyDAO.removeFastRunOutput(fastRun.getId(), resultId, entityManager);
     // } catch (RuntimeException e) {
     // throw new EmfException("Could not remove previous control strategy result(s)");
     // } finally {
-    // session.close();
+    // entityManager.close();
     // }
     // }
 
@@ -651,7 +651,7 @@ public class FastRunTask {
     }
 
     protected void runSummaryQASteps(EmfDataset dataset, int version) throws EmfException {
-        QAStepTask qaTask = new QAStepTask(dataset, version, user, sessionFactory, dbServerFactory);
+        QAStepTask qaTask = new QAStepTask(dataset, version, user, entityManagerFactory, dbServerFactory);
         // 11/14/07 DCD instead of running the default qa steps specified in the property table, lets run all qa step
         // templates...
         QAStepTemplate[] qaStepTemplates = dataset.getDatasetType().getQaStepTemplates();
@@ -701,12 +701,12 @@ public class FastRunTask {
     }
 
     private Version version(int datasetId, int version) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             Versions versions = new Versions();
-            return versions.get(datasetId, version, session);
+            return versions.get(datasetId, version, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 

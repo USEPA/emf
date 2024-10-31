@@ -12,7 +12,7 @@
         <property name="datasetId" column="dataset_id" type="integer" not-null="true"/>
         <property name="version" column="version" type="integer" not-null="true" />
 		
-		<many-to-one cascade="save-update"
+		<many-to-one 
             name="note" 
             class="gov.epa.emissions.framework.services.data.Note"
             column="note_id"/> 

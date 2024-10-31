@@ -10,13 +10,14 @@ import gov.epa.emissions.framework.services.cost.analysis.leastcost.LeastCostAbs
 import gov.epa.emissions.framework.services.cost.analysis.leastcost.LeastCostAbstractStrategyTask;
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyResult;
 import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyResultType;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+
+import javax.persistence.EntityManagerFactory;
 
 public class StrategyTask extends LeastCostAbstractStrategyTask {
 
     public StrategyTask(ControlStrategy controlStrategy, User user, DbServerFactory dbServerFactory,
-            HibernateSessionFactory sessionFactory, StrategyLoader loader) throws EmfException {
-        super(controlStrategy, user, dbServerFactory, sessionFactory, loader);
+            EntityManagerFactory entityManagerFactory, StrategyLoader loader) throws EmfException {
+        super(controlStrategy, user, dbServerFactory, entityManagerFactory, loader);
     }
 
     public void run() throws EmfException {

@@ -14,17 +14,16 @@ import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.commons.util.CustomDateFormat;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.tempalloc.TemporalAllocation;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.Keywords;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class DatasetCreator {
 
@@ -34,7 +33,7 @@ public class DatasetCreator {
 
     // private String outputDatasetName;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private DbServerFactory dbServerFactory;
 
@@ -50,18 +49,18 @@ public class DatasetCreator {
         //
     }
 
-    public DatasetCreator(TemporalAllocation temporalAllocation, User user, HibernateSessionFactory sessionFactory,
+    public DatasetCreator(TemporalAllocation temporalAllocation, User user, EntityManagerFactory entityManagerFactory,
             DbServerFactory dbServerFactory, Datasource datasource, Keywords keywordMasterList) {
         // this.datasetNamePrefix = datasetNamePrefix;
         // this.tablePrefix = tablePrefix;
         this.user = user;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.dbServerFactory = dbServerFactory;
         // this.outputDatasetName = getResultDatasetName(strategy.getName());
         this.temporalAllocation = temporalAllocation;
         this.datasource = datasource;
         this.keywordMasterList = keywordMasterList;// new Keywords(new
-                                                   // DataCommonsServiceImpl(sessionFactory).getKeywords());
+                                                   // DataCommonsServiceImpl(entityManagerFactory).getKeywords());
     }
 
     public EmfDataset addDataset(String tablePrefix, String datasetName, DatasetType type, TableFormat tableFormat,
@@ -141,7 +140,7 @@ public class DatasetCreator {
     }
 
     private void addVersionZeroEntryToVersionsTable(Dataset dataset) throws Exception {
-        gov.epa.emissions.framework.utils.Utils.addVersionEntryToVersionsTable(this.sessionFactory, this.user,
+        gov.epa.emissions.framework.utils.Utils.addVersionEntryToVersionsTable(this.entityManagerFactory, this.user,
                 dataset.getId(), 0, "Initial Version", "", true, "");
     }
 
@@ -203,17 +202,17 @@ public class DatasetCreator {
     }
 
     private void add(EmfDataset dataset) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             DatasetDAO dao = new DatasetDAO(dbServerFactory);
-            if (dao.datasetNameUsed(dataset.getName(), session))
+            if (dao.datasetNameUsed(dataset.getName(), entityManager))
                 throw new EmfException("The selected dataset name is already in use.");
 
-            dao.add(dataset, session);
+            dao.add(dataset, entityManager);
         } catch (Exception e) {
             throw new EmfException("Could not add dataset: " + dataset.getName());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 

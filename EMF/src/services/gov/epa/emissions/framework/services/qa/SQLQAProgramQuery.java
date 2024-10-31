@@ -11,8 +11,6 @@ import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.QAStep;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
-import gov.epa.emissions.framework.services.qa.comparedatasets.SQLCompareDatasetsProgramQuery.ColumnMatchingMap;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,7 +21,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class SQLQAProgramQuery {
     
@@ -34,7 +33,7 @@ public class SQLQAProgramQuery {
 
     protected String tableName;
 
-    protected HibernateSessionFactory sessionFactory;
+    protected EntityManagerFactory entityManagerFactory;
     
     protected String emissionDatasourceName;
        
@@ -45,22 +44,22 @@ public class SQLQAProgramQuery {
     protected DatasetDAO dao = new DatasetDAO();
     
 
-    public SQLQAProgramQuery(HibernateSessionFactory sessionFactory, String emissioDatasourceName, String tableName, QAStep qaStep) {
+    public SQLQAProgramQuery(EntityManagerFactory entityManagerFactory, String emissioDatasourceName, String tableName, QAStep qaStep) {
         
         this.qaStep = qaStep;
         this.tableName = tableName;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.emissionDatasourceName = emissioDatasourceName;         
     }            
 
     protected void checkDataset() throws EmfException {
         String errors ="";
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             if ( datasetNames.size() > 0){
                 for (String dsName : datasetNames){
                     //System.out.println(dsName);
-                    if ( !dao.exists(dsName, session))
+                    if ( !dao.exists(dsName, entityManager))
                         errors += "The dataset name \"" + dsName + "\" does not exist. ";
                 }
                 if ( errors.length() > 0)
@@ -70,42 +69,42 @@ public class SQLQAProgramQuery {
         } catch (Exception ex) {           
             throw new EmfException(ex.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
     protected EmfDataset getDataset(String dsName) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getDataset(session, dsName);
+            return dao.getDataset(entityManager, dsName);
         } catch (Exception ex) {
             //ex.printStackTrace();
             throw new EmfException("The dataset named" + dsName + " does not exist");
         } finally {
-            session.close();
+            entityManager.close();
         }
 
     }
     
     protected EmfDataset getDataset(int id) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getDataset(session, id);
+            return dao.getDataset(entityManager, id);
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new EmfException("The dataset id " + id + " is not valid");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     protected Version version(int datasetId, int version) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             Versions versions = new Versions();
-            return versions.get(datasetId, version, session);
+            return versions.get(datasetId, version, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     

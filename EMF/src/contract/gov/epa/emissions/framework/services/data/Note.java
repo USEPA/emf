@@ -4,20 +4,46 @@ import gov.epa.emissions.commons.security.User;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+@Entity
+@Table(name = "notes", schema = "emf")
 public class Note {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "name", updatable = true, insertable = true, nullable = false, length = 10)
     private String name;
 
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name="creator")
     private User creator;
 
+    @Temporal(TemporalType.DATE)
+    @Column(name = "date_time", updatable = true, insertable = true, nullable = false)
     private Date date;
 
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name="type")
     private NoteType noteType;
 
+    @Column(name = "details", updatable = true, insertable = true, nullable = false)
     private String details;
 
+    @Column(name = "refers_notes", updatable = true, insertable = true, nullable = false)
     private String references;
 
     public Note() {// No argument constructor needed for hibernate mapping

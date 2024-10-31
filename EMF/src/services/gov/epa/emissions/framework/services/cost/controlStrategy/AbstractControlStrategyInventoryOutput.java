@@ -27,7 +27,8 @@ import gov.epa.emissions.framework.tasks.DebugLevels;
 import java.sql.SQLException;
 import java.util.Date;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class AbstractControlStrategyInventoryOutput implements ControlStrategyInventoryOutput {
 
@@ -41,7 +42,7 @@ public class AbstractControlStrategyInventoryOutput implements ControlStrategyIn
 
     protected User user;
 
-    protected HibernateSessionFactory sessionFactory;
+    protected EntityManagerFactory entityManagerFactory;
 
 //    private DbServerFactory dbServerFactory;
 
@@ -56,21 +57,21 @@ public class AbstractControlStrategyInventoryOutput implements ControlStrategyIn
     protected String namePrefix;
     
     public AbstractControlStrategyInventoryOutput(User user, ControlStrategy controlStrategy,
-            ControlStrategyResult controlStrategyResult, String namePrefix, HibernateSessionFactory sessionFactory, 
+            ControlStrategyResult controlStrategyResult, String namePrefix, EntityManagerFactory entityManagerFactory, 
             DbServerFactory dbServerFactory) throws Exception {
         this.controlStrategy = controlStrategy;
         this.controlStrategyResult = controlStrategyResult;
         this.inputDataset = controlStrategyResult.getInputDataset();
         this.user = user;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
 //        this.dbServerFactory = dbServerFactory;
         this.dbServer = dbServerFactory.getDbServer();
         this.datasource = dbServer.getEmissionsDatasource();
         this.tableFormat = new FileFormatFactory(dbServer).tableFormat(inputDataset.getDatasetType());
         this.creator = new DatasetCreator(controlStrategy, user, 
-                sessionFactory, dbServerFactory,
-                dbServer.getEmissionsDatasource(), new Keywords(new DataCommonsServiceImpl(sessionFactory).getKeywords()));
-        this.statusServices = new StatusDAO(sessionFactory);
+                entityManagerFactory, dbServerFactory,
+                dbServer.getEmissionsDatasource(), new Keywords(new DataCommonsServiceImpl(entityManagerFactory).getKeywords()));
+        this.statusServices = new StatusDAO(entityManagerFactory);
         this.namePrefix = namePrefix;
     }
 
@@ -99,7 +100,7 @@ public class AbstractControlStrategyInventoryOutput implements ControlStrategyIn
             }        
 
             setControlStrategyResultContolledInventory(result, dataset);
-            updateVersion(dataset, dbServer, sessionFactory.getSession(), user);
+            updateVersion(dataset, dbServer, entityManagerFactory.createEntityManager(), user);
         } catch (Exception e) {
             failStatus(statusServices, e.getMessage());
             e.printStackTrace();
@@ -110,17 +111,17 @@ public class AbstractControlStrategyInventoryOutput implements ControlStrategyIn
         dbServer.disconnect();
     }
     
-    protected void updateVersion(EmfDataset dataset, DbServer dbsrv, Session session, User usr) throws Exception {
+    protected void updateVersion(EmfDataset dataset, DbServer dbsrv, EntityManager entityManager, User usr) throws Exception {
         Version version = version(dataset, dataset.getDefaultVersion());
         
         if (version == null)
             return;
         
         DatasetDAO dao = new DatasetDAO();
-        version = dao.obtainLockOnVersion(usr, version.getId(), session);
-        version.setNumberRecords((int)dao.getDatasetRecordsNumber(dbsrv, session, dataset, version));
+        version = dao.obtainLockOnVersion(usr, version.getId(), entityManager);
+        version.setNumberRecords((int)dao.getDatasetRecordsNumber(dbsrv, entityManager, dataset, version));
         version.setCreator(usr);
-        dao.updateVersionNReleaseLock(version, session);
+        dao.updateVersionNReleaseLock(version, entityManager);
     }
 
 //    private void setandRunQASteps() throws EmfException {
@@ -128,7 +129,7 @@ public class AbstractControlStrategyInventoryOutput implements ControlStrategyIn
 //            ControlStrategyResult result = getControlStrategyResult();
 //            EmfDataset controlledDataset = (EmfDataset) result.getControlledInventoryDataset();
 //            QAStepTask qaTask = new QAStepTask(controlledDataset, controlledDataset.getDefaultVersion(), user,
-//                    sessionFactory, dbServerFactory);
+//                    entityManagerFactory, dbServerFactory);
 //            qaTask.runSummaryQASteps(qaTask.getDefaultSummaryQANames());
 //        } catch (Exception e) {
 //            e.printStackTrace();
@@ -167,43 +168,43 @@ public class AbstractControlStrategyInventoryOutput implements ControlStrategyIn
     }
 
     protected ControlStrategyResult getControlStrategyResult(int id) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             ControlStrategyDAO dao = new ControlStrategyDAO();
-            ControlStrategyResult result = dao.getControlStrategyResult(id, session);
+            ControlStrategyResult result = dao.getControlStrategyResult(id, entityManager);
             if (result == null)
                 throw new EmfException("You have to run the control strategy to create control inventory output");
             return result;
         } catch (Exception e) {
             throw new EmfException(e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
 
     }
 
     protected void addControlStrategyResult(ControlStrategyResult result) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             ControlStrategyDAO dao = new ControlStrategyDAO();
-            int id = dao.add(result, session);
+            int id = dao.add(result, entityManager);
             result.setId(id);
         } catch (Exception e) {
             throw new EmfException(e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     protected void saveControlStrategyResult(ControlStrategyResult result) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             ControlStrategyDAO dao = new ControlStrategyDAO();
-            dao.updateControlStrategyResult(result, session);
+            dao.updateControlStrategyResult(result, entityManager);
         } catch (Exception e) {
             throw new EmfException("Could not update control strategy results: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -213,12 +214,12 @@ public class AbstractControlStrategyInventoryOutput implements ControlStrategyIn
     }
 
     protected Version version(EmfDataset inputDataset, int datasetVersion) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             Versions versions = new Versions();
-            return versions.get(inputDataset.getId(), datasetVersion, session);
+            return versions.get(inputDataset.getId(), datasetVersion, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 

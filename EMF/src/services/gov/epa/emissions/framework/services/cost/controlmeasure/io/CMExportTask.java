@@ -18,7 +18,9 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.FlushMode;
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.FlushModeType;
 
 public class CMExportTask implements Runnable {
 
@@ -34,7 +36,7 @@ public class CMExportTask implements Runnable {
 
     private User user;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private ControlMeasureDAO controlMeasureDao;
     
@@ -44,31 +46,31 @@ public class CMExportTask implements Runnable {
 
     private FileDownloadDAO fileDownloadDAO;
     
-    public CMExportTask(File folder, String prefix, int[] controlMeasureIds, User user, HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory, boolean download) {
+    public CMExportTask(File folder, String prefix, int[] controlMeasureIds, User user, EntityManagerFactory entityManagerFactory, DbServerFactory dbServerFactory, boolean download) {
         this.folder = folder;
         this.prefix = prefix;
         this.user = user;
         this.download = download;
         this.controlMeasureIds = controlMeasureIds;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.dbServerFactory = dbServerFactory;
         this.controlMeasureDao = new ControlMeasureDAO();
-//        this.statusDao = new StatusDAO(sessionFactory);
+//        this.statusDao = new StatusDAO(entityManagerFactory);
         this.fileDownloadDAO = new FileDownloadDAO();
     }
 
     public void run() {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            session.setFlushMode(FlushMode.MANUAL);
+            entityManager.setFlushMode(FlushModeType.AUTO);
 //            prepare();
             String[] selectedAbbrevAndSCCs = getSelectedAbbrevAndSCCs(controlMeasureIds);
-            ControlMeasuresExporter exporter = new ControlMeasuresExporter(folder, prefix, getControlMeasures(controlMeasureIds, session), selectedAbbrevAndSCCs, user, sessionFactory, dbServerFactory);
+            ControlMeasuresExporter exporter = new ControlMeasuresExporter(folder, prefix, getControlMeasures(controlMeasureIds, entityManager), selectedAbbrevAndSCCs, user, entityManagerFactory, dbServerFactory);
             exporter.run();
             
             if (download) {
                 for (String fileName : exporter.getFileNames()) {
-                    fileDownloadDAO.add(user, new Date(), fileName, "Dataset Export", false, session);
+                    fileDownloadDAO.add(user, new Date(), fileName, "Dataset Export", false, entityManager);
                 }
             }
         } catch (Exception e) {
@@ -76,17 +78,17 @@ public class CMExportTask implements Runnable {
             logError("Failed to export control measures", e); // FIXME: report generation
 //            setStatus("Failed to export all control measures: " + e.getMessage());
         } finally {
-//            session.flush();
-            session.close();
+//            entityManager.flush();
+            entityManager.close();
         }
     }
 
-    private ControlMeasure[] getControlMeasures(int[] ids, Session session) {
+    private ControlMeasure[] getControlMeasures(int[] ids, EntityManager entityManager) {
         List cmList = new ArrayList();
         int size = ids.length;
         
         for (int i = 0; i < size; i++)
-            cmList.add(controlMeasureDao.current(ids[i], session));
+            cmList.add(controlMeasureDao.current(ids[i], entityManager));
         
         return (ControlMeasure[])cmList.toArray(new ControlMeasure[0]);
     }

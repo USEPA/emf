@@ -6,14 +6,15 @@ import gov.epa.emissions.framework.services.Services;
 import gov.epa.emissions.framework.services.basic.EmfProperty;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 public class SectorScenarioRunTask implements Runnable {
 
@@ -27,18 +28,18 @@ public class SectorScenarioRunTask implements Runnable {
 
     private SectorScenarioService ssService;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
     
     private String preStatus;
 
     public SectorScenarioRunTask(SectorScenarioTask sectorScenarioTask, User user, 
             Services services, SectorScenarioService service,
-            HibernateSessionFactory sessionFactory, String preStatus) {
+            EntityManagerFactory entityManagerFactory, String preStatus) {
         this.user = user;
         this.services = services;
         this.sectorScenarioTask = sectorScenarioTask;
         this.ssService = service;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.preStatus = preStatus;
     }
 
@@ -140,12 +141,12 @@ public class SectorScenarioRunTask implements Runnable {
 //    }
 
     private Long strategyPoolSize() {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            EmfProperty property = new EmfPropertiesDAO().getProperty("strategy-pool-size", session);
+            EmfProperty property = new EmfPropertiesDAO().getProperty("strategy-pool-size", entityManager);
             return Long.parseLong(property.getValue());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     private Long getSectorScenarioRunningCount() {

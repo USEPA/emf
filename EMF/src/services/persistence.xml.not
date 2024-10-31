@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<persistence version="3.0" xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence 
+             https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd">
+	<persistence-unit name="gov.epa.emissions">
+	    <description>Hibernate EntityManager</description>
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+	    <!--class>gov.x.x.x</class--> 
+	    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+	    <properties>
+	        <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+	        <property name="hibernate.hbm2ddl.auto" value="update"/>
+	        <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+	        <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/EMF"/>
+	        <property name="javax.persistence.jdbc.user" value="emf"/>
+	        <property name="javax.persistence.jdbc.password" value="emf"/>
+	    </properties>
+	</persistence-unit>
+</persistence>

@@ -8,14 +8,16 @@ import gov.epa.emissions.framework.services.basic.FileDownloadDAO;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.cost.controlmeasure.io.CMExportTask;
 import gov.epa.emissions.framework.services.data.DataCommonsDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import gov.epa.emissions.framework.services.persistence.JpaEntityManagerFactory;
 
 import java.io.File;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 
@@ -23,7 +25,7 @@ public class ControlMeasureExportServiceImpl implements ControlMeasureExportServ
 
     private static Log LOG = LogFactory.getLog(ControlMeasureExportServiceImpl.class);
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private DataCommonsDAO dataCommonsDAO;
     
@@ -34,11 +36,11 @@ public class ControlMeasureExportServiceImpl implements ControlMeasureExportServ
     private DbServerFactory dbServerFactory;
     
     public ControlMeasureExportServiceImpl() throws Exception {
-        this(HibernateSessionFactory.get(), DbServerFactory.get());
+        this(JpaEntityManagerFactory.get(), DbServerFactory.get());
     }
 
-    public ControlMeasureExportServiceImpl(HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory) throws Exception {
-        this.sessionFactory = sessionFactory;
+    public ControlMeasureExportServiceImpl(EntityManagerFactory entityManagerFactory, DbServerFactory dbServerFactory) throws Exception {
+        this.entityManagerFactory = entityManagerFactory;
         this.dataCommonsDAO = new DataCommonsDAO();
         this.threadPool = createThreadPool();
         this.dbServerFactory = dbServerFactory;
@@ -81,11 +83,11 @@ public class ControlMeasureExportServiceImpl implements ControlMeasureExportServ
 
     private synchronized void doExport(String folderPath, String prefix, int[] controlMeasureIds, User user,
             boolean overwrite, boolean download) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             File dir;
             if (download) {
-                dir = new File(this.fileDownloadDAO.getDownloadExportFolder(session) + "/" + user.getUsername() + "/");
+                dir = new File(this.fileDownloadDAO.getDownloadExportFolder(entityManager) + "/" + user.getUsername() + "/");
             } else {
                 dir = new File(folderPath);
             }
@@ -101,27 +103,27 @@ public class ControlMeasureExportServiceImpl implements ControlMeasureExportServ
             
             validateExportFile(dir, prefix, overwrite);
             CMExportTask exportTask = new CMExportTask(dir, prefix, controlMeasureIds, user,
-                    sessionFactory, dbServerFactory, download);
+                    entityManagerFactory, dbServerFactory, download);
             threadPool.execute(new GCEnforcerTask(
                     "Export control measures (id): " + controlMeasureIds[0] + ", etc.", exportTask));
         } catch (Exception e) {
             LOG.error("Could not export control measures.", e);
             throw new EmfException("Could not export control measures: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized Status[] getExportStatus(User user) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List controlMeasureExportStatuses = dataCommonsDAO.getStatuses(user.getUsername(), session);
+            List controlMeasureExportStatuses = dataCommonsDAO.getStatuses(user.getUsername(), entityManager);
             return (Status[]) controlMeasureExportStatuses.toArray(new Status[0]);
         } catch (RuntimeException e) {
             LOG.error("Could not get detail export status messages.", e);
             throw new EmfException("Could not get detail export status messages. " + e.getMessage());
         } finally {
-            session.clear();
+            entityManager.clear();
         }
     }
 

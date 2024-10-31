@@ -106,7 +106,7 @@ public abstract class AbstractDao<T extends Lockable> implements Dao<T> {
 
         long elapsed = new Date().getTime() - current.getLockDate().getTime();
 
-        if ((user.getName().equals(current.getLockOwner())) || (elapsed > timeInterval())) {
+        if ((user.getUsername().equals(current.getLockOwner())) || (elapsed > timeInterval())) {
             grabLock(user, current);
         }
 
@@ -189,6 +189,9 @@ public abstract class AbstractDao<T extends Lockable> implements Dao<T> {
         target.setLockDate(new Date());
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
+            // clear 'loaded' locked object - to make way for updated object
+            entityManager.clear();
+            
             executeInsideTransaction(em -> entityManager.merge(target), entityManager);
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -208,7 +211,7 @@ public abstract class AbstractDao<T extends Lockable> implements Dao<T> {
             tx.rollback();
             throw e;
         } finally {
-            entityManager.close();
+            //
         }
     }
 }

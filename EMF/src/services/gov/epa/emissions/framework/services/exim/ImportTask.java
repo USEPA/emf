@@ -13,11 +13,9 @@ import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.Services;
 import gov.epa.emissions.framework.services.basic.Status;
-import gov.epa.emissions.framework.services.basic.StatusDAO;
 import gov.epa.emissions.framework.services.data.DataServiceImpl;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 import gov.epa.emissions.framework.tasks.ImportTaskManager;
 import gov.epa.emissions.framework.tasks.Task;
@@ -25,9 +23,11 @@ import gov.epa.emissions.framework.tasks.Task;
 import java.io.File;
 import java.util.Date;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 public class ImportTask extends Task {
     
@@ -50,7 +50,7 @@ public class ImportTask extends Task {
 
     protected String[] files;
 
-    protected HibernateSessionFactory sessionFactory;
+    protected EntityManagerFactory entityManagerFactory;
 
     protected double numSeconds;
     
@@ -63,7 +63,7 @@ public class ImportTask extends Task {
     private DbServerFactory dbServerFactory;
 
     public ImportTask(EmfDataset dataset, String[] files, File path, User user, Services services,
-            DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory) {
+            DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory) {
         super();
         createId();
         
@@ -75,7 +75,7 @@ public class ImportTask extends Task {
         this.dataset = dataset;
         this.statusServices = services.getStatus();
         this.dbServerFactory = dbServerFactory;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.dao = new DatasetDAO(dbServerFactory);
         this.path = path;
     }
@@ -93,7 +93,7 @@ public class ImportTask extends Task {
             if (DebugLevels.DEBUG_1())
                 log.debug("Task# " + taskId + " running");
         
-        Session session = null;
+        EntityManager entityManager = null;
         DbServer dbServer = null;
         boolean isDone = false;
         String errorMsg = "";
@@ -106,12 +106,12 @@ public class ImportTask extends Task {
             ImporterFactory importerFactory = new ImporterFactory(dbServer);
             Importer importer = importerFactory.createVersioned(dataset, path, files);
             long startTime = System.currentTimeMillis();
-            session = sessionFactory.getSession();
+            entityManager = entityManagerFactory.createEntityManager();
             
             if (DebugLevels.DEBUG_1())
                 log.debug("  >=== 02 ===");
             
-            prepare(session);
+            prepare(entityManager);
             
             if (DebugLevels.DEBUG_1())
                 log.debug("  >=== 03 ===");
@@ -135,7 +135,7 @@ public class ImportTask extends Task {
             updateVersionNReleaseLock(version);
 
             numSeconds = (System.currentTimeMillis() - startTime)/1000;
-            complete(session, "Imported");
+            complete(entityManager, "Imported");
             isDone = true;
             
             if (DebugLevels.DEBUG_1())
@@ -162,15 +162,15 @@ public class ImportTask extends Task {
             try {
                 if (isDone) {
                     addCompletedStatus();
-//                    session.flush();
+//                    entityManager.flush();
                 } else 
                     addFailedStatus(errorMsg);
             } catch (Exception e2) {
                 log.error("Error setting outputs status.", e2);
             } finally {
                 try {
-                    if (session != null && session.isConnected()) 
-                        session.close();
+                    if (entityManager != null) 
+                        entityManager.close();
                     
                     if (dbServer != null && dbServer.isConnected())
                         dbServer.disconnect();
@@ -186,21 +186,21 @@ public class ImportTask extends Task {
     }
 
     private Version version(int datasetId, int versionNumber) throws EmfException {
-        DataServiceImpl dataServiceImpl = new DataServiceImpl(dbServerFactory, sessionFactory);
-        Session session = sessionFactory.getSession();
+        DataServiceImpl dataServiceImpl = new DataServiceImpl(dbServerFactory, entityManagerFactory);
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             Versions versions = new Versions();
-            Version version = versions.get(datasetId, versionNumber, session);
+            Version version = versions.get(datasetId, versionNumber, entityManager);
             version = dataServiceImpl.obtainedLockOnVersion(user, version.getId());
             return version;
 
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private void updateVersionNReleaseLock(Version locked) throws EmfException {
-        DataServiceImpl dataServiceImpl = new DataServiceImpl(dbServerFactory, sessionFactory);
+        DataServiceImpl dataServiceImpl = new DataServiceImpl(dbServerFactory, entityManagerFactory);
         try {
             dataServiceImpl.updateVersionNReleaseLock(locked);
         } catch (Exception e) {
@@ -211,7 +211,7 @@ public class ImportTask extends Task {
 
     }
     public synchronized int getNumOfRecords(EmfDataset dataset, Version version) throws EmfException {
-        DataServiceImpl dataServiceImpl = new DataServiceImpl(dbServerFactory, sessionFactory);
+        DataServiceImpl dataServiceImpl = new DataServiceImpl(dbServerFactory, entityManagerFactory);
         try {
             InternalSource[] internalSources = dataset.getInternalSources();
             
@@ -224,15 +224,15 @@ public class ImportTask extends Task {
 
     }
 
-    protected void prepare(Session session) throws EmfException {
+    protected void prepare(EntityManager entityManager) throws EmfException {
         addStartStatus();
         dataset.setStatus("Started import");
-        addDataset(dataset, session);
+        addDataset(dataset, entityManager);
     }
 
-    protected void complete(Session session, String status) {
+    protected void complete(EntityManager entityManager, String status) {
         dataset.setStatus(status);
-        updateDataset(dataset, session);
+        updateDataset(dataset, entityManager);
     }
 
     protected String filesList() {
@@ -249,28 +249,28 @@ public class ImportTask extends Task {
         return idx > 0 ? ret.substring(0, idx) : ret;
     }
 
-    protected void addDataset(EmfDataset dataset, Session session) throws EmfException {
+    protected void addDataset(EmfDataset dataset, EntityManager entityManager) throws EmfException {
         try {
-            if (dao.datasetNameUsed(dataset.getName(), session))
+            if (dao.datasetNameUsed(dataset.getName(), entityManager))
                 throw new EmfException("The selected Dataset name is already in use");
         } catch (Exception e) {
             e.printStackTrace();
             throw new EmfException(e.getMessage() == null ? "" : e.getMessage());
         }
 
-        dao.add(dataset, session);
+        dao.add(dataset, entityManager);
     }
 
-    protected void updateDataset(EmfDataset dataset, Session session) {
+    protected void updateDataset(EmfDataset dataset, EntityManager entityManager) {
         try {
             if (dataset.isExternal() && extSrcs != null && extSrcs.length > 0) {
                 for (int i = 0; i < extSrcs.length; i++)
                     extSrcs[i].setDatasetId(dataset.getId());
                 
-                dao.addExternalSources(extSrcs, session);
+                dao.addExternalSources(extSrcs, entityManager);
             }
             
-            dao.updateWithoutLocking(dataset, session);
+            dao.updateWithoutLocking(dataset, entityManager);
         } catch (Exception e) {
             logError("Could not update Dataset - " + dataset.getName(), e);
         }
@@ -278,9 +278,9 @@ public class ImportTask extends Task {
 
     protected void removeDataset(EmfDataset dataset) {
         try {
-            Session session = sessionFactory.getSession();
-            dao.remove(dataset, session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            dao.remove(dataset, entityManager);
+            entityManager.close();
         } catch (Exception e) {
             logError("Could not get remove Dataset - " + dataset.getName(), e);
         }

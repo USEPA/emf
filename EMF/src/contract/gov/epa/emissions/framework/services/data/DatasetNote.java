@@ -1,14 +1,32 @@
 package gov.epa.emissions.framework.services.data;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "datasets_notes", schema = "emf")
 public class DatasetNote {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name = "dataset_id", updatable = false, insertable = true, nullable = false)
     private int datasetId;
     
+    @Column(name = "version", updatable = false, insertable = true, nullable = false)
     private int version;
 
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, optional = false)
+    @JoinColumn(name="note_id")
     private Note note;
 
     public DatasetNote() {// No argument constructor needed for hibernate mapping

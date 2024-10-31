@@ -5,23 +5,22 @@ import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.daos.UserDao;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import gov.epa.emissions.framework.services.persistence.JpaEntityManagerFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 public class UserServiceImpl implements UserService {
     private static Log LOG = LogFactory.getLog(UserServiceImpl.class);
 
-    private HibernateSessionFactory sessionFactory;
-    
     private EntityManagerFactory entityManagerFactory;
 
     private UserDao dao;
@@ -40,16 +39,15 @@ public class UserServiceImpl implements UserService {
     }
 
     public UserServiceImpl() {
-        this(HibernateSessionFactory.get());
+        this(JpaEntityManagerFactory.get());
         myTag();
 
         if (DebugLevels.DEBUG_1())
             System.out.println(">>>> " + myTag());
     }
 
-    public UserServiceImpl(HibernateSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-        this.entityManagerFactory = Persistence.createEntityManagerFactory("com.baeldung.movie_catalog");
+    public UserServiceImpl(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
         this.dao = new UserDao(this.entityManagerFactory);
         myTag();
 
@@ -148,36 +146,36 @@ public class UserServiceImpl implements UserService {
     }
 
     public synchronized String getEmfVersion() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            EmfProperty property = new EmfPropertiesDAO().getProperty("EMF-version", session);
+            EmfProperty property = new EmfPropertiesDAO().getProperty("EMF-version", entityManager);
             return property == null ? null : property.getValue();
         } catch (Exception e) {
             LOG.error("Could not get EMF version info.", e);
             throw new EmfException("Could not get EMF version info.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized String getEmfPasswordEffDays() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            EmfProperty property = new EmfPropertiesDAO().getProperty("PASSWORD_EFFECTIVE_DAYS", session);
+            EmfProperty property = new EmfPropertiesDAO().getProperty("PASSWORD_EFFECTIVE_DAYS", entityManager);
             return property == null ? null : property.getValue();
         } catch (Exception e) {
             LOG.error("Could not get EMF password effective days.", e);
             throw new EmfException("Could not get EMF password effective days.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     @Override
     protected synchronized void finalize() throws Throwable {
-        this.sessionFactory = null;
+        this.entityManagerFactory = null;
         super.finalize();
     }
 
@@ -206,16 +204,16 @@ public class UserServiceImpl implements UserService {
     }
 
     public String getPropertyValue(String name) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            EmfProperty property = new EmfPropertiesDAO().getProperty(name, session);
+            EmfProperty property = new EmfPropertiesDAO().getProperty(name, entityManager);
             return property != null ? property.getValue() : null;
         } catch (Exception e) {
             LOG.error("Could not get EMF property.", e);
             throw new EmfException("Could not get EMF property.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 

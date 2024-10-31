@@ -5,7 +5,7 @@ import java.util.List;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Root;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
 
 import gov.epa.emissions.commons.data.Pollutant;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
@@ -19,39 +19,39 @@ public class PollutantsDAO {
         hibernateFacade = new HibernateFacade();
     }
 
-    public List<Pollutant> getAll(Session session) {
-        CriteriaBuilderQueryRoot<Pollutant> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Pollutant.class, session);
+    public List<Pollutant> getAll(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<Pollutant> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Pollutant.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<Pollutant> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public boolean canUpdate(Pollutant pollutant, Session session) {
-        if (!exists(pollutant.getId(), session)) {
+    public boolean canUpdate(Pollutant pollutant, EntityManager entityManager) {
+        if (!exists(pollutant.getId(), entityManager)) {
             return false;
         }
 
-        Pollutant current = current(pollutant.getId(), session);
-        // The current object is saved in the session. Hibernate cannot persist our
+        Pollutant current = current(pollutant.getId(), entityManager);
+        // The current object is saved in the entityManager. Hibernate cannot persist our
         // object with the same id.
-        session.clear();
+        entityManager.clear();
         if (current.getName().equals(pollutant.getName()))
             return true;
 
-        return !nameUsed(pollutant.getName(), session);
+        return !nameUsed(pollutant.getName(), entityManager);
     }
 
-    private boolean nameUsed(String name, Session session) {
-        return hibernateFacade.nameUsed(name, Pollutant.class, session);
+    private boolean nameUsed(String name, EntityManager entityManager) {
+        return hibernateFacade.nameUsed(name, Pollutant.class, entityManager);
     }
 
-    private Pollutant current(int id, Session session) {
-        return hibernateFacade.current(id, Pollutant.class, session);
+    private Pollutant current(int id, EntityManager entityManager) {
+        return hibernateFacade.current(id, Pollutant.class, entityManager);
     }
 
-    private boolean exists(int id, Session session) {
-        return hibernateFacade.exists(id, Pollutant.class, session);
+    private boolean exists(int id, EntityManager entityManager) {
+        return hibernateFacade.exists(id, Pollutant.class, entityManager);
     }
 
 }

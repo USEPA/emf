@@ -1,6 +1,5 @@
 package gov.epa.emissions.framework.services.data;
 
-import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.data.ExternalSource;
 import gov.epa.emissions.commons.data.InternalSource;
@@ -21,16 +20,11 @@ import gov.epa.emissions.commons.util.EmfArrays;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.GCEnforcerTask;
-import gov.epa.emissions.framework.services.casemanagement.RunQACaseReports;
 import gov.epa.emissions.framework.services.cost.controlStrategy.DoubleValue;
-import gov.epa.emissions.framework.services.db.PostgresDump;
-import gov.epa.emissions.framework.services.db.PostgresRestore;
-import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import gov.epa.emissions.framework.services.persistence.JpaEntityManagerFactory;
 import gov.epa.emissions.framework.services.qa.TableToString;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
-import java.io.File;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -41,16 +35,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.axis.utils.XMLChar;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
+
+import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 
 public class DataServiceImpl implements DataService {
     private static Log LOG = LogFactory.getLog(DataServiceImpl.class);
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private DbServerFactory dbServerFactory;
 
@@ -63,15 +61,15 @@ public class DataServiceImpl implements DataService {
     }
 
     public DataServiceImpl() {
-        this(DbServerFactory.get(), HibernateSessionFactory.get());
+        this(DbServerFactory.get(), JpaEntityManagerFactory.get());
     }
 
-    public DataServiceImpl(HibernateSessionFactory sessionFactory) {
-        this(DbServerFactory.get(), sessionFactory);
+    public DataServiceImpl(EntityManagerFactory entityManagerFactory) {
+        this(DbServerFactory.get(), entityManagerFactory);
     }
 
-    public DataServiceImpl(DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public DataServiceImpl(DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
         this.dbServerFactory = dbServerFactory;
         dao = new DatasetDAO(dbServerFactory);
         threadPool = createThreadPool();
@@ -87,7 +85,7 @@ public class DataServiceImpl implements DataService {
 
     @Override
     protected void finalize() throws Throwable {
-        this.sessionFactory = null;
+        this.entityManagerFactory = null;
         this.dbServerFactory = null;
         this.dao = null;
 
@@ -99,11 +97,11 @@ public class DataServiceImpl implements DataService {
     public synchronized void archiveDataset(Integer datasetId, String username) throws  EmfException {
 
         DbServer dbServer = null;
-        Session session = null;
+        EntityManager entityManager = null;
         try {
 
             dbServer = dbServerFactory.getDbServer();
-            session = sessionFactory.getSession();
+            entityManager = entityManagerFactory.createEntityManager();
 
             //stop consolidated from being archived at this point, maybe in the future
             EmfDataset dataset = getDataset(datasetId);
@@ -117,14 +115,14 @@ public class DataServiceImpl implements DataService {
             if (tableNames.length == 1 && dbServer.getEmissionsDatasource().tableDefinition().isConsolidationTable(tableNames[0]))
                 throw new EmfException("Not allowed to archive a dataset that shares a consolidated table.");
 
-            ArchiveDatasetTask archiveDatasetTask = new ArchiveDatasetTask(dbServerFactory, sessionFactory, datasetId, username);
+            ArchiveDatasetTask archiveDatasetTask = new ArchiveDatasetTask(dbServerFactory, entityManagerFactory, datasetId, username);
             threadPool.execute(new GCEnforcerTask("Run ArchiveDatasetTask", archiveDatasetTask));
 
         } catch (Exception e) {
             LOG.error("Error archiving dataset", e);
             throw new EmfException(e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
             closeDB(dbServer);
         }
 
@@ -150,7 +148,7 @@ public class DataServiceImpl implements DataService {
                 throw new EmfException("Not allowed to restore a dataset that shares a consolidated table.");
 
 
-            RestoreDatasetTask restoreDatasetTask = new RestoreDatasetTask(dbServerFactory, sessionFactory, datasetId, username);
+            RestoreDatasetTask restoreDatasetTask = new RestoreDatasetTask(dbServerFactory, entityManagerFactory, datasetId, username);
             threadPool.execute(new GCEnforcerTask("Run RestoreDatasetTask", restoreDatasetTask));
 
 
@@ -165,53 +163,53 @@ public class DataServiceImpl implements DataService {
     }
 
     public synchronized EmfDataset[] getDatasets(String nameContains, int userId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         List datasets;
         try {
             if (nameContains == null || nameContains.trim().length() == 0 || nameContains.trim().equals("*"))
-                datasets = dao.allNonDeleted(session, userId);
+                datasets = dao.allNonDeleted(entityManager, userId);
             else
-                datasets = dao.allNonDeleted(session, nameContains, userId);
+                datasets = dao.allNonDeleted(entityManager, nameContains, userId);
             return (EmfDataset[]) datasets.toArray(new EmfDataset[datasets.size()]);
         } catch (RuntimeException e) {
             LOG.error("Could not get all Datasets", e);
             throw new EmfException("Could not get all Datasets");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized EmfDataset getDataset(Integer datasetId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            EmfDataset dataset = dao.getDataset(session, datasetId.intValue());
+            EmfDataset dataset = dao.getDataset(entityManager, datasetId.intValue());
             return dataset;
         } catch (RuntimeException e) {
             LOG.error("Could not get dataset with id=" + datasetId.intValue(), e);
             throw new EmfException("Could not get dataset with id=" + datasetId.intValue());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized EmfDataset getDataset(String datasetName) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            EmfDataset dataset = dao.getDataset(session, datasetName);
+            EmfDataset dataset = dao.getDataset(entityManager, datasetName);
             return dataset;
         } catch (RuntimeException e) {
             LOG.error("Could not get dataset " + datasetName, e);
             throw new EmfException("Could not get dataset " + datasetName);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized EmfDataset obtainLockedDataset(User owner, EmfDataset dataset) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            EmfDataset locked = dao.obtainLocked(owner, dataset, session);
+            EmfDataset locked = dao.obtainLocked(owner, dataset, entityManager);
 
             return locked;
         } catch (RuntimeException e) {
@@ -220,14 +218,14 @@ public class DataServiceImpl implements DataService {
             throw new EmfException("Could not obtain lock for Dataset: " + dataset.getName() + " by owner: "
                     + owner.getUsername());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized EmfDataset releaseLockedDataset(User user, EmfDataset locked) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            EmfDataset released = dao.releaseLocked(user, locked, session);
+            EmfDataset released = dao.releaseLocked(user, locked, entityManager);
 
             return released;
         } catch (RuntimeException e) {
@@ -237,106 +235,106 @@ public class DataServiceImpl implements DataService {
             throw new EmfException("Could not release lock for Dataset: " + locked.getName() + " by owner: "
                     + locked.getLockOwner());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized EmfDataset updateDataset(EmfDataset dataset) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             DatasetType type = dataset.getDatasetType();
 
-            if (!dao.canUpdate(dataset, session))
+            if (!dao.canUpdate(dataset, entityManager))
                 throw new EmfException("The Dataset name " + dataset.getName() + " is already in use.");
 
             if (type != null && type.getTablePerDataset() > 1)
                 LOG.info("Renaming emission tables for dataset " + dataset.getName() + " is not allowed.");
 
-            EmfDataset released = dao.update(dataset, session);
+            EmfDataset released = dao.update(dataset, entityManager);
 
             return released;
         } catch (Exception e) {
             LOG.error("Could not update Dataset: " + dataset.getName() + " " + e.getMessage(), e);
             throw new EmfException("Could not update Dataset: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized EmfDataset[] getDatasets(DatasetType datasetType) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List datasets = dao.getDatasets(session, datasetType);
+            List datasets = dao.getDatasets(entityManager, datasetType);
 
             return (EmfDataset[]) datasets.toArray(new EmfDataset[datasets.size()]);
         } catch (RuntimeException e) {
             LOG.error("Could not get all Datasets for dataset type " + datasetType, e);
             throw new EmfException("Could not get all Datasets for dataset type " + datasetType);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized EmfDataset[] getDatasetsWithFilter(int datasetTypeId, String nameContains) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<EmfDataset> datasets;
         
         try {
             if (nameContains == null || nameContains.trim().length() == 0 || nameContains.trim().equals("*"))
-                datasets = dao.getDatasets(session, datasetTypeId);
+                datasets = dao.getDatasets(entityManager, datasetTypeId);
             else
-                datasets = dao.getDatasetsWithFilter(session, datasetTypeId, nameContains);
+                datasets = dao.getDatasetsWithFilter(entityManager, datasetTypeId, nameContains);
 
             return datasets.toArray(new EmfDataset[0]);
         } catch (RuntimeException e) {
             LOG.error("Could not get all Datasets for dataset type " + datasetTypeId, e);
             throw new EmfException("Could not get all Datasets for dataset type " + datasetTypeId);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized EmfDataset[] getDatasets(int datasetTypeId, String nameContaining) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List datasets = dao.getDatasets(session, datasetTypeId, nameContaining);
+            List datasets = dao.getDatasets(entityManager, datasetTypeId, nameContaining);
 
             return (EmfDataset[]) datasets.toArray(new EmfDataset[datasets.size()]);
         } catch (RuntimeException e) {
             LOG.error("Could not get all Datasets for dataset type " + datasetTypeId, e);
             throw new EmfException("Could not get all Datasets for dataset type " + datasetTypeId);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized int getNumOfDatasets(String nameContains, int userId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             if (nameContains == null || nameContains.trim().length() == 0)
-                return dao.getNumOfDatasets(userId, session);
+                return dao.getNumOfDatasets(userId, entityManager);
             
-            return dao.getNumOfDatasets(session, nameContains, userId);
+            return dao.getNumOfDatasets(entityManager, nameContains, userId);
         } catch (RuntimeException e) {
             LOG.error("Could not get all Datasets", e);
             throw new EmfException("Could not get all Datasets");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized int getNumOfDatasets(int datasetTypeId, String nameContains) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             if (nameContains == null || nameContains.trim().length() == 0)
-                return dao.getNumOfDatasets(session, datasetTypeId);
+                return dao.getNumOfDatasets(entityManager, datasetTypeId);
             
-            return dao.getNumOfDatasets(session, datasetTypeId, nameContains);
+            return dao.getNumOfDatasets(entityManager, datasetTypeId, nameContains);
         } catch (RuntimeException e) {
             LOG.error("Could not get all Datasets for dataset type " + datasetTypeId, e);
             throw new EmfException("Could not get all Datasets for dataset type " + datasetTypeId);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -389,7 +387,7 @@ public class DataServiceImpl implements DataService {
     }
 
     private EmfDataset[] getRemovableDatasets(EmfDataset[] datasets, User owner, DeleteType delType) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         DbServer dbServer = dbServerFactory.getDbServer();
         List<EmfDataset> removables = new ArrayList<EmfDataset>();
         String nonRemovables = "";
@@ -406,7 +404,7 @@ public class DataServiceImpl implements DataService {
         
         if (removables.size() < len) {
             String errMsg = "You are not the creator of dataset(s): " + nonRemovables;
-            dao.setStatus(owner.getUsername(), errMsg, "Delete Dataset", session);
+            dao.setStatus(owner.getUsername(), errMsg, "Delete Dataset", entityManager);
         }
         
         if (removables.size() == 0) return new EmfDataset[0];
@@ -420,19 +418,19 @@ public class DataServiceImpl implements DataService {
         List<Integer> ids = new ArrayList<Integer>();
         
         try {
-            ids = getNotRefdDatasetIds(owner, session, dbServer, dsIDs, delType); // JIZHEN-SECTOR
+            ids = getNotRefdDatasetIds(owner, entityManager, dbServer, dsIDs, delType); // JIZHEN-SECTOR
         } catch (Exception e) {
             LOG.error("Error checking dataset usage: ", e);
         } 
             
         try {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
             closeDB(dbServer);
         } catch (EmfException e) {
             LOG.error("Could not close db server: ", e);
         } catch (HibernateException e) {
-            LOG.error("Could not close hibernate session: ", e);
+            LOG.error("Could not close hibernate entityManager: ", e);
         }
         
         if (ids == null || ids.size() == 0)
@@ -447,28 +445,28 @@ public class DataServiceImpl implements DataService {
         return list.toArray(new EmfDataset[0]);
     }
 
-    private List<Integer> getNotRefdDatasetIds(User owner, Session session, DbServer dbServer, int[] dsIDs, 
+    private List<Integer> getNotRefdDatasetIds(User owner, EntityManager entityManager, DbServer dbServer, int[] dsIDs, 
             DeleteType delType) throws Exception {  //JIZHEN-SECTOR
         List<Integer> ids;
-        ids = dao.notUsedByCases(dsIDs, owner, session);
+        ids = dao.notUsedByCases(dsIDs, owner, entityManager);
         
         if (delType != DeleteType.CONTROL_STRATEGY)
-            ids = dao.notUsedByStrategies(EmfArrays.convert(ids), owner, session);
+            ids = dao.notUsedByStrategies(EmfArrays.convert(ids), owner, entityManager);
         
         if (delType != DeleteType.CONTROL_PROGRAM)
-            ids = dao.notUsedByControlPrograms(EmfArrays.convert(ids), owner, session);
+            ids = dao.notUsedByControlPrograms(EmfArrays.convert(ids), owner, entityManager);
         
         if (delType != DeleteType.SECTOR_SCENARIO)
-            ids = dao.notUsedBySectorScnarios(EmfArrays.convert(ids), owner, session);
+            ids = dao.notUsedBySectorScnarios(EmfArrays.convert(ids), owner, entityManager);
         
         if (delType != DeleteType.FAST)
-            ids = dao.notUsedByFast(EmfArrays.convert(ids), owner, dbServer, session);
+            ids = dao.notUsedByFast(EmfArrays.convert(ids), owner, dbServer, entityManager);
         
         if (delType != DeleteType.TEMPORAL_ALLOCATION)
-            ids = dao.notUsedByTemporalAllocations(EmfArrays.convert(ids), owner, session);
+            ids = dao.notUsedByTemporalAllocations(EmfArrays.convert(ids), owner, entityManager);
         
         if (delType != DeleteType.MODULE)
-            ids = dao.notUsedByModules(EmfArrays.convert(ids), owner, session);
+            ids = dao.notUsedByModules(EmfArrays.convert(ids), owner, entityManager);
         
         return ids;
     }
@@ -481,35 +479,35 @@ public class DataServiceImpl implements DataService {
     }
 
     private synchronized void checkCase(int[] datasetIDs) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            dao.checkIfUsedByCases(datasetIDs, session);
+            dao.checkIfUsedByCases(datasetIDs, entityManager);
         } catch (Exception ex) {
             LOG.error("Error checking case.", ex);
             throw new EmfException(ex.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private synchronized void checkControlStrategy(int[] datasetIDs) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            dao.checkIfUsedByStrategies(datasetIDs, session);
+            dao.checkIfUsedByStrategies(datasetIDs, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private synchronized void checkControlProgram(int[] datasetIDs) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            dao.checkIfUsedByControlPrograms(datasetIDs, session);
+            dao.checkIfUsedByControlPrograms(datasetIDs, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -532,41 +530,41 @@ public class DataServiceImpl implements DataService {
     }
 
     public Version obtainedLockOnVersion(User user, int id) throws EmfException {
-        Session session = this.sessionFactory.getSession();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
 
         try {
-            return dao.obtainLockOnVersion(user, id, session);
+            return dao.obtainLockOnVersion(user, id, entityManager);
         } catch (Exception e) {
             throw new EmfException(e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public void updateVersionNReleaseLock(Version locked) throws EmfException {
-        Session session = this.sessionFactory.getSession();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
 
         try {
-            dao.updateVersionNReleaseLock(locked, session);
+            dao.updateVersionNReleaseLock(locked, entityManager);
         } catch (Exception e) {
             throw new EmfException(e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
 
     }
 
     public void checkIfDeletable(User user, int datasetID) throws EmfException {
-        Session session = this.sessionFactory.getSession();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
 
         try {
-            dao.checkIfUsedByCases(new int[] { datasetID }, session);
-            dao.checkIfUsedByStrategies(new int[] { datasetID }, session);
-            dao.checkIfUsedByControlPrograms(new int[] { datasetID }, session);
+            dao.checkIfUsedByCases(new int[] { datasetID }, entityManager);
+            dao.checkIfUsedByStrategies(new int[] { datasetID }, entityManager);
+            dao.checkIfUsedByControlPrograms(new int[] { datasetID }, entityManager);
         } catch (Exception e) {
             throw new EmfException(e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -575,16 +573,16 @@ public class DataServiceImpl implements DataService {
     }
     
     public void purgeDeletedDatasets(User user, DeleteType delType) throws EmfException {
-        Session session = this.sessionFactory.getSession();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         DbServer dbServer = DbServerFactory.get().getDbServer();
 
         try {
             if (user.getUsername().equals("admin") && user.isAdmin())
-                dao.removeEmptyDatasets(user, dbServer, session);
+                dao.removeEmptyDatasets(user, dbServer, entityManager);
 
-            List<EmfDataset> list = dao.deletedDatasets(user, session);
+            List<EmfDataset> list = dao.deletedDatasets(user, entityManager);
             EmfDataset[] toDelete = getRemovableDatasets(list.toArray(new EmfDataset[0]), user, delType);
-            dao.deleteDatasets(toDelete, dbServer, session);
+            dao.deleteDatasets(toDelete, dbServer, entityManager);
         } catch (Exception e) {
             LOG.error("Error purging deleted datasets.", e);
             throw new EmfException(e.getMessage());
@@ -592,8 +590,8 @@ public class DataServiceImpl implements DataService {
             LOG.error("Error purging deleted datasets.", t);
             throw new EmfException(t.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
             
             closeDB(dbServer);
         }
@@ -609,14 +607,14 @@ public class DataServiceImpl implements DataService {
     }
 
     public int getNumOfDeletedDatasets(User user) throws EmfException {
-        Session session = this.sessionFactory.getSession();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
 
         try {
-            return dao.deletedDatasets(user, session).size();
+            return dao.deletedDatasets(user, entityManager).size();
         } catch (Exception e) {
             throw new EmfException(e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -696,19 +694,19 @@ public class DataServiceImpl implements DataService {
     public synchronized void appendData(User user, int srcDSid, int srcDSVersion, String filter, int targetDSid,
             int targetDSVersion, DoubleValue targetStartLineNumber) throws EmfException {
         DbServer dbServer = dbServerFactory.getDbServer();
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
             Datasource datasource = dbServer.getEmissionsDatasource();
-            Version srcVersion = dao.getVersion(session, srcDSid, srcDSVersion);
-            EmfDataset srcDS = dao.getDataset(session, srcDSid);
+            Version srcVersion = dao.getVersion(entityManager, srcDSid, srcDSVersion);
+            EmfDataset srcDS = dao.getDataset(entityManager, srcDSid);
             InternalSource[] srcSources = srcDS.getInternalSources();
-            EmfDataset targetDS = dao.getDataset(session, targetDSid);
+            EmfDataset targetDS = dao.getDataset(entityManager, targetDSid);
             InternalSource[] targetSources = targetDS.getInternalSources();
             
-            EmfDataset locked = dao.obtainLocked(user, targetDS, session);
+            EmfDataset locked = dao.obtainLocked(user, targetDS, entityManager);
             locked.setModifiedDateTime(new Date());
-            dao.update(locked, session);
+            dao.update(locked, entityManager);
 
             DataModifier dataModifier = datasource.dataModifier();
 
@@ -742,8 +740,8 @@ public class DataServiceImpl implements DataService {
                             dataModifier);
                 }
             }
-            //dao.releaseLocked(user, locked, session);
-            Version tarVersion = dao.getVersion(session, targetDSid, targetDSVersion);
+            //dao.releaseLocked(user, locked, entityManager);
+            Version tarVersion = dao.getVersion(entityManager, targetDSid, targetDSVersion);
             Version lockedVersion = obtainedLockOnVersion(user, tarVersion.getId());
             
             lockedVersion.setLastModifiedDate(new Date());
@@ -751,7 +749,7 @@ public class DataServiceImpl implements DataService {
             lockedVersion.setNumberRecords(num);
             updateVersionNReleaseLock(lockedVersion);
             
-            dao.releaseLocked(user, locked, session);
+            dao.releaseLocked(user, locked, entityManager);
             if (DebugLevels.DEBUG_17()) {
                 LOG.warn("Update version : "+ lockedVersion.getName());
                 LOG.warn("Table name : "+ datasource.getName() + "." + targetSources[0].getTable());
@@ -764,7 +762,7 @@ public class DataServiceImpl implements DataService {
             throw new EmfException("Could not query table: " + e.getMessage());
         } finally {
             closeDB(dbServer);
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -949,13 +947,13 @@ public class DataServiceImpl implements DataService {
 
     public boolean checkTableDefinitions(int srcDSid, int targetDSid) throws EmfException {
         DbServer dbServer = dbServerFactory.getDbServer();
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
             Datasource datasource = dbServer.getEmissionsDatasource();
-            EmfDataset srcDS = dao.getDataset(session, srcDSid);
+            EmfDataset srcDS = dao.getDataset(entityManager, srcDSid);
             InternalSource[] srcSources = srcDS.getInternalSources();
-            EmfDataset targetDS = dao.getDataset(session, targetDSid);
+            EmfDataset targetDS = dao.getDataset(entityManager, targetDSid);
             InternalSource[] targetSources = targetDS.getInternalSources();
 
             DataModifier dataModifier = datasource.dataModifier();
@@ -986,7 +984,7 @@ public class DataServiceImpl implements DataService {
             throw new EmfException("Could not query table: " + e.getMessage());
         } finally {
             closeDB(dbServer);
-            session.close();
+            entityManager.close();
         }
 
     }
@@ -1310,10 +1308,10 @@ public class DataServiceImpl implements DataService {
     }
 
     public synchronized void copyDataset(int datasetId, Version version, User user) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            EmfDataset dataset = dao.getDataset(session, datasetId);
+            EmfDataset dataset = dao.getDataset(entityManager, datasetId);
             Date time = new Date();
             DatasetType type = dataset.getDatasetType();
 
@@ -1343,15 +1341,15 @@ public class DataServiceImpl implements DataService {
             copied.setAccessedDateTime(time);
             copied.setModifiedDateTime(time);
 
-            session.clear();
-            dao.add(copied, session);
-            EmfDataset loaded = dao.getDataset(session, copied.getName());
-            EmfDataset locked = dao.obtainLocked(user, loaded, session);
+            entityManager.clear();
+            dao.add(copied, entityManager);
+            EmfDataset loaded = dao.getDataset(entityManager, copied.getName());
+            EmfDataset locked = dao.obtainLocked(user, loaded, entityManager);
 
             if (locked == null)
                 throw new EmfException("Errror copying dataset: can't obtain lock to update copied dataset.");
 
-            copyDatasetTable(dataset, version, loaded, user, session);
+            copyDatasetTable(dataset, version, loaded, user, entityManager);
 
             Version defaultVersion = new Version(0);
             defaultVersion.setName("Initial Version");
@@ -1362,20 +1360,20 @@ public class DataServiceImpl implements DataService {
             defaultVersion.setNumberRecords(version.getNumberRecords());
             defaultVersion.setFinalVersion(true);
             defaultVersion.setDescription("");
-            session.clear();
-            dao.add(defaultVersion, session);
+            entityManager.clear();
+            dao.add(defaultVersion, entityManager);
         } catch (Exception e) {
             String error = "Error copying dataset...";
             String msg = e.getMessage();
             LOG.error(error, e);
             throw new EmfException(msg == null ? error : msg.substring(msg.length() > 150 ? msg.length() - 150 : 0));
         } finally {
-            session.close();
+            entityManager.close();
         }
 
     }
 
-    private void copyDatasetTable(EmfDataset dataset, Version version, EmfDataset copied, User user, Session session)
+    private void copyDatasetTable(EmfDataset dataset, Version version, EmfDataset copied, User user, EntityManager entityManager)
             throws Exception {
         InternalSource[] sources = dataset.getInternalSources();
 
@@ -1417,8 +1415,8 @@ public class DataServiceImpl implements DataService {
             src.setSource(dataset.getName() + " version: " + version.getVersion());
             src.setTable(newTable);
             copied.setInternalSources(new InternalSource[] { src });
-            dao.update(copied, session);
-            dao.releaseLocked(user, copied, session);
+            dao.update(copied, entityManager);
+            dao.releaseLocked(user, copied, entityManager);
         }
         
         if (sources.length > 1) {
@@ -1434,8 +1432,8 @@ public class DataServiceImpl implements DataService {
             }
             
             copied.setInternalSources(sources);
-            dao.update(copied, session);
-            dao.releaseLocked(user, copied, session);
+            dao.update(copied, entityManager);
+            dao.releaseLocked(user, copied, entityManager);
         }
     }
 
@@ -1471,10 +1469,10 @@ public class DataServiceImpl implements DataService {
     }
 
     private String getUniqueNewName(String name) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            List<String> names = dao.getDatasetNamesStartWith(name, session);
+            List<String> names = dao.getDatasetNamesStartWith(name, entityManager);
 
             if (names == null || names.size() == 0)
                 return name;
@@ -1484,7 +1482,7 @@ public class DataServiceImpl implements DataService {
             LOG.error("Could not get all dataset names.\n", e);
             throw new EmfException(e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -1515,21 +1513,21 @@ public class DataServiceImpl implements DataService {
     }
 
     public void addExternalSources(String folder, String[] files, int datasetId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         EmfDataset ds = null;
 
         try {
-            ds = dao.getDataset(session, datasetId);
+            ds = dao.getDataset(entityManager, datasetId);
             ExternalSource[] srcs = reconstructExtSrcs(folder, files, datasetId);
-            dao.addExternalSources(srcs, session);
+            dao.addExternalSources(srcs, entityManager);
         } catch (Exception e) {
             LOG.error("Could not add all external sources for dataset "
                     + (ds == null ? "(id=" + datasetId + ")." : ds.getName() + "."), e);
             throw new EmfException("Could not add all external sources for dataset "
                     + (ds == null ? "(id=" + datasetId + ")." : ds.getName() + "."));
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
@@ -1561,20 +1559,20 @@ public class DataServiceImpl implements DataService {
     }
 
     public ExternalSource[] getExternalSources(int datasetId, int limit, String filter) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         EmfDataset ds = null;
 
         try {
-            ds = dao.getDataset(session, datasetId);
-            return dao.getExternalSrcs(datasetId, limit, filter, session);
+            ds = dao.getDataset(entityManager, datasetId);
+            return dao.getExternalSrcs(datasetId, limit, filter, entityManager);
         } catch (Exception e) {
             LOG.error("Could not get all external sources for dataset "
                     + (ds == null ? "(id=" + datasetId + ")." : ds.getName() + "."), e);
             throw new EmfException("Could not get all external sources for dataset "
                     + (ds == null ? "(id=" + datasetId + ")." : ds.getName() + "."));
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
     
@@ -1583,29 +1581,29 @@ public class DataServiceImpl implements DataService {
     }
 
     public boolean isExternal(int datasetId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         EmfDataset ds = null;
 
         try {
-            ds = dao.getDataset(session, datasetId);
-            return dao.isExternal(datasetId, session);
+            ds = dao.getDataset(entityManager, datasetId);
+            return dao.isExternal(datasetId, entityManager);
         } catch (Exception e) {
             LOG.error("Could not determine externality for dataset "
                     + (ds == null ? "(id=" + datasetId + ")." : ds.getName() + "."), e);
             throw new EmfException("Could not determine externality for dataset "
                     + (ds == null ? "(id=" + datasetId + ")." : ds.getName() + "."));
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized void updateExternalSources(int datasetId, String newDir) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         EmfDataset ds = null;
 
         try {
-            ds = dao.getDataset(session, datasetId);
+            ds = dao.getDataset(entityManager, datasetId);
 
             if (ds == null)
                 throw new EmfException("Dataset (id=" + datasetId + ") doesn't exist.");
@@ -1613,7 +1611,7 @@ public class DataServiceImpl implements DataService {
             if (!ds.getDatasetType().isExternal())
                 throw new EmfException("Dataset (" + ds.getName() + ") type is not external.");
 
-            ExternalSource[] srcs = dao.getExternalSrcs(datasetId, -1, null, session);
+            ExternalSource[] srcs = dao.getExternalSrcs(datasetId, -1, null, entityManager);
             
             if (srcs == null || srcs.length == 0)
                 throw new EmfException("Dataset (" + ds.getName() + ") has no sources to update.");
@@ -1644,15 +1642,15 @@ public class DataServiceImpl implements DataService {
 
             // NOTE: assume this is locked by editing the dataset; need to take care if other porcesses update
             // external sources at the same time
-            dao.updateExternalSrcsWithoutLocking(srcs, session);
+            dao.updateExternalSrcsWithoutLocking(srcs, entityManager);
         } catch (Exception e) {
             LOG.error("Could not update sources for dataset "
                     + (ds == null ? "(id=" + datasetId + ")." : ds.getName() + "."), e);
             throw new EmfException("Could not update sources for dataset "
                     + (ds == null ? "(id=" + datasetId + ")." : ds.getName() + "."));
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
     
@@ -1722,16 +1720,16 @@ public class DataServiceImpl implements DataService {
     
     public synchronized Integer[] getNumOfRecords (int datasetId, Version[] versions, String tableName) throws EmfException {
         DbServer dbServer = dbServerFactory.getDbServer();
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             EmfDataset dataset = getDataset(datasetId);
-            return dao.getDatasetRecordsNumber(dbServer, session, dataset, versions, tableName);
+            return dao.getDatasetRecordsNumber(dbServer, entityManager, dataset, versions, tableName);
         } catch (Exception e) {
             LOG.error("Error: ", e);
             throw new EmfException(e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
             closeDB(dbServer);
         }
     }
@@ -1739,66 +1737,66 @@ public class DataServiceImpl implements DataService {
     public String[] getTableColumnDistinctValues(int datasetId, int datasetVersion, String columnName, String whereFilter,
             String sortOrder) throws EmfException {
         DbServer dbServer = dbServerFactory.getDbServer();
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             return dao.getTableColumnDistinctValues(datasetId, datasetVersion, 
                     columnName, whereFilter, 
-                    sortOrder, session, 
+                    sortOrder, entityManager, 
                     dbServer);
         } catch (Exception e) {
             LOG.error("Error: ", e);
             throw new EmfException(e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
             closeDB(dbServer);
         }
     }
 
     public EmfDataset[] findDatasets(EmfDataset dataset, String qaStep, String qaArgument, 
             int[] usedByCasesID, String dataValueFilter, boolean unconditional, int userId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         
         try {
             return dao.findSimilarDatasets(dataset, qaStep, qaArgument, usedByCasesID, 
-                    dataValueFilter, unconditional, userId, session).toArray(new EmfDataset[0]);
+                    dataValueFilter, unconditional, userId, entityManager).toArray(new EmfDataset[0]);
         } catch (Exception e) {
             LOG.error("Could not find similar datasets.", e);
             throw new EmfException("Could not find similar datasets: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public void updateVersion(Version locked) throws EmfException {
-        Session session = this.sessionFactory.getSession();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
 
         try {
-            dao.updateVersion(locked, session);
+            dao.updateVersion(locked, entityManager);
         } catch (Exception e) {
             throw new EmfException(e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
     public boolean checkBizzareCharInColumn(int datasetId, int version, String colName) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         DbServer dbServer = dbServerFactory.getDbServer();
         
         EmfDataset ds = null;
 
         try {
-            ds = dao.getDataset(session, datasetId);
-            return dao.checkBizzareCharInColumn(dbServer, session, datasetId, version, colName);
+            ds = dao.getDataset(entityManager, datasetId);
+            return dao.checkBizzareCharInColumn(dbServer, entityManager, datasetId, version, colName);
         } catch (Exception e) {
             LOG.error("Could not checkBizzareChar for dataset "
                     + (ds == null ? "(id=" + datasetId + ")." : ds.getName() + "."), e);
             throw new EmfException("Could not checkBizzareChar for dataset "
                     + (ds == null ? "(id=" + datasetId + ")." : ds.getName() + "."));
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
     

@@ -1,10 +1,11 @@
 package gov.epa.emissions.framework.tasks;
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+
+import javax.persistence.EntityManagerFactory;
 
 
 public class CaseJobSubmitter implements TaskSubmitter {
@@ -25,14 +26,14 @@ public class CaseJobSubmitter implements TaskSubmitter {
 
     protected ArrayList<Runnable> caseJobTasks = null;
     
-    private HibernateSessionFactory sessionFactory = null;
+    private EntityManagerFactory entityManagerFactory = null;
 
-    public CaseJobSubmitter(HibernateSessionFactory sessionFactory) {
+    public CaseJobSubmitter(EntityManagerFactory entityManagerFactory) {
         myTag();
         submitterId = svcLabel;
         if (DebugLevels.DEBUG_0()) System.out.println("CaseJobSubmitter myTag called: " + submitterId);
         caseJobTasks = new ArrayList<Runnable>();
-        this.sessionFactory=sessionFactory;
+        this.entityManagerFactory=entityManagerFactory;
     }
 
     public void addTasksToSubmitter(ArrayList<Runnable> tasksForSubmitter) {
@@ -91,7 +92,7 @@ public class CaseJobSubmitter implements TaskSubmitter {
 
         //FIXME:  FIND OUT WHY THIS METHOD IS THROWING AN UNHANDLED EXCEPTION
         try {
-            TaskManagerFactory.getCaseJobTaskManager(sessionFactory).addTasks(tasks);
+            TaskManagerFactory.getCaseJobTaskManager(entityManagerFactory).addTasks(tasks);
         } catch (EmfException e) {
             e.printStackTrace();
         }

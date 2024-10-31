@@ -7,7 +7,6 @@ import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.basic.FileDownload;
 import gov.epa.emissions.framework.services.basic.FileDownloadDAO;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
@@ -21,7 +20,6 @@ import gov.epa.emissions.framework.services.cost.EquationTypeVariable;
 import gov.epa.emissions.framework.services.cost.data.ControlTechnology;
 import gov.epa.emissions.framework.services.cost.data.EfficiencyRecord;
 import gov.epa.emissions.framework.services.cost.data.SumEffRec;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -35,8 +33,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
-import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -44,12 +42,12 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.Font.FontFamily;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Jpeg;
 import com.itextpdf.text.List;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Font.FontFamily;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -115,20 +113,20 @@ public class ControlMeasuresPDFReport implements Runnable {
 
     private DbServerFactory dbServerFactory;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private DbServer dbServer;
 
     private SumEffRec[] aggEfficiencyRecords;
     
     public ControlMeasuresPDFReport(User user, int[] controlMeasureIds, 
-            ControlMeasureService service, HibernateSessionFactory sessionFactory, 
+            ControlMeasureService service, EntityManagerFactory entityManagerFactory, 
             DbServerFactory dbServerFactory) {
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.user = user;
         this.controlMeasureIds = controlMeasureIds;
         this.service = service;
-        this.statusDao = new StatusDAO(sessionFactory);
+        this.statusDao = new StatusDAO(entityManagerFactory);
         this.fileDownloadDao = new FileDownloadDAO();
         this.aggregateEfficiencyRecordDao = new AggregateEfficiencyRecordDAO();
         this.dbServerFactory = dbServerFactory;
@@ -140,14 +138,14 @@ public class ControlMeasuresPDFReport implements Runnable {
         String separator = File.separator; 
   
         String exportDir = "";
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            exportDir = fileDownloadDao.getDownloadExportFolder(session) + "/" + user.getUsername();
+            exportDir = fileDownloadDao.getDownloadExportFolder(entityManager) + "/" + user.getUsername();
         } catch (EmfException e) {
             // NOTE Auto-generated catch block
             e.printStackTrace();
         } finally {
-            session.close();
+            entityManager.close();
         }
 
         File tempDirFile = new File(exportDir);
@@ -394,7 +392,7 @@ public class ControlMeasuresPDFReport implements Runnable {
     private void createSCCsSection(Document document) throws DocumentException, EmfException {
 
         this.createSectionTitle(document, "Affected SCCs");
-//        Scc[] sccs = this.getSCCs(session, controlMeasure.getId());
+//        Scc[] sccs = this.getSCCs(entityManager, controlMeasure.getId());
         if (sccs == null || sccs.length == 0) {
             this.createEmptySectionContent(document);
         } else {
@@ -645,7 +643,7 @@ public class ControlMeasuresPDFReport implements Runnable {
 
         this.createSectionTitle(document, "Affected Pollutants, and their Control Efficiencies and Costs");
 
-//        EfficiencyRecord[] efficiencyRecords = this.getEfficiencyRecords(session, controlMeasure.getId());
+//        EfficiencyRecord[] efficiencyRecords = this.getEfficiencyRecords(entityManager, controlMeasure.getId());
         if (efficiencyRecords == null || efficiencyRecords.length == 0) {
             this.createEmptySectionContent(document);
         } else {
@@ -1151,7 +1149,7 @@ public class ControlMeasuresPDFReport implements Runnable {
 
         this.createSectionTitle(document, "Affected Pollutants, and their Control Efficiencies and Costs");
 
-//        EfficiencyRecord[] efficiencyRecords = this.getEfficiencyRecords(session, controlMeasure.getId());
+//        EfficiencyRecord[] efficiencyRecords = this.getEfficiencyRecords(entityManager, controlMeasure.getId());
         if (aggEfficiencyRecords == null || aggEfficiencyRecords.length == 0) {
             this.createEmptySectionContent(document);
         } else {
@@ -1757,14 +1755,14 @@ public class ControlMeasuresPDFReport implements Runnable {
     }
     
     public void run() {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             dbServer = dbServerFactory.getDbServer();
             
             setStatus("Started generating Control Measure Control Measure AT-A-GLANCE PDF Report.  This could take several minutes to finish.");
             generate();
             //lets add a filedownload item for the user, so they can download the file
-            fileDownloadDao.add(user, new Date(), this.outputFile.getName(), "PDF", true, session);
+            fileDownloadDao.add(user, new Date(), this.outputFile.getName(), "PDF", true, entityManager);
 
             
             setStatus("Completed generating Control Measure Control Measure AT-A-GLANCE PDF Report.  Report was exported to " + outputFile.getAbsolutePath());
@@ -1774,7 +1772,7 @@ public class ControlMeasuresPDFReport implements Runnable {
             e.printStackTrace();
         } finally {
             try {
-                session.close();
+                entityManager.close();
                 if (dbServer != null && dbServer.isConnected())
                     dbServer.disconnect();
             } catch (Exception e) {

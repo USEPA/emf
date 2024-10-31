@@ -2,6 +2,17 @@ package gov.epa.emissions.framework.services.casemanagement;
 
 import java.io.Serializable;
 
+import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
+import javax.persistence.SqlResultSetMapping;
+
+@SqlResultSetMapping(
+        name = "IntegerHolderMapping",
+        classes = @ConstructorResult(
+                targetClass = IntegerHolder.class,
+                columns = {
+                    @ColumnResult(name = "id", type = Integer.class),
+                    @ColumnResult(name = "userId", type = Integer.class)}))
 public class IntegerHolder implements Serializable {
     private int id;
     

@@ -13,7 +13,8 @@ import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.Date;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 
@@ -25,7 +26,7 @@ public class RunQAStepTask {
 
     private StatusDAO statusDao;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private DbServerFactory dbServerFactory;
 
@@ -37,22 +38,22 @@ public class RunQAStepTask {
     private boolean verboseStatusLogging = true;
 
     public RunQAStepTask(QAStep[] qaStep, User user, 
-            DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory,
+            DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory,
             String exportDirectory, boolean verboseStatusLogging, String[] exportFiles) {
         this(qaStep, user, 
-            dbServerFactory, sessionFactory);
+            dbServerFactory, entityManagerFactory);
         this.exportDirectory = exportDirectory;
         this.exportFiles = exportFiles;
         this.verboseStatusLogging = verboseStatusLogging;
     }
 
     public RunQAStepTask(QAStep[] qaStep, User user, 
-            DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory) {
+            DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory) {
         this.qasteps = qaStep;
         this.user = user;
         this.dbServerFactory = dbServerFactory;
-        this.sessionFactory = sessionFactory;
-        this.statusDao = new StatusDAO(sessionFactory);
+        this.entityManagerFactory = entityManagerFactory;
+        this.statusDao = new StatusDAO(entityManagerFactory);
         this.threadPool = createThreadPool();
     }
 
@@ -102,7 +103,7 @@ public class RunQAStepTask {
         if (exportDirectory != null && exportDirectory.trim().length() != 0) {
             startTime = System.currentTimeMillis();
             ExportQAStep exportQATask = new ExportQAStep(qaStep, dbServerFactory, 
-                    user, sessionFactory, 
+                    user, entityManagerFactory, 
                     threadPool, verboseStatusLogging);
             exportQATask.export(exportDirectory, exportFile, true);
             endTime = System.currentTimeMillis();
@@ -122,7 +123,7 @@ public class RunQAStepTask {
 
     private QAProgramRunner qaProgramRunner(QAStep step, DbServer dbServer) throws EmfException {
         RunQAProgramFactory factory = new RunQAProgramFactory(step, dbServer, 
-                sessionFactory);
+                entityManagerFactory);
         try {
             return factory.create();
         } catch (EmfException e) {
@@ -156,21 +157,21 @@ public class RunQAStepTask {
     }
 
     private String versionName(QAStep qastep) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return new Versions().get(qastep.getDatasetId(), qastep.getVersion(), session).getName();
+            return new Versions().get(qastep.getDatasetId(), qastep.getVersion(), entityManager).getName();
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private String datasetName(QAStep qastep) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             DatasetDAO dao = new DatasetDAO();
-            return dao.getDataset(session, qastep.getDatasetId()).getName();
+            return dao.getDataset(entityManager, qastep.getDatasetId()).getName();
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 }

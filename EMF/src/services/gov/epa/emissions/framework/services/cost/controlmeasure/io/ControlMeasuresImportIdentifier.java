@@ -5,25 +5,27 @@ import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.commons.io.importer.ImporterException;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.io.File;
 import java.io.IOException;
+
+import javax.persistence.EntityManagerFactory;
 
 public class ControlMeasuresImportIdentifier {
 
     private File[] files;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private User user;
     private DbServer dbServer;
 
-    public ControlMeasuresImportIdentifier(File[] files, User user, HibernateSessionFactory sessionFactory, DbServer dbServer) {
+    public ControlMeasuresImportIdentifier(File[] files, User user, EntityManagerFactory entityManagerFactory, DbServer dbServer) {
         this.files = files;
         this.user = user;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.dbServer = dbServer;
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     public CMImporters cmImporters() throws EmfException {
@@ -31,7 +33,7 @@ public class ControlMeasuresImportIdentifier {
         for (int i = 0; i < files.length; i++) {
             records[i] = firstRecord(files[i]);
         }
-        return new CMImporters(files, records, user, sessionFactory, dbServer);
+        return new CMImporters(files, records, user, entityManagerFactory, dbServer);
 
     }
 

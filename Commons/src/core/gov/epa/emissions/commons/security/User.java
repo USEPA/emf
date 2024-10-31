@@ -10,6 +10,9 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * The User value object encapsulates all of the EMF user data The User object is serialized between the server and
  * client using Apache Axis Web Services (SOAP/HTTP and XML)
@@ -82,6 +85,7 @@ public class User implements Serializable, Lockable {
         this.name = name;
     }
 
+    @JsonIgnore
     public DatasetType[] getExcludedDatasetTypes() {
         return excludedDatasetTypes;
     }
@@ -90,6 +94,7 @@ public class User implements Serializable, Lockable {
         this.excludedDatasetTypes = datasetTypes;
     }
     
+    @JsonIgnore
     public UserFeature[] getExcludedUserFeatures() {
         return excludedUserFeatures;
     }
@@ -341,6 +346,7 @@ public class User implements Serializable, Lockable {
 
     }
 
+    @JsonIgnore
     public String getEncryptedPassword() {
         return encryptedPassword;
     }
@@ -373,7 +379,13 @@ public class User implements Serializable, Lockable {
         return lock.isLocked(owner);
     }
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     public boolean isLocked() {
+        return lock.isLocked();
+    }
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    public boolean getLocked() {
         return lock.isLocked();
     }
 

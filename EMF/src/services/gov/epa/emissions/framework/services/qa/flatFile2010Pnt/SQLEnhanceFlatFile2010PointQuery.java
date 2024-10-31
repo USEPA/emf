@@ -1,5 +1,22 @@
 package gov.epa.emissions.framework.services.qa.flatFile2010Pnt;
 
+import gov.epa.emissions.commons.data.Dataset;
+import gov.epa.emissions.commons.data.InternalSource;
+import gov.epa.emissions.commons.db.Datasource;
+import gov.epa.emissions.commons.db.version.Version;
+import gov.epa.emissions.commons.io.Column;
+import gov.epa.emissions.commons.io.VersionedQuery;
+import gov.epa.emissions.commons.io.importer.DataTable;
+import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.basic.Status;
+import gov.epa.emissions.framework.services.basic.StatusDAO;
+import gov.epa.emissions.framework.services.data.DatasetVersion;
+import gov.epa.emissions.framework.services.data.EmfDataset;
+import gov.epa.emissions.framework.services.data.QAStep;
+import gov.epa.emissions.framework.services.qa.SQLQAProgramQuery;
+import gov.epa.emissions.framework.services.qa.SQLQueryParser;
+import gov.epa.emissions.framework.tasks.DebugLevels;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -9,24 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import gov.epa.emissions.commons.data.Dataset;
-import gov.epa.emissions.commons.data.InternalSource;
-import gov.epa.emissions.commons.db.Datasource;
-import gov.epa.emissions.commons.db.version.Version;
-import gov.epa.emissions.commons.io.Column;
-import gov.epa.emissions.commons.io.VersionedQuery;
-import gov.epa.emissions.commons.io.importer.DataTable;
-import gov.epa.emissions.commons.security.User;
-import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.basic.Status;
-import gov.epa.emissions.framework.services.basic.StatusDAO;
-import gov.epa.emissions.framework.services.data.DatasetVersion;
-import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.data.QAStep;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
-import gov.epa.emissions.framework.services.qa.SQLQAProgramQuery;
-import gov.epa.emissions.framework.services.qa.SQLQueryParser;
-import gov.epa.emissions.framework.tasks.DebugLevels;
+import javax.persistence.EntityManagerFactory;
 
 public class SQLEnhanceFlatFile2010PointQuery extends SQLQAProgramQuery {
     
@@ -42,11 +42,11 @@ public class SQLEnhanceFlatFile2010PointQuery extends SQLQAProgramQuery {
     
     private StatusDAO statusDao;
     
-    public SQLEnhanceFlatFile2010PointQuery(HibernateSessionFactory sessionFactory, String emissioDatasourceName,
+    public SQLEnhanceFlatFile2010PointQuery(EntityManagerFactory entityManagerFactory, String emissioDatasourceName,
             String tableName, QAStep qaStep, Datasource datasource) {
-        super(sessionFactory, emissioDatasourceName, tableName, qaStep);
+        super(entityManagerFactory, emissioDatasourceName, tableName, qaStep);
         this.datasource = datasource;
-        this.statusDao = new StatusDAO(sessionFactory);
+        this.statusDao = new StatusDAO(entityManagerFactory);
     }
     
     public String createProgramQuery() throws EmfException, SQLException {
@@ -487,7 +487,7 @@ public class SQLEnhanceFlatFile2010PointQuery extends SQLQAProgramQuery {
         // construct the sql here
         sqlStr += selectClause + fromClause + whereClause + ";";
         
-        SQLQueryParser parser = new SQLQueryParser(sessionFactory, emissionDatasourceName, tableName );
+        SQLQueryParser parser = new SQLQueryParser(entityManagerFactory, emissionDatasourceName, tableName );
         return parser.createTableQuery() + " " + sqlStr;
     }
     

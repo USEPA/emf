@@ -178,7 +178,7 @@ public class ShowHistoryTab extends JPanel implements ShowHistoryTabView, Refres
     }
     
     protected void setupTableModel(JobMessage[] msgs){
-        tableData = new JobMessagesTableData(msgs, session);
+        tableData = new JobMessagesTableData(msgs, session, caseJobs.toArray(new CaseJob[0]));
     }
 
     protected SortCriteria sortCriteria() {

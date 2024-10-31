@@ -15,12 +15,7 @@ import gov.epa.emissions.framework.services.cost.ControlStrategy;
 import gov.epa.emissions.framework.services.cost.ControlStrategyDAO;
 import gov.epa.emissions.framework.services.cost.ControlStrategyInputDataset;
 import gov.epa.emissions.framework.services.cost.StrategyType;
-import gov.epa.emissions.framework.services.cost.controlStrategy.AbstractControlStrategyInventoryOutput;
-import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyResult;
-import gov.epa.emissions.framework.services.cost.controlStrategy.FileFormatFactory;
-import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyResultType;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.sql.ResultSet;
@@ -28,16 +23,17 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Date;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class MergedControlStrategyInventoryOutput extends AbstractControlStrategyInventoryOutput {
 
     public MergedControlStrategyInventoryOutput(User user, ControlStrategy controlStrategy,
             ControlStrategyResult controlStrategyResult, String namePrefix, 
-            HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory) throws Exception {
+            EntityManagerFactory entityManagerFactory, DbServerFactory dbServerFactory) throws Exception {
         super(user, controlStrategy,
                 controlStrategyResult, namePrefix,
-                sessionFactory, dbServerFactory);
+                entityManagerFactory, dbServerFactory);
     }
 
     public void create() throws Exception {
@@ -78,7 +74,7 @@ public class MergedControlStrategyInventoryOutput extends AbstractControlStrateg
                     result.setCompletionTime(new Date());
                     result.setRunStatus("Completed.");
                     saveControlStrategyResult(result);
-                    updateVersion(dataset, dbServer, sessionFactory.getSession(), user);
+                    updateVersion(dataset, dbServer, entityManagerFactory.createEntityManager(), user);
                 }
             }
         } catch (Exception e) {
@@ -279,13 +275,13 @@ public class MergedControlStrategyInventoryOutput extends AbstractControlStrateg
 
     protected StrategyResultType getControlledInventoryStrategyResultType() throws EmfException {
         StrategyResultType strategyResultType = null;
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            strategyResultType = new ControlStrategyDAO().getStrategyResultType(StrategyResultType.controlledInventory, session);
+            strategyResultType = new ControlStrategyDAO().getStrategyResultType(StrategyResultType.controlledInventory, entityManager);
         } catch (RuntimeException e) {
             throw new EmfException("Could not get strategy result type");
         } finally {
-            session.close();
+            entityManager.close();
         }
         return strategyResultType;
     }

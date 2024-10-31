@@ -1,6 +1,5 @@
 package gov.epa.emissions.framework.utils;
 
-import gov.epa.emissions.commons.data.Dataset;
 import gov.epa.emissions.commons.data.Sector;
 import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.security.User;
@@ -10,7 +9,6 @@ import gov.epa.emissions.framework.services.casemanagement.InputName;
 import gov.epa.emissions.framework.services.casemanagement.parameters.CaseParameter;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.GeoRegion;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.util.ArrayList;
@@ -19,7 +17,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class Utils {
 
@@ -429,7 +428,7 @@ public class Utils {
     }
     
     public static void addVersionEntryToVersionsTable(
-            HibernateSessionFactory sessionFactory, 
+            EntityManagerFactory entityManagerFactory, 
             User user, 
             int datasetId,
             int version,
@@ -447,14 +446,14 @@ public class Utils {
         defaultZeroVersion.setFinalVersion(isFinal);
         defaultZeroVersion.setDescription(description);
         
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            new DatasetDAO().add(defaultZeroVersion, session);
+            new DatasetDAO().add(defaultZeroVersion, entityManager);
         } catch (Exception e) {
             throw new EmfException("Could not add version (" + version + "): " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 }

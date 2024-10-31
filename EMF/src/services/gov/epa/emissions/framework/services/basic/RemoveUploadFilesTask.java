@@ -1,32 +1,31 @@
 package gov.epa.emissions.framework.services.basic;
 
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import gov.epa.emissions.framework.services.persistence.JpaEntityManagerFactory;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Date;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
-@Component
-public class RemoveUploadFilesTask {
+public class RemoveUploadFilesTask implements Runnable {
 
     private Log log = LogFactory.getLog(RemoveUploadFilesTask.class);
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
     private int fileHoursToExpire = 12; //remove files older than 12 hours...
 
     public RemoveUploadFilesTask() {
-        this.sessionFactory = HibernateSessionFactory.get();
+        this.entityManagerFactory = JpaEntityManagerFactory.get();;
     }
 
-    @Scheduled(cron="0 0 0/12 * * ?")//kick off task at 12 AM and 12 PM
-    public void removeUploadedFilesTask() {
+    public void run() {
+        log.info("RemoveUploadFilesTask.run() started");
         try {
             File tempDirectoryObj = new File(getTempDirectory() + File.separatorChar + "upload");
 
@@ -44,6 +43,7 @@ public class RemoveUploadFilesTask {
                     @Override
                     public boolean accept(File dir, String name) {
                         //only get files, not directories (really which there shouldn't be any subdirs here)
+                        if (name == null) return false;
                         File userFile = new File(dir, name);
                         if (userFile.isFile() && userFile.lastModified() <= (new Date().getTime() - fileHoursToExpire * 60 * 60 * 1000))
                             userFile.delete();
@@ -67,16 +67,16 @@ public class RemoveUploadFilesTask {
     }
 
     private String getTempDirectory() {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         String tempDirectory = "";
         try {
-            EmfProperty eximTempDir = new EmfPropertiesDAO().getProperty("ImportExportTempDir", session);
+            EmfProperty eximTempDir = new EmfPropertiesDAO().getProperty("ImportExportTempDir", entityManager);
 
             if (eximTempDir != null) {
                 tempDirectory = eximTempDir.getValue();
             }
         } finally {
-            session.close();
+            entityManager.close();
         }
         return tempDirectory;
     }

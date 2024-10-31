@@ -4,9 +4,10 @@ import gov.epa.emissions.commons.Record;
 import gov.epa.emissions.commons.data.Reference;
 import gov.epa.emissions.commons.io.importer.ImporterException;
 import gov.epa.emissions.commons.security.User;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.Map;
+
+import javax.persistence.EntityManagerFactory;
 
 public class CMReferenceRecordReader {
 
@@ -18,10 +19,10 @@ public class CMReferenceRecordReader {
 
     private int errorLimit = 100;
 
-    public CMReferenceRecordReader(CMReferenceFileFormat fileFormat, User user, HibernateSessionFactory sessionFactory) {
+    public CMReferenceRecordReader(CMReferenceFileFormat fileFormat, User user, EntityManagerFactory entityManagerFactory) {
 
         this.fileFormat = fileFormat;
-        this.status = new CMAddImportStatus(user, sessionFactory);
+        this.status = new CMAddImportStatus(user, entityManagerFactory);
     }
 
     public void parse(Map<Integer, Reference> references, Record record, int lineNo) throws ImporterException {

@@ -3,19 +3,20 @@ package gov.epa.emissions.framework.services.qa;
 import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.QAStep;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+
+import javax.persistence.EntityManagerFactory;
 
 public class SQLQAAnnualStateSummariesCrosstabQueryRunner extends SQLQAProgramRunner {
     
     private String emissioDatasourceName;
 
-    public SQLQAAnnualStateSummariesCrosstabQueryRunner(DbServer dbServer, HibernateSessionFactory sessionFactory, QAStep qaStep) {
-        super(dbServer, sessionFactory, qaStep);
+    public SQLQAAnnualStateSummariesCrosstabQueryRunner(DbServer dbServer, EntityManagerFactory entityManagerFactory, QAStep qaStep) {
+        super(dbServer, entityManagerFactory, qaStep);
         this.emissioDatasourceName = dbServer.getEmissionsDatasource().getName();
     }
     
     protected String query(DbServer dbServer, QAStep qaStep, String tableName) throws EmfException {
-        SQLAnnualStateSummariesCrosstabQuery parser = new SQLAnnualStateSummariesCrosstabQuery(sessionFactory, dbServer, emissioDatasourceName, tableName, qaStep);
+        SQLAnnualStateSummariesCrosstabQuery parser = new SQLAnnualStateSummariesCrosstabQuery(entityManagerFactory, dbServer, emissioDatasourceName, tableName, qaStep);
         return parser.createQuery();
     }
     

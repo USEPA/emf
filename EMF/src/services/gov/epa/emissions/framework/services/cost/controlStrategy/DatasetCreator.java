@@ -1,4 +1,4 @@
-package gov.epa.emissions.framework.services.cost.controlStrategy;
+ package gov.epa.emissions.framework.services.cost.controlStrategy;
 
 import gov.epa.emissions.commons.data.Dataset;
 import gov.epa.emissions.commons.data.DatasetType;
@@ -30,7 +30,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class DatasetCreator {
 
@@ -40,7 +41,7 @@ public class DatasetCreator {
 
     // private String outputDatasetName;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private DbServerFactory dbServerFactory;
 
@@ -56,18 +57,18 @@ public class DatasetCreator {
         //
     }
 
-    public DatasetCreator(ControlStrategy controlStrategy, User user, HibernateSessionFactory sessionFactory,
+    public DatasetCreator(ControlStrategy controlStrategy, User user, EntityManagerFactory entityManagerFactory,
             DbServerFactory dbServerFactory, Datasource datasource, Keywords keywordMasterList) {
         // this.datasetNamePrefix = datasetNamePrefix;
         // this.tablePrefix = tablePrefix;
         this.user = user;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.dbServerFactory = dbServerFactory;
         // this.outputDatasetName = getResultDatasetName(strategy.getName());
         this.controlStrategy = controlStrategy;
         this.datasource = datasource;
         this.keywordMasterList = keywordMasterList;// new Keywords(new
-                                                   // DataCommonsServiceImpl(sessionFactory).getKeywords());
+                                                   // DataCommonsServiceImpl(entityManagerFactory).getKeywords());
     }
 
     public EmfDataset addDataset(String datasetNamePrefix, String tablePrefix, EmfDataset inputDataset,
@@ -431,7 +432,7 @@ public class DatasetCreator {
         // this.user.getId() + "" };
         // modifier.insertOneRow(data);
 
-        gov.epa.emissions.framework.utils.Utils.addVersionEntryToVersionsTable(this.sessionFactory, this.user,
+        gov.epa.emissions.framework.utils.Utils.addVersionEntryToVersionsTable(this.entityManagerFactory, this.user,
                 dataset.getId(), 0, "Initial Version", "", true, "");
 
         // Version defaultZeroVersion = new Version(0);
@@ -443,31 +444,31 @@ public class DatasetCreator {
         // // defaultZeroVersion.setNumberRecords(version.getNumberRecords());
         // defaultZeroVersion.setFinalVersion(true);
         // defaultZeroVersion.setDescription("");
-        // Session session = sessionFactory.getSession();
+        // EntityManager entityManager = entityManagerFactory.createEntityManager();
         //
         // try {
-        // new DatasetDAO().add(defaultZeroVersion, session);
+        // new DatasetDAO().add(defaultZeroVersion, entityManager);
         // } catch (Exception e) {
         // throw new EmfException("Could not add default zero version: " + e.getMessage());
         // } finally {
-        // session.close();
+        // entityManager.close();
         // }
     }
 
     public void updateVersionZeroRecordCount(EmfDataset dataset) throws EmfException {
         DbServer dbServer = dbServerFactory.getDbServer();
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
             DatasetDAO dao = new DatasetDAO(dbServerFactory);
-            Version version = dao.getVersion(session, dataset.getId(), 0);
-            Version lockedVersion = dao.obtainLockOnVersion(user, version.getId(), session);
+            Version version = dao.getVersion(entityManager, dataset.getId(), 0);
+            Version lockedVersion = dao.obtainLockOnVersion(user, version.getId(), entityManager);
 
             lockedVersion.setLastModifiedDate(new Date());
             int num = getNumOfRecords(datasource.getName() + "." + dataset.getInternalSources()[0].getTable(),
                     lockedVersion);
             lockedVersion.setNumberRecords(num);
-            dao.updateVersionNReleaseLock(lockedVersion, session);
+            dao.updateVersionNReleaseLock(lockedVersion, entityManager);
         } catch (Exception e) {
             throw new EmfException("Could not query table: " + e.getMessage());
         } finally {
@@ -478,7 +479,7 @@ public class DatasetCreator {
                 // NOTE Auto-generated catch block
                 e.printStackTrace();
             }
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -646,55 +647,56 @@ public class DatasetCreator {
 
     private boolean isDatasetNameUsed(String name) throws EmfException {
         boolean nameUsed = false;
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             DatasetDAO dao = new DatasetDAO();
-            nameUsed = dao.datasetNameUsed(name, session);
+            nameUsed = dao.datasetNameUsed(name, entityManager);
         } catch (Exception e) {
             throw new EmfException("Could not check if name is already used in a dataset: " + name);
         } finally {
-            session.close();
+            entityManager.close();
         }
         return nameUsed;
     }
 
     private void add(EmfDataset dataset) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             DatasetDAO dao = new DatasetDAO(dbServerFactory);
-            if (dao.datasetNameUsed(dataset.getName(), session))
+            if (dao.datasetNameUsed(dataset.getName(), entityManager))
                 throw new EmfException("The selected dataset name is already in use.");
 
-            dao.add(dataset, session);
+            dao.add(dataset, entityManager);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new EmfException("Could not add dataset: " + dataset.getName());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public void update(EmfDataset dataset) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             DatasetDAO dao = new DatasetDAO(dbServerFactory);
 
-            dao.updateWithoutLocking(dataset, session);
+            dao.updateWithoutLocking(dataset, entityManager);
         } catch (Exception e) {
             throw new EmfException("Could not add dataset: " + dataset.getName());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     // public void update(EmfDataset dataset) throws EmfException {
-    // Session session = sessionFactory.getSession();
+    // EntityManager entityManager = entityManagerFactory.createEntityManager();
     // try {
     // DatasetDAO dao = new DatasetDAO(dbServerFactory);
-    // dao.updateWithoutLocking(dataset, session);
+    // dao.updateWithoutLocking(dataset, entityManager);
     // } catch (Exception e) {
     // throw new EmfException("Could not update dataset: " + dataset.getName());
     // } finally {
-    // session.close();
+    // entityManager.close();
     // }
     // }
     //

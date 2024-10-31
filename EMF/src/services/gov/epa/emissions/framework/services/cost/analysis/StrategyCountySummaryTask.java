@@ -1,8 +1,5 @@
 package gov.epa.emissions.framework.services.cost.analysis;
 
-import java.sql.SQLException;
-import java.util.Date;
-
 import gov.epa.emissions.commons.data.Dataset;
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.data.InternalSource;
@@ -20,8 +17,12 @@ import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategy
 import gov.epa.emissions.framework.services.cost.controlStrategy.DatasetCreator;
 import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyResultType;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
+
+import java.sql.SQLException;
+import java.util.Date;
+
+import javax.persistence.EntityManagerFactory;
 
 public class StrategyCountySummaryTask extends AbstractStrategySummaryTask {
     
@@ -29,7 +30,7 @@ public class StrategyCountySummaryTask extends AbstractStrategySummaryTask {
     
     private Datasource datasource;
 
-//    private HibernateSessionFactory sessionFactory;
+//    private EntityManagerFactory entityManagerFactory;
 //
 //    private DbServerFactory dbServerFactory;
 
@@ -38,14 +39,14 @@ public class StrategyCountySummaryTask extends AbstractStrategySummaryTask {
     private ControlStrategyResult countySummaryResult;
     
     public StrategyCountySummaryTask(ControlStrategy controlStrategy, User user, 
-            DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory) throws EmfException {
-        super(controlStrategy, user, dbServerFactory, sessionFactory);
+            DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory) throws EmfException {
+        super(controlStrategy, user, dbServerFactory, entityManagerFactory);
         this.controlStrategy = controlStrategy;
         this.dbServer = dbServerFactory.getDbServer();
         this.datasource = dbServer.getEmissionsDatasource();
 
 //        super(controlStrategy, user, 
-//                dbServerFactory, sessionFactory);
+//                dbServerFactory, entityManagerFactory);
     }
 
     public void run() throws EmfException {

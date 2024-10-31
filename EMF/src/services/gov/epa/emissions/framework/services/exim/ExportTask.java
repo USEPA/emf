@@ -11,13 +11,11 @@ import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.Services;
 import gov.epa.emissions.framework.services.basic.AccessLog;
 import gov.epa.emissions.framework.services.basic.EmfProperty;
-import gov.epa.emissions.framework.services.basic.FileDownload;
 import gov.epa.emissions.framework.services.basic.FileDownloadDAO;
 import gov.epa.emissions.framework.services.basic.LoggingServiceImpl;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 import gov.epa.emissions.framework.tasks.ExportTaskManager;
 import gov.epa.emissions.framework.tasks.Task;
@@ -26,10 +24,11 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author Conrad F. D'Cruz
@@ -61,7 +60,7 @@ public class ExportTask extends Task {
 
     private AccessLog accesslog;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private Version[] versions;
 
@@ -90,7 +89,7 @@ public class ExportTask extends Task {
     private FileDownloadDAO fileDownloadDAO;
 
     protected ExportTask(User user, File file, EmfDataset dataset, Services services, AccessLog accesslog, // BUG3589 need to know where the task constructed in case job
-            DbServerFactory dbFactory, HibernateSessionFactory sessionFactory, Version version) {
+            DbServerFactory dbFactory, EntityManagerFactory entityManagerFactory, Version version) {
         super();
         createId();
         if (DebugLevels.DEBUG_1())
@@ -103,7 +102,7 @@ public class ExportTask extends Task {
         this.loggingService = services.getLoggingService();
         this.dbFactory = dbFactory;
         this.accesslog = accesslog;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.fileDownloadDAO = new FileDownloadDAO();
         this.versions = new Version[] { version };
         this.datasetDao = new DatasetDAO();
@@ -111,9 +110,9 @@ public class ExportTask extends Task {
     
     protected ExportTask(User user, File file, EmfDataset dataset, Services services, AccessLog accesslog,
             String rowFilters, String colOrders,
-            DbServerFactory dbFactory, HibernateSessionFactory sessionFactory, Version version, EmfDataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition,
+            DbServerFactory dbFactory, EntityManagerFactory entityManagerFactory, Version version, EmfDataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition,
             String colsToExport) {
-        this(user, file, dataset, services, accesslog, dbFactory, sessionFactory, version);
+        this(user, file, dataset, services, accesslog, dbFactory, entityManagerFactory, version);
         this.rowFilters = rowFilters;
         this.colOrders = colOrders;
         this.filterDataset = filterDataset;
@@ -124,26 +123,26 @@ public class ExportTask extends Task {
 
     protected ExportTask(User user, File file, EmfDataset dataset, Services services, AccessLog accesslog,
             String rowFilters, String colOrders,
-            DbServerFactory dbFactory, HibernateSessionFactory sessionFactory, Version version, EmfDataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition, boolean download,
+            DbServerFactory dbFactory, EntityManagerFactory entityManagerFactory, Version version, EmfDataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition, boolean download,
             String colsToExport) {
-        this(user, file, dataset, services, accesslog, rowFilters, colOrders, dbFactory, sessionFactory, version, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colsToExport);
+        this(user, file, dataset, services, accesslog, rowFilters, colOrders, dbFactory, entityManagerFactory, version, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colsToExport);
         this.download = download;
     } 
     
     protected ExportTask(User user, File file, EmfDataset[] datasets, Services services, AccessLog accessLog,
             String rowFilters, String colOrders,
-            DbServerFactory dbFactory, HibernateSessionFactory sessionFactory, Version[] versions, EmfDataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition, boolean download,
+            DbServerFactory dbFactory, EntityManagerFactory entityManagerFactory, Version[] versions, EmfDataset filterDataset, Version filterDatasetVersion, String filterDatasetJoinCondition, boolean download,
             String colsToExport) {
-        this(user, file, datasets[0], services, accessLog, rowFilters, colOrders, dbFactory, sessionFactory, versions[0], filterDataset, filterDatasetVersion, filterDatasetJoinCondition, download, colsToExport);
+        this(user, file, datasets[0], services, accessLog, rowFilters, colOrders, dbFactory, entityManagerFactory, versions[0], filterDataset, filterDatasetVersion, filterDatasetJoinCondition, download, colsToExport);
         this.datasets = datasets;
         this.versions = versions;
     }
 
     public void run() {
         DbServer dbServer = null;
-        Session session = sessionFactory.getSession();
-        this.sleepAfterExport = sleepAfterExport(session);
-        extSrcs = getExternalSrcs(session);
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        this.sleepAfterExport = sleepAfterExport(entityManager);
+        extSrcs = getExternalSrcs(entityManager);
 
         if (DebugLevels.DEBUG_1())
             System.out.println(">>## ExportTask:run() " + createId() + " for datasetId: " + this.datasets[0].getId());
@@ -170,7 +169,7 @@ public class ExportTask extends Task {
             } else {
                 dbServer = this.dbFactory.getDbServer();
                 VersionedExporterFactory exporterFactory = new VersionedExporterFactory(dbServer, dbServer
-                        .getSqlDataTypes(), batchSize(session));
+                        .getSqlDataTypes(), batchSize(entityManager));
                 Exporter exporter = exporterFactory.create(datasets, versions, rowFilters, colOrders, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colsToExport);
 
                 if (exporter instanceof ExternalFilesExporter)
@@ -179,7 +178,7 @@ public class ExportTask extends Task {
                 exporter.export(file);
 
                 exportedLineCount = exporter.getExportedLinesCount();
-                String lineCompare=compareDatasetRecordsNumbers(exportedLineCount, session, dbServer);
+                String lineCompare=compareDatasetRecordsNumbers(exportedLineCount, entityManager, dbServer);
                 if (DebugLevels.DEBUG_1())
                     printLogInfo(accesslog);               
                 if (exportedLineCount == 0){
@@ -210,7 +209,7 @@ public class ExportTask extends Task {
                     String query = "SELECT obj.id from " + AccessLog.class.getSimpleName() + " obj WHERE obj.datasetId = "
                     + accesslog.getDatasetId() + " AND obj.version = '" + accesslog.getVersion() + "' "
                     + "AND obj.description = '" + accesslog.getDescription() + "'";
-                    List<?> list = session.createQuery(query).list();
+                    List<?> list = entityManager.createQuery(query).getResultList();
 
                     if (list == null || list.size() == 0) {
                         loggingService.setAccessLog(accesslog);
@@ -223,7 +222,7 @@ public class ExportTask extends Task {
             //download manager will pick up the new download request...
             if (download) {
                 //lets add a filedownload item for the user, so they can download the file
-                fileDownloadDAO.add(user, new Date(), file.getName(), "Dataset Export", false, session);
+                fileDownloadDAO.add(user, new Date(), file.getName(), "Dataset Export", false, entityManager);
             }
 
             if ( DebugLevels.DEBUG_24()) {
@@ -233,7 +232,7 @@ public class ExportTask extends Task {
                 String query = "SELECT obj.id from " + AccessLog.class.getSimpleName() + " obj WHERE obj.datasetId = "
                 + accesslog.getDatasetId() + " AND obj.version = '" + accesslog.getVersion() + "' "
                 + "AND obj.description = '" + accesslog.getDescription() + "'";
-                List<?> list = session.createQuery(query).list();
+                List<?> list = entityManager.createQuery(query).getResultList();
 
                 if (list == null || list.size() == 0) {
                     loggingService.setAccessLog(accesslog);
@@ -252,15 +251,15 @@ public class ExportTask extends Task {
             try {
                 //We want to record the dataset access time anyways
                 datasets[0].setAccessedDateTime(start);
-                session.clear();
-                updateDataset(datasets[0], session);
+                entityManager.clear();
+                updateDataset(datasets[0], entityManager);
                 
                 // check for isConnected before disconnecting
                 if ((dbServer != null) && (dbServer.isConnected()))
                     dbServer.disconnect();
 
-                if (session != null && session.isConnected())
-                    session.close();
+                if (entityManager != null)
+                    entityManager.close();
 
                 if (this.sleepAfterExport > 0) {
                     Thread.sleep(this.sleepAfterExport * 1000);
@@ -274,8 +273,8 @@ public class ExportTask extends Task {
 
     public String[] quickRunExternalExport() {
         DbServer dbServer = null;
-        Session session = sessionFactory.getSession();
-        extSrcs = getExternalSrcs(session);
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        extSrcs = getExternalSrcs(entityManager);
         String[] sts = new String[2];
 
         if (DebugLevels.DEBUG_1())
@@ -296,7 +295,7 @@ public class ExportTask extends Task {
 
             dbServer = this.dbFactory.getDbServer();
             VersionedExporterFactory exporterFactory = new VersionedExporterFactory(dbServer, dbServer
-                    .getSqlDataTypes(), batchSize(session));
+                    .getSqlDataTypes(), batchSize(entityManager));
             Exporter exporter = exporterFactory.create(datasets, versions, rowFilters, colOrders, filterDataset, filterDatasetVersion, filterDatasetJoinCondition, colsToExport);
 
             if (exporter instanceof ExternalFilesExporter)
@@ -324,7 +323,7 @@ public class ExportTask extends Task {
             String query = "SELECT obj.id from " + AccessLog.class.getSimpleName() + " obj WHERE obj.datasetId = "
                     + accesslog.getDatasetId() + " AND obj.version = '" + accesslog.getVersion() + "' "
                     + "AND obj.description = '" + accesslog.getDescription() + "'";
-            List<?> list = session.createQuery(query).list();
+            List<?> list = entityManager.createQuery(query).getResultList();
 
             if (list == null || list.size() == 0) {
                 loggingService.setAccessLog(accesslog);
@@ -339,15 +338,15 @@ public class ExportTask extends Task {
             try {
               //We want to record the dataset access time anyways
                 datasets[0].setAccessedDateTime(start);
-                session.clear();
-                updateDataset(datasets[0], session);
+                entityManager.clear();
+                updateDataset(datasets[0], entityManager);
                 
                 // check for isConnected before disconnecting
                 if ((dbServer != null) && (dbServer.isConnected()))
                     dbServer.disconnect();
 
-                if (session != null && session.isConnected())
-                    session.close();
+                if (entityManager != null)
+                    entityManager.close();
             } catch (Exception e) {
                 log.error("Error closing db connections.", e);
             }
@@ -362,12 +361,12 @@ public class ExportTask extends Task {
         return type.isExternal();
     }
     
-    private void updateDataset(EmfDataset ds, Session session) throws Exception {
-        datasetDao.updateDSPropNoLocking(ds, session);
+    private void updateDataset(EmfDataset ds, EntityManager entityManager) throws Exception {
+        datasetDao.updateDSPropNoLocking(ds, entityManager);
     }
 
-    private ExternalSource[] getExternalSrcs(Session session) {
-        return datasetDao.getExternalSrcs(datasets[0].getId(), -1, null, session);
+    private ExternalSource[] getExternalSrcs(EntityManager entityManager) {
+        return datasetDao.getExternalSrcs(datasets[0].getId(), -1, null, entityManager);
     }
 
     private void printLogInfo(AccessLog log) {
@@ -379,7 +378,7 @@ public class ExportTask extends Task {
         // setStatus(info);
     }
 
-    private String compareDatasetRecordsNumbers(long linesExported, Session session, DbServer dbServer)
+    private String compareDatasetRecordsNumbers(long linesExported, EntityManager entityManager, DbServer dbServer)
             throws Exception {
         DatasetType type = datasets[0].getDatasetType();
         String importerclass = (type == null ? "" : type.getImporterClassName());
@@ -392,7 +391,7 @@ public class ExportTask extends Task {
         long records = 0;
 
         try {
-            records = datasetDao.getDatasetRecordsNumber(dbServer, session, datasets[0], versions[0]);
+            records = datasetDao.getDatasetRecordsNumber(dbServer, entityManager, datasets[0], versions[0]);
         } catch (Exception e) {
             e.printStackTrace();
             throw new Exception("Error determining number of records: " + e.getMessage());
@@ -446,14 +445,14 @@ public class ExportTask extends Task {
         return versions[0];
     }
 
-    private int batchSize(Session session) throws Exception {
+    private int batchSize(EntityManager entityManager) throws Exception {
         try {
             String batchSize = System.getProperty("EXPORT_BATCH_SIZE");
 
             if (batchSize != null)
                 return Integer.parseInt(batchSize);
 
-            EmfProperty property = new EmfPropertiesDAO().getProperty("export-batch-size", session);
+            EmfProperty property = new EmfPropertiesDAO().getProperty("export-batch-size", entityManager);
             return Integer.parseInt(property.getValue());
         } catch (Exception e) {
             log.error("Error getting batch size for export. ", e);
@@ -462,11 +461,11 @@ public class ExportTask extends Task {
 
     }
 
-    private int sleepAfterExport(Session session) {
+    private int sleepAfterExport(EntityManager entityManager) {
         int value = 2;
 
         try {
-            EmfProperty property = new EmfPropertiesDAO().getProperty("SECONDS_TO_WAIT_AFTER_EXPORT", session);
+            EmfProperty property = new EmfPropertiesDAO().getProperty("SECONDS_TO_WAIT_AFTER_EXPORT", entityManager);
             value = Integer.parseInt(property.getValue());
         } catch (Exception e) {
             return value; // Default value for maxpool and poolsize

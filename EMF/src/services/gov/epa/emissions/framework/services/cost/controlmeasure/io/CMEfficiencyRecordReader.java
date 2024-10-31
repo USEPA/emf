@@ -9,11 +9,12 @@ import gov.epa.emissions.framework.services.cost.ControlMeasureEquation;
 import gov.epa.emissions.framework.services.cost.controlStrategy.CostYearTable;
 import gov.epa.emissions.framework.services.cost.controlmeasure.EfficiencyRecordValidation;
 import gov.epa.emissions.framework.services.cost.data.EfficiencyRecord;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.persistence.EntityManagerFactory;
 
 public class CMEfficiencyRecordReader {
 
@@ -40,12 +41,12 @@ public class CMEfficiencyRecordReader {
     private Map<String, String> compositeKeyMap;
     
     public CMEfficiencyRecordReader(CMFileFormat fileFormat, User user, 
-            HibernateSessionFactory sessionFactory, CostYearTable costYearTable) {
+            EntityManagerFactory entityManagerFactory, CostYearTable costYearTable) {
         this.fileFormat = fileFormat;
         this.colCount = fileFormat.cols().length;
-        this.status = new CMAddImportStatus(user, sessionFactory);
+        this.status = new CMAddImportStatus(user, entityManagerFactory);
         this.user = user;
-        this.pollutants = new Pollutants(sessionFactory);
+        this.pollutants = new Pollutants(entityManagerFactory);
         this.validation = new EfficiencyRecordValidation();
         this.costYearTable = costYearTable;
         this.compositeKeyMap = new HashMap<String,String>();

@@ -1,46 +1,48 @@
 package gov.epa.emissions.framework.services.basic;
 
 import gov.epa.emissions.framework.services.EmfException;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import gov.epa.emissions.framework.services.persistence.JpaEntityManagerFactory;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 public class LoggingServiceImpl implements LoggingService {
     private static Log LOG = LogFactory.getLog(LoggingServiceImpl.class);
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private LoggingDAO dao;
 
     public LoggingServiceImpl() {
-        this(HibernateSessionFactory.get());
+        this(JpaEntityManagerFactory.get());
     }
 
-    public LoggingServiceImpl(HibernateSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public LoggingServiceImpl(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
         dao = new LoggingDAO();
     }
 
     public synchronized void setAccessLog(AccessLog accesslog) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dao.insertAccessLog(accesslog,session); // BUG3589
+            dao.insertAccessLog(accesslog,entityManager); // BUG3589
         } catch (RuntimeException e) {
             LOG.error("Could not insert access log - " + accesslog, e);
             throw new EmfException("Could not insert access log - " + accesslog);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized AccessLog[] getAccessLogs(int datasetid) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List allLogs = dao.getAccessLogs(datasetid, session);
+            List allLogs = dao.getAccessLogs(datasetid, entityManager);
 
             return (AccessLog[]) allLogs.toArray(new AccessLog[allLogs.size()]);
         } catch (RuntimeException e) {
@@ -48,15 +50,15 @@ public class LoggingServiceImpl implements LoggingService {
             throw new EmfException("Could not get all access logs");
         }
         finally {
-            session.close();          
+            entityManager.close();          
         }
 
     }
 
     public synchronized String getLastExportedFileName(int datasetId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            String fileName = dao.getLastExportedFileName(datasetId, session);
+            String fileName = dao.getLastExportedFileName(datasetId, entityManager);
  
             return fileName;
             
@@ -67,7 +69,7 @@ public class LoggingServiceImpl implements LoggingService {
             throw new EmfException("Could not get all access logs");
         }
         finally {
-            session.close();          
+            entityManager.close();          
         }
     }
 

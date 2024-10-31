@@ -14,7 +14,6 @@ import gov.epa.emissions.framework.services.casemanagement.jobs.DependentJob;
 import gov.epa.emissions.framework.services.casemanagement.jobs.JobMessage;
 import gov.epa.emissions.framework.services.casemanagement.jobs.JobRunStatus;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -30,9 +29,11 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 public class CaseJobTaskManager implements TaskManager {
     private static Log log = LogFactory.getLog(CaseJobTaskManager.class);
@@ -66,7 +67,7 @@ public class CaseJobTaskManager implements TaskManager {
 
     private static Timer timer;
 
-    private static HibernateSessionFactory sessionFactory;
+    private static EntityManagerFactory entityManagerFactory;
 
     public static synchronized int getSizeofTaskQueue() {
         return taskQueue.size();
@@ -119,7 +120,7 @@ public class CaseJobTaskManager implements TaskManager {
         throw new CloneNotSupportedException();
     }
 
-    private CaseJobTaskManager(HibernateSessionFactory sessionFactory) {
+    private CaseJobTaskManager(EntityManagerFactory entityManagerFactory) {
         super();
 //        log.info("CaseJobTaskManager constructor");
         if (DebugLevels.DEBUG_0())
@@ -137,18 +138,18 @@ public class CaseJobTaskManager implements TaskManager {
         if (DebugLevels.DEBUG_4())
             System.out.println("Initial # of jobs in Thread Pool: " + threadPool.getPoolSize());
 
-        CaseJobTaskManager.sessionFactory = sessionFactory;
-        caseDAO = new CaseDAO(sessionFactory);
-        statusDAO = new StatusDAO(sessionFactory);
+        CaseJobTaskManager.entityManagerFactory = entityManagerFactory;
+        caseDAO = new CaseDAO(entityManagerFactory);
+        statusDAO = new StatusDAO(entityManagerFactory);
 
         // FIXME: Remove the next line after statusDAO is used in this class
         if (DebugLevels.DEBUG_9())
             System.out.println("Dummy: " + statusDAO.getClass().getName());
     }
 
-    public static synchronized CaseJobTaskManager getCaseJobTaskManager(HibernateSessionFactory sessionFactory) {
+    public static synchronized CaseJobTaskManager getCaseJobTaskManager(EntityManagerFactory entityManagerFactory) {
         if (ref == null)
-            ref = new CaseJobTaskManager(sessionFactory);
+            ref = new CaseJobTaskManager(entityManagerFactory);
         return ref;
     }
 
@@ -1106,7 +1107,7 @@ public class CaseJobTaskManager implements TaskManager {
     }
 
     private static String getQueCommand(String qid, String hostName) throws EmfException {
-        Session session = CaseJobTaskManager.sessionFactory.getSession();
+        EntityManager entityManager = CaseJobTaskManager.entityManagerFactory.createEntityManager();
 
         if (!hostName.equals("localhost")) {
             int firstDot = hostName.indexOf(".");
@@ -1115,14 +1116,14 @@ public class CaseJobTaskManager implements TaskManager {
 
         try {
             EmfProperty command = new EmfPropertiesDAO().getProperty("CANCEL_JOB_COMMAND_" + hostName.toUpperCase(),
-                    session);
+                    entityManager);
 
             if (command == null || command.getValue().isEmpty())
                 throw new EmfException("Can't get cancel job command from db table (emf.properties)");
 
             return command.getValue() + " " + qid;
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 }

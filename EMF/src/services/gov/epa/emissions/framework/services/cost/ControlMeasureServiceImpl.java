@@ -15,26 +15,24 @@ import gov.epa.emissions.framework.services.cost.controlmeasure.Scc;
 import gov.epa.emissions.framework.services.cost.controlmeasure.io.ControlMeasurePropertyCategories;
 import gov.epa.emissions.framework.services.cost.data.ControlTechnology;
 import gov.epa.emissions.framework.services.cost.data.EfficiencyRecord;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import gov.epa.emissions.framework.services.persistence.JpaEntityManagerFactory;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
-
-import com.itextpdf.text.DocumentException;
 
 public class ControlMeasureServiceImpl implements ControlMeasureService {
 
     private static Log LOG = LogFactory.getLog(ControlMeasureServiceImpl.class);
 
-    private HibernateSessionFactory sessionFactory;
-
+    private EntityManagerFactory entityManagerFactory;
+    
     private ControlMeasureDAO dao;
 
     private ControlTechnologiesDAO controlTechnologiesDAO;
@@ -46,18 +44,18 @@ public class ControlMeasureServiceImpl implements ControlMeasureService {
     private PooledExecutor threadPool;
 
     public ControlMeasureServiceImpl() throws Exception {
-        this(HibernateSessionFactory.get(), DbServerFactory.get());
+        this(JpaEntityManagerFactory.get(), DbServerFactory.get());
     }
 
-    // public ControlMeasureServiceImpl(HibernateSessionFactory sessionFactory) throws Exception {
-    // init(sessionFactory);
+    // public ControlMeasureServiceImpl(EntityManagerFactory entityManagerFactory) throws Exception {
+    // init(entityManagerFactory);
     // }
     //
 
-    public ControlMeasureServiceImpl(HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory)
+    public ControlMeasureServiceImpl(EntityManagerFactory entityManagerFactory, DbServerFactory dbServerFactory)
             throws Exception {
-        // this(sessionFactory);
-        this.sessionFactory = sessionFactory;
+        // this(entityManagerFactory);
+        this.entityManagerFactory = entityManagerFactory;
         this.dbServerFactory = dbServerFactory;
         this.threadPool = createThreadPool();
         init();
@@ -85,76 +83,76 @@ public class ControlMeasureServiceImpl implements ControlMeasureService {
     }
 
     public synchronized ControlMeasure[] getMeasures() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List all = dao.all(session);
+            List all = dao.all(entityManager);
             return (ControlMeasure[]) all.toArray(new ControlMeasure[0]);
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve control measures.", e);
             throw new EmfException("Could not retrieve control measures.");
         } finally {
-            session.close();
+            entityManager.close();
 
         }
     }
 
     public synchronized ControlMeasure[] getMeasures(Pollutant pollutant) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List all = dao.getControlMeasures(pollutant, session);
+            List all = dao.getControlMeasures(pollutant, entityManager);
             return (ControlMeasure[]) all.toArray(new ControlMeasure[0]);
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve all control measures with major pollutant -- " + pollutant.getName(), e);
             throw new EmfException("Could not retrieve all control measureswith major pollutant -- "
                     + pollutant.getName());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized int addMeasure(ControlMeasure measure, Scc[] sccs) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.add(measure, sccs, session);
+            return dao.add(measure, sccs, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not add control measure: " + measure.getName(), e);
             throw new EmfException("Could not add control measure: " + measure.getName());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized void removeMeasure(int controlMeasureId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dao.remove(controlMeasureId, session);
+            dao.remove(controlMeasureId, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not remove control measure Id: " + controlMeasureId, e);
             throw new EmfException("Could not remove control measure Id: " + controlMeasureId);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized int copyMeasure(int controlMeasureId, User creator) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         DbServer dbServer = dbServerFactory.getDbServer();
         try {
-            return dao.copy(controlMeasureId, creator, session, dbServer);
+            return dao.copy(controlMeasureId, creator, entityManager, dbServer);
         } catch (RuntimeException e) {
             LOG.error("Could not remove control measure Id: " + controlMeasureId, e);
             throw new EmfException("Could not remove control measure Id: " + controlMeasureId);
         } finally {
-            session.close();
+            entityManager.close();
             close(dbServer);
         }
     }
 
     public synchronized ControlMeasure obtainLockedMeasure(User owner, int controlMeasureId) throws EmfException {
-        Session session = null;
+        EntityManager entityManager = null;
         try {
-            session = sessionFactory.getSession();
-            ControlMeasure locked = dao.obtainLocked(owner, controlMeasureId, session);
+            entityManager = entityManagerFactory.createEntityManager();
+            ControlMeasure locked = dao.obtainLocked(owner, controlMeasureId, entityManager);
 
             return locked;
         } catch (RuntimeException e) {
@@ -163,30 +161,30 @@ public class ControlMeasureServiceImpl implements ControlMeasureService {
             throw new EmfException("Could not obtain lock for ControlMeasure Id: " + controlMeasureId + " by owner: "
                     + owner.getUsername());
         } finally {
-            if (session != null)
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized ControlMeasure getMeasure(int controlMeasureId) throws EmfException {
-        Session session = null;
+        EntityManager entityManager = null;
         try {
-            session = sessionFactory.getSession();
-            ControlMeasure measure = dao.current(controlMeasureId, session);
+            entityManager = entityManagerFactory.createEntityManager();
+            ControlMeasure measure = dao.current(controlMeasureId, entityManager);
             return measure;
         } catch (RuntimeException e) {
             LOG.error("Could not get Control Measure for Control Measure Id: " + controlMeasureId, e);
             throw new EmfException("Could not get Control Measure for Control Measure Id: " + controlMeasureId);
         } finally {
-            if (session != null)
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     // public ControlMeasure releaseLockedControlMeasure(ControlMeasure locked) throws EmfException {
-    // Session session = sessionFactory.getSession();
+    // EntityManager entityManager = entityManagerFactory.createEntityManager();
     // try {
-    // ControlMeasure released = dao.releaseLocked(locked, session);
+    // ControlMeasure released = dao.releaseLocked(locked, entityManager);
     // return released;
     // } catch (RuntimeException e) {
     // LOG.error("Could not release lock for ControlMeasure: " + locked.getName() + " by owner: "
@@ -194,45 +192,45 @@ public class ControlMeasureServiceImpl implements ControlMeasureService {
     // throw new EmfException("Could not release lock for ControlMeasure: " + locked.getName() + " by owner: "
     // + locked.getLockOwner());
     // } finally {
-    // session.close();
+    // entityManager.close();
     // }
     // }
 
     public synchronized void releaseLockedControlMeasure(User user, int id) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dao.releaseLocked(user, id, session);
+            dao.releaseLocked(user, id, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not release lock for control measure id: " + id, e);
             throw new EmfException("Could not release lock for control measure id: " + id);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized ControlMeasure updateMeasure(ControlMeasure measure, Scc[] sccs) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            ControlMeasure updated = dao.update(measure, sccs, session);
+            ControlMeasure updated = dao.update(measure, sccs, entityManager);
             return updated;
         } catch (RuntimeException e) {
             LOG.error("Could not update for ControlMeasure: " + measure.getName(), e);
             throw new EmfException("Could not update for ControlMeasure: " + measure.getName());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized ControlMeasure updateMeasureAndHoldLock(ControlMeasure measure, Scc[] sccs) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            ControlMeasure updated = dao.update(measure, sccs, session, false);
+            ControlMeasure updated = dao.update(measure, sccs, entityManager, false);
             return updated;
         } catch (RuntimeException e) {
             LOG.error("Could not update for ControlMeasure: " + measure.getName(), e);
             throw new EmfException("Could not update for ControlMeasure: " + measure.getName());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -250,42 +248,42 @@ public class ControlMeasureServiceImpl implements ControlMeasureService {
     }
 
     public synchronized Scc[] getSccs(int controlMeasureId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            Scc[] sccs = dao.getSccs(controlMeasureId, session);
+            Scc[] sccs = dao.getSccs(controlMeasureId, entityManager);
             return sccs;
         } catch (RuntimeException e) {
             LOG.error("Could not get SCCs for ControlMeasure Id: " + controlMeasureId, e);
             throw new EmfException("Could not get SCCs for ControlMeasure Id: " + controlMeasureId);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized ControlTechnology[] getControlTechnologies() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List all = controlTechnologiesDAO.getAll(session);
+            List all = controlTechnologiesDAO.getAll(entityManager);
 
             return (ControlTechnology[]) all.toArray(new ControlTechnology[0]);
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve control technologies.", e);
             throw new EmfException("Could not retrieve control technologies.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public int getReferenceCount(String textContains) throws EmfException {
 
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
 
             int count = 0;
             if (textContains == null || textContains.trim().length() == 0) {
-                count = this.referencesDAO.getReferenceCount(session);
+                count = this.referencesDAO.getReferenceCount(entityManager);
             } else {
-                count = this.referencesDAO.getReferenceCount(session, textContains);
+                count = this.referencesDAO.getReferenceCount(entityManager, textContains);
             }
 
             return count;
@@ -296,19 +294,19 @@ public class ControlMeasureServiceImpl implements ControlMeasureService {
             LOG.error(errorMessage, e);
             throw new EmfException(errorMessage);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized Reference[] getReferences(String textContains) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
 
             List<Reference> all = null;
             if (textContains == null || textContains.trim().length() == 0) {
-                all = this.referencesDAO.getReferences(session);
+                all = this.referencesDAO.getReferences(entityManager);
             } else {
-                all = this.referencesDAO.getReferences(session, textContains);
+                all = this.referencesDAO.getReferences(entityManager, textContains);
             }
 
             return all.toArray(new Reference[0]);
@@ -318,7 +316,7 @@ public class ControlMeasureServiceImpl implements ControlMeasureService {
             LOG.error(errorMessage, e);
             throw new EmfException(errorMessage);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -347,65 +345,65 @@ public class ControlMeasureServiceImpl implements ControlMeasureService {
     }
 
     public synchronized ControlMeasureClass[] getMeasureClasses() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List all = dao.allCMClasses(session);
+            List all = dao.allCMClasses(entityManager);
             return (ControlMeasureClass[]) all.toArray(new ControlMeasureClass[0]);
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve control measure classes.", e);
             throw new EmfException("Could not retrieve control measure classes.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized ControlMeasureClass getMeasureClass(String name) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getCMClass(session, name);
+            return dao.getCMClass(entityManager, name);
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve control measure class.", e);
             throw new EmfException("Could not retrieve control measure class.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized LightControlMeasure[] getLightControlMeasures() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List all = dao.getLightControlMeasures(session);
+            List all = dao.getLightControlMeasures(entityManager);
             return (LightControlMeasure[]) all.toArray(new LightControlMeasure[0]);
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve light control measures.", e);
             throw new EmfException("Could not retrieve light control measures.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized EfficiencyRecord[] getEfficiencyRecords(int controlMeasureId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List all = dao.getEfficiencyRecords(controlMeasureId, session);
+            List all = dao.getEfficiencyRecords(controlMeasureId, entityManager);
             return (EfficiencyRecord[]) all.toArray(new EfficiencyRecord[0]);
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve control measure efficiency records.", e);
             throw new EmfException("Could not retrieve control measures efficiency records.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized int getEfficiencyRecordCount(int controlMeasureId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return (int) dao.getEfficiencyRecordCount(controlMeasureId, session);
+            return (int) dao.getEfficiencyRecordCount(controlMeasureId, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve control measure efficiency record count.", e);
             throw new EmfException("Could not retrieve control measures efficiency record count.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -426,44 +424,44 @@ public class ControlMeasureServiceImpl implements ControlMeasureService {
     }
 
     public synchronized int addEfficiencyRecord(EfficiencyRecord efficiencyRecord) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         DbServer dbServer = dbServerFactory.getDbServer();
         try {
-            return dao.addEfficiencyRecord(efficiencyRecord, session, dbServer);
+            return dao.addEfficiencyRecord(efficiencyRecord, entityManager, dbServer);
         } catch (RuntimeException e) {
             LOG.error("Could not add control measure efficiency record", e);
             throw new EmfException("Could not add control measure efficiency record");
         } finally {
-            session.close();
+            entityManager.close();
             close(dbServer);
         }
     }
 
     public synchronized void updateEfficiencyRecord(EfficiencyRecord efficiencyRecord) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         DbServer dbServer = dbServerFactory.getDbServer();
         try {
-            dao.updateEfficiencyRecord(efficiencyRecord, session, dbServer);
+            dao.updateEfficiencyRecord(efficiencyRecord, entityManager, dbServer);
         } catch (RuntimeException e) {
             LOG.error("Could not update for control measure efficiency record Id: " + efficiencyRecord.getId(), e);
             throw new EmfException("Could not update for control measure efficiency record Id: "
                     + efficiencyRecord.getId());
         } finally {
-            session.close();
+            entityManager.close();
             close(dbServer);
         }
     }
 
     public synchronized void removeEfficiencyRecord(int efficiencyRecordId) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         DbServer dbServer = dbServerFactory.getDbServer();
         try {
-            dao.removeEfficiencyRecord(efficiencyRecordId, session, dbServer);
+            dao.removeEfficiencyRecord(efficiencyRecordId, entityManager, dbServer);
         } catch (RuntimeException e) {
             LOG.error("Could not remove control measure efficiency record Id: " + efficiencyRecordId, e);
             throw new EmfException("Could not remove control measure efficiency record Id: " + efficiencyRecordId);
         } finally {
-            session.close();
+            entityManager.close();
             close(dbServer);
         }
     }
@@ -534,104 +532,104 @@ public class ControlMeasureServiceImpl implements ControlMeasureService {
     }
 
     public synchronized EquationType[] getEquationTypes() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List all = dao.getEquationTypes(session);
+            List all = dao.getEquationTypes(entityManager);
             return (EquationType[]) all.toArray(new EquationType[0]);
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve control measure Equation Types.", e);
             throw new EmfException("Could not retrieve control measures Equation Types.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public ControlMeasurePropertyCategory[] getPropertyCategories() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List<ControlMeasurePropertyCategory> all = dao.getPropertyCategories(session);
+            List<ControlMeasurePropertyCategory> all = dao.getPropertyCategories(entityManager);
             return all.toArray(new ControlMeasurePropertyCategory[0]);
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve control measure property categories.", e);
             throw new EmfException("Could not retrieve control measures property categories.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public ControlMeasurePropertyCategory getPropertyCategory(String categoryName) throws EmfException {
-        return new ControlMeasurePropertyCategories(sessionFactory).getCategory(categoryName);
+        return new ControlMeasurePropertyCategories(entityManagerFactory).getCategory(categoryName);
     }
 
     public Sector[] getDistinctControlMeasureSectors() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List<Sector> all = dao.getDistinctControlMeasureSectors(session);
+            List<Sector> all = dao.getDistinctControlMeasureSectors(entityManager);
             return all.toArray(new Sector[0]);
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve control measure sectors.", e);
             throw new EmfException("Could not retrieve control measures sectors.");
         } finally {
-            session.close();
+            entityManager.close();
         }
 
     }
 
     public ControlMeasure[] getControlMeasureBySector(int[] sectorIds) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List<ControlMeasure> all = dao.getControlMeasureBySectors(sectorIds, true, session);
+            List<ControlMeasure> all = dao.getControlMeasureBySectors(sectorIds, true, entityManager);
             return all.toArray(new ControlMeasure[0]);
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve control measures.", e);
             throw new EmfException("Could not retrieve control measuress.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public ControlMeasure[] getControlMeasureBySectorExcludeClasses(int[] sectorIds) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List<ControlMeasure> all = dao.getControlMeasureBySectors(sectorIds, false, session);
+            List<ControlMeasure> all = dao.getControlMeasureBySectors(sectorIds, false, entityManager);
             return all.toArray(new ControlMeasure[0]);
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve control measures.", e);
             throw new EmfException("Could not retrieve control measuress.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
-    // public List<ControlStrategy> getLightControlStrategies(int[] cmIds, Session session) {
+    // public List<ControlStrategy> getLightControlStrategies(int[] cmIds, EntityManager entityManager) {
 
     // public ControlStrategy[] getLightControlStrategies(int[] cmIds) throws EmfException {
-    // Session session = sessionFactory.getSession();
+    // EntityManager entityManager = entityManagerFactory.createEntityManager();
     // try {
-    // List<ControlMeasure> all = dao.getControlMeasureBySectors(sectorIds, session);
+    // List<ControlMeasure> all = dao.getControlMeasureBySectors(sectorIds, entityManager);
     // return all.toArray(new ControlMeasure[0]);
     // } catch (RuntimeException e) {
     // LOG.error("Could not retrieve control measures.", e);
     // throw new EmfException("Could not retrieve control measuress.");
     // } finally {
-    // session.close();
+    // entityManager.close();
     // }
     // }
 
     public void generateControlMeasurePDFReport(User user, int[] controlMeasureIds) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             threadPool.execute(new GCEnforcerTask("Generate control measures report.", 
                     new ControlMeasuresPDFReport(
                             user, controlMeasureIds, 
-                            this, sessionFactory,
+                            this, entityManagerFactory,
                             dbServerFactory)
             ));
         } catch (Exception e) {
             LOG.error("Could not create control measure PDF report.", e);
             throw new EmfException("Could not create control measure PDF report.", e);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     

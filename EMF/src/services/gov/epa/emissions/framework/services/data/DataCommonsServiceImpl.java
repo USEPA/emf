@@ -36,7 +36,7 @@ import gov.epa.emissions.framework.services.casemanagement.Case;
 import gov.epa.emissions.framework.services.cost.controlStrategy.FileFormatFactory;
 import gov.epa.emissions.framework.services.editor.Revision;
 import gov.epa.emissions.framework.services.module.ModuleTypeVersionDataset;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import gov.epa.emissions.framework.services.persistence.JpaEntityManagerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,16 +44,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
 
 public class DataCommonsServiceImpl implements DataCommonsService {
 
     private static Log LOG = LogFactory.getLog(DataCommonsServiceImpl.class);
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private DbServerFactory dbServerFactory;
 
@@ -68,36 +70,36 @@ public class DataCommonsServiceImpl implements DataCommonsService {
     private EmfFileInfo currentDirectory;
 
     public DataCommonsServiceImpl() {
-        this(HibernateSessionFactory.get());
+        this(JpaEntityManagerFactory.get());
         this.dbServerFactory = DbServerFactory.get();
     }
 
-    public DataCommonsServiceImpl(HibernateSessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public DataCommonsServiceImpl(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
         this.fileDownloadDAO = new FileDownloadDAO();
         dao = new DataCommonsDAO();
     }
 
     public synchronized Keyword[] getKeywords() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         
         try {
-            List keywords = dao.getKeywords(session);
+            List keywords = dao.getKeywords(entityManager);
             
             return (Keyword[]) keywords.toArray(new Keyword[keywords.size()]);
         } catch (RuntimeException e) {
             LOG.error("Could not get all Keywords", e);
             throw new EmfException("Could not get all Keywords");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized Country[] getCountries() throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            List countries = dao.getCountries(session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            List countries = dao.getCountries(entityManager);
+            entityManager.close();
 
             return (Country[]) countries.toArray(new Country[countries.size()]);
         } catch (RuntimeException e) {
@@ -108,9 +110,9 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized Sector[] getSectors() throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            List sectors = dao.getSectors(session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            List sectors = dao.getSectors(entityManager);
+            entityManager.close();
 
             return (Sector[]) sectors.toArray(new Sector[sectors.size()]);
         } catch (RuntimeException e) {
@@ -121,9 +123,9 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized Sector obtainLockedSector(User owner, Sector sector) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            Sector lockedSector = dao.obtainLockedSector(owner, sector, session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Sector lockedSector = dao.obtainLockedSector(owner, sector, entityManager);
+            entityManager.close();
 
             return lockedSector;
         } catch (RuntimeException e) {
@@ -135,13 +137,13 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized Sector updateSector(Sector sector) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-            if (!dao.canUpdate(sector, session))
+            if (!dao.canUpdate(sector, entityManager))
                 throw new EmfException("The Sector name is already in use");
 
-            Sector released = dao.updateSector(sector, session);
-            session.close();
+            Sector released = dao.updateSector(sector, entityManager);
+            entityManager.close();
 
             return released;
         } catch (RuntimeException e) {
@@ -152,9 +154,9 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized Sector releaseLockedSector(User user, Sector sector) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            Sector released = dao.releaseLockedSector(user, sector, session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Sector released = dao.releaseLockedSector(user, sector, entityManager);
+            entityManager.close();
 
             return released;
         } catch (RuntimeException e) {
@@ -167,9 +169,9 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized DatasetType[] getDatasetTypes() throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            List list = dao.getDatasetTypes(session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            List list = dao.getDatasetTypes(entityManager);
+            entityManager.close();
 
             return (DatasetType[]) list.toArray(new DatasetType[0]);
         } catch (RuntimeException e) {
@@ -180,9 +182,9 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized DatasetType[] getDatasetTypes(BasicSearchFilter searchFilter) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            List list = dao.getDatasetTypes(session, searchFilter);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            List list = dao.getDatasetTypes(entityManager, searchFilter);
+            entityManager.close();
 
             return (DatasetType[]) list.toArray(new DatasetType[0]);
         } catch (RuntimeException e) {
@@ -195,10 +197,10 @@ public class DataCommonsServiceImpl implements DataCommonsService {
     // DatasetType (limit to viewable dataset types)
     public synchronized DatasetType[] getDatasetTypes(int userId) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            List list = dao.getDatasetTypes(userId, session);
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            List list = dao.getDatasetTypes(userId, entityManager);
 
-            session.close();
+            entityManager.close();
 
             return (DatasetType[]) list.toArray(new DatasetType[0]);
         } catch (RuntimeException e) {
@@ -210,10 +212,10 @@ public class DataCommonsServiceImpl implements DataCommonsService {
     // DatasetType (limit to viewable dataset types)
     public synchronized DatasetType[] getLightDatasetTypes(int userId) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            List list = dao.getLightDatasetTypes(userId, session);
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            List list = dao.getLightDatasetTypes(userId, entityManager);
 
-            session.close();
+            entityManager.close();
 
             return (DatasetType[]) list.toArray(new DatasetType[0]);
         } catch (RuntimeException e) {
@@ -223,64 +225,64 @@ public class DataCommonsServiceImpl implements DataCommonsService {
     }
 
     public synchronized DatasetType[] getLightDatasetTypes() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List<DatasetType> list = dao.getLightDatasetTypes(session);
+            List<DatasetType> list = dao.getLightDatasetTypes(entityManager);
 
             return list.toArray(new DatasetType[0]);
         } catch (RuntimeException e) {
             LOG.error("Could not get all DatasetTypes", e);
             throw new EmfException("Could not get all DatasetTypes ");
         } finally {
-            if (session != null) session.close();
+            if (entityManager != null) entityManager.close();
         }
     }
 
     public synchronized DatasetType getLightDatasetType(String name) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getLightDatasetType(name, session);
+            return dao.getLightDatasetType(name, entityManager);
         } catch (HibernateException e) {
             LOG.error("Could not get DatasetType", e);
             throw new EmfException("Could not get DatasetType");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized DatasetType getDatasetType(String name) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getDatasetType(name, session);
+            return dao.getDatasetType(name, entityManager);
         } catch (HibernateException e) {
             LOG.error("Could not get DatasetType", e);
             throw new EmfException("Could not get DatasetType");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized DatasetType obtainLockedDatasetType(User user, DatasetType type) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         
         try {
-            DatasetType locked = dao.obtainLockedDatasetType(user, type, session);
+            DatasetType locked = dao.obtainLockedDatasetType(user, type, entityManager);
 
             return locked;
         } catch (RuntimeException e) {
             LOG.error("Could not obtain lock for DatasetType: " + type.getName(), e);
             throw new EmfException("Could not obtain lock for DatasetType: " + type.getName());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized DatasetType updateDatasetType(DatasetType type) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         DbServer dbServer = dbServerFactory.getDbServer();
         try {
 
-            if (!dao.canUpdate(type, session))
+            if (!dao.canUpdate(type, entityManager))
                 throw new EmfException("DatasetType name already in use");
 
             //validate INDICES keyword...
@@ -308,10 +310,10 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
             //update FileFormat
             if (xFileFormat != null) {
-                dao.update(xFileFormat, session);
+                dao.update(xFileFormat, entityManager);
             }
 
-            DatasetType locked = dao.updateDatasetType(type, session);
+            DatasetType locked = dao.updateDatasetType(type, entityManager);
 
             return locked;
         } catch (RuntimeException e) {
@@ -321,7 +323,7 @@ public class DataCommonsServiceImpl implements DataCommonsService {
             LOG.error(e.getMessage());
             throw new EmfException(e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
             try {
                 dbServer.disconnect();
             } catch (Exception e) {
@@ -333,9 +335,9 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized DatasetType releaseLockedDatasetType(User user, DatasetType type) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            DatasetType locked = dao.releaseLockedDatasetType(user, type, session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            DatasetType locked = dao.releaseLockedDatasetType(user, type, entityManager);
+            entityManager.close();
 
             return locked;
         } catch (RuntimeException e) {
@@ -345,29 +347,29 @@ public class DataCommonsServiceImpl implements DataCommonsService {
     }
 
     public void deleteDatasetTypes(User owner, DatasetType[] types) throws EmfException {
-        Session session = this.sessionFactory.getSession();
+        EntityManager entityManager = this.entityManagerFactory.createEntityManager();
         DbServer dbServer = dbServerFactory.getDbServer();
         
         try {
             if (owner.isAdmin()){
                 for (int i =0; i<types.length; i++) {
-                    checkIfUsedByCases(types[i], session); 
-                    checkIfUsedByDeletedDS(types[i], session);
-                    checkIfUsedByDatasets(types[i], session);
-                    checkIfUsedByModuleTypes(types[i], session);
+                    checkIfUsedByCases(types[i], entityManager); 
+                    checkIfUsedByDeletedDS(types[i], entityManager);
+                    checkIfUsedByDatasets(types[i], entityManager);
+                    checkIfUsedByModuleTypes(types[i], entityManager);
                     dao.removeUserExcludedDatasetType(types[i], dbServer);
                     dao.removeTableConsolidation(types[i], dbServer);
-                    dao.removeDatasetTypes(types[i], session);
+                    dao.removeDatasetTypes(types[i], entityManager);
                     
                     if (types[i].getFileFormat()!= null )
-                        dao.removeXFileFormat(types[i].getFileFormat(), session);
+                        dao.removeXFileFormat(types[i].getFileFormat(), entityManager);
                 }
             }
         } catch (Exception e) {          
             LOG.error("Error deleting dataset types. " , e);
             throw new EmfException("Error deleting dataset types. \n" + e.getMessage());
         } finally {
-            session.close(); 
+            entityManager.close(); 
             try {
                 dbServer.disconnect();
             } catch (Exception e) {
@@ -377,42 +379,42 @@ public class DataCommonsServiceImpl implements DataCommonsService {
         }
     }
     
-    private void checkIfUsedByCases(DatasetType type, Session session) throws EmfException {
+    private void checkIfUsedByCases(DatasetType type, EntityManager entityManager) throws EmfException {
         List list = null;
 
         // check if dataset is an input dataset for some cases (via the cases.cases_caseinputs table)
-        list = session.createQuery(
+        list = entityManager.createQuery(
                 "select CI.caseID from CaseInput as CI " + "where (CI.datasetType.id = "
-                        + type.getId()+ ")").list();
+                        + type.getId()+ ")").getResultList();
 
         if (list != null && list.size() > 0) {
-            Case usedCase = dao.get(Case.class, "id", list.get(0), session).get(0);
+            Case usedCase = dao.get(Case.class, "id", list.get(0), entityManager).get(0);
             throw new EmfException("Dataset type \" " + type.getName()+ "\" is used by case " + usedCase.getName() + ".");
         }
     }
     
-    private void checkIfUsedByDeletedDS(DatasetType type, Session session) throws EmfException {
+    private void checkIfUsedByDeletedDS(DatasetType type, EntityManager entityManager) throws EmfException {
         List list = null;
 
         // check if dataset is an input dataset for some cases (via the cases.cases_caseinputs table)
-        list = session.createQuery(
+        list = entityManager.createQuery(
                 "select DS.id from EmfDataset as DS " + "where (lower(DS.status) like '%deleted%')"
                  + "and DS.datasetType.id = "
-                        + type.getId()+ ")").list();
+                        + type.getId()+ ")").getResultList();
 
         if (list != null && list.size() > 0) {
-            EmfDataset deletedDS = dao.get(EmfDataset.class, "id", list.get(0), session).get(0);
+            EmfDataset deletedDS = dao.get(EmfDataset.class, "id", list.get(0), entityManager).get(0);
             throw new EmfException(" Cannot delete dataset type <"+ type.getName()
                     + ">. \n The following user have removed but not purged datasets of this type. \n" 
                     + "<" + deletedDS.getCreator() + ", " + deletedDS.getCreatorFullName() +">");
         }
     }
     
-    private void checkIfUsedByDatasets(DatasetType type, Session session) throws EmfException {
+    private void checkIfUsedByDatasets(DatasetType type, EntityManager entityManager) throws EmfException {
         List list = null;
 
         // check if dataset is an input dataset for some cases (via the cases.cases_caseinputs table)
-        list = session.createQuery("select DS.name from EmfDataset as DS where (DS.datasetType.id = " + type.getId() + ")").list();
+        list = entityManager.createQuery("select DS.name from EmfDataset as DS where (DS.datasetType.id = " + type.getId() + ")").getResultList();
 
         if (list != null && list.size() > 0) {
             StringBuilder message = new StringBuilder();
@@ -426,11 +428,11 @@ public class DataCommonsServiceImpl implements DataCommonsService {
         }
     }
 
-    private void checkIfUsedByModuleTypes(DatasetType type, Session session) throws EmfException {
+    private void checkIfUsedByModuleTypes(DatasetType type, EntityManager entityManager) throws EmfException {
         List list = null;
 
         // check if dataset type is is used by any module type
-        list = session.createQuery("FROM ModuleTypeVersionDataset AS mtvd WHERE (mtvd.datasetType.id = " + type.getId() + ")").list();
+        list = entityManager.createQuery("FROM ModuleTypeVersionDataset AS mtvd WHERE (mtvd.datasetType.id = " + type.getId() + ")").getResultList();
 
         if (list != null && list.size() > 0) {
             StringBuilder message = new StringBuilder();
@@ -451,9 +453,9 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized Status[] getStatuses(String username) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            List statuses = dao.getStatuses(username, session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            List statuses = dao.getStatuses(username, entityManager);
+            entityManager.close();
 
             return (Status[]) statuses.toArray(new Status[statuses.size()]);
         } catch (RuntimeException e) {
@@ -464,9 +466,9 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized FileDownload[] getFileDownloads(Integer userId) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            List fileDownloads = fileDownloadDAO.getFileDownloads(userId, session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            List fileDownloads = fileDownloadDAO.getFileDownloads(userId, entityManager);
+            entityManager.close();
 
             return (FileDownload[]) fileDownloads.toArray(new FileDownload[fileDownloads.size()]);
         } catch (RuntimeException e) {
@@ -477,9 +479,9 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized FileDownload[] getUnreadFileDownloads(Integer userId) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            List fileDownloads = fileDownloadDAO.getUnreadFileDownloads(userId, session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            List fileDownloads = fileDownloadDAO.getUnreadFileDownloads(userId, entityManager);
+            entityManager.close();
 
             return (FileDownload[]) fileDownloads.toArray(new FileDownload[fileDownloads.size()]);
         } catch (RuntimeException e) {
@@ -489,25 +491,25 @@ public class DataCommonsServiceImpl implements DataCommonsService {
     }
 
     public void addFileDownload(FileDownload fileDownload) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            fileDownloadDAO.add(fileDownload, session);
+            fileDownloadDAO.add(fileDownload, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not add FileDownload", e);
             throw new EmfException("Could not add FileDownload");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public void markFileDownloadsRead(Integer[] fileDownloadIds) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            fileDownloadDAO.markFileDownloadsRead(fileDownloadIds, session);
-//            session.clear();
-//            session.flush();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            fileDownloadDAO.markFileDownloadsRead(fileDownloadIds, entityManager);
+//            entityManager.clear();
+//            entityManager.flush();
                        
-            session.close();
+            entityManager.close();
         } catch (RuntimeException e) {
             LOG.error("Could not add FileDownload", e);
             throw new EmfException("Could not add FileDownload");
@@ -516,9 +518,9 @@ public class DataCommonsServiceImpl implements DataCommonsService {
     
     public void removeFileDownloads(Integer userId) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            fileDownloadDAO.removeFileDownloads(userId, session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            fileDownloadDAO.removeFileDownloads(userId, entityManager);
+            entityManager.close();
         } catch (RuntimeException e) {
             LOG.error("Could not add FileDownload", e);
             throw new EmfException("Could not add FileDownload");
@@ -527,9 +529,9 @@ public class DataCommonsServiceImpl implements DataCommonsService {
                 
     public synchronized Project[] getProjects() throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            List projects = dao.getProjects(session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            List projects = dao.getProjects(entityManager);
+            entityManager.close();
 
             return (Project[]) projects.toArray(new Project[0]);
         } catch (RuntimeException e) {
@@ -539,27 +541,27 @@ public class DataCommonsServiceImpl implements DataCommonsService {
     }
 
     public synchronized Project addProject(Project project) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            if (dao.nameUsed(project.getName(), Project.class, session))
+            if (dao.nameUsed(project.getName(), Project.class, entityManager))
                 throw new EmfException("Project name already in use");
 
-            dao.add(project, session);
-            return (Project) dao.load(Project.class, project.getName(), session);
+            dao.add(project, entityManager);
+            return (Project) dao.load(Project.class, project.getName(), entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not add new Project", e);
             throw new EmfException("Project name already in use");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized Region[] getRegions() throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            List regions = dao.getRegions(session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            List regions = dao.getRegions(entityManager);
+            entityManager.close();
 
             return (Region[]) regions.toArray(new Region[0]);
         } catch (RuntimeException e) {
@@ -570,9 +572,9 @@ public class DataCommonsServiceImpl implements DataCommonsService {
     
     public synchronized UserFeature[] getUserFeatures() throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            List userFeatures = dao.getUserFeatures(session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            List userFeatures = dao.getUserFeatures(entityManager);
+            entityManager.close();
 
             return (UserFeature[]) userFeatures.toArray(new UserFeature[0]);
         } catch (RuntimeException e) {
@@ -583,13 +585,13 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized void addRegion(Region region) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-            if (dao.nameUsed(region.getName(), Region.class, session))
+            if (dao.nameUsed(region.getName(), Region.class, entityManager))
                 throw new EmfException("Region name already in use");
 
-            dao.add(region, session);
-            session.close();
+            dao.add(region, entityManager);
+            entityManager.close();
         } catch (RuntimeException e) {
             LOG.error("Could not add new Region", e);
             throw new EmfException("Region name already in use");
@@ -598,9 +600,9 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized IntendedUse[] getIntendedUses() throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            List regions = dao.getIntendedUses(session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            List regions = dao.getIntendedUses(entityManager);
+            entityManager.close();
 
             return (IntendedUse[]) regions.toArray(new IntendedUse[0]);
         } catch (RuntimeException e) {
@@ -611,13 +613,13 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized void addIntendedUse(IntendedUse intendedUse) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-            if (dao.nameUsed(intendedUse.getName(), IntendedUse.class, session))
+            if (dao.nameUsed(intendedUse.getName(), IntendedUse.class, entityManager))
                 throw new EmfException("Intended use name already in use");
 
-            dao.add(intendedUse, session);
-            session.close();
+            dao.add(intendedUse, entityManager);
+            entityManager.close();
         } catch (RuntimeException e) {
             LOG.error("Could not add new intended use", e);
             throw new EmfException("Intended use name already in use");
@@ -626,13 +628,13 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized void addCountry(Country country) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-            if (dao.nameUsed(country.getName(), Country.class, session))
+            if (dao.nameUsed(country.getName(), Country.class, entityManager))
                 throw new EmfException("The Country name is already in use");
 
-            dao.add(country, session);
-            session.close();
+            dao.add(country, entityManager);
+            entityManager.close();
         } catch (RuntimeException e) {
             LOG.error("Could not add new country", e);
             throw new EmfException("Country name already in use");
@@ -640,11 +642,11 @@ public class DataCommonsServiceImpl implements DataCommonsService {
     }
 
     public synchronized void addDatasetType(DatasetType type) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         DbServer dbServer = dbServerFactory.getDbServer();
         try {
 
-            if (dao.nameUsed(type.getName(), DatasetType.class, session))
+            if (dao.nameUsed(type.getName(), DatasetType.class, entityManager))
                 throw new EmfException("The DatasetType name is already in use");
 
             //validate INDICES keyword...
@@ -667,17 +669,17 @@ public class DataCommonsServiceImpl implements DataCommonsService {
             if (type.getKeyVals().length > 0) {
                 KeywordsDAO keywordsDAO = new KeywordsDAO();
                 for (KeyVal keyVal : type.getKeyVals()) {
-                    Keyword added = keywordsDAO.add(keyVal.getKeyword(), session);
+                    Keyword added = keywordsDAO.add(keyVal.getKeyword(), entityManager);
                     keyVal.setKeyword(added);
                 }
             }
             
-            dao.add(type, session);
+            dao.add(type, entityManager);
         } catch (Exception e) {
             LOG.error("Could not add DatasetType", e);
             throw new EmfException("Could not add DatasetType: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
             try {
                 dbServer.disconnect();
             } catch (Exception e) {
@@ -688,56 +690,56 @@ public class DataCommonsServiceImpl implements DataCommonsService {
     }
 
     public synchronized XFileFormat addFileFormat(XFileFormat format) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         
         try {
-            dao.add(format, session);
-            return (XFileFormat)dao.load(XFileFormat.class, format.getName(), session);
+            dao.add(format, entityManager);
+            return (XFileFormat)dao.load(XFileFormat.class, format.getName(), entityManager);
         } catch (Exception e) {
             e.printStackTrace();
             LOG.error("Could not add new XFileFormat " + format.getName(), e);
             throw new EmfException("Could not add new XFileFormat " + format.getName() + ". " + e.getLocalizedMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized XFileFormat updateFileFormat(XFileFormat format) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            dao.update(format, session);
-            return (XFileFormat)dao.load(XFileFormat.class, format.getName(), session);
+            dao.update(format, entityManager);
+            return (XFileFormat)dao.load(XFileFormat.class, format.getName(), entityManager);
         } catch (Exception e) {
             e.printStackTrace();
             LOG.error("Could not add new XFileFormat " + format.getName(), e);
             throw new EmfException("Could not add new XFileFormat " + format.getName() + ". " + e.getLocalizedMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     // under construction
     public synchronized XFileFormat deleteFileFormat(XFileFormat format) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         
         try {
-            dao.add(format, session);
-            return (XFileFormat)dao.load(XFileFormat.class, format.getName(), session);
+            dao.add(format, entityManager);
+            return (XFileFormat)dao.load(XFileFormat.class, format.getName(), entityManager);
         } catch (Exception e) {
             e.printStackTrace();
             LOG.error("Could not add new XFileFormat " + format.getName(), e);
             throw new EmfException("Could not add new XFileFormat " + format.getName() + ". " + e.getLocalizedMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public synchronized GeoRegion addGeoRegion(GeoRegion newRegion) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         
         try {
             String name = newRegion.getName();
@@ -746,8 +748,8 @@ public class DataCommonsServiceImpl implements DataCommonsService {
             if (name == null || name.trim().isEmpty())
                 throw new EmfException("Region name cannot be null or empty.");
             
-            List<?> num = session.createQuery("SELECT COUNT(gr.id) from GeoRegion as gr where " +
-                    "lower(gr.name) = '" + name.toLowerCase() + "'").list();
+            List<?> num = entityManager.createQuery("SELECT COUNT(gr.id) from GeoRegion as gr where " +
+                    "lower(gr.name) = '" + name.toLowerCase() + "'").getResultList();
             
             if (Integer.parseInt(num.get(0).toString()) > 0)
                 throw new EmfException("Region name '" + name + "' has been used already.");
@@ -756,65 +758,65 @@ public class DataCommonsServiceImpl implements DataCommonsService {
                 abbr = null;
             
             if (abbr != null) {
-                num = session.createQuery("SELECT COUNT(gr.id) from GeoRegion as gr where " +
-                        "lower(gr.abbreviation) = '" + abbr.toLowerCase() + "'").list();
+                num = entityManager.createQuery("SELECT COUNT(gr.id) from GeoRegion as gr where " +
+                        "lower(gr.abbreviation) = '" + abbr.toLowerCase() + "'").getResultList();
                 
                 if (Integer.parseInt(num.get(0).toString()) > 0)
                     throw new EmfException("Abbreviation '" + abbr + "' has been used already.");
             }
             
             newRegion.setAbbreviation(abbr);
-            dao.add(newRegion, session);
-            return (GeoRegion)dao.load(GeoRegion.class, newRegion.getName(), session);
+            dao.add(newRegion, entityManager);
+            return (GeoRegion)dao.load(GeoRegion.class, newRegion.getName(), entityManager);
         } catch (Exception e) {
             LOG.error("Could not add new GeoRegion", e);
             String err = e.getMessage() == null ? "." : ": " + e.getMessage();
             err = err.length() > 50 ? err.substring(0, 49) : err;
             throw new EmfException("Could not add new GeoRegion" + err);
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
     
     public synchronized GeoRegion obtainLockedRegion(User owner, GeoRegion region) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         
         try {
-            return dao.obtainLockedRegion(owner, region, session);
+            return dao.obtainLockedRegion(owner, region, entityManager);
         } catch (Exception e) {
             LOG.error("Could not obtain lock for region: " + region.getName() + " by owner: " + owner.getUsername(), e);
             throw new EmfException("Could not obtain lock for region: " + region.getName() + " by owner: "
                     + owner.getUsername());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
     
     public GeoRegion updateGeoRegion(GeoRegion region, User user) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         
         try {
-            return dao.updateGeoregion(region, user, session);
+            return dao.updateGeoregion(region, user, entityManager);
         } catch (Exception e) {
             LOG.error("ERROR: updating GeoRegion (" + region.getName() + ").", e);
             throw new EmfException("Cannot update region object. " + e.getMessage() + ".");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
     
     public synchronized void addSector(Sector sector) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-            if (dao.nameUsed(sector.getName(), Sector.class, session))
+            if (dao.nameUsed(sector.getName(), Sector.class, entityManager))
                 throw new EmfException("Sector name already in use");
 
-            dao.add(sector, session);
-            session.close();
+            dao.add(sector, entityManager);
+            entityManager.close();
         } catch (RuntimeException e) {
             LOG.error("Could not add new Sector.", e);
             throw new EmfException("Sector name already in use");
@@ -823,9 +825,9 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized DatasetNote[] getDatasetNotes(int datasetId) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            List datasetNotes = dao.getDatasetNotes(datasetId, session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            List datasetNotes = dao.getDatasetNotes(datasetId, entityManager);
+            entityManager.close();
 
             return (DatasetNote[]) datasetNotes.toArray(new DatasetNote[datasetNotes.size()]);
         } catch (RuntimeException e) {
@@ -836,9 +838,9 @@ public class DataCommonsServiceImpl implements DataCommonsService {
     
     public synchronized Note[] getNameContainNotes(String nameContains) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            List notes = dao.getNotes(session, nameContains);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            List notes = dao.getNotes(entityManager, nameContains);
+            entityManager.close();
 
             return (Note[]) notes.toArray(new Note[notes.size()]);
         } catch (RuntimeException e) {
@@ -849,12 +851,12 @@ public class DataCommonsServiceImpl implements DataCommonsService {
     
     public synchronized Note[] getNotes(int[] noteIds) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
             List<Note> notes = new ArrayList<Note>();
             for (int id : noteIds){
-               notes.add((Note) dao.current(Integer.valueOf(id), Note.class, session)); 
+               notes.add((Note) dao.current(Integer.valueOf(id), Note.class, entityManager)); 
             }
-            session.close();
+            entityManager.close();
 
             return notes.toArray(new Note[notes.size()]);
         } catch (RuntimeException e) {
@@ -864,18 +866,19 @@ public class DataCommonsServiceImpl implements DataCommonsService {
     }
 
     public synchronized void addDatasetNote(DatasetNote datasetNote) throws EmfException {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            Session session = sessionFactory.getSession();
 
             //check has been done on the client side
-//            if (dao.nameUsed(note.getName(), Note.class, session))
+//            if (dao.nameUsed(note.getName(), Note.class, entityManager))
 //                throw new EmfException("Note name already in use");
 
-            dao.add(datasetNote, session);
-            session.close();
+            dao.add(datasetNote, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not add new note", e);
             throw new EmfException("Note name already in use");
+        } finally {
+            entityManager.close();
         }
     }
 
@@ -886,27 +889,27 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 //    }
 
     public synchronized void addDatasetNotes(DatasetNote[] dsNotes) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         
         try {
             for (int i = 0; i < dsNotes.length; i++) {
-                dao.add(dsNotes[i], session);
-                session.clear();
+                dao.add(dsNotes[i], entityManager);
+                entityManager.clear();
             }
         } catch (Exception e) {
             LOG.error("Could not add new note", e);
             throw new EmfException("Adding new DatasetNote failed: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
 
     }
 
     public synchronized NoteType[] getNoteTypes() throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            List notetypes = dao.getNoteTypes(session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            List notetypes = dao.getNoteTypes(entityManager);
+            entityManager.close();
 
             return (NoteType[]) notetypes.toArray(new NoteType[0]);
         } catch (RuntimeException e) {
@@ -917,9 +920,9 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized Revision obtainLockedRevision(User owner, Revision revision) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            Revision lockedRevision = dao.obtainLockedRevision(owner, revision, session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Revision lockedRevision = dao.obtainLockedRevision(owner, revision, entityManager);
+            entityManager.close();
 
             return lockedRevision;
         } catch (RuntimeException e) {
@@ -931,9 +934,9 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized Revision releaseLockedRevision(User user, Revision revision) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            Revision released = dao.releaseLockedRevision(user, revision, session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            Revision released = dao.releaseLockedRevision(user, revision, entityManager);
+            entityManager.close();
 
             return released;
         } catch (RuntimeException e) {
@@ -946,11 +949,11 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized Revision updateRevision(Revision revision) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-                Revision released = dao.updateRevision(revision, session);
+                Revision released = dao.updateRevision(revision, entityManager);
 
-            session.close();
+            entityManager.close();
 
             return released;
         } catch (RuntimeException e) {
@@ -961,9 +964,9 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized Revision[] getRevisions(int datasetId) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            List revisions = dao.getRevisions(datasetId, session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            List revisions = dao.getRevisions(datasetId, entityManager);
+            entityManager.close();
 
             return (Revision[]) revisions.toArray(new Revision[revisions.size()]);
         } catch (RuntimeException e) {
@@ -974,10 +977,10 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized void addRevision(Revision revision) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-            dao.add(revision, session);
-            session.close();
+            dao.add(revision, entityManager);
+            entityManager.close();
         } catch (RuntimeException e) {
             LOG.error("Could not add revision", e);
             throw new EmfException("Could not add revision");
@@ -986,9 +989,9 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized Pollutant[] getPollutants() throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            List pollutants = dao.getPollutants(session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            List pollutants = dao.getPollutants(entityManager);
+            entityManager.close();
 
             return (Pollutant[]) pollutants.toArray(new Pollutant[pollutants.size()]);
         } catch (RuntimeException e) {
@@ -999,13 +1002,13 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized void addPollutant(Pollutant pollutant) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-            if (dao.nameUsed(pollutant.getName(), Pollutant.class, session))
+            if (dao.nameUsed(pollutant.getName(), Pollutant.class, entityManager))
                 throw new EmfException("Pollutant name already in use");
 
-            dao.add(pollutant, session);
-            session.close();
+            dao.add(pollutant, entityManager);
+            entityManager.close();
         } catch (RuntimeException e) {
             LOG.error("Could not add new pollutant.", e);
             throw new EmfException("Pollutant name already in use");
@@ -1014,9 +1017,9 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized SourceGroup[] getSourceGroups() throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
-            List sourcegrp = dao.getSourceGroups(session);
-            session.close();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+            List sourcegrp = dao.getSourceGroups(entityManager);
+            entityManager.close();
 
             return (SourceGroup[]) sourcegrp.toArray(new SourceGroup[sourcegrp.size()]);
         } catch (RuntimeException e) {
@@ -1027,13 +1030,13 @@ public class DataCommonsServiceImpl implements DataCommonsService {
 
     public synchronized void addSourceGroup(SourceGroup sourcegrp) throws EmfException {
         try {
-            Session session = sessionFactory.getSession();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
 
-            if (dao.nameUsed(sourcegrp.getName(), SourceGroup.class, session))
+            if (dao.nameUsed(sourcegrp.getName(), SourceGroup.class, entityManager))
                 throw new EmfException("Source group name already in use");
 
-            dao.add(sourcegrp, session);
-            session.close();
+            dao.add(sourcegrp, entityManager);
+            entityManager.close();
         } catch (RuntimeException e) {
             LOG.error("Could not add new source group.", e);
             throw new EmfException("Source group name already in use");
@@ -1055,30 +1058,30 @@ public class DataCommonsServiceImpl implements DataCommonsService {
     }
 
     public synchronized GeoRegion[] getGeoRegions() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List<GeoRegion> results = dao.getGeoRegions(session);
+            List<GeoRegion> results = dao.getGeoRegions(entityManager);
             return results.toArray(new GeoRegion[0]);
         } catch (RuntimeException e) {
             LOG.error("Could not get all Grids", e);
             throw new EmfException("Could not get all Grids");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
     public synchronized RegionType[] getRegionTypes() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
        
         try {
-            List<RegionType> results = dao.getRegionTypes(session);
+            List<RegionType> results = dao.getRegionTypes(entityManager);
             return results.toArray(new RegionType[0]);
         } catch (RuntimeException e) {
             LOG.error("Could not get all RegionTypes", e);
             throw new EmfException("Could not get all RegionTypes");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
     
@@ -1334,7 +1337,7 @@ public class DataCommonsServiceImpl implements DataCommonsService {
     }
 
     public void copyQAStepTemplates(User user, QAStepTemplate[] templates, int[] datasetTypeIds, boolean replace) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         String datasetTypeNameList = "";
         try {
             DatasetType[] datasetTypes = new DatasetType[datasetTypeIds.length];
@@ -1342,7 +1345,7 @@ public class DataCommonsServiceImpl implements DataCommonsService {
             for (int i = 0; i < datasetTypeIds.length; i++) {
                 int datasetTypeId = datasetTypeIds[i];
                 //get lock on dataset type so we can update it...
-                DatasetType datasetType = dao.obtainLockedDatasetType(user, dao.getDatasetType(datasetTypeId, session), session);
+                DatasetType datasetType = dao.obtainLockedDatasetType(user, dao.getDatasetType(datasetTypeId, entityManager), entityManager);
                 if (!datasetType.isLocked(user)) throw new EmfException("Could not copy QA Step Templates to " + datasetType.getName() + " its locked by " + datasetType.getLockOwner() + ".");
                 datasetTypes[i] = datasetType;
             }
@@ -1376,7 +1379,7 @@ public class DataCommonsServiceImpl implements DataCommonsService {
                     datasetType.addQaStepTemplate(template);
                 }
                 //update the dataset type
-                dao.updateDatasetType(datasetType, session);
+                dao.updateDatasetType(datasetType, entityManager);
                 datasetTypeNameList += (i > 1 ? ", " : "") + datasetType.getName();
             }
 
@@ -1386,7 +1389,7 @@ public class DataCommonsServiceImpl implements DataCommonsService {
             endStatus.setMessage("Copied " + templates.length + " QA Step Templates to Dataset Types: " + datasetTypeNameList + ".");
             endStatus.setTimestamp(new Date());
 
-            new StatusDAO(sessionFactory).add(endStatus);
+            new StatusDAO(entityManagerFactory).add(endStatus);
 
         } catch (RuntimeException e) {
             LOG.error("Could not copy QAStepTemplates to Dataset Types.", e);
@@ -1394,9 +1397,9 @@ public class DataCommonsServiceImpl implements DataCommonsService {
         } finally {
             //release lock on dataset type
             for (int datasetTypeId : datasetTypeIds) {
-                dao.releaseLockedDatasetType(user, dao.getDatasetType(datasetTypeId, session), session);
+                dao.releaseLockedDatasetType(user, dao.getDatasetType(datasetTypeId, entityManager), entityManager);
             }
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -1514,9 +1517,9 @@ public class DataCommonsServiceImpl implements DataCommonsService {
     }
 
     public synchronized void updateProject(Project project) throws EmfException {
-        Session session = sessionFactory.getSession();
-        dao.updateProject(project, session);
-        session.close();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        dao.updateProject(project, entityManager);
+        entityManager.close();
     }
 
 }

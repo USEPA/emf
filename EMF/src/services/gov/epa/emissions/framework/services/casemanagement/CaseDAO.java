@@ -21,7 +21,6 @@ import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.GeoRegion;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 import gov.epa.emissions.framework.utils.Utils;
@@ -31,13 +30,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 
 public class CaseDAO {
 
@@ -45,7 +43,7 @@ public class CaseDAO {
 
     private LockingScheme lockingScheme;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private final Sector ALL_SECTORS = null;
     
@@ -54,9 +52,9 @@ public class CaseDAO {
     private final int ALL_JOB_ID = 0;
 
 
-    public CaseDAO(HibernateSessionFactory sessionFactory) {
+    public CaseDAO(EntityManagerFactory entityManagerFactory) {
         super();
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         daoInit();
     }
 
@@ -70,214 +68,214 @@ public class CaseDAO {
     }
 
     public void add(JobMessage message) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            hibernateFacade.add(message, session);
+            hibernateFacade.add(message, entityManager);
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public CaseOutput add(CaseOutput output) throws Exception {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            hibernateFacade.add(output, session);
-            return getCaseOutput(output, session);
+            hibernateFacade.add(output, entityManager);
+            return getCaseOutput(output, entityManager);
         } catch (Exception ex) {
             throw new Exception("Problem adding case output: " + output.getName() + ". " + ex.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public void add(Object obj) throws Exception {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            hibernateFacade.add(obj, session);
+            hibernateFacade.add(obj, entityManager);
         } catch (Exception ex) {
             throw new Exception("Problem adding object: " + obj.toString() + ". " + ex.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public CaseOutput updateCaseOutput(CaseOutput output) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         CaseOutput toReturn = null;
 
         try {
-            hibernateFacade.updateOnly(output, session);
-            toReturn = getCaseOutput(output, session);
+            hibernateFacade.updateOnly(output, entityManager);
+            toReturn = getCaseOutput(output, entityManager);
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            session.close();
+            entityManager.close();
         }
 
         return toReturn;
     }
 
-    public CaseOutput updateCaseOutput(Session session, CaseOutput output) {
-        hibernateFacade.updateOnly(output, session);
-        return getCaseOutput(output, session);
+    public CaseOutput updateCaseOutput(EntityManager entityManager, CaseOutput output) {
+        hibernateFacade.updateOnly(output, entityManager);
+        return getCaseOutput(output, entityManager);
     }
 
     public boolean caseOutputNameUsed(String outputName) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<CaseOutput> outputs = null;
 
         try {
-            CriteriaBuilderQueryRoot<CaseOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseOutput.class, session);
-            outputs = hibernateFacade.get(session, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("name"), outputName));
+            CriteriaBuilderQueryRoot<CaseOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseOutput.class, entityManager);
+            outputs = hibernateFacade.get(entityManager, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("name"), outputName));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            session.close();
+            entityManager.close();
         }
 
         return (outputs != null && outputs.size() > 0);
     }
 
-    public void add(Executable exe, Session session) {
-        addObject(exe, session);
+    public void add(Executable exe, EntityManager entityManager) {
+        addObject(exe, entityManager);
     }
 
-    public void add(SubDir subdir, Session session) {
-        addObject(subdir, session);
+    public void add(SubDir subdir, EntityManager entityManager) {
+        addObject(subdir, entityManager);
     }
 
-    public void add(AirQualityModel object, Session session) {
-        addObject(object, session);
+    public void add(AirQualityModel object, EntityManager entityManager) {
+        addObject(object, entityManager);
     }
 
-    public void add(CaseCategory object, Session session) {
-        addObject(object, session);
+    public void add(CaseCategory object, EntityManager entityManager) {
+        addObject(object, entityManager);
     }
 
-    public void add(EmissionsYear object, Session session) {
-        addObject(object, session);
+    public void add(EmissionsYear object, EntityManager entityManager) {
+        addObject(object, entityManager);
     }
 
-    public void add(GeoRegion object, Session session) {
-        addObject(object, session);
+    public void add(GeoRegion object, EntityManager entityManager) {
+        addObject(object, entityManager);
     }
 
-    public void add(MeteorlogicalYear object, Session session) {
-        addObject(object, session);
+    public void add(MeteorlogicalYear object, EntityManager entityManager) {
+        addObject(object, entityManager);
     }
 
-    public void add(Speciation object, Session session) {
-        addObject(object, session);
+    public void add(Speciation object, EntityManager entityManager) {
+        addObject(object, entityManager);
     }
 
-    public void add(CaseProgram object, Session session) {
-        addObject(object, session);
+    public void add(CaseProgram object, EntityManager entityManager) {
+        addObject(object, entityManager);
     }
 
-    public void add(InputName object, Session session) {
-        addObject(object, session);
+    public void add(InputName object, EntityManager entityManager) {
+        addObject(object, entityManager);
     }
 
-    public void add(InputEnvtVar object, Session session) {
-        addObject(object, session);
+    public void add(InputEnvtVar object, EntityManager entityManager) {
+        addObject(object, entityManager);
     }
 
-    public void add(ModelToRun object, Session session) {
-        addObject(object, session);
+    public void add(ModelToRun object, EntityManager entityManager) {
+        addObject(object, entityManager);
     }
 
-    public void add(Case object, Session session) {
-        addObject(object, session);
+    public void add(Case object, EntityManager entityManager) {
+        addObject(object, entityManager);
     }
 
-    public void add(CaseInput object, Session session) {
-        addObject(object, session);
+    public void add(CaseInput object, EntityManager entityManager) {
+        addObject(object, entityManager);
     }
 
-    public void add(CaseOutput object, Session session) {
-        addObject(object, session);
+    public void add(CaseOutput object, EntityManager entityManager) {
+        addObject(object, entityManager);
     }
 
-    public void add(Host object, Session session) {
-        addObject(object, session);
+    public void add(Host object, EntityManager entityManager) {
+        addObject(object, entityManager);
     }
 
-    public void addObject(Object obj, Session session) {
-        hibernateFacade.add(obj, session);
+    public void addObject(Object obj, EntityManager entityManager) {
+        hibernateFacade.add(obj, entityManager);
     }
 
-    public List<Abbreviation> getAbbreviations(Session session) {
-        CriteriaBuilderQueryRoot<Abbreviation> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Abbreviation.class, session);
+    public List<Abbreviation> getAbbreviations(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<Abbreviation> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Abbreviation.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<Abbreviation> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public Abbreviation getAbbreviation(Abbreviation abbr, Session session) {
-        return hibernateFacade.load(Abbreviation.class, "name", abbr.getName(), session);
+    public Abbreviation getAbbreviation(Abbreviation abbr, EntityManager entityManager) {
+        return hibernateFacade.load(Abbreviation.class, "name", abbr.getName(), entityManager);
     }
 
-    public List<AirQualityModel> getAirQualityModels(Session session) {
-        CriteriaBuilderQueryRoot<AirQualityModel> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(AirQualityModel.class, session);
+    public List<AirQualityModel> getAirQualityModels(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<AirQualityModel> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(AirQualityModel.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<AirQualityModel> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public List<CaseCategory> getCaseCategories(Session session) {
-        CriteriaBuilderQueryRoot<CaseCategory> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseCategory.class, session);
+    public List<CaseCategory> getCaseCategories(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseCategory> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseCategory.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseCategory> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public CaseCategory getCaseCategory(String name, Session session) {
-        return hibernateFacade.load(CaseCategory.class, "name", name, session);
+    public CaseCategory getCaseCategory(String name, EntityManager entityManager) {
+        return hibernateFacade.load(CaseCategory.class, "name", name, entityManager);
     }
 
-    public List<EmissionsYear> getEmissionsYears(Session session) {
-        CriteriaBuilderQueryRoot<EmissionsYear> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EmissionsYear.class, session);
+    public List<EmissionsYear> getEmissionsYears(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<EmissionsYear> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(EmissionsYear.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<EmissionsYear> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public List<MeteorlogicalYear> getMeteorlogicalYears(Session session) {
-        CriteriaBuilderQueryRoot<MeteorlogicalYear> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(MeteorlogicalYear.class, session);
+    public List<MeteorlogicalYear> getMeteorlogicalYears(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<MeteorlogicalYear> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(MeteorlogicalYear.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<MeteorlogicalYear> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public List<Speciation> getSpeciations(Session session) {
-        CriteriaBuilderQueryRoot<Speciation> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Speciation.class, session);
+    public List<Speciation> getSpeciations(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<Speciation> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Speciation.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<Speciation> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public List<Case> getCases(Session session) {
-        CriteriaBuilderQueryRoot<Case> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Case.class, session);
+    public List<Case> getCases(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<Case> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Case.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<Case> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public Case getCase(int caseId, Session session) {
-        CriteriaBuilderQueryRoot<Case> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Case.class, session);
+    public Case getCase(int caseId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<Case> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Case.class, entityManager);
 
-        List<Case> caseObj = hibernateFacade.get(session, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("id"), Integer.valueOf(caseId)));
+        List<Case> caseObj = hibernateFacade.get(entityManager, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("id"), Integer.valueOf(caseId)));
 
         if (caseObj == null || caseObj.size() == 0)
             return null;
@@ -285,103 +283,103 @@ public class CaseDAO {
         return caseObj.get(0);
     }
 
-    public Case getCaseFromAbbr(Abbreviation abbr, Session session) {
-        return hibernateFacade.load(Case.class, "abbreviation", abbr, session);
+    public Case getCaseFromAbbr(Abbreviation abbr, EntityManager entityManager) {
+        return hibernateFacade.load(Case.class, "abbreviation", abbr, entityManager);
     }
 
-    public Case getCaseFromName(String name, Session session) {
+    public Case getCaseFromName(String name, EntityManager entityManager) {
         // Get a case from it's name
-        return hibernateFacade.load(Case.class, "name", name, session);
+        return hibernateFacade.load(Case.class, "name", name, entityManager);
     }
 
-    public List<CaseProgram> getPrograms(Session session) {
-        CriteriaBuilderQueryRoot<CaseProgram> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseProgram.class, session);
+    public List<CaseProgram> getPrograms(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseProgram> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseProgram.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseProgram> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public List<InputName> getInputNames(Session session) {
-        CriteriaBuilderQueryRoot<InputName> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(InputName.class, session);
+    public List<InputName> getInputNames(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<InputName> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(InputName.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<InputName> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public List<InputEnvtVar> getInputEnvtVars(Session session) {
-        CriteriaBuilderQueryRoot<InputEnvtVar> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(InputEnvtVar.class, session);
+    public List<InputEnvtVar> getInputEnvtVars(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<InputEnvtVar> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(InputEnvtVar.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<InputEnvtVar> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public void removeObject(Object object, Session session) {
-        hibernateFacade.remove(object, session);
+    public void removeObject(Object object, EntityManager entityManager) {
+        hibernateFacade.remove(object, entityManager);
     }
 
-    public void removeObjects(Object[] objects, Session session) {
-        hibernateFacade.remove(objects, session);
+    public void removeObjects(Object[] objects, EntityManager entityManager) {
+        hibernateFacade.remove(objects, entityManager);
     }
 
-    public void remove(Case element, Session session) {
-        hibernateFacade.remove(element, session);
+    public void remove(Case element, EntityManager entityManager) {
+        hibernateFacade.remove(element, entityManager);
     }
 
-    public void removeCaseInputs(CaseInput[] inputs, Session session) {
-        hibernateFacade.remove(inputs, session);
+    public void removeCaseInputs(CaseInput[] inputs, EntityManager entityManager) {
+        hibernateFacade.remove(inputs, entityManager);
     }
 
-    public void removeCaseOutputs(User user, CaseOutput[] outputs, boolean deleteDataset, Session session)
+    public void removeCaseOutputs(User user, CaseOutput[] outputs, boolean deleteDataset, EntityManager entityManager)
             throws EmfException {
         try {
             if (deleteDataset)
-                removeDatasetsOnOutput(user, session, outputs);
+                removeDatasetsOnOutput(user, entityManager, outputs);
         } finally {
-            hibernateFacade.remove(outputs, session);
+            hibernateFacade.remove(outputs, entityManager);
         }
     }
 
-    public void removeCaseOutputs(CaseOutput[] outputs, Session session) {
-        hibernateFacade.removeObjects(outputs, session);
+    public void removeCaseOutputs(CaseOutput[] outputs, EntityManager entityManager) {
+        hibernateFacade.removeObjects(outputs, entityManager);
     }
 
-    public Case obtainLocked(User owner, Case element, Session session) {
-        return (Case) lockingScheme.getLocked(owner, current(element, session), session);
+    public Case obtainLocked(User owner, Case element, EntityManager entityManager) {
+        return (Case) lockingScheme.getLocked(owner, current(element, entityManager), entityManager);
     }
 
-    public Case releaseLocked(User owner, Case locked, Session session) {
-        return (Case) lockingScheme.releaseLock(owner, current(locked, session), session);
+    public Case releaseLocked(User owner, Case locked, EntityManager entityManager) {
+        return (Case) lockingScheme.releaseLock(owner, current(locked, entityManager), entityManager);
     }
 
-    public Case forceReleaseLocked(Case locked, Session session) {
-        return (Case) lockingScheme.releaseLock(current(locked, session), session);
+    public Case forceReleaseLocked(Case locked, EntityManager entityManager) {
+        return (Case) lockingScheme.releaseLock(current(locked, entityManager), entityManager);
     }
 
-    public Case update(Case locked, Session session) throws EmfException {
-        return (Case) lockingScheme.releaseLockOnUpdate(locked, current(locked, session), session);
+    public Case update(Case locked, EntityManager entityManager) throws EmfException {
+        return (Case) lockingScheme.releaseLockOnUpdate(locked, current(locked, entityManager), entityManager);
     }
 
-    private Case current(Case caze, Session session) {
-        return hibernateFacade.current(caze.getId(), Case.class, session);
+    private Case current(Case caze, EntityManager entityManager) {
+        return hibernateFacade.current(caze.getId(), Case.class, entityManager);
     }
 
-    private Case current(int id, Session session) {
-        return hibernateFacade.current(id, Case.class, session);
+    private Case current(int id, EntityManager entityManager) {
+        return hibernateFacade.current(id, Case.class, entityManager);
     }
 
-    public boolean caseInputExists(CaseInput input, Session session) {
-        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, session);
+    public boolean caseInputExists(CaseInput input, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, entityManager);
 
         Predicate[] predicates = uniqueCaseInputCriteria(input.getCaseID(), input, criteriaBuilderQueryRoot);
 
-        return hibernateFacade.exists(criteriaBuilderQueryRoot, predicates, session);
+        return hibernateFacade.exists(criteriaBuilderQueryRoot, predicates, entityManager);
     }
 
-//    public boolean exists(int id, Class<?> clazz, Session session) {
-//        return hibernateFacade.exists(id, clazz, session);
+//    public boolean exists(int id, Class<?> clazz, EntityManager entityManager) {
+//        return hibernateFacade.exists(id, clazz, entityManager);
 //    }
 
     private Predicate[] uniqueCaseInputCriteria(int caseId, CaseInput input, CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot) {
@@ -403,12 +401,12 @@ public class CaseDAO {
         return new Predicate[] { c1, c2, c3, c4, c5, c6 };
     }
     
-    public boolean caseJobExists(CaseJob job, Session session) {
-        CriteriaBuilderQueryRoot<CaseJob> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseJob.class, session);
+    public boolean caseJobExists(CaseJob job, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseJob> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseJob.class, entityManager);
 
         Predicate[] criterions = uniqueCaseJobCriteria(job.getCaseId(), job, criteriaBuilderQueryRoot);
 
-        return hibernateFacade.exists(criteriaBuilderQueryRoot, criterions, session);
+        return hibernateFacade.exists(criteriaBuilderQueryRoot, criterions, entityManager);
     }
 
     private Predicate[] uniqueCaseJobCriteria(int caseId, CaseJob job, CriteriaBuilderQueryRoot<CaseJob> criteriaBuilderQueryRoot) {
@@ -426,177 +424,178 @@ public class CaseDAO {
         return new Predicate[] { c1, c2, c3, c4 };
     }
 
-    public Object load(Class<?> clazz, String name, Session session) {
-        return hibernateFacade.load(clazz, "name", name, session);
+    public Object load(Class<?> clazz, String name, EntityManager entityManager) {
+        return hibernateFacade.load(clazz, "name", name, entityManager);
     }
     
-    public <C> CriteriaBuilderQueryRoot<C> getCriteriaBuilderQueryRoot(Class<C> persistentClass, Session session) {
-        return hibernateFacade.getCriteriaBuilderQueryRoot(persistentClass, session);
+    public <C> CriteriaBuilderQueryRoot<C> getCriteriaBuilderQueryRoot(Class<C> persistentClass, EntityManager entityManager) {
+        return hibernateFacade.getCriteriaBuilderQueryRoot(persistentClass, entityManager);
     }
 
-    public ModelToRun loadModelTorun(String name, Session session) {
+    public ModelToRun loadModelTorun(String name, EntityManager entityManager) {
         String query = " FROM " + ModelToRun.class.getSimpleName() + " as obj WHERE lower(obj.name)='" + name.toLowerCase()+ "'";
-        List<?> mods = session.createQuery(query).list();
+        List<ModelToRun> mods = entityManager.createQuery(query, ModelToRun.class).getResultList();
         
         if (mods == null || mods.size() == 0)
             return null;
         
-        return (ModelToRun) mods.get(0);
+        return mods.get(0);
     }
 
-    public <C> C load(CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Predicate[] predicates, Session session) {
-        return hibernateFacade.load(session, criteriaBuilderQueryRoot, predicates);
+    public <C> C load(CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Predicate[] predicates, EntityManager entityManager) {
+        return hibernateFacade.load(entityManager, criteriaBuilderQueryRoot, predicates);
     }
 
-    public <C> C load(Class<C> clazz, int id, Session session) {
-        return hibernateFacade.load(clazz, "id", Integer.valueOf(id), session);
+    public <C> C load(Class<C> clazz, int id, EntityManager entityManager) {
+        return hibernateFacade.load(clazz, "id", Integer.valueOf(id), entityManager);
     }
 
-    public ParameterEnvVar loadParamEnvVar(ParameterEnvVar envVar, Session session) {
-        CriteriaBuilderQueryRoot<ParameterEnvVar> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ParameterEnvVar.class, session);
+    public ParameterEnvVar loadParamEnvVar(ParameterEnvVar envVar, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<ParameterEnvVar> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ParameterEnvVar.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<ParameterEnvVar> root = criteriaBuilderQueryRoot.getRoot();
         
         Predicate pred1 = builder.equal(root.get("modelToRunId"), Integer.valueOf(envVar.getModelToRunId()));
         Predicate pred2 = builder.equal(root.get("name"), envVar.getName());
 
-        return this.load(criteriaBuilderQueryRoot, new Predicate[] { pred1, pred2 }, session);
+        return this.load(criteriaBuilderQueryRoot, new Predicate[] { pred1, pred2 }, entityManager);
     }
 
-    public CaseProgram loadCaseProgram(CaseProgram prog, Session session) {
-        CriteriaBuilderQueryRoot<CaseProgram> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseProgram.class, session);
+    public CaseProgram loadCaseProgram(CaseProgram prog, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseProgram> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseProgram.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseProgram> root = criteriaBuilderQueryRoot.getRoot();
 
         Predicate pred1 = builder.equal(root.get("modelToRunId"), Integer.valueOf(prog.getModelToRunId()));
         Predicate pred2 = builder.equal(root.get("name"), prog.getName());
 
-        return this.load(criteriaBuilderQueryRoot, new Predicate[] { pred1, pred2 }, session);
+        return this.load(criteriaBuilderQueryRoot, new Predicate[] { pred1, pred2 }, entityManager);
     }
 
-    public SubDir loadCaseSubdir(SubDir subdir, Session session) {
-        CriteriaBuilderQueryRoot<SubDir> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(SubDir.class, session);
+    public SubDir loadCaseSubdir(SubDir subdir, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<SubDir> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(SubDir.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<SubDir> root = criteriaBuilderQueryRoot.getRoot();
 
         Predicate pred1 = builder.equal(root.get("modelToRunId"), Integer.valueOf(subdir.getModelToRunId()));
         Predicate pred2 = builder.equal(root.get("name"), subdir.getName());
 
-        return this.load(criteriaBuilderQueryRoot, new Predicate[] { pred1, pred2 }, session);
+        return this.load(criteriaBuilderQueryRoot, new Predicate[] { pred1, pred2 }, entityManager);
     }
 
-    public Object loadParameterName(ParameterName paramName, Session session) {
-        CriteriaBuilderQueryRoot<ParameterName> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ParameterName.class, session);
+    public Object loadParameterName(ParameterName paramName, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<ParameterName> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ParameterName.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<ParameterName> root = criteriaBuilderQueryRoot.getRoot();
 
         Predicate pred1 = builder.equal(root.get("modelToRunId"), Integer.valueOf(paramName.getModelToRunId()));
         Predicate pred2 = builder.equal(root.get("name"), paramName.getName());
 
-        return this.load(criteriaBuilderQueryRoot, new Predicate[] { pred1, pred2 }, session);
+        return this.load(criteriaBuilderQueryRoot, new Predicate[] { pred1, pred2 }, entityManager);
     }
 
-    public Object loadParameterEnvVar(ParameterEnvVar envVar, Session session) {
-        CriteriaBuilderQueryRoot<ParameterEnvVar> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ParameterEnvVar.class, session);
+    public Object loadParameterEnvVar(ParameterEnvVar envVar, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<ParameterEnvVar> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ParameterEnvVar.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<ParameterEnvVar> root = criteriaBuilderQueryRoot.getRoot();
 
         Predicate pred1 = builder.equal(root.get("modelToRunId"), Integer.valueOf(envVar.getModelToRunId()));
         Predicate pred2 = builder.equal(root.get("name"), envVar.getName());
 
-        return this.load(criteriaBuilderQueryRoot, new Predicate[] { pred1, pred2 }, session);
+        return this.load(criteriaBuilderQueryRoot, new Predicate[] { pred1, pred2 }, entityManager);
     }
 
-    public InputName loadInputName(InputName inputName, Session session) {
-        CriteriaBuilderQueryRoot<InputName> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(InputName.class, session);
+    public InputName loadInputName(InputName inputName, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<InputName> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(InputName.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<InputName> root = criteriaBuilderQueryRoot.getRoot();
 
         Predicate pred1 = builder.equal(root.get("modelToRunId"), Integer.valueOf(inputName.getModelToRunId()));
         Predicate pred2 = builder.equal(root.get("name"), inputName.getName());
 
-        return this.load(criteriaBuilderQueryRoot, new Predicate[] { pred1, pred2 }, session);
+        return this.load(criteriaBuilderQueryRoot, new Predicate[] { pred1, pred2 }, entityManager);
     }
 
-    public InputEnvtVar loadInputEnvtVar(InputEnvtVar envVar, Session session) {
-        CriteriaBuilderQueryRoot<InputEnvtVar> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(InputEnvtVar.class, session);
+    public InputEnvtVar loadInputEnvtVar(InputEnvtVar envVar, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<InputEnvtVar> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(InputEnvtVar.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<InputEnvtVar> root = criteriaBuilderQueryRoot.getRoot();
 
         Predicate pred1 = builder.equal(root.get("modelToRunId"), Integer.valueOf(envVar.getModelToRunId()));
         Predicate pred2 = builder.equal(root.get("name"), envVar.getName());
 
-        return this.load(criteriaBuilderQueryRoot, new Predicate[] { pred1, pred2 }, session);
+        return this.load(criteriaBuilderQueryRoot, new Predicate[] { pred1, pred2 }, entityManager);
     }
 
-    public Object loadCaseInput(CaseInput input, Session session) {
-        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, session);
+    public Object loadCaseInput(CaseInput input, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, entityManager);
 
         Predicate[] predicates = uniqueCaseInputCriteria(input.getCaseID(), input, criteriaBuilderQueryRoot);
 
-        return hibernateFacade.load(session, criteriaBuilderQueryRoot, predicates);
+        return hibernateFacade.load(entityManager, criteriaBuilderQueryRoot, predicates);
     }
 
-    public CaseInput loadCaseInput(int caseId, CaseInput input, Session session) {
-        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, session);
+    public CaseInput loadCaseInput(int caseId, CaseInput input, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, entityManager);
 
         Predicate[] predicates = uniqueCaseInputCriteria(caseId, input, criteriaBuilderQueryRoot);
 
-        return hibernateFacade.load(session, criteriaBuilderQueryRoot, predicates);
+        return hibernateFacade.load(entityManager, criteriaBuilderQueryRoot, predicates);
     }
 
-    public List<CaseInput> getCaseInputs(int caseId, Session session) {
-        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, session);
-        return hibernateFacade.get(session, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("caseID"), Integer.valueOf(caseId)));
+    public List<CaseInput> getCaseInputs(int caseId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, entityManager);
+        return hibernateFacade.get(entityManager, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("caseID"), Integer.valueOf(caseId)));
     }
 
-    public List<CaseInput> getJobSpecNonSpecCaseInputs(int caseId, int[] jobIds, Session session) {
-        List<?> ids = session
+    public List<CaseInput> getJobSpecNonSpecCaseInputs(int caseId, int[] jobIds, EntityManager entityManager) {
+        List<Integer> ids = entityManager
                 .createQuery(
                         "SELECT obj.id from " + CaseInput.class.getSimpleName() + " as obj WHERE obj.caseID = "
                                 + caseId + " AND (obj.caseJobID = 0 OR obj.caseJobID = "
-                                + getAndOrClause(jobIds, "obj.caseJobID") + ")").list();
+                                + getAndOrClause(jobIds, "obj.caseJobID") + ")", Integer.class)
+                .getResultList();
         List<CaseInput> inputs = new ArrayList<CaseInput>();
 
-        for (Iterator<?> iter = ids.iterator(); iter.hasNext();) {
-            Integer id = (Integer) iter.next();
-            inputs.add(this.getCaseInput(id, session));
+        for (Iterator<Integer> iter = ids.iterator(); iter.hasNext();) {
+            Integer id = iter.next();
+            inputs.add(this.getCaseInput(id, entityManager));
         }
 
         return inputs;
     }
 
-    public List<CaseInput> getCaseInputsByJobIds(int caseId, int[] jobIds, Session session) {
-        List<?> ids = session.createQuery(
+    public List<CaseInput> getCaseInputsByJobIds(int caseId, int[] jobIds, EntityManager entityManager) {
+        List<Integer> ids = entityManager.createQuery(
                 "SELECT obj.id from " + CaseInput.class.getSimpleName() + " as obj WHERE obj.caseID = " + caseId
-                        + " AND (obj.caseJobID = " + getAndOrClause(jobIds, "obj.caseJobID") + ")").list();
+                        + " AND (obj.caseJobID = " + getAndOrClause(jobIds, "obj.caseJobID") + ")", Integer.class).getResultList();
         List<CaseInput> inputs = new ArrayList<CaseInput>();
 
-        for (Iterator<?> iter = ids.iterator(); iter.hasNext();) {
-            Integer id = (Integer) iter.next();
-            inputs.add(this.getCaseInput(id, session));
+        for (Iterator<Integer> iter = ids.iterator(); iter.hasNext();) {
+            Integer id = iter.next();
+            inputs.add(this.getCaseInput(id, entityManager));
         }
 
         return inputs;
     }
 
-    public List<CaseInput> getCaseInputs(int pageSize, int caseId, Sector sector, String envNameContains, boolean showAll, Session session) {
+    public List<CaseInput> getCaseInputs(int pageSize, int caseId, Sector sector, String envNameContains, boolean showAll, EntityManager entityManager) {
         if (sector == null)
-            return filterInputs(getAllInputs(pageSize, caseId, showAll, session), envNameContains);
+            return filterInputs(getAllInputs(pageSize, caseId, showAll, entityManager), envNameContains);
 
         String sectorName = sector.getName().toUpperCase();
 
         if (sectorName.equals("ALL"))
-            return filterInputs(getCaseInputsWithLocal(showAll, caseId, session), envNameContains);
+            return filterInputs(getCaseInputsWithLocal(showAll, caseId, entityManager), envNameContains);
 
         if (sectorName.equals("ALL SECTORS"))
-            return filterInputs(getCaseInputsWithNullSector(showAll, caseId, session), envNameContains);
+            return filterInputs(getCaseInputsWithNullSector(showAll, caseId, entityManager), envNameContains);
 
-        return filterInputs(getCaseInputsWithSector(showAll, sector, caseId, session), envNameContains);
+        return filterInputs(getCaseInputsWithSector(showAll, sector, caseId, entityManager), envNameContains);
     }
 
-    private List<CaseInput> getAllInputs(int pageSize, int caseId, boolean showAll, Session session) {
-        List<CaseInput> inputs = getCaseInputsWithLocal(showAll, caseId, session);
+    private List<CaseInput> getAllInputs(int pageSize, int caseId, boolean showAll, EntityManager entityManager) {
+        List<CaseInput> inputs = getCaseInputsWithLocal(showAll, caseId, entityManager);
 
         if (inputs.size() < pageSize)
             return inputs;
@@ -604,8 +603,8 @@ public class CaseDAO {
         return inputs.subList(0, pageSize);
     }
 
-    private List<CaseInput> getCaseInputsWithLocal(boolean showAll, int caseId, Session session) {
-        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, session);
+    private List<CaseInput> getCaseInputsWithLocal(boolean showAll, int caseId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseInput> root = criteriaBuilderQueryRoot.getRoot();
 
@@ -613,7 +612,7 @@ public class CaseDAO {
         Predicate crit2 = builder.equal(root.get("local"), true);
         Predicate[] crits = (showAll) ? new Predicate[] { crit1 } : new Predicate[] { crit1, crit2 };
 
-        return hibernateFacade.get(criteriaBuilderQueryRoot, crits, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, crits, entityManager);
     }
     
     private List<CaseInput> filterInputs(List<CaseInput> allInputs, String envNameContains) {
@@ -632,8 +631,8 @@ public class CaseDAO {
         return filtered;
     }
 
-    private List<CaseInput> getCaseInputsWithNullSector(boolean showAll, int caseId, Session session) {
-        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, session);
+    private List<CaseInput> getCaseInputsWithNullSector(boolean showAll, int caseId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseInput> root = criteriaBuilderQueryRoot.getRoot();
 
@@ -642,39 +641,35 @@ public class CaseDAO {
         Predicate crit3 = builder.equal(root.get("local"), true);
         Predicate[] crits = (showAll) ? new Predicate[] { crit1, crit2 } : new Predicate[] { crit1, crit2, crit3 };
 
-        return hibernateFacade.get(criteriaBuilderQueryRoot, crits, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, crits, entityManager);
     }
 
-    public List<Case> getCasesThatInputToOtherCases(int caseId, Session session) {
+    public List<Case> getCasesThatInputToOtherCases(int caseId, EntityManager entityManager) {
         String sql = "select new gov.epa.emissions.framework.services.casemanagement.Case(cs.id, cs.name) from Case cs where cs.id in (select distinct cO.caseId from CaseInput as cI, CaseOutput as cO where cI.dataset.id = cO.datasetId and cI.caseID = :caseId)";
-        Query query = session.createQuery(sql).setInteger("caseId", caseId);
-        return query.list();
+        return entityManager.createQuery(sql, Case.class).setParameter("caseId", caseId).getResultList();
     }
 
-    public List<Case> getCasesThatOutputToOtherCases(int caseId, Session session) {
+    public List<Case> getCasesThatOutputToOtherCases(int caseId, EntityManager entityManager) {
         String sql = "select new gov.epa.emissions.framework.services.casemanagement.Case(cs.id, cs.name) from Case cs where cs.id in (select distinct cI.caseID from CaseOutput as cO, CaseInput as cI where cI.dataset.id = cO.datasetId and cO.caseId = :caseId)";
-        Query query = session.createQuery(sql).setInteger("caseId", caseId);
-        return query.list();
+        return entityManager.createQuery(sql, Case.class).setParameter("caseId", caseId).getResultList();
     }
 
-    public List<Case> getCasesByOutputDatasets(int[] datasetIds, Session session) {
+    public List<Case> getCasesByOutputDatasets(int[] datasetIds, EntityManager entityManager) {
         String idList = "";
         for (int id : datasetIds)
             idList += (idList.length() > 0 ? "," : "") + id;
         String sql = "select new gov.epa.emissions.framework.services.casemanagement.Case(cs.id, cs.name) from Case cs where cs.id in (select distinct cO.caseId from CaseOutput as cO where cO.datasetId in ("
                 + idList + "))";
-        Query query = session.createQuery(sql);
-        return query.list();
+        return entityManager.createQuery(sql, Case.class).getResultList();
     }
 
-    public List<Case> getCasesByInputDataset(int datasetId, Session session) {
+    public List<Case> getCasesByInputDataset(int datasetId, EntityManager entityManager) {
         String sql = "select new gov.epa.emissions.framework.services.casemanagement.Case(cs.id, cs.name) from Case cs where cs.id in (select distinct cI.caseID from CaseInput as cI where cI.dataset.id = :datasetId)";
-        Query query = session.createQuery(sql).setInteger("datasetId", datasetId);
-        return query.list();
+        return entityManager.createQuery(sql).setParameter("datasetId", datasetId).getResultList();
     }
 
-    private List<CaseInput> getCaseInputsWithSector(boolean showAll, Sector sector, int caseId, Session session) {
-        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, session);
+    private List<CaseInput> getCaseInputsWithSector(boolean showAll, Sector sector, int caseId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseInput> root = criteriaBuilderQueryRoot.getRoot();
 
@@ -683,43 +678,43 @@ public class CaseDAO {
         Predicate crit3 = builder.equal(root.get("local"), true);
         Predicate[] crits = (showAll) ? new Predicate[] { crit1, crit2 } : new Predicate[] { crit1, crit2, crit3 };
 
-        return hibernateFacade.get(criteriaBuilderQueryRoot, crits, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, crits, entityManager);
     }
 
-    public List<CaseInput> getInputsBySector(int caseId, Sector sector, Session session) {
-        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, session);
+    public List<CaseInput> getInputsBySector(int caseId, Sector sector, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseInput> root = criteriaBuilderQueryRoot.getRoot();
 
         Predicate c1 = builder.equal(root.get("caseID"), Integer.valueOf(caseId));
         Predicate c2 = builder.equal(root.get("sector"), sector);
 
-        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { c1, c2 }, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { c1, c2 }, entityManager);
     }
 
-    public List<CaseInput> getInputsForAllSectors(int caseId, Session session) {
-        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, session);
+    public List<CaseInput> getInputsForAllSectors(int caseId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseInput> root = criteriaBuilderQueryRoot.getRoot();
 
         Predicate c1 = builder.equal(root.get("caseID"), Integer.valueOf(caseId));
         Predicate c2 = builder.isNull(root.get("sector"));
 
-        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { c1, c2 }, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { c1, c2 }, entityManager);
     }
 
-    public List<CaseInput> getInputs4AllJobsAllSectors(int caseId, Session session) {
-        return getJobInputs(caseId, 0, null, session);
+    public List<CaseInput> getInputs4AllJobsAllSectors(int caseId, EntityManager entityManager) {
+        return getJobInputs(caseId, 0, null, entityManager);
     }
     
-    public List<CaseInput> getJobInputs(int caseId, int jobId, Sector sector, Session session) {
+    public List<CaseInput> getJobInputs(int caseId, int jobId, Sector sector, EntityManager entityManager) {
         /**
          * Gets inputs for a job. Selects on the following 3 criteria: caseId, jobId, sectorId
          */
         Integer caseID = Integer.valueOf(caseId);
         Integer jobID = Integer.valueOf(jobId);
 
-        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, session);
+        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseInput> root = criteriaBuilderQueryRoot.getRoot();
 
@@ -732,18 +727,18 @@ public class CaseDAO {
         // query the db using hibernate for the inputs that
         // match the criterias
         // what is the difference b/w hibernate get and getAll
-        return hibernateFacade.get(criteriaBuilderQueryRoot, criterions, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, criterions, entityManager);
 
     }
 
-    public List<CaseInput> getJobInputs(int caseId, int jobId, Sector sector, GeoRegion region, Session session) {
+    public List<CaseInput> getJobInputs(int caseId, int jobId, Sector sector, GeoRegion region, EntityManager entityManager) {
         /**
          * Gets inputs for a job. Selects on the following 3 criteria: caseId, jobId, sectorId
          */
         Integer caseID = Integer.valueOf(caseId);
         Integer jobID = Integer.valueOf(jobId);
 
-        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, session);
+        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseInput> root = criteriaBuilderQueryRoot.getRoot();
 
@@ -757,18 +752,18 @@ public class CaseDAO {
         // query the db using hibernate for the inputs that
         // match the criterias
         // what is the difference b/w hibernate get and getAll
-        return hibernateFacade.get(criteriaBuilderQueryRoot, criterions, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, criterions, entityManager);
 
     }
 
-    public List<CaseParameter> getJobParameters(int caseId, int jobId, Sector sector, Session session) {
+    public List<CaseParameter> getJobParameters(int caseId, int jobId, Sector sector, EntityManager entityManager) {
         /**
          * Gets parameters for a job. Selects on the following 3 criteria: caseId, jobId, sectorId
          */
         Integer caseID = Integer.valueOf(caseId);
         Integer jobID = Integer.valueOf(jobId);
 
-        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, session);
+        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseParameter> root = criteriaBuilderQueryRoot.getRoot();
 
@@ -780,18 +775,18 @@ public class CaseDAO {
 
         // query the db using hibernate for the parameters that
         // match the criterias
-        return hibernateFacade.get(criteriaBuilderQueryRoot, criterions, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, criterions, entityManager);
 
     }
     
-    public List<CaseParameter> getJobParameters(int caseId, int jobId, Sector sector, GeoRegion region, Session session) {
+    public List<CaseParameter> getJobParameters(int caseId, int jobId, Sector sector, GeoRegion region, EntityManager entityManager) {
         /**
          * Gets parameters for a job. Selects on the following 3 criteria: caseId, jobId, sectorId
          */
         Integer caseID = Integer.valueOf(caseId);
         Integer jobID = Integer.valueOf(jobId);
 
-        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, session);
+        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseParameter> root = criteriaBuilderQueryRoot.getRoot();
 
@@ -804,7 +799,7 @@ public class CaseDAO {
 
         // query the db using hibernate for the parameters that
         // match the criterias
-        return hibernateFacade.get(criteriaBuilderQueryRoot, criterions, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, criterions, entityManager);
     }
 
     private List<CaseParameter> filterParameters(List<CaseParameter> allParams, String envNameContains) {
@@ -823,100 +818,100 @@ public class CaseDAO {
         return filtered;
     }
     
-    public List<?> getAllCaseInputs(Session session) {
-        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, session);
+    public List<?> getAllCaseInputs(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseInput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseInput.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseInput> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("id")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("id")), entityManager);
     }
 
-    public void updateCaseInput(CaseInput input, Session session) {
-        hibernateFacade.updateOnly(input, session);
+    public void updateCaseInput(CaseInput input, EntityManager entityManager) {
+        hibernateFacade.updateOnly(input, entityManager);
     }
 
-    public List<ModelToRun> getModelToRuns(Session session) {
-        CriteriaBuilderQueryRoot<ModelToRun> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ModelToRun.class, session);
+    public List<ModelToRun> getModelToRuns(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<ModelToRun> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ModelToRun.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<ModelToRun> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public List<SubDir> getSubDirs(Session session) {
-        CriteriaBuilderQueryRoot<SubDir> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(SubDir.class, session);
+    public List<SubDir> getSubDirs(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<SubDir> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(SubDir.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<SubDir> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public void add(CaseJob job, Session session) {
-        addObject(job, session);
+    public void add(CaseJob job, EntityManager entityManager) {
+        addObject(job, entityManager);
     }
 
-    public List<CaseJob> getCaseJobs(int caseId, Session session) {
-        CriteriaBuilderQueryRoot<CaseJob> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseJob.class, session);
-        return hibernateFacade.get(session, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("caseId"), Integer.valueOf(caseId)));
+    public List<CaseJob> getCaseJobs(int caseId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseJob> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseJob.class, entityManager);
+        return hibernateFacade.get(entityManager, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("caseId"), Integer.valueOf(caseId)));
     }
 
     public List<CaseJob> getCaseJobs(int caseId) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<CaseJob> jobs = null;
 
         try {
-            CriteriaBuilderQueryRoot<CaseJob> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseJob.class, session);
-            jobs = hibernateFacade.get(session, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("caseId"), Integer.valueOf(caseId)));
+            CriteriaBuilderQueryRoot<CaseJob> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseJob.class, entityManager);
+            jobs = hibernateFacade.get(entityManager, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("caseId"), Integer.valueOf(caseId)));
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            session.close();
+            entityManager.close();
         }
 
         return jobs;
     }
 
     public CaseJob getCaseJob(String jobKey) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         CaseJob job = null;
 
         try {
-            job = hibernateFacade.load(CaseJob.class, "jobkey", jobKey, session);
+            job = hibernateFacade.load(CaseJob.class, "jobkey", jobKey, entityManager);
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            session.close();
+            entityManager.close();
         }
 
         return job;
     }
 
-    public List<JobMessage> getJobMessages(int caseId, Session session) {
-        CriteriaBuilderQueryRoot<JobMessage> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(JobMessage.class, session);
-        return hibernateFacade.get(session, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("caseId"), Integer.valueOf(caseId)));
+    public List<JobMessage> getJobMessages(int caseId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<JobMessage> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(JobMessage.class, entityManager);
+        return hibernateFacade.get(entityManager, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("caseId"), Integer.valueOf(caseId)));
     }
 
-    public List<JobMessage> getJobMessages(int caseId, int jobId, Session session) {
-        CriteriaBuilderQueryRoot<JobMessage> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(JobMessage.class, session);
+    public List<JobMessage> getJobMessages(int caseId, int jobId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<JobMessage> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(JobMessage.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<JobMessage> root = criteriaBuilderQueryRoot.getRoot();
 
         Predicate crit1 = builder.equal(root.get("caseId"), Integer.valueOf(caseId));
         Predicate crit2 = builder.equal(root.get("jobId"), Integer.valueOf(jobId));
 
-        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, entityManager);
     }
 
-    public CaseJob getCaseJob(int jobId, Session session) {
+    public CaseJob getCaseJob(int jobId, EntityManager entityManager) {
         if (jobId == 0)      //NOTE: to save a db access
             return null;
         
-        return hibernateFacade.load(CaseJob.class, "id", Integer.valueOf(jobId), session);
+        return hibernateFacade.load(CaseJob.class, "id", Integer.valueOf(jobId), entityManager);
     }
 
-    public List<Sector> getSectorsUsedbyJobs(int caseId, Session session) {
-        CriteriaBuilderQueryRoot<Sector> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Sector.class, session);
-        return hibernateFacade.get(session, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("caseId"), Integer.valueOf(caseId)));
+    public List<Sector> getSectorsUsedbyJobs(int caseId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<Sector> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Sector.class, entityManager);
+        return hibernateFacade.get(entityManager, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("caseId"), Integer.valueOf(caseId)));
     }
 
     public CaseJob getCaseJob(int jobId) {
@@ -924,83 +919,83 @@ public class CaseDAO {
             return null;
         
         CaseJob caseJob = null;
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            caseJob = hibernateFacade.load(CaseJob.class, "id", Integer.valueOf(jobId), session);
+            caseJob = hibernateFacade.load(CaseJob.class, "id", Integer.valueOf(jobId), entityManager);
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            session.close();
+            entityManager.close();
         }
         return caseJob;
     }
 
-    public CaseJob getCaseJob(int caseId, CaseJob job, Session session) {
-        CriteriaBuilderQueryRoot<CaseJob> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseJob.class, session);
+    public CaseJob getCaseJob(int caseId, CaseJob job, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseJob> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseJob.class, entityManager);
 
         Predicate[] crits = uniqueCaseJobCriteria(caseId, job, criteriaBuilderQueryRoot);
 
-        return hibernateFacade.load(session, criteriaBuilderQueryRoot, crits);
+        return hibernateFacade.load(entityManager, criteriaBuilderQueryRoot, crits);
     }
 
     public void updateCaseJob(CaseJob job) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            hibernateFacade.updateOnly(job, session);
+            hibernateFacade.updateOnly(job, entityManager);
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
-    public void updateCaseJob(CaseJob job, Session session) throws Exception {
+    public void updateCaseJob(CaseJob job, EntityManager entityManager) throws Exception {
         try {
-            hibernateFacade.updateOnly(job, session);
+            hibernateFacade.updateOnly(job, entityManager);
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new Exception(ex.getMessage());
         }
     }
 
-    public List<CaseJobKey> getCaseJobKey(int jobId, Session session) {
-        CriteriaBuilderQueryRoot<CaseJobKey> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseJobKey.class, session);
-        return hibernateFacade.get(session, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("jobId"), Integer.valueOf(jobId)));
+    public List<CaseJobKey> getCaseJobKey(int jobId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseJobKey> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseJobKey.class, entityManager);
+        return hibernateFacade.get(entityManager, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("jobId"), Integer.valueOf(jobId)));
     }
 
-    public List<CasesSens> getCasesSens(int parentId, Session session) {
-        CriteriaBuilderQueryRoot<CasesSens> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CasesSens.class, session);
-        return hibernateFacade.get(session, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("parentId"), Integer.valueOf(parentId)));
+    public List<CasesSens> getCasesSens(int parentId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CasesSens> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CasesSens.class, entityManager);
+        return hibernateFacade.get(entityManager, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("parentId"), Integer.valueOf(parentId)));
     }
 
     public CaseJob getCaseJobFromKey(String key) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         CaseJob job = null;
 
         try {
-            CriteriaBuilderQueryRoot<CaseJobKey> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseJobKey.class, session);
-            List<CaseJobKey> keyObjs = hibernateFacade.get(session, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("key"), key));
+            CriteriaBuilderQueryRoot<CaseJobKey> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseJobKey.class, entityManager);
+            List<CaseJobKey> keyObjs = hibernateFacade.get(entityManager, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("key"), key));
 
             if (keyObjs == null || keyObjs.size() == 0)
                 return null;
 
-            job = getCaseJob(keyObjs.get(0).getJobId(), session);
+            job = getCaseJob(keyObjs.get(0).getJobId(), entityManager);
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            session.close();
+            entityManager.close();
         }
 
         return job;
     }
 
-    public void updateCaseJobKey(int jobId, String jobKey, Session session) throws Exception {
+    public void updateCaseJobKey(int jobId, String jobKey, EntityManager entityManager) throws Exception {
         try {
-            List<?> keys = getCaseJobKey(jobId, session);
+            List<?> keys = getCaseJobKey(jobId, entityManager);
             CaseJobKey keyObj = (keys == null || keys.size() == 0) ? null : (CaseJobKey) keys.get(0);
 
             if (keyObj == null) {
-                addObject(new CaseJobKey(jobKey, jobId), session);
+                addObject(new CaseJobKey(jobKey, jobId), entityManager);
                 return;
             }
 
@@ -1008,127 +1003,127 @@ public class CaseDAO {
                 return;
 
             keyObj.setKey(jobKey);
-            hibernateFacade.updateOnly(keyObj, session);
+            hibernateFacade.updateOnly(keyObj, entityManager);
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new Exception(ex.getMessage());
         }
     }
 
-    public List<JobRunStatus> getJobRunStatuses(Session session) {
-        CriteriaBuilderQueryRoot<JobRunStatus> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(JobRunStatus.class, session);
+    public List<JobRunStatus> getJobRunStatuses(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<JobRunStatus> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(JobRunStatus.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<JobRunStatus> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public JobRunStatus getJobRunStatuse(String status, Session session) {
-        return hibernateFacade.load(JobRunStatus.class, "name", status, session);
+    public JobRunStatus getJobRunStatuse(String status, EntityManager entityManager) {
+        return hibernateFacade.load(JobRunStatus.class, "name", status, entityManager);
     }
 
     public JobRunStatus getJobRunStatuse(String status) {
         if (DebugLevels.DEBUG_9())
             System.out
-                    .println("In CaseDAO::getJobRunStatuse: Is the session Factory null? " + (sessionFactory == null));
+                    .println("In CaseDAO::getJobRunStatuse: Is the entityManager Factory null? " + (entityManagerFactory == null));
 
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         JobRunStatus jrs = null;
 
         try {
-            jrs = hibernateFacade.load(JobRunStatus.class, "name", status, session);
+            jrs = hibernateFacade.load(JobRunStatus.class, "name", status, entityManager);
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            session.close();
+            entityManager.close();
         }
 
         return jrs;
 
     }
 
-    public List<Host> getHosts(Session session) {
-        CriteriaBuilderQueryRoot<Host> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Host.class, session);
+    public List<Host> getHosts(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<Host> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Host.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<Host> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public List<Executable> getExecutables(Session session) {
-        CriteriaBuilderQueryRoot<Executable> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Executable.class, session);
+    public List<Executable> getExecutables(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<Executable> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Executable.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<Executable> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public boolean exeutableExists(Session session, Executable exe) {
-        return hibernateFacade.exists(exe.getName(), Executable.class, session);
+    public boolean exeutableExists(EntityManager entityManager, Executable exe) {
+        return hibernateFacade.exists(exe.getName(), Executable.class, entityManager);
     }
 
-    public void add(Abbreviation element, Session session) {
-        addObject(element, session);
+    public void add(Abbreviation element, EntityManager entityManager) {
+        addObject(element, entityManager);
     }
 
-    public void add(ParameterEnvVar envVar, Session session) {
-        addObject(envVar, session);
+    public void add(ParameterEnvVar envVar, EntityManager entityManager) {
+        addObject(envVar, entityManager);
     }
 
-    public List<ParameterEnvVar> getParameterEnvVars(Session session) {
-        CriteriaBuilderQueryRoot<ParameterEnvVar> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ParameterEnvVar.class, session);
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, session);
+    public List<ParameterEnvVar> getParameterEnvVars(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<ParameterEnvVar> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ParameterEnvVar.class, entityManager);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, entityManager);
     }
 
-    public void addValueType(ValueType type, Session session) {
-        addObject(type, session);
+    public void addValueType(ValueType type, EntityManager entityManager) {
+        addObject(type, entityManager);
     }
 
-    public List<ValueType> getValueTypes(Session session) {
-        CriteriaBuilderQueryRoot<ValueType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ValueType.class, session);
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, session);
+    public List<ValueType> getValueTypes(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<ValueType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ValueType.class, entityManager);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, entityManager);
     }
 
-    public void addParameterName(ParameterName name, Session session) {
-        addObject(name, session);
+    public void addParameterName(ParameterName name, EntityManager entityManager) {
+        addObject(name, entityManager);
     }
 
-    public List<ParameterName> getParameterNames(Session session) {
-        CriteriaBuilderQueryRoot<ParameterName> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ParameterName.class, session);
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, session);
+    public List<ParameterName> getParameterNames(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<ParameterName> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ParameterName.class, entityManager);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, entityManager);
     }
 
-    public void addParameter(CaseParameter param, Session session) {
-        addObject(param, session);
+    public void addParameter(CaseParameter param, EntityManager entityManager) {
+        addObject(param, entityManager);
     }
 
-    public CaseParameter loadCaseParameter(CaseParameter param, Session session) {
-        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, session);
+    public CaseParameter loadCaseParameter(CaseParameter param, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, entityManager);
 
         Predicate[] criterions = uniqueCaseParameterCriteria(param.getCaseID(), param, criteriaBuilderQueryRoot);
 
-        return hibernateFacade.load(session, criteriaBuilderQueryRoot, criterions);
+        return hibernateFacade.load(entityManager, criteriaBuilderQueryRoot, criterions);
     }
 
-    public CaseParameter loadCaseParameter4Sensitivity(int caseId, CaseParameter param, Session session) {
-        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, session);
+    public CaseParameter loadCaseParameter4Sensitivity(int caseId, CaseParameter param, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, entityManager);
 
-        Predicate[] criterions = sensitivityCaseParameterCriteria(caseId, param, session, criteriaBuilderQueryRoot);
+        Predicate[] criterions = sensitivityCaseParameterCriteria(caseId, param, entityManager, criteriaBuilderQueryRoot);
 
-        return hibernateFacade.load(session, criteriaBuilderQueryRoot, criterions);
+        return hibernateFacade.load(entityManager, criteriaBuilderQueryRoot, criterions);
     }
 
     // NOTE: this method is soly for creating sensitivity case. The questions without clear answers include the
     // following:
     // What if the job does exist in the parent case, but the parameter to copy has a different job?
-    private Predicate[] sensitivityCaseParameterCriteria(int caseId, CaseParameter param, Session session, CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot) {
+    private Predicate[] sensitivityCaseParameterCriteria(int caseId, CaseParameter param, EntityManager entityManager, CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot) {
         ParameterName paramname = param.getParameterName();
         Sector sector = param.getSector();
         CaseProgram program = param.getProgram();
         Integer jobID = Integer.valueOf(param.getJobId());
 
-        CaseJob job = this.getCaseJob(jobID, session);
-        CaseJob parentJob = (job == null) ? null : this.getCaseJob(caseId, job, session);
+        CaseJob job = this.getCaseJob(jobID, entityManager);
+        CaseJob parentJob = (job == null) ? null : this.getCaseJob(caseId, job, entityManager);
 
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseParameter> root = criteriaBuilderQueryRoot.getRoot();
@@ -1167,92 +1162,92 @@ public class CaseDAO {
         return new Predicate[] { c1, c2, c3, c4, c5, c6 };
     }
 
-    public List<CaseParameter> getCaseParameters(int caseId, Session session) {
-        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, session);
-        return hibernateFacade.get(session, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("caseID"), Integer.valueOf(caseId)));
+    public List<CaseParameter> getCaseParameters(int caseId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, entityManager);
+        return hibernateFacade.get(entityManager, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("caseID"), Integer.valueOf(caseId)));
     }
 
-    public List<CaseParameter> getJobSpecNonSpecCaseParameters(int caseId, int[] jobIds, Session session) {
-        List<?> ids = session.createQuery(
+    public List<CaseParameter> getJobSpecNonSpecCaseParameters(int caseId, int[] jobIds, EntityManager entityManager) {
+        List<Integer> ids = entityManager.createQuery(
                 "SELECT obj.id from " + CaseParameter.class.getSimpleName() + " as obj WHERE obj.caseID = " + caseId
-                        + " AND (obj.jobId = 0 OR obj.jobId = " + getAndOrClause(jobIds, "obj.jobId") + ")").list();
+                        + " AND (obj.jobId = 0 OR obj.jobId = " + getAndOrClause(jobIds, "obj.jobId") + ")", Integer.class).getResultList();
 
         List<CaseParameter> params = new ArrayList<CaseParameter>();
 
-        for (Iterator<?> iter = ids.iterator(); iter.hasNext();)
-            params.add(this.getCaseParameter((Integer) iter.next(), session));
+        for (Iterator<Integer> iter = ids.iterator(); iter.hasNext();)
+            params.add(this.getCaseParameter(iter.next(), entityManager));
 
         return params;
     }
 
-    public List<CaseParameter> getCaseParametersByJobIds(int caseId, int[] jobIds, Session session) {
-        List<?> ids = session.createQuery(
+    public List<CaseParameter> getCaseParametersByJobIds(int caseId, int[] jobIds, EntityManager entityManager) {
+        List<Integer> ids = entityManager.createQuery(
                 "SELECT obj.id from " + CaseParameter.class.getSimpleName() + " as obj WHERE obj.caseID = " + caseId
-                        + " AND (obj.jobId = " + getAndOrClause(jobIds, "obj.jobId") + ")").list();
+                        + " AND (obj.jobId = " + getAndOrClause(jobIds, "obj.jobId") + ")", Integer.class).getResultList();
 
         List<CaseParameter> params = new ArrayList<CaseParameter>();
 
-        for (Iterator<?> iter = ids.iterator(); iter.hasNext();)
-            params.add(this.getCaseParameter((Integer) iter.next(), session));
+        for (Iterator<Integer> iter = ids.iterator(); iter.hasNext();)
+            params.add(this.getCaseParameter(iter.next(), entityManager));
 
         return params;
     }
 
-    public List<CaseParameter> getCaseParametersByJobId(int caseId, int jobId, Session session) {
-        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, session);
+    public List<CaseParameter> getCaseParametersByJobId(int caseId, int jobId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseParameter> root = criteriaBuilderQueryRoot.getRoot();
 
         Predicate c1 = builder.equal(root.get("caseID"), Integer.valueOf(caseId));
         Predicate c2 = builder.equal(root.get("jobId"), Integer.valueOf(jobId));
 
-        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { c1, c2 }, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { c1, c2 }, entityManager);
     }
 
-    public List<CaseParameter> getCaseParametersBySector(int caseId, Sector sector, Session session) {
-        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, session);
+    public List<CaseParameter> getCaseParametersBySector(int caseId, Sector sector, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseParameter> root = criteriaBuilderQueryRoot.getRoot();
 
         Predicate c1 = builder.equal(root.get("caseID"), Integer.valueOf(caseId));
         Predicate c2 = builder.equal(root.get("sector"), sector);
 
-        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { c1, c2 }, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { c1, c2 }, entityManager);
     }
 
-    public List<CaseParameter> getCaseParametersForAllSectors(int caseId, Session session) {
-        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, session);
+    public List<CaseParameter> getCaseParametersForAllSectors(int caseId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseParameter> root = criteriaBuilderQueryRoot.getRoot();
 
         Predicate c1 = builder.equal(root.get("caseID"), Integer.valueOf(caseId));
         Predicate c2 = builder.isNull(root.get("sector"));
 
-        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { c1, c2 }, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { c1, c2 }, entityManager);
     }
 
-    public List<CaseParameter> getCaseParametersForAllSectorsAllJobs(int caseId, Session session) {
-        return getJobParameters(caseId, 0, null, session);
+    public List<CaseParameter> getCaseParametersForAllSectorsAllJobs(int caseId, EntityManager entityManager) {
+        return getJobParameters(caseId, 0, null, entityManager);
     }
 
     public List<CaseParameter> getCaseParameters(int pageSize, int caseId, Sector sector, String envNameContains, boolean showAll,
-            Session session) {
+            EntityManager entityManager) {
         if (sector == null)
-            return  filterParameters(getAllParameters(pageSize, caseId, showAll, session), envNameContains);
+            return  filterParameters(getAllParameters(pageSize, caseId, showAll, entityManager), envNameContains);
 
         String sectorName = sector.getName().toUpperCase();
 
         if (sectorName.equals("ALL"))
-            return filterParameters(getCaseParametersWithLocal(showAll, caseId, session), envNameContains);
+            return filterParameters(getCaseParametersWithLocal(showAll, caseId, entityManager), envNameContains);
 
         if (sectorName.equals("ALL SECTORS"))
-            return filterParameters(getCaseParametersWithNullSector(showAll, caseId, session), envNameContains);
+            return filterParameters(getCaseParametersWithNullSector(showAll, caseId, entityManager), envNameContains);
 
-        return filterParameters(getCaseParametersWithSector(showAll, sector, caseId, session), envNameContains);
+        return filterParameters(getCaseParametersWithSector(showAll, sector, caseId, entityManager), envNameContains);
     }
 
-    private List<CaseParameter> getAllParameters(int pageSize, int caseId, boolean showAll, Session session) {
-        List<CaseParameter> params = getCaseParametersWithLocal(showAll, caseId, session);
+    private List<CaseParameter> getAllParameters(int pageSize, int caseId, boolean showAll, EntityManager entityManager) {
+        List<CaseParameter> params = getCaseParametersWithLocal(showAll, caseId, entityManager);
 
         if (params.size() < pageSize)
             return params;
@@ -1260,8 +1255,8 @@ public class CaseDAO {
         return params.subList(0, pageSize);
     }
 
-    private List<CaseParameter> getCaseParametersWithLocal(boolean showAll, int caseId, Session session) {
-        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, session);
+    private List<CaseParameter> getCaseParametersWithLocal(boolean showAll, int caseId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseParameter> root = criteriaBuilderQueryRoot.getRoot();
 
@@ -1269,11 +1264,11 @@ public class CaseDAO {
         Predicate crit2 = builder.equal(root.get("local"), true);
         Predicate[] crits = (showAll) ? new Predicate[] { crit1 } : new Predicate[] { crit1, crit2 };
 
-        return hibernateFacade.get(criteriaBuilderQueryRoot, crits, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, crits, entityManager);
     }
 
-    public List<CaseParameter> getCaseParametersFromEnv(int caseId, ParameterEnvVar envVar, Session session) {
-        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, session);
+    public List<CaseParameter> getCaseParametersFromEnv(int caseId, ParameterEnvVar envVar, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseParameter> root = criteriaBuilderQueryRoot.getRoot();
 
@@ -1282,11 +1277,11 @@ public class CaseDAO {
         Predicate crit2 = builder.equal(root.get("envVar"), envVar);
         Predicate[] crits = { crit1, crit2 };
 
-        return hibernateFacade.get(criteriaBuilderQueryRoot, crits, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, crits, entityManager);
     }
 
-    public ParameterEnvVar getParameterEnvVar(String envName, int model_to_run_id, Session session) {
-        CriteriaBuilderQueryRoot<ParameterEnvVar> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ParameterEnvVar.class, session);
+    public ParameterEnvVar getParameterEnvVar(String envName, int model_to_run_id, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<ParameterEnvVar> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ParameterEnvVar.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<ParameterEnvVar> root = criteriaBuilderQueryRoot.getRoot();
 
@@ -1295,12 +1290,12 @@ public class CaseDAO {
         Predicate crit2 = builder.equal(root.get("modelToRunId"), model_to_run_id);
         Predicate[] crits = { crit1, crit2 };
 
-        // return hibernateFacade.get(ParameterEnvVar.class, crits, session);
-        return hibernateFacade.load(session, criteriaBuilderQueryRoot, crits);
+        // return hibernateFacade.get(ParameterEnvVar.class, crits, entityManager);
+        return hibernateFacade.load(entityManager, criteriaBuilderQueryRoot, crits);
     }
 
-    private List<CaseParameter> getCaseParametersWithNullSector(boolean showAll, int caseId, Session session) {
-        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, session);
+    private List<CaseParameter> getCaseParametersWithNullSector(boolean showAll, int caseId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseParameter> root = criteriaBuilderQueryRoot.getRoot();
 
@@ -1309,11 +1304,11 @@ public class CaseDAO {
         Predicate crit3 = builder.equal(root.get("local"), true);
         Predicate[] crits = (showAll) ? new Predicate[] { crit1, crit2 } : new Predicate[] { crit1, crit2, crit3 };
 
-        return hibernateFacade.get(criteriaBuilderQueryRoot, crits, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, crits, entityManager);
     }
 
-    private List<CaseParameter> getCaseParametersWithSector(boolean showAll, Sector sector, int caseId, Session session) {
-        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, session);
+    private List<CaseParameter> getCaseParametersWithSector(boolean showAll, Sector sector, int caseId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseParameter> root = criteriaBuilderQueryRoot.getRoot();
 
@@ -1322,49 +1317,49 @@ public class CaseDAO {
         Predicate crit3 = builder.equal(root.get("local"), true);
         Predicate[] crits = (showAll) ? new Predicate[] { crit1, crit2 } : new Predicate[] { crit1, crit2, crit3 };
 
-        return hibernateFacade.get(criteriaBuilderQueryRoot, crits, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, crits, entityManager);
     }
 
-    public boolean caseParameterExists(CaseParameter param, Session session) {
-        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, session);
+    public boolean caseParameterExists(CaseParameter param, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseParameter> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseParameter.class, entityManager);
 
         Predicate[] criterions = uniqueCaseParameterCriteria(param.getCaseID(), param, criteriaBuilderQueryRoot);
 
-        return hibernateFacade.exists(criteriaBuilderQueryRoot, criterions, session);
+        return hibernateFacade.exists(criteriaBuilderQueryRoot, criterions, entityManager);
     }
 
-    public void updateCaseParameter(CaseParameter parameter, Session session) {
-        hibernateFacade.updateOnly(parameter, session);
+    public void updateCaseParameter(CaseParameter parameter, EntityManager entityManager) {
+        hibernateFacade.updateOnly(parameter, entityManager);
     }
 
-    public CaseJob loadCaseJob(CaseJob job, Session session) {
-        CriteriaBuilderQueryRoot<CaseJob> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseJob.class, session);
+    public CaseJob loadCaseJob(CaseJob job, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseJob> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseJob.class, entityManager);
 
         Predicate[] criterions = uniqueCaseJobCriteria(job.getCaseId(), job, criteriaBuilderQueryRoot);
-        return hibernateFacade.load(session, criteriaBuilderQueryRoot, criterions);
+        return hibernateFacade.load(entityManager, criteriaBuilderQueryRoot, criterions);
     }
 
     @SuppressWarnings("unchecked")
     public CaseJob loadCaseJobByName(CaseJob job) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         CaseJob obj = null;
         
         try {
-            CriteriaBuilderQueryRoot<CaseJob> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseJob.class, session);
+            CriteriaBuilderQueryRoot<CaseJob> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseJob.class, entityManager);
             CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
             Root<CaseJob> root = criteriaBuilderQueryRoot.getRoot();
 
             Predicate c1 = builder.equal(root.get("caseId"), Integer.valueOf(job.getCaseId()));
             Predicate c2 = builder.equal(root.get("name"), job.getName());
             Predicate[] criterions = { c1, c2 };
-            List<CaseJob> jobs = hibernateFacade.get(criteriaBuilderQueryRoot, criterions, session);
+            List<CaseJob> jobs = hibernateFacade.get(criteriaBuilderQueryRoot, criterions, entityManager);
             
             if (jobs != null && jobs.size() > 0) 
                 obj = jobs.get(0);
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            session.close();
+            entityManager.close();
         }
         
         return obj;
@@ -1372,36 +1367,36 @@ public class CaseDAO {
     }
     
     public CaseJob loadUniqueCaseJob(CaseJob job) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         
         try {
-            CriteriaBuilderQueryRoot<CaseJob> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseJob.class, session);
+            CriteriaBuilderQueryRoot<CaseJob> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseJob.class, entityManager);
 
             Predicate[] criterions = uniqueCaseJobCriteria(job.getCaseId(), job, criteriaBuilderQueryRoot);
-            return hibernateFacade.load(session, criteriaBuilderQueryRoot, criterions);
+            return hibernateFacade.load(entityManager, criteriaBuilderQueryRoot, criterions);
         } catch (Exception ex) {
             ex.printStackTrace();
             throw new EmfException("Can't load case job: " + job.getName() + ".");
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
-    public void removeCaseJobs(CaseJob[] jobs, Session session) {
-        hibernateFacade.remove(jobs, session);
+    public void removeCaseJobs(CaseJob[] jobs, EntityManager entityManager) {
+        hibernateFacade.remove(jobs, entityManager);
     }
 
-    public void removeCaseParameters(CaseParameter[] params, Session session) {
-        hibernateFacade.remove(params, session);
+    public void removeCaseParameters(CaseParameter[] params, EntityManager entityManager) {
+        hibernateFacade.remove(params, entityManager);
     }
 
-    public CaseInput getCaseInput(int inputId, Session session) {
-        return hibernateFacade.load(CaseInput.class, "id", Integer.valueOf(inputId), session);
+    public CaseInput getCaseInput(int inputId, EntityManager entityManager) {
+        return hibernateFacade.load(CaseInput.class, "id", Integer.valueOf(inputId), entityManager);
     }
 
-    public CaseParameter getCaseParameter(int paramId, Session session) {
-        return hibernateFacade.load(CaseParameter.class, "id", Integer.valueOf(paramId), session);
+    public CaseParameter getCaseParameter(int paramId, EntityManager entityManager) {
+        return hibernateFacade.load(CaseParameter.class, "id", Integer.valueOf(paramId), entityManager);
     }
 
     public CaseJob[] getAllValidJobs(int jobId, int caseId) {
@@ -1454,23 +1449,23 @@ public class CaseDAO {
 
     public int[] getJobIds(int caseId, String[] jobNames) {
         int[] ids = new int[jobNames.length];
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
             for (int i = 0; i < jobNames.length; i++) {
-                CriteriaBuilderQueryRoot<CaseJob> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseJob.class, session);
+                CriteriaBuilderQueryRoot<CaseJob> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseJob.class, entityManager);
                 CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
                 Root<CaseJob> root = criteriaBuilderQueryRoot.getRoot();
                 
                 Predicate crit1 = builder.equal(root.get("caseId"), Integer.valueOf(caseId));
                 Predicate crit2 = builder.equal(root.get("name"), jobNames[i]);
-                CaseJob job = hibernateFacade.load(session, criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 });
+                CaseJob job = hibernateFacade.load(entityManager, criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 });
                 ids[i] = job.getId();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            session.close();
+            entityManager.close();
         }
 
         return ids;
@@ -1480,16 +1475,16 @@ public class CaseDAO {
         if (DebugLevels.DEBUG_9())
             System.out.println("CaseDAO::getPersistedWaitTasks Start method");
 
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            CriteriaBuilderQueryRoot<PersistedWaitTask> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(PersistedWaitTask.class, session);
-            return hibernateFacade.get(session, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("userId"), Integer.valueOf(userId)));
+            CriteriaBuilderQueryRoot<PersistedWaitTask> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(PersistedWaitTask.class, entityManager);
+            return hibernateFacade.get(entityManager, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("userId"), Integer.valueOf(userId)));
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            session.clear();
-            session.close();
+            entityManager.clear();
+            entityManager.close();
         }
 
         if (DebugLevels.DEBUG_9())
@@ -1497,29 +1492,29 @@ public class CaseDAO {
         return null;
     }
 
-    public synchronized List<PersistedWaitTask> getPersistedWaitTasks(int caseId, int jobId, Session session) {
-        CriteriaBuilderQueryRoot<PersistedWaitTask> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(PersistedWaitTask.class, session);
+    public synchronized List<PersistedWaitTask> getPersistedWaitTasks(int caseId, int jobId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<PersistedWaitTask> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(PersistedWaitTask.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<PersistedWaitTask> root = criteriaBuilderQueryRoot.getRoot();
 
         Predicate crit1 = builder.equal(root.get("caseId"), Integer.valueOf(caseId));
         Predicate crit2 = builder.equal(root.get("jobId"), Integer.valueOf(jobId));
 
-        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, entityManager);
     }
 
-    public List<?> getDistinctUsersOfPersistedWaitTasks() {
-        Session session = sessionFactory.getSession();
-        List<?> userIds = null;
+    public List<IntegerHolder> getDistinctUsersOfPersistedWaitTasks() {
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        List<IntegerHolder> userIds = null;
 
         try {
             String sql = "select id,user_id from cases.taskmanager_persist";
 
-            userIds = session.createSQLQuery(sql).addEntity(IntegerHolder.class).list();
+            userIds = entityManager.createNativeQuery(sql, "IntegerHolderMapping").getResultList();
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            session.close();
+            entityManager.close();
         }
 
         return userIds;
@@ -1533,17 +1528,17 @@ public class CaseDAO {
         if (pwTasks == null || pwTasks.length == 0)
             return;
 
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
             for (int i = 0; i < pwTasks.length; i++) {
-                session.clear();
-                hibernateFacade.delete(pwTasks[i], session);
+                entityManager.clear();
+                hibernateFacade.delete(pwTasks[i], entityManager);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            session.close();
+            entityManager.close();
         }
 
         if (DebugLevels.DEBUG_9())
@@ -1553,29 +1548,29 @@ public class CaseDAO {
     public void addPersistedTask(PersistedWaitTask persistedWaitTask) {
         if (DebugLevels.DEBUG_9())
             System.out.println("CaseDAO::addPersistedTask BEFORE num of tasks= ");
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            CriteriaBuilderQueryRoot<PersistedWaitTask> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(PersistedWaitTask.class, session);
+            CriteriaBuilderQueryRoot<PersistedWaitTask> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(PersistedWaitTask.class, entityManager);
             CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
             Root<PersistedWaitTask> root = criteriaBuilderQueryRoot.getRoot();
 
             // NOTE: Remove the old one if pesistedWaitTask already exists
             Predicate crit1 = builder.equal(root.get("caseId"), Integer.valueOf(persistedWaitTask.getCaseId()));
             Predicate crit2 = builder.equal(root.get("jobId"), Integer.valueOf(persistedWaitTask.getJobId()));
-            PersistedWaitTask existedTask = hibernateFacade.load(session, criteriaBuilderQueryRoot, 
+            PersistedWaitTask existedTask = hibernateFacade.load(entityManager, criteriaBuilderQueryRoot, 
                     new Predicate[] { crit1, crit2 });
 
             if (existedTask != null)
-                hibernateFacade.remove(existedTask, session);
+                hibernateFacade.remove(existedTask, entityManager);
 
-            hibernateFacade.add(persistedWaitTask, session);
+            hibernateFacade.add(persistedWaitTask, entityManager);
             if (DebugLevels.DEBUG_15())
                 System.out.println("Adding job to persisted table, jobID: " + persistedWaitTask.getJobId());
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            session.close();
+            entityManager.close();
         }
 
         if (DebugLevels.DEBUG_9())
@@ -1588,26 +1583,26 @@ public class CaseDAO {
             System.out.println("CaseDAO::removePersistedTask (from CJTM) BEFORE num of tasks is pwTask null "
                     + (persistedWaitTask == null));
 
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            session.clear();
-            CriteriaBuilderQueryRoot<PersistedWaitTask> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(PersistedWaitTask.class, session);
+            entityManager.clear();
+            CriteriaBuilderQueryRoot<PersistedWaitTask> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(PersistedWaitTask.class, entityManager);
             CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
             Root<PersistedWaitTask> root = criteriaBuilderQueryRoot.getRoot();
 
             Predicate crit1 = builder.equal(root.get("userId"), Integer.valueOf(persistedWaitTask.getUserId()));
             Predicate crit2 = builder.equal(root.get("caseId"), Integer.valueOf(persistedWaitTask.getCaseId()));
             Predicate crit3 = builder.equal(root.get("jobId"), Integer.valueOf(persistedWaitTask.getJobId()));
-            Object object = hibernateFacade.load(session, criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2, crit3 });
+            Object object = hibernateFacade.load(entityManager, criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2, crit3 });
             if (object != null) {
-                hibernateFacade.deleteTask(object, session);
+                hibernateFacade.remove(object, entityManager);
             } else {
                 if (DebugLevels.DEBUG_15()) {
                     System.out.println("Removing from persisted table a job currently not there, jobID: "
                             + persistedWaitTask.getJobId());
-                    CriteriaBuilderQueryRoot<PersistedWaitTask> criteriaBuilderQueryRoot2 = hibernateFacade.getCriteriaBuilderQueryRoot(PersistedWaitTask.class, session);
-                    int numberPersistedTasks = hibernateFacade.getAll(criteriaBuilderQueryRoot2, session).size();
+                    CriteriaBuilderQueryRoot<PersistedWaitTask> criteriaBuilderQueryRoot2 = hibernateFacade.getCriteriaBuilderQueryRoot(PersistedWaitTask.class, entityManager);
+                    int numberPersistedTasks = hibernateFacade.getAll(criteriaBuilderQueryRoot2, entityManager).size();
                     System.out.println("Current size of persisted table: " + numberPersistedTasks);
                 }
 
@@ -1615,7 +1610,7 @@ public class CaseDAO {
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-            session.close();
+            entityManager.close();
         }
 
         if (DebugLevels.DEBUG_9())
@@ -1624,50 +1619,50 @@ public class CaseDAO {
     }
 
     public Case[] getCases(CaseCategory category) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         List<?> cases = null;
 
         try {
-            CriteriaBuilderQueryRoot<Case> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Case.class, session);
+            CriteriaBuilderQueryRoot<Case> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Case.class, entityManager);
         
-            cases = hibernateFacade.get(session, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("caseCategory"), category));
+            cases = hibernateFacade.get(entityManager, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("caseCategory"), category));
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            session.close();
+            entityManager.close();
         }
  
         return cases == null ? null : (Case[]) cases.toArray(new Case[0]);
     }
     
-    public Case[] getCases(Session session, String nameContains) {
+    public Case[] getCases(EntityManager entityManager, String nameContains) {
 
         String ns = Utils.getPattern(nameContains.toLowerCase().trim());
 
-        List<?> cases=session
+        List<Case> cases=entityManager
         .createQuery(
                 "FROM Case as CA WHERE lower(CA.name) like "  + ns
-                + " order by CA.name").list();
+                + " order by CA.name", Case.class).getResultList();
 
         return cases == null ? null : (Case[]) cases.toArray(new Case[0]);
     }
 
-    public Case[] getCases(Session session, CaseCategory category, String nameContains) {
+    public Case[] getCases(EntityManager entityManager, CaseCategory category, String nameContains) {
         
         String ns = Utils.getPattern(nameContains.toLowerCase().trim());
-        List<?> cases = session
+        List<Case> cases = entityManager
         .createQuery(
                 "FROM Case as CA WHERE lower(CA.name) like "  + ns
                 + " and CA.caseCategory.id=" + category.getId() + " "
-                + " order by CA.name").list();
+                + " order by CA.name", Case.class).getResultList();
 
         return cases == null ? null : (Case[]) cases.toArray(new Case[0]);
 
     }
 
 
-    public CaseOutput getCaseOutput(CaseOutput output, Session session) {
-        CriteriaBuilderQueryRoot<CaseOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseOutput.class, session);
+    public CaseOutput getCaseOutput(CaseOutput output, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseOutput.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseOutput> root = criteriaBuilderQueryRoot.getRoot();
 
@@ -1675,62 +1670,62 @@ public class CaseDAO {
         Predicate crit2 = builder.equal(root.get("jobId"), Integer.valueOf(output.getJobId()));
         Predicate crit3 = builder.equal(root.get("name"), output.getName());
 
-        return hibernateFacade.load(session, criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2, crit3 });
+        return hibernateFacade.load(entityManager, criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2, crit3 });
     }
 
-    public List<CaseOutput> getCaseOutputs(int caseId, Session session) {
-        CriteriaBuilderQueryRoot<CaseOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseOutput.class, session);
-        return hibernateFacade.get(session, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("caseId"), Integer.valueOf(caseId)));
+    public List<CaseOutput> getCaseOutputs(int caseId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseOutput.class, entityManager);
+        return hibernateFacade.get(entityManager, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("caseId"), Integer.valueOf(caseId)));
     }
 
-    public List<CaseOutput> getCaseOutputs(int caseId, int jobId, Session session) {
-        CriteriaBuilderQueryRoot<CaseOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseOutput.class, session);
+    public List<CaseOutput> getCaseOutputs(int caseId, int jobId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseOutput.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseOutput> root = criteriaBuilderQueryRoot.getRoot();
 
         Predicate crit1 = builder.equal(root.get("caseId"), Integer.valueOf(caseId));
         Predicate crit2 = builder.equal(root.get("jobId"), Integer.valueOf(jobId));
 
-        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { crit1, crit2 }, entityManager);
     }
 
-    public Case updateWithLock(Case caseObj, Session session) throws EmfException {
-        return (Case) lockingScheme.renewLockOnUpdate(caseObj, current(caseObj, session), session);
+    public Case updateWithLock(Case caseObj, EntityManager entityManager) throws EmfException {
+        return (Case) lockingScheme.renewLockOnUpdate(caseObj, current(caseObj, entityManager), entityManager);
     }
 
-    public void canUpdate(Case caseObj, Session session) throws EmfException {
-//        if (!exists(caseObj.getId(), Case.class, session)) 
+    public void canUpdate(Case caseObj, EntityManager entityManager) throws EmfException {
+//        if (!exists(caseObj.getId(), Case.class, entityManager)) 
 //            throw new EmfException("This case id is not valid. ");
         
-        Case current = current(caseObj.getId(), session);
-        session.clear();// clear to flush current
+        Case current = current(caseObj.getId(), entityManager);
+        entityManager.clear();// clear to flush current
        
         if (! current.getName().equals(caseObj.getName()) ) {
-            if (nameUsed(caseObj.getName(), Case.class, session))
+            if (nameUsed(caseObj.getName(), Case.class, entityManager))
                 throw new EmfException("The case name is already in use. ");
         }
         if(!current.getAbbreviation().getName().equals(caseObj.getAbbreviation().getName()) ){
-            if (nameUsed(caseObj.getAbbreviation().getName(), Abbreviation.class, session))
+            if (nameUsed(caseObj.getAbbreviation().getName(), Abbreviation.class, entityManager))
                 throw new EmfException("The case abbreviation is already in use. ");
         }      
      
     }
 
-    public <C> boolean nameUsed(String name, Class<C> clazz, Session session) {
-        return hibernateFacade.nameUsed(name, clazz, session);
+    public <C> boolean nameUsed(String name, Class<C> clazz, EntityManager entityManager) {
+        return hibernateFacade.nameUsed(name, clazz, entityManager);
     }
 
-    private void removeDatasetsOnOutput(User user, Session session, CaseOutput[] outputs) throws EmfException {
+    private void removeDatasetsOnOutput(User user, EntityManager entityManager, CaseOutput[] outputs) throws EmfException {
         DatasetDAO dsDao = new DatasetDAO();
 
-        session.clear();
+        entityManager.clear();
 
         for (CaseOutput output : outputs) {
-            EmfDataset dataset = dsDao.getDataset(session, output.getDatasetId());
+            EmfDataset dataset = dsDao.getDataset(entityManager, output.getDatasetId());
 
             if (dataset != null) {
                 try {
-                    dsDao.remove(user, dataset, session);
+                    dsDao.remove(user, dataset, entityManager);
                 } catch (EmfException e) {
                     if (DebugLevels.DEBUG_12())
                         System.out.println(e.getMessage());
@@ -1741,12 +1736,12 @@ public class CaseDAO {
         }
     }
 
-    public Object loadCaseOutput(CaseOutput output, Session session) {
-        CriteriaBuilderQueryRoot<CaseOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseOutput.class, session);
+    public Object loadCaseOutput(CaseOutput output, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseOutput.class, entityManager);
 
         Predicate[] criterions = uniqueCaseOutputCriteria(output, criteriaBuilderQueryRoot);
 
-        return hibernateFacade.load(session, criteriaBuilderQueryRoot, criterions);
+        return hibernateFacade.load(entityManager, criteriaBuilderQueryRoot, criterions);
     }
 
     private Predicate[] uniqueCaseOutputCriteria(CaseOutput output, CriteriaBuilderQueryRoot<CaseOutput> criteriaBuilderQueryRoot) {
@@ -1765,54 +1760,54 @@ public class CaseDAO {
         return new Predicate[] { c1, c2, c3, c4 };
     }
 
-    public boolean caseOutputExists(CaseOutput output, Session session) {
-        CriteriaBuilderQueryRoot<CaseOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseOutput.class, session);
+    public boolean caseOutputExists(CaseOutput output, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CaseOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseOutput.class, entityManager);
 
         Predicate[] criterions = uniqueCaseOutputCriteria(output, criteriaBuilderQueryRoot);
 
-        return hibernateFacade.exists(criteriaBuilderQueryRoot, criterions, session);
+        return hibernateFacade.exists(criteriaBuilderQueryRoot, criterions, entityManager);
     }
 
-    public void updateCaseOutput(CaseOutput output, Session session) {
-        hibernateFacade.updateOnly(output, session);
+    public void updateCaseOutput(CaseOutput output, EntityManager entityManager) {
+        hibernateFacade.updateOnly(output, entityManager);
     }
 
-    public void removeJobMessages(JobMessage[] msgs, Session session) {
-        hibernateFacade.remove(msgs, session);
+    public void removeJobMessages(JobMessage[] msgs, EntityManager entityManager) {
+        hibernateFacade.remove(msgs, entityManager);
     }
 
-    public List<QueueCaseOutput> getQueueCaseOutputs(Session session) {
-        CriteriaBuilderQueryRoot<QueueCaseOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(QueueCaseOutput.class, session);
+    public List<QueueCaseOutput> getQueueCaseOutputs(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<QueueCaseOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(QueueCaseOutput.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<QueueCaseOutput> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("createDate")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("createDate")), entityManager);
     }
 
-    public List<QueueCaseOutput> getQueueCaseOutputs(int caseId, int jobId, Session session) {
-        CriteriaBuilderQueryRoot<QueueCaseOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(QueueCaseOutput.class, session);
+    public List<QueueCaseOutput> getQueueCaseOutputs(int caseId, int jobId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<QueueCaseOutput> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(QueueCaseOutput.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<QueueCaseOutput> root = criteriaBuilderQueryRoot.getRoot();
 
         Predicate c1 = builder.equal(root.get("caseId"), Integer.valueOf(caseId));
         Predicate c2 = builder.equal(root.get("jobId"), Integer.valueOf(jobId));
 
-        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { c1, c2 }, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { c1, c2 }, entityManager);
     }
 
-    public void addQueueCaseOutput(QueueCaseOutput output, Session session) {
-        hibernateFacade.add(output, session);
+    public void addQueueCaseOutput(QueueCaseOutput output, EntityManager entityManager) {
+        hibernateFacade.add(output, entityManager);
     }
 
-    public void removeQedOutput(QueueCaseOutput output, Session session) {
-        hibernateFacade.remove(output, session);
+    public void removeQedOutput(QueueCaseOutput output, EntityManager entityManager) {
+        hibernateFacade.remove(output, entityManager);
     }
 
-    public String[] getAllCaseNameIDs(Session session) {
-        List<?> names = session.createQuery(
-                "SELECT obj.name from " + Case.class.getSimpleName() + " as obj ORDER BY obj.name").list();
-        List<?> ids = session.createQuery(
-                "SELECT obj.id from " + Case.class.getSimpleName() + " as obj ORDER BY obj.name").list();
+    public String[] getAllCaseNameIDs(EntityManager entityManager) {
+        List<Case> names = entityManager.createQuery(
+                "SELECT obj.name from " + Case.class.getSimpleName() + " as obj ORDER BY obj.name", Case.class).getResultList();
+        List<Case> ids = entityManager.createQuery(
+                "SELECT obj.id from " + Case.class.getSimpleName() + " as obj ORDER BY obj.name", Case.class).getResultList();
         int size = names.size();
 
         if (size != ids.size())
@@ -1844,16 +1839,16 @@ public class CaseDAO {
     public CaseParameter[] getCaseParametersFromEnvName(int caseId, String envName, int model_to_run_id)
             throws EmfException {
         // Get case parameters that match a specific environment variables name
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             // Get environmental variable corresponding to this name
-            ParameterEnvVar envVar = getParameterEnvVar(envName, model_to_run_id, session);
+            ParameterEnvVar envVar = getParameterEnvVar(envName, model_to_run_id, entityManager);
             if (envVar == null) {
                 throw new EmfException("Could not get parameter environmental variable for " + envName);
 
             }
             // Get parameters corresponding to this environmental variable
-            List<CaseParameter> parameters = getCaseParametersFromEnv(caseId, envVar, session);
+            List<CaseParameter> parameters = getCaseParametersFromEnv(caseId, envVar, entityManager);
             if (parameters == null) {
                 throw new EmfException("Could not get parameters for " + envName);
             }
@@ -1864,8 +1859,8 @@ public class CaseDAO {
             throw new EmfException("Could not get case parameters for " + envName);
 
         } finally {
-            if (session != null || !session.isConnected()) {
-                session.close();
+            if (entityManager != null) {
+                entityManager.close();
             }
         }
     }
@@ -2128,52 +2123,52 @@ public class CaseDAO {
         }
     }
 
-    public List<Case> getSensitivityCases(int parentCaseId, Session session) {
-        CriteriaBuilderQueryRoot<CasesSens> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CasesSens.class, session);
-        List<CasesSens> caseIds = hibernateFacade.get(session, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("parentCaseid"), Integer.valueOf(parentCaseId)));
+    public List<Case> getSensitivityCases(int parentCaseId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<CasesSens> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CasesSens.class, entityManager);
+        List<CasesSens> caseIds = hibernateFacade.get(entityManager, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("parentCaseid"), Integer.valueOf(parentCaseId)));
 
         List<Case> sensitivityCases = new ArrayList<Case>();
 
         for (Iterator<CasesSens> iter = caseIds.iterator(); iter.hasNext();)
-            sensitivityCases.add(this.getCase(iter.next().getSensCaseId(), session));
+            sensitivityCases.add(this.getCase(iter.next().getSensCaseId(), entityManager));
 
         return sensitivityCases;
     }
 
-    public String[] getJobGroups(int caseId, Session session) {
-        List<?> groups = session.createQuery(
+    public String[] getJobGroups(int caseId, EntityManager entityManager) {
+        List<String> groups = entityManager.createQuery(
                 "SELECT DISTINCT obj.jobGroup from " + CaseJob.class.getSimpleName() + " as obj WHERE obj.caseId = "
-                        + caseId + " ORDER BY obj.jobGroup").list();
+                        + caseId + " ORDER BY obj.jobGroup", String.class).getResultList();
 
         return groups.toArray(new String[0]);
     }
 
-    public void checkParentChildRelationship(Case caseObj, Session session) throws EmfException {
+    public void checkParentChildRelationship(Case caseObj, EntityManager entityManager) throws EmfException {
         int caseId = caseObj.getId();
 
-        List<?> parentCases = session.createQuery(
+        List<Integer> parentCases = entityManager.createQuery(
                 "SELECT obj.sensCaseId FROM " + CasesSens.class.getSimpleName() + " as obj WHERE obj.parentCaseid = "
-                        + caseId + " ORDER BY obj.parentCaseid").list();
+                        + caseId + " ORDER BY obj.parentCaseid", Integer.class).getResultList();
 
         if (parentCases.size() == 1)
             throw new EmfException("Case " + caseObj.getName() + " is the parent case of "
-                    + getCase(Integer.parseInt(parentCases.get(0).toString()), session).getName() + ".");
+                    + getCase(Integer.parseInt(parentCases.get(0).toString()), entityManager).getName() + ".");
 
         if (parentCases.size() > 1)
             throw new EmfException("Case " + caseObj.getName() + " is the parent case of multiple cases: "
-                    + getCase(Integer.parseInt(parentCases.get(0).toString()), session).getName() + ", etc.");
+                    + getCase(Integer.parseInt(parentCases.get(0).toString()), entityManager).getName() + ", etc.");
 
     }
 
-    public void checkJobDependency(CaseJob[] jobs, Session session) throws EmfException {
-        CriteriaBuilderQueryRoot<CaseJob> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseJob.class, session);
+    public void checkJobDependency(CaseJob[] jobs, EntityManager entityManager) throws EmfException {
+        CriteriaBuilderQueryRoot<CaseJob> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(CaseJob.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseJob> root = criteriaBuilderQueryRoot.getRoot();
 
         Predicate c1 = builder.isNotNull(root.get("dependentJobs"));
         Predicate c2 = builder.isNotEmpty(root.get("dependentJobs"));
 
-        List<CaseJob> jobsDeps = hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { c1, c2 }, session);
+        List<CaseJob> jobsDeps = hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { c1, c2 }, entityManager);
 
         for (Iterator<CaseJob> iter = jobsDeps.iterator(); iter.hasNext();) {
             CaseJob jobDeps = iter.next();
@@ -2190,10 +2185,10 @@ public class CaseDAO {
         }
     }
 
-    public void removeChildCase(int caseId, Session session) {
-        List<?> childrenCases = session.createQuery(
+    public void removeChildCase(int caseId, EntityManager entityManager) {
+        List<Integer> childrenCases = entityManager.createQuery(
                 "SELECT obj.id FROM " + CasesSens.class.getSimpleName() + " as obj WHERE obj.sensCaseId = " + caseId
-                        + " ORDER BY obj.id").list();
+                        + " ORDER BY obj.id", Integer.class).getResultList();
 
         int numOfChildren = childrenCases.size();
 
@@ -2209,29 +2204,38 @@ public class CaseDAO {
                 clause += Integer.parseInt(childrenCases.get(i).toString());
         }
 
-        Transaction tx = session.beginTransaction();
-        String hqlDelete = "DELETE FROM " + CasesSens.class.getSimpleName() + " obj WHERE " + clause;
-        session.createQuery(hqlDelete).executeUpdate();
-        tx.commit();
+        final EntityTransaction tx = entityManager.getTransaction();
+        try {
+            tx.begin();
+            String hqlDelete = "DELETE FROM " + CasesSens.class.getSimpleName() + " obj WHERE " + clause;
+            entityManager.createQuery(hqlDelete).executeUpdate();
+            tx.commit(); 
+        }
+        catch (RuntimeException e) {
+            tx.rollback();
+            throw e;
+        } finally {
+            //
+        }
     }
 
-    public CaseParameter getCaseParameter(int caseId, ParameterEnvVar var, Session session) {
-        ParameterEnvVar loadedVar = this.getParameterEnvVar(var.getName(), var.getModelToRunId(), session);
+    public CaseParameter getCaseParameter(int caseId, ParameterEnvVar var, EntityManager entityManager) {
+        ParameterEnvVar loadedVar = this.getParameterEnvVar(var.getName(), var.getModelToRunId(), entityManager);
 
         if (loadedVar == null)
             return null;
 
         String query = "SELECT obj.id FROM " + CaseParameter.class.getSimpleName() + " obj WHERE " + "obj.caseID = "
                 + caseId + " AND obj.envVar.id = " + loadedVar.getId();
-        List<?> ids = session.createQuery(query).list();
+        List<Integer> ids = entityManager.createQuery(query, Integer.class).getResultList();
 
         if (ids == null || ids.size() == 0)
             return null;
 
-        return getCaseParameter(Integer.parseInt(ids.get(0).toString()), session);
+        return getCaseParameter(Integer.parseInt(ids.get(0).toString()), entityManager);
     }
 
-    public int[] getExternalDatasetIds(String source, Session session) {
+    public int[] getExternalDatasetIds(String source, EntityManager entityManager) {
         if (source == null || source.trim().isEmpty())
             return new int[0];
         // NOTE: emf.external_sources and emf.datasets tables are hardwired here, not a desirable
@@ -2242,7 +2246,7 @@ public class CaseDAO {
 
         String queryNonDeleted = "SELECT ds.id FROM emf.datasets ds WHERE lower(ds.status) <> 'deleted' AND ds.id IN ("
                 + queryAll + ")";
-        List<?> ids = session.createSQLQuery(queryNonDeleted).list();
+        List<Integer> ids = entityManager.createNativeQuery(queryNonDeleted, Integer.class).getResultList();
 
         int[] dsIds = new int[ids.size()];
 

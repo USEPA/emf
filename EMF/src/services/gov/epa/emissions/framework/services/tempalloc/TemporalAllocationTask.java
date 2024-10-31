@@ -1,13 +1,5 @@
 package gov.epa.emissions.framework.services.tempalloc;
 
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.hibernate.Session;
-
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.db.Datasource;
 import gov.epa.emissions.commons.db.DbServer;
@@ -15,6 +7,8 @@ import gov.epa.emissions.commons.db.version.Version;
 import gov.epa.emissions.commons.io.importer.DataTable;
 import gov.epa.emissions.commons.io.temporal.VersionedTableFormat;
 import gov.epa.emissions.commons.security.User;
+import gov.epa.emissions.framework.services.DbServerFactory;
+import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
 import gov.epa.emissions.framework.services.data.DataCommonsServiceImpl;
@@ -22,16 +16,21 @@ import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.DatasetTypesDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.Keywords;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
-import gov.epa.emissions.framework.services.tempalloc.DatasetCreator;
-import gov.epa.emissions.framework.services.DbServerFactory;
-import gov.epa.emissions.framework.services.EmfException;
+
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class TemporalAllocationTask {
 
     protected TemporalAllocation temporalAllocation;
 
-    protected HibernateSessionFactory sessionFactory;
+    protected EntityManagerFactory entityManagerFactory;
 
     protected DbServerFactory dbServerFactory;
 
@@ -53,17 +52,17 @@ public class TemporalAllocationTask {
 
     public TemporalAllocationTask(TemporalAllocation temporalAllocation, User user,
             DbServerFactory dbServerFactory, 
-            HibernateSessionFactory sessionFactory) throws EmfException {
+            EntityManagerFactory entityManagerFactory) throws EmfException {
         this.temporalAllocation = temporalAllocation;
         this.user = user;
         this.dbServerFactory = dbServerFactory;
         this.dbServer = dbServerFactory.getDbServer();
         this.datasource = dbServer.getEmissionsDatasource();
-        this.sessionFactory = sessionFactory;
-        this.statusDAO = new StatusDAO(sessionFactory);
-        this.temporalAllocationDAO = new TemporalAllocationDAO(dbServerFactory, sessionFactory);
-        this.keywords = new Keywords(new DataCommonsServiceImpl(sessionFactory).getKeywords());
-        this.creator = new DatasetCreator(temporalAllocation, user, sessionFactory, dbServerFactory, datasource, keywords);
+        this.entityManagerFactory = entityManagerFactory;
+        this.statusDAO = new StatusDAO(entityManagerFactory);
+        this.temporalAllocationDAO = new TemporalAllocationDAO(dbServerFactory, entityManagerFactory);
+        this.keywords = new Keywords(new DataCommonsServiceImpl(entityManagerFactory).getKeywords());
+        this.creator = new DatasetCreator(temporalAllocation, user, entityManagerFactory, dbServerFactory, datasource, keywords);
     }
     
     public TemporalAllocation getTemporalAllocation() {
@@ -250,12 +249,12 @@ public class TemporalAllocationTask {
     }
     
     private void deleteOutputsAndDatasets() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             List<EmfDataset> dsList = new ArrayList<EmfDataset>();
             
             // first get the datasets to delete
-            EmfDataset[] datasets = temporalAllocationDAO.getTemporalAllocationOutputDatasets(temporalAllocation.getId(), session);
+            EmfDataset[] datasets = temporalAllocationDAO.getTemporalAllocationOutputDatasets(temporalAllocation.getId(), entityManager);
             if (datasets != null) {
                 for (EmfDataset dataset : datasets) {
                     if (!user.isAdmin() && !dataset.getCreator().equalsIgnoreCase(user.getUsername())) {
@@ -271,24 +270,24 @@ public class TemporalAllocationTask {
 
             // delete and purge datasets
             if (dsList != null && dsList.size() > 0) {
-                temporalAllocationDAO.removeOutputDatasets(dsList.toArray(new EmfDataset[0]), user, session, dbServer);
+                temporalAllocationDAO.removeOutputDatasets(dsList.toArray(new EmfDataset[0]), user, entityManager, dbServer);
             }
         } catch (RuntimeException e) {
             e.printStackTrace();
             throw new EmfException("Could not remove temporal allocation outputs.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
     private void removeOutputs() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            temporalAllocationDAO.removeOutputs(temporalAllocation.getId(), session);
+            temporalAllocationDAO.removeOutputs(temporalAllocation.getId(), entityManager);
         } catch (RuntimeException e) {
             throw new EmfException("Could not remove previous temporal allocation result(s)");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
@@ -387,13 +386,13 @@ public class TemporalAllocationTask {
     }
     
     private void saveOutput(TemporalAllocationOutput output) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            temporalAllocationDAO.updateTemporalAllocationOutput(output, session);
+            temporalAllocationDAO.updateTemporalAllocationOutput(output, entityManager);
         } catch (RuntimeException e) {
             throw new EmfException("Could not save temporal allocation output: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
@@ -483,24 +482,24 @@ public class TemporalAllocationTask {
 
     protected DatasetType getDatasetType(String name) {
         DatasetType datasetType = null;
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            datasetType = new DatasetTypesDAO().get(name, session);
+            datasetType = new DatasetTypesDAO().get(name, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
         return datasetType;
     }
     
     private TemporalAllocationOutputType getOutputType(String name) throws EmfException {
         TemporalAllocationOutputType outputType = null;
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            outputType = temporalAllocationDAO.getTemporalAllocationOutputType(name, session);
+            outputType = temporalAllocationDAO.getTemporalAllocationOutputType(name, entityManager);
         } catch (RuntimeException e) {
             throw new EmfException("Could not get temporal allocation output type");
         } finally {
-            session.close();
+            entityManager.close();
         }
         return outputType;
     }
@@ -561,17 +560,17 @@ public class TemporalAllocationTask {
     }
 
     protected void updateOutputDatasetVersionRecordCount(TemporalAllocationOutput output) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         DatasetDAO dao = new DatasetDAO();
         
         try {
             EmfDataset result = output.getOutputDataset();
             
             if (result != null) {
-                Version version = dao.getVersion(session, result.getId(), result.getDefaultVersion());
+                Version version = dao.getVersion(entityManager, result.getId(), result.getDefaultVersion());
                 
                 if (version != null) {
-                    updateVersion(result, version, dbServer, session, dao);
+                    updateVersion(result, version, dbServer, entityManager, dao);
                     output.setRecordCount(version.getNumberRecords());
                     saveOutput(output);
                 }
@@ -580,25 +579,25 @@ public class TemporalAllocationTask {
             e.printStackTrace();
             throw new EmfException("Cannot update result dataset (id: " + output.getId() + "). " + e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
     
-    private void updateVersion(EmfDataset dataset, Version version, DbServer dbServer, Session session, DatasetDAO dao) throws Exception {
-        version = dao.obtainLockOnVersion(user, version.getId(), session);
-        version.setNumberRecords((int)dao.getDatasetRecordsNumber(dbServer, session, dataset, version));
-        dao.updateVersionNReleaseLock(version, session);
+    private void updateVersion(EmfDataset dataset, Version version, DbServer dbServer, EntityManager entityManager, DatasetDAO dao) throws Exception {
+        version = dao.obtainLockOnVersion(user, version.getId(), entityManager);
+        version.setNumberRecords((int)dao.getDatasetRecordsNumber(dbServer, entityManager, dataset, version));
+        dao.updateVersionNReleaseLock(version, entityManager);
     }
 
     private boolean isRunStatusCancelled() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return temporalAllocationDAO.getTemporalAllocationRunStatus(temporalAllocation.getId(), session).equals("Pending Cancel");
+            return temporalAllocationDAO.getTemporalAllocationRunStatus(temporalAllocation.getId(), entityManager).equals("Pending Cancel");
         } catch (RuntimeException e) {
             throw new EmfException("Could not check if temporal allocation run was cancelled.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 }

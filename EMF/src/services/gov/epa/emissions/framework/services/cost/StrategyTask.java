@@ -7,15 +7,16 @@ import gov.epa.emissions.framework.services.basic.EmfProperty;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.cost.analysis.Strategy;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 public class StrategyTask implements Runnable {
 
@@ -29,16 +30,16 @@ public class StrategyTask implements Runnable {
 
     private ControlStrategyService csService;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     public StrategyTask(Strategy strategy, User user, 
             Services services, ControlStrategyService service,
-            HibernateSessionFactory sessionFactory) {
+            EntityManagerFactory entityManagerFactory) {
         this.user = user;
         this.services = services;
         this.strategy = strategy;
         this.csService = service;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     public void run() {
@@ -134,12 +135,12 @@ public class StrategyTask implements Runnable {
 //    }
 
     private Long strategyPoolSize() {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            EmfProperty property = new EmfPropertiesDAO().getProperty("strategy-pool-size", session);
+            EmfProperty property = new EmfPropertiesDAO().getProperty("strategy-pool-size", entityManager);
             return Long.parseLong(property.getValue());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     private Long getControlStrategyRunningCount() {

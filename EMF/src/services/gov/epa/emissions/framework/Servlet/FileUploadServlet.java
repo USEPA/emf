@@ -1,21 +1,24 @@
 package gov.epa.emissions.framework.Servlet;
+
+import gov.epa.emissions.framework.services.basic.EmfProperty;
+import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
+import gov.epa.emissions.framework.services.persistence.JpaEntityManagerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import gov.epa.emissions.framework.services.basic.EmfProperty;
-import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.hibernate.Session;
 
 /**
  * A Java servlet that handles file upload from client.
@@ -31,13 +34,13 @@ public class FileUploadServlet extends HttpServlet {
     // upload settings
     private static final int MEMORY_THRESHOLD   = 1024 * 1024 * 3;  // 3MB
 
-    private HibernateSessionFactory hibernateSessionFactory;
+    private EntityManagerFactory entityManagerFactory;
     private String tempDirectory;
     private Integer maxFileSize;
     private Integer maxRequestSize;
 
     public FileUploadServlet() {
-        this.hibernateSessionFactory = HibernateSessionFactory.get();
+        this.entityManagerFactory = JpaEntityManagerFactory.get();;
     }
 
     /**
@@ -113,33 +116,33 @@ public class FileUploadServlet extends HttpServlet {
 
     private String getTempDirectory() {
         if (tempDirectory == null) {
-            Session session = hibernateSessionFactory.getSession();
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
             try {
-                EmfProperty eximTempDir = new EmfPropertiesDAO().getProperty("ImportExportTempDir", session);
+                EmfProperty eximTempDir = new EmfPropertiesDAO().getProperty("ImportExportTempDir", entityManager);
 
                 if (eximTempDir != null) {
                     tempDirectory = eximTempDir.getValue();
                 }
             } finally {
-                session.close();
+                entityManager.close();
             }
         }
         return tempDirectory;
     }
 
     private int getMaxFileSize() {
-        Session session = hibernateSessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            EmfProperty emfProperty = new EmfPropertiesDAO().getProperty(EmfProperty.MAX_FILE_UPLOAD_SIZE, session);
+            EmfProperty emfProperty = new EmfPropertiesDAO().getProperty(EmfProperty.MAX_FILE_UPLOAD_SIZE, entityManager);
 
             if (emfProperty != null) {
                 maxFileSize = 1024 * 1024 * Integer.parseInt(emfProperty.getValue());
                 maxRequestSize = 1024 * 1024 * (Integer.parseInt(emfProperty.getValue()) + 10);
             }
         } finally {
-            session.close();
+            entityManager.close();
         }
         return maxFileSize;
     }
-//Integer.parseInt(session.userService().getPropertyValue(EmfProperty.MAX_FILE_UPLOAD_SIZE));
+//Integer.parseInt(entityManager.userService().getPropertyValue(EmfProperty.MAX_FILE_UPLOAD_SIZE));
 }

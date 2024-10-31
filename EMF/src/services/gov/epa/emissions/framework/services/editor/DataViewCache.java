@@ -2,27 +2,27 @@ package gov.epa.emissions.framework.services.editor;
 
 import gov.epa.emissions.commons.db.PageReader;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
 
 public interface DataViewCache {
 
     PageReader reader(DataAccessToken token);
 
-    void init(DataAccessToken token, Session session) throws Exception;
+    void init(DataAccessToken token, EntityManager entityManager) throws Exception;
 
-    void applyConstraints(DataAccessToken token, String columnFilter, String rowFilter, String sortOrder, Session session)
+    void applyConstraints(DataAccessToken token, String columnFilter, String rowFilter, String sortOrder, EntityManager entityManager)
             throws Exception;
 
-    int defaultPageSize(Session session);
+    int defaultPageSize(EntityManager entityManager);
 
     int pageSize(DataAccessToken token);
 
-    void init(DataAccessToken token, int pageSize, Session session) throws Exception;
+    void init(DataAccessToken token, int pageSize, EntityManager entityManager) throws Exception;
 
     void invalidate() throws Exception;
 
-    void reload(DataAccessToken token, Session session) throws Exception;
+    void reload(DataAccessToken token, EntityManager entityManager) throws Exception;
 
-    void close(DataAccessToken token, Session session) throws Exception;
+    void close(DataAccessToken token, EntityManager entityManager) throws Exception;
 
 }

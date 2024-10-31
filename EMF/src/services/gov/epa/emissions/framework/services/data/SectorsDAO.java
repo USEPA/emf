@@ -5,7 +5,7 @@ import java.util.List;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Root;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
 
 import gov.epa.emissions.commons.data.Sector;
 import gov.epa.emissions.commons.security.User;
@@ -25,36 +25,36 @@ public class SectorsDAO {
         hibernateFacade = new HibernateFacade();
     }
 
-    public List getAll(Session session) {
-        CriteriaBuilderQueryRoot<Sector> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Sector.class, session);
+    public List getAll(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<Sector> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Sector.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<Sector> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
     
-    public Sector getSector(String name, Session session) {
-        return hibernateFacade.load(Sector.class, "name", name, session);
+    public Sector getSector(String name, EntityManager entityManager) {
+        return hibernateFacade.load(Sector.class, "name", name, entityManager);
     }
     
-    public void addSector(Sector sector, Session session) {
-        hibernateFacade.add(sector, session);
+    public void addSector(Sector sector, EntityManager entityManager) {
+        hibernateFacade.add(sector, entityManager);
     }
 
-    public Sector obtainLocked(User user, Sector sector, Session session) {
-        return (Sector) lockingScheme.getLocked(user, current(sector, session), session);
+    public Sector obtainLocked(User user, Sector sector, EntityManager entityManager) {
+        return (Sector) lockingScheme.getLocked(user, current(sector, entityManager), entityManager);
     }
 
-    public Sector update(Sector sector, Session session) throws EmfException {
-        return (Sector) lockingScheme.releaseLockOnUpdate(sector, current(sector, session), session);
+    public Sector update(Sector sector, EntityManager entityManager) throws EmfException {
+        return (Sector) lockingScheme.releaseLockOnUpdate(sector, current(sector, entityManager), entityManager);
     }
 
-    public Sector releaseLocked(User user, Sector locked, Session session) {
-        return (Sector) lockingScheme.releaseLock(user, current(locked, session), session);
+    public Sector releaseLocked(User user, Sector locked, EntityManager entityManager) {
+        return (Sector) lockingScheme.releaseLock(user, current(locked, entityManager), entityManager);
     }
 
-    private Sector current(Sector sector, Session session) {
-        return current(sector.getId(), session);
+    private Sector current(Sector sector, EntityManager entityManager) {
+        return current(sector.getId(), entityManager);
     }
 
     /*
@@ -63,31 +63,31 @@ public class SectorsDAO {
      * 1. Should Exist 2. Your id matches existing Id 3. Your name should not match another object's name
      * 
      */
-    public boolean canUpdate(Sector sector, Session session) {
-        if (!exists(sector.getId(), session)) {
+    public boolean canUpdate(Sector sector, EntityManager entityManager) {
+        if (!exists(sector.getId(), entityManager)) {
             return false;
         }
 
-        Sector current = current(sector.getId(), session);
-        // The current object is saved in the session. Hibernate cannot persist our
+        Sector current = current(sector.getId(), entityManager);
+        // The current object is saved in the entityManager. Hibernate cannot persist our
         // object with the same id.
-        session.clear();
+        entityManager.clear();
         if (current.getName().equals(sector.getName()))
             return true;
 
-        return !nameUsed(sector.getName(), session);
+        return !nameUsed(sector.getName(), entityManager);
     }
 
-    private boolean nameUsed(String name, Session session) {
-        return hibernateFacade.nameUsed(name, Sector.class, session);
+    private boolean nameUsed(String name, EntityManager entityManager) {
+        return hibernateFacade.nameUsed(name, Sector.class, entityManager);
     }
 
-    private Sector current(int id, Session session) {
-        return hibernateFacade.current(id, Sector.class, session);
+    private Sector current(int id, EntityManager entityManager) {
+        return hibernateFacade.current(id, Sector.class, entityManager);
     }
 
-    private boolean exists(int id, Session session) {
-        return hibernateFacade.exists(id, Sector.class, session);
+    private boolean exists(int id, EntityManager entityManager) {
+        return hibernateFacade.exists(id, Sector.class, entityManager);
     }
 
 }

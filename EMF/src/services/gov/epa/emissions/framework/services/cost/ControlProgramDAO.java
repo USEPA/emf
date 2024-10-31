@@ -9,7 +9,6 @@ import gov.epa.emissions.framework.services.basic.BasicSearchFilter;
 import gov.epa.emissions.framework.services.basic.SearchDAOUtility;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.HibernateFacade.CriteriaBuilderQueryRoot;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.services.persistence.LockingScheme;
 
 import java.sql.Connection;
@@ -21,21 +20,20 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 
 public class ControlProgramDAO {
     private LockingScheme lockingScheme;
 
     private HibernateFacade hibernateFacade;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private DbServerFactory dbServerFactory;
     
@@ -44,29 +42,25 @@ public class ControlProgramDAO {
         hibernateFacade = new HibernateFacade();
     }
 
-    public ControlProgramDAO(DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory) {
+    public ControlProgramDAO(DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory) {
         this();
         this.dbServerFactory = dbServerFactory;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
     }
 
-    public int add(ControlProgram element, Session session) {
-        return addObject(element, session);
+    public int add(ControlProgram element, EntityManager entityManager) {
+        return hibernateFacade.add(element, entityManager);
     }
 
-    private int addObject(Object obj, Session session) {
-        return (Integer)hibernateFacade.add(obj, session);
-    }
-
-    public List<ControlProgram> all(Session session) {
-        CriteriaBuilderQueryRoot<ControlProgram> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlProgram.class, session);
+    public List<ControlProgram> all(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<ControlProgram> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlProgram.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<ControlProgram> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public List getControlPrograms(Session session, BasicSearchFilter searchFilter) {
+    public List getControlPrograms(EntityManager entityManager, BasicSearchFilter searchFilter) {
         String hql = "select distinct cp " +
                 "from ControlProgram as cp " +
                 "left join cp.dataset as dataset " +
@@ -78,66 +72,66 @@ public class ControlProgramDAO {
             if (StringUtils.isNotBlank(whereClause))
                 hql += " where " + whereClause;
         }
-        return session.createQuery(hql).list();
+        return entityManager.createQuery(hql).getResultList();
     }
 
-    public List<ControlProgramType> getControlProgramTypes(Session session) {
-        CriteriaBuilderQueryRoot<ControlProgramType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlProgramType.class, session);
+    public List<ControlProgramType> getControlProgramTypes(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<ControlProgramType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(ControlProgramType.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<ControlProgramType> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public ControlProgram obtainLocked(User owner, int id, Session session) {
-        return (ControlProgram) lockingScheme.getLocked(owner, current(id, session), session);
+    public ControlProgram obtainLocked(User owner, int id, EntityManager entityManager) {
+        return (ControlProgram) lockingScheme.getLocked(owner, current(id, entityManager), entityManager);
     }
 
-    public void releaseLocked(User user, int id, Session session) {
-        ControlProgram current = getControlProgram(id, session);
-        lockingScheme.releaseLock(user, current, session);
+    public void releaseLocked(User user, int id, EntityManager entityManager) {
+        ControlProgram current = getControlProgram(id, entityManager);
+        lockingScheme.releaseLock(user, current, entityManager);
     }
 
-    public ControlProgram update(ControlProgram locked, Session session) throws EmfException {
-        return (ControlProgram) lockingScheme.releaseLockOnUpdate(locked, current(locked, session), session);
+    public ControlProgram update(ControlProgram locked, EntityManager entityManager) throws EmfException {
+        return (ControlProgram) lockingScheme.releaseLockOnUpdate(locked, current(locked, entityManager), entityManager);
     }
 
-    public ControlProgram updateWithLock(ControlProgram locked, Session session) throws EmfException {
-        return (ControlProgram) lockingScheme.renewLockOnUpdate(locked, current(locked, session), session);
+    public ControlProgram updateWithLock(ControlProgram locked, EntityManager entityManager) throws EmfException {
+        return (ControlProgram) lockingScheme.renewLockOnUpdate(locked, current(locked, entityManager), entityManager);
     }
 
-    private ControlProgram current(ControlProgram controlProgram, Session session) {
-        return current(controlProgram.getId(), session);
+    private ControlProgram current(ControlProgram controlProgram, EntityManager entityManager) {
+        return current(controlProgram.getId(), entityManager);
     }
 
-    public boolean canUpdate(ControlProgram controlProgram, Session session) {
-        if (!exists(controlProgram.getId(), session)) {
+    public boolean canUpdate(ControlProgram controlProgram, EntityManager entityManager) {
+        if (!exists(controlProgram.getId(), entityManager)) {
             return false;
         }
 
-        ControlProgram current = current(controlProgram.getId(), session);
+        ControlProgram current = current(controlProgram.getId(), entityManager);
 
-        session.clear();// clear to flush current
+        entityManager.clear();// clear to flush current
 
         if (current.getName().equals(controlProgram.getName()))
             return true;
 
-        return !nameUsed(controlProgram.getName(), session);
+        return !nameUsed(controlProgram.getName(), entityManager);
     }
 
-    public boolean nameUsed(String name, Session session) {
-        return hibernateFacade.nameUsed(name, ControlProgram.class, session);
+    public boolean nameUsed(String name, EntityManager entityManager) {
+        return hibernateFacade.nameUsed(name, ControlProgram.class, entityManager);
     }
 
-    private ControlProgram current(int id, Session session) {
-        return hibernateFacade.current(id, ControlProgram.class, session);
+    private ControlProgram current(int id, EntityManager entityManager) {
+        return hibernateFacade.current(id, ControlProgram.class, entityManager);
     }
 
-    public boolean exists(int id, Session session) {
-        return hibernateFacade.exists(id, ControlProgram.class, session);
+    public boolean exists(int id, EntityManager entityManager) {
+        return hibernateFacade.exists(id, ControlProgram.class, entityManager);
     }
 
-    public void remove(ControlProgram controlProgram, Session session) throws EmfException, SQLException {
+    public void remove(ControlProgram controlProgram, EntityManager entityManager) throws EmfException, SQLException {
         //see if control strategy is using the program, if so throw an error...
         DbServer dbServer = this.dbServerFactory.getDbServer();
         Datasource datasource = dbServer.getEmissionsDatasource();
@@ -146,7 +140,7 @@ public class ControlProgramDAO {
         String sqlString =  "select cS.name from emf.control_strategies as cS,  " +
         		"emf.control_strategy_programs as csP where csP.control_strategy_id = cS.id " +
         		"and csP.control_program_id = " + controlProgram.getId() + ";";
-        //        List list = session.createQuery("select cS.name " +
+        //        List list = entityManager.createQuery("select cS.name " +
         //                "from ControlStrategy as cS where cS.id in " +
         //                "(select EDT.id from ControlProgram as cP " +
         //                "inner join cS.controlPrograms as EDT where cP.id = "+controlProgram.getId() + ")").list();
@@ -159,57 +153,56 @@ public class ControlProgramDAO {
         if ( resultSet != null && resultSet.next() )
             throw new EmfException("Error: dataset used by control strategy: " + resultSet.getString("name"));
         //        resultSet.close();
-        hibernateFacade.remove(controlProgram, session);        
+        hibernateFacade.remove(controlProgram, entityManager);        
         resultSet.close();
 }
 
-    public ControlProgram getByName(String name, Session session) {
-        ControlProgram cs = hibernateFacade.load(ControlProgram.class, "name", new String(name), session);
+    public ControlProgram getByName(String name, EntityManager entityManager) {
+        ControlProgram cs = hibernateFacade.load(ControlProgram.class, "name", new String(name), entityManager);
         return cs;
     }
 
-    public ControlProgram getControlProgram(int id, Session session) {
-        ControlProgram cs = hibernateFacade.load(ControlProgram.class, "id", Integer.valueOf(id), session);
+    public ControlProgram getControlProgram(int id, EntityManager entityManager) {
+        ControlProgram cs = hibernateFacade.load(ControlProgram.class, "id", Integer.valueOf(id), entityManager);
         return cs;
     }
 
-    public List<ControlProgram> getControlProgramsByControlMeasures(int[] cmIds, Session session) {
+    public List<ControlProgram> getControlProgramsByControlMeasures(int[] cmIds, EntityManager entityManager) {
         List<ControlProgram> list = new ArrayList<ControlProgram>();
         String idList = "";
         for (int i = 0; i < cmIds.length; ++i) {
             idList += (i > 0 ? ","  : "") + cmIds[i];
         }
         try {
-            Query query = session.createQuery("select distinct cp "
+            list = entityManager.createQuery("select distinct cp "
                     + "FROM ControlProgram AS cp "
                     + (cmIds != null && cmIds.length > 0 
                             ? "inner join cp.controlMeasures AS cpm "
                                + "WHERE cpm.id in (" + idList + ") " 
                             : "")
-                    + "order by cp.name");
-            query.setCacheable(true);
-            list = query.list();
+                    + "order by cp.name").getResultList();
         } catch(Exception ex) {
             ex.printStackTrace();
         }
         return list;
     }
     
-    public void updateControlProgram(int controlProgramId, String msg, Session session, int[] measureIdsToDelete) throws EmfException {
-        Transaction tx = null;
+    public void updateControlProgram(int controlProgramId, String msg, EntityManager entityManager, int[] measureIdsToDelete) throws EmfException {
         try {
-            tx = session.beginTransaction();
-            session.createQuery("update ControlProgram set description =  '' || "
+
+            hibernateFacade.executeInsideTransaction(em -> {
+                entityManager.createQuery("update ControlProgram set description =  '' || "
                         + "description || '\n------\n' || :msg, lastModifiedDate = :date where id = :id")
-            .setParameter("msg", msg)
-            .setParameter("date", new Date())
-            .setParameter("id", Integer.valueOf(controlProgramId))
-            .executeUpdate();
-            tx.commit();
-            session.clear();
+                    .setParameter("msg", msg)
+                    .setParameter("date", new Date())
+                    .setParameter("id", Integer.valueOf(controlProgramId))
+                    .executeUpdate();
+            }, entityManager);
+
+            entityManager.clear();
             
             //also need to purge measures that are being deleted...this is needed to keep hibernate list_index in synch...
-            ControlProgram cs = getControlProgram(controlProgramId, session);
+            ControlProgram cs = getControlProgram(controlProgramId, entityManager);
             List<ControlMeasure> measures = new ArrayList<ControlMeasure>();
             measures.addAll(Arrays.asList(cs.getControlMeasures()));
             for (ControlMeasure m : cs.getControlMeasures()) {
@@ -220,11 +213,10 @@ public class ControlProgramDAO {
                 }
             }
             cs.setControlMeasures(measures.toArray(new ControlMeasure[0]));
-            updateWithLock(cs, session);
+            updateWithLock(cs, entityManager);
 
             
         } catch (HibernateException e) {
-            tx.rollback();
             throw e;
         } catch (EmfException e) {
             // NOTE Auto-generated catch block

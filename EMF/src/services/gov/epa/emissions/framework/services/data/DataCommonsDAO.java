@@ -27,13 +27,12 @@ import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 public class DataCommonsDAO {
 
@@ -64,68 +63,68 @@ public class DataCommonsDAO {
         datasetDAO = new DatasetDAO();
     }
 
-    public List getKeywords(Session session) {
-        return keywordsDAO.getKeywords(session);
+    public List getKeywords(EntityManager entityManager) {
+        return keywordsDAO.getKeywords(entityManager);
     }
 
-    public void add(Region region, Session session) {
-        addObject(region, session);
+    public void add(Region region, EntityManager entityManager) {
+        hibernateFacade.add(region, entityManager);
     }
     
-    public void add(DatasetNote note, Session session) {
-        addObject(note, session);
+    public void add(DatasetNote note, EntityManager entityManager) {
+        hibernateFacade.add(note, entityManager);
     }
 
-    public void add(Project project, Session session) {
-        addObject(project, session);
+    public void add(Project project, EntityManager entityManager) {
+        hibernateFacade.add(project, entityManager);
     }
 
-    public List<Region> getRegions(Session session) {
-        CriteriaBuilderQueryRoot<Region> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Region.class, session);
+    public List<Region> getRegions(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<Region> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Region.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<Region> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
     
-    public List<UserFeature> getUserFeatures(Session session) {
-        CriteriaBuilderQueryRoot<UserFeature> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(UserFeature.class, session);
+    public List<UserFeature> getUserFeatures(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<UserFeature> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(UserFeature.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<UserFeature> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public List<Project> getProjects(Session session) {
-        CriteriaBuilderQueryRoot<Project> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Project.class, session);
+    public List<Project> getProjects(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<Project> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Project.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<Project> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public List<Country> getCountries(Session session) {
-        CriteriaBuilderQueryRoot<Country> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Country.class, session);
+    public List<Country> getCountries(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<Country> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Country.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<Country> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public List getSectors(Session session) {
-        return sectorsDao.getAll(session);
+    public List getSectors(EntityManager entityManager) {
+        return sectorsDao.getAll(entityManager);
     }
 
-    public List getDatasetTypes(Session session) {
-        return datasetTypesDAO.getAll(session);
+    public List getDatasetTypes(EntityManager entityManager) {
+        return datasetTypesDAO.getAll(entityManager);
     }
 
-    public List<DatasetType> getDatasetTypes(Session session, BasicSearchFilter searchFilter) {
-        return datasetTypesDAO.getDatasetTypes(session, searchFilter);
+    public List<DatasetType> getDatasetTypes(EntityManager entityManager, BasicSearchFilter searchFilter) {
+        return datasetTypesDAO.getDatasetTypes(entityManager, searchFilter);
     }
 
-    public List<DatasetType> getDatasetTypes(int userId, Session session) {
-        return session
+    public List<DatasetType> getDatasetTypes(int userId, EntityManager entityManager) {
+        return entityManager
             .createQuery(
                     "select DT from DatasetType as DT " 
                     + "where "
@@ -133,11 +132,11 @@ public class DataCommonsDAO {
                     + " inner join U.excludedDatasetTypes as EDT where U.id = "
                     + userId + ")" 
                     + " order by DT.name", DatasetType.class)
-            .list();
+            .getResultList();
     }
 
-    public List<DatasetType> getLightDatasetTypes(int userId, Session session) {
-        return session
+    public List<DatasetType> getLightDatasetTypes(int userId, EntityManager entityManager) {
+        return entityManager
             .createQuery(
                     "select new DatasetType(DT.id, DT.name) from DatasetType as DT " 
                     + "where "
@@ -145,99 +144,99 @@ public class DataCommonsDAO {
                     + " inner join U.excludedDatasetTypes as EDT where U.id = "
                     + userId + ")" 
                     + " order by DT.name", DatasetType.class) 
-            .list();
+            .getResultList();
         
 //        "select new DatasetType(dT.id, dT.name) " +
 //        "from DatasetType dT order by dT.name"
     }
 
-    public List<DatasetType> getLightDatasetTypes(Session session) {
-        return datasetTypesDAO.getLightAll(session);
+    public List<DatasetType> getLightDatasetTypes(EntityManager entityManager) {
+        return datasetTypesDAO.getLightAll(entityManager);
     }
 
-    public DatasetType getLightDatasetType(String name, Session session) {
-        return session
+    public DatasetType getLightDatasetType(String name, EntityManager entityManager) {
+        return entityManager
                 .createQuery(
                         "select new DatasetType(DT.id, DT.name) from DatasetType as DT " 
                         + "where DT.name = :datasetTypeName", DatasetType.class) 
                 .setParameter("datasetTypeName", name)
-                .uniqueResult();
+                .getSingleResult();
     }
 
-    public DatasetType getDatasetType(String name, Session session) {
-        return datasetTypesDAO.get(name, session);
+    public DatasetType getDatasetType(String name, EntityManager entityManager) {
+        return datasetTypesDAO.get(name, entityManager);
     }
 
-    public DatasetType getDatasetType(int id, Session session) {
-        return datasetTypesDAO.current(id, session);
+    public DatasetType getDatasetType(int id, EntityManager entityManager) {
+        return datasetTypesDAO.current(id, entityManager);
     }
 
-    public Sector obtainLockedSector(User user, Sector sector, Session session) {
-        return sectorsDao.obtainLocked(user, sector, session);
+    public Sector obtainLockedSector(User user, Sector sector, EntityManager entityManager) {
+        return sectorsDao.obtainLocked(user, sector, entityManager);
     }
 
-    public DatasetType obtainLockedDatasetType(User user, DatasetType type, Session session) {
-        return datasetTypesDAO.obtainLocked(user, type, session);
+    public DatasetType obtainLockedDatasetType(User user, DatasetType type, EntityManager entityManager) {
+        return datasetTypesDAO.obtainLocked(user, type, entityManager);
     }
 
-    public Sector updateSector(Sector sector, Session session) throws EmfException {
-        return sectorsDao.update(sector, session);
+    public Sector updateSector(Sector sector, EntityManager entityManager) throws EmfException {
+        return sectorsDao.update(sector, entityManager);
     }
     
-    public GeoRegion obtainLockedRegion(User user, GeoRegion region, Session session) {
-        return (GeoRegion)lockingScheme.getLocked(user, current(region, session), session);
+    public GeoRegion obtainLockedRegion(User user, GeoRegion region, EntityManager entityManager) {
+        return (GeoRegion)lockingScheme.getLocked(user, current(region, entityManager), entityManager);
     }
     
-    public GeoRegion updateGeoregion(GeoRegion region, User user, Session session) throws EmfException {
-        return (GeoRegion) lockingScheme.releaseLockOnUpdate(region, current(region, session), session);
+    public GeoRegion updateGeoregion(GeoRegion region, User user, EntityManager entityManager) throws EmfException {
+        return (GeoRegion) lockingScheme.releaseLockOnUpdate(region, current(region, entityManager), entityManager);
     }
     
-    private GeoRegion current(GeoRegion region, Session session) {
-        return current(region.getId(), GeoRegion.class, session);
+    private GeoRegion current(GeoRegion region, EntityManager entityManager) {
+        return current(region.getId(), GeoRegion.class, entityManager);
     }
 
-    public Revision obtainLockedRevision(User user, Revision revision, Session session) {
-        return datasetDAO.obtainLocked(user, revision, session);
+    public Revision obtainLockedRevision(User user, Revision revision, EntityManager entityManager) {
+        return datasetDAO.obtainLocked(user, revision, entityManager);
     }
 
-    public Revision releaseLockedRevision (User user, Revision locked, Session session) {
-        return datasetDAO.releaseLocked(user, locked, session);
+    public Revision releaseLockedRevision (User user, Revision locked, EntityManager entityManager) {
+        return datasetDAO.releaseLocked(user, locked, entityManager);
     }
 
-    public Revision updateRevision(Revision revision, Session session) throws EmfException {
-        return datasetDAO.update(revision, session);
+    public Revision updateRevision(Revision revision, EntityManager entityManager) throws EmfException {
+        return datasetDAO.update(revision, entityManager);
     }
 
-    public Version getVersion(int datasetId, int version, Session session) throws EmfException {
-        return datasetDAO.getVersion(session, datasetId, version);
+    public Version getVersion(int datasetId, int version, EntityManager entityManager) throws EmfException {
+        return datasetDAO.getVersion(entityManager, datasetId, version);
     }
 
-    public DatasetType updateDatasetType(DatasetType type, Session session) throws EmfException {
-        return datasetTypesDAO.update(type, session);
+    public DatasetType updateDatasetType(DatasetType type, EntityManager entityManager) throws EmfException {
+        return datasetTypesDAO.update(type, entityManager);
     }
 
-    public Sector releaseLockedSector(User user, Sector locked, Session session) {
-        return sectorsDao.releaseLocked(user, locked, session);
+    public Sector releaseLockedSector(User user, Sector locked, EntityManager entityManager) {
+        return sectorsDao.releaseLocked(user, locked, entityManager);
     }
 
-    public DatasetType releaseLockedDatasetType(User user, DatasetType locked, Session session) {
-        return datasetTypesDAO.releaseLocked(user, locked, session);
+    public DatasetType releaseLockedDatasetType(User user, DatasetType locked, EntityManager entityManager) {
+        return datasetTypesDAO.releaseLocked(user, locked, entityManager);
     }
 
-    public List getPollutants(Session session) {
-        return pollutantsDAO.getAll(session);
+    public List getPollutants(EntityManager entityManager) {
+        return pollutantsDAO.getAll(entityManager);
     }
 
-    public List getSourceGroups(Session session) {
-        return sourceGroupsDAO.getAll(session);
+    public List getSourceGroups(EntityManager entityManager) {
+        return sourceGroupsDAO.getAll(entityManager);
     }
 
-    public List getControlMeasureImportStatuses(String username, Session session) {
-        return getStatus(username, session);
+    public List getControlMeasureImportStatuses(String username, EntityManager entityManager) {
+        return getStatus(username, entityManager);
     }
 
-    public void removeDatasetTypes(DatasetType type, Session session) {
-        hibernateFacade.remove(type, session);
+    public void removeDatasetTypes(DatasetType type, EntityManager entityManager) {
+        hibernateFacade.remove(type, entityManager);
     }
     
     public void removeUserExcludedDatasetType(DatasetType type, DbServer dbServer) throws EmfException {
@@ -274,240 +273,227 @@ public class DataCommonsDAO {
         } 
     }
    
-    public void removeXFileFormat(XFileFormat fileFormat, Session session) {
-        hibernateFacade.remove(fileFormat, session);
+    public void removeXFileFormat(XFileFormat fileFormat, EntityManager entityManager) {
+        hibernateFacade.remove(fileFormat, entityManager);
     }
     
-    public void removeStatuses(String username, String type, Session session) {
+    public void removeStatuses(String username, String type, EntityManager entityManager) {
         String hqlDelete = "delete Status s where s.username = :username and s.type = :type";
-        Transaction tx = null;
         try {
-            tx = session.
-                    beginTransaction();
-            session.createQuery(hqlDelete)
-                .setParameter("username", username)
-                .setParameter("type", type)
-                .executeUpdate();
-            tx.commit();
+            hibernateFacade.executeInsideTransaction(em -> {
+                em.createQuery(hqlDelete)
+                    .setParameter("username", username)
+                    .setParameter("type", type)
+                    .executeUpdate();
+            }, entityManager);
         } catch (RuntimeException e) {
-            tx.rollback();
             throw e;
         }
     }
 
-    public List<Status> getStatuses(String username, Session session) {
-        return getStatus(username, session);
+    public List<Status> getStatuses(String username, EntityManager entityManager) {
+        return getStatus(username, entityManager);
     }
 
-    private List<Status> getStatus(String username, Session session) {
-        removeReadStatus(username, session);
+    private List<Status> getStatus(String username, EntityManager entityManager) {
+        removeReadStatus(username, entityManager);
 
-        Transaction tx = null;
         try {
-            tx = session.beginTransaction();
-
-            CriteriaBuilderQueryRoot<Status> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Status.class, session);
+            CriteriaBuilderQueryRoot<Status> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Status.class, entityManager);
             CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
             Root<Status> root = criteriaBuilderQueryRoot.getRoot();
 
             Predicate criterion1 = builder.equal(root.get("username"), username);
             Predicate criterion2 = builder.notEqual(root.get("type"), "CMImportDetailMsg");
 
-            List<Status> all = hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { criterion1, criterion2 }, builder.desc(root.get("timestamp")), session);
+            List<Status> all = hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { criterion1, criterion2 }, builder.desc(root.get("timestamp")), entityManager);
 
-            // mark read
-            for (Iterator<Status> iter = all.iterator(); iter.hasNext();) {
-                Status element = iter.next();
-                element.markRead();
-                session.save(element);
+            hibernateFacade.executeInsideTransaction(em -> {
+                // mark read
+                for (Iterator<Status> iter = all.iterator(); iter.hasNext();) {
+                    Status element = iter.next();
+                    element.markRead();
+                    entityManager.merge(element);
 
-            }
-            tx.commit();
+                }
+            }, entityManager);
 
             return all;
         } catch (HibernateException e) {
-            tx.rollback();
             throw e;
         }
     }
 
-    public void add(Status status, Session session) {
-        addObject(status, session);
+    public void add(Status status, EntityManager entityManager) {
+        hibernateFacade.add(status, entityManager);
     }
 
-    private void removeReadStatus(String username, Session session) {
-        Transaction tx = null;
+    private void removeReadStatus(String username, EntityManager entityManager) {
         try {
-            tx = session.beginTransaction();
-
-            CriteriaBuilderQueryRoot<Status> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Status.class, session);
+            CriteriaBuilderQueryRoot<Status> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Status.class, entityManager);
             CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
             Root<Status> root = criteriaBuilderQueryRoot.getRoot();
 
             Predicate criterion1 = builder.equal(root.get("username"), username);
             Predicate criterion2 = builder.equal(root.get("read"), Boolean.TRUE);
 
-            List<Status> read = hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { criterion1, criterion2 }, builder.desc(root.get("timestamp")), session);
+            List<Status> read = hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { criterion1, criterion2 }, builder.desc(root.get("timestamp")), entityManager);
 
-            for (Iterator<Status> iter = read.iterator(); iter.hasNext();) {
-                Status element = iter.next();
-                session.delete(element);
-            }
+            hibernateFacade.executeInsideTransaction(em -> {
+                for (Iterator<Status> iter = read.iterator(); iter.hasNext();) {
+                    Status element = iter.next();
+                    entityManager.remove(element);
+                }
+            }, entityManager);
 
-            tx.commit();
         } catch (HibernateException e) {
-            tx.rollback();
             throw e;
         }
     }
 
-    public List getIntendedUses(Session session) {
-        CriteriaBuilderQueryRoot<IntendedUse> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(IntendedUse.class, session);
+    public List getIntendedUses(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<IntendedUse> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(IntendedUse.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<IntendedUse> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
 
-    public void add(IntendedUse intendedUse, Session session) {
-        addObject(intendedUse, session);
+    public void add(IntendedUse intendedUse, EntityManager entityManager) {
+        hibernateFacade.add(intendedUse, entityManager);
     }
 
-    public void add(Country country, Session session) {
-        addObject(country, session);
+    public void add(Country country, EntityManager entityManager) {
+        hibernateFacade.add(country, entityManager);
     }
 
-    public void add(DatasetType datasetType, Session session) {
-        datasetTypesDAO.add(datasetType, session);
+    public void add(DatasetType datasetType, EntityManager entityManager) {
+        hibernateFacade.add(datasetType, entityManager);
     }
 
-    public void add(XFileFormat format, Session session) {
-        addObject(format, session);
+    public void add(XFileFormat format, EntityManager entityManager) {
+        hibernateFacade.add(format, entityManager);
     }
 
-    public void update(XFileFormat format, Session session) {
-        hibernateFacade.updateOnly(format, session);
+    public void update(XFileFormat format, EntityManager entityManager) {
+        hibernateFacade.updateOnly(format, entityManager);
     }
 
-    public void add(Sector sector, Session session) {
-        addObject(sector, session);
+    public void add(Sector sector, EntityManager entityManager) {
+        hibernateFacade.add(sector, entityManager);
     }
     
-    public void add(GeoRegion grid, Session session) {
-        addObject(grid, session);
+    public void add(GeoRegion grid, EntityManager entityManager) {
+        hibernateFacade.add(grid, entityManager);
     }
 
-    private void addObject(Object obj, Session session) {
-        hibernateFacade.add(obj, session);
-    }
-
-    public List<NoteType> getNoteTypes(Session session) {
-        CriteriaBuilderQueryRoot<NoteType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(NoteType.class, session);
+    public List<NoteType> getNoteTypes(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<NoteType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(NoteType.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<NoteType> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, entityManager);
     }
 
-    public void add(Revision revision, Session session) {
-        addObject(revision, session);
+    public void add(Revision revision, EntityManager entityManager) {
+        hibernateFacade.add(revision, entityManager);
     }
 
-    public void add1(DatasetNote note, Session session) {
-        addObject(note, session);
+    public void add1(DatasetNote note, EntityManager entityManager) {
+        hibernateFacade.add(note, entityManager);
     }
 
-    public void add(Pollutant pollutant, Session session) {
-        addObject(pollutant, session);
+    public void add(Pollutant pollutant, EntityManager entityManager) {
+        hibernateFacade.add(pollutant, entityManager);
     }
 
-    public void add(SourceGroup sourcegrp, Session session) {
-        addObject(sourcegrp, session);
+    public void add(SourceGroup sourcegrp, EntityManager entityManager) {
+        hibernateFacade.add(sourcegrp, entityManager);
     }
 
-    public List<GeoRegion> getGeoRegions(Session session) {
-        CriteriaBuilderQueryRoot<GeoRegion> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(GeoRegion.class, session);
+    public List<GeoRegion> getGeoRegions(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<GeoRegion> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(GeoRegion.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<GeoRegion> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
     
-    public List<RegionType> getRegionTypes(Session session) {
-        CriteriaBuilderQueryRoot<RegionType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(RegionType.class, session);
+    public List<RegionType> getRegionTypes(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<RegionType> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(RegionType.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<RegionType> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
     
-    public List<Revision> getRevisions(int datasetId, Session session) {
-        CriteriaBuilderQueryRoot<Revision> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Revision.class, session);
+    public List<Revision> getRevisions(int datasetId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<Revision> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(Revision.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<Revision> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { builder.equal(root.get("datasetId"), Integer.valueOf(datasetId)) }, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { builder.equal(root.get("datasetId"), Integer.valueOf(datasetId)) }, entityManager);
     }
 
-    public List<DatasetNote> getDatasetNotes(int datasetId, Session session) {
-        CriteriaBuilderQueryRoot<DatasetNote> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(DatasetNote.class, session);
+    public List<DatasetNote> getDatasetNotes(int datasetId, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<DatasetNote> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(DatasetNote.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<DatasetNote> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { builder.equal(root.get("datasetId"), Integer.valueOf(datasetId)) }, session);
+        return hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { builder.equal(root.get("datasetId"), Integer.valueOf(datasetId)) }, entityManager);
     }
     
-    public List<Note> getNotes(Session session, String nameContains) {
+    public List<Note> getNotes(EntityManager entityManager, String nameContains) {
         if (nameContains.trim().equals(""))
-            return session
+            return entityManager
             .createQuery(
-                    "select new Note( NT.id, NT.name) from Note as NT ", Note.class).list();
-        return session
+                    "select new Note( NT.id, NT.name) from Note as NT ", Note.class).getResultList();
+        return entityManager
         .createQuery(
                 "select new Note( NT.id, NT.name) from Note as NT " + "where "
                         + " lower(NT.name) like "
                         + "'%"
                         + nameContains.toLowerCase().trim() + "%'", Note.class) 
-        .list();
+        .getResultList();
  }
 
     
     /*
      * Return true if the name is already used
      */
-    public <C> boolean nameUsed(String name, Class<C> clazz, Session session) {
-        return hibernateFacade.nameUsed(name, clazz, session);
+    public <C> boolean nameUsed(String name, Class<C> clazz, EntityManager entityManager) {
+        return hibernateFacade.nameUsed(name, clazz, entityManager);
     }
 
-    public <C> C current(int id, Class<C> clazz, Session session) {
-        return hibernateFacade.current(id, clazz, session);
+    public <C> C current(int id, Class<C> clazz, EntityManager entityManager) {
+        return hibernateFacade.current(id, clazz, entityManager);
     }
 
-    public <C> boolean exists(int id, Class<C> clazz, Session session) {
-        return hibernateFacade.exists(id, clazz, session);
+    public <C> boolean exists(int id, Class<C> clazz, EntityManager entityManager) {
+        return hibernateFacade.exists(id, clazz, entityManager);
     }
 
-    public boolean canUpdate(Sector sector, Session session) {
-        return sectorsDao.canUpdate(sector, session);
+    public boolean canUpdate(Sector sector, EntityManager entityManager) {
+        return sectorsDao.canUpdate(sector, entityManager);
     }
 
-    public boolean canUpdate(DatasetType datasetType, Session session) {
-        return datasetTypesDAO.canUpdate(datasetType, session);
+    public boolean canUpdate(DatasetType datasetType, EntityManager entityManager) {
+        return datasetTypesDAO.canUpdate(datasetType, entityManager);
     }
     
     public void validateDatasetTypeIndicesKeyword(DatasetType datasetType, Column[] cols) throws EmfException {
         datasetTypesDAO.validateDatasetTypeIndicesKeyword(datasetType, cols);
     }
     
-    public <T> T load(Class<T> clazz, String name, Session session) {
-        return hibernateFacade.load(clazz, "name", name, session);
+    public <T> T load(Class<T> clazz, String name, EntityManager entityManager) {
+        return hibernateFacade.load(clazz, "name", name, entityManager);
     }
     
-    public <C,K> List<C> get(Class<C> clazz, String keyField, K keyValue, Session session){
-        return hibernateFacade.get(clazz, keyField, keyValue, session);
+    public <C,K> List<C> get(Class<C> clazz, String keyField, K keyValue, EntityManager entityManager){
+        return hibernateFacade.get(clazz, keyField, keyValue, entityManager);
     }
     
-    public void updateProject(Project project, Session session) {
-        hibernateFacade.updateOnly(project, session);
+    public void updateProject(Project project, EntityManager entityManager) {
+        hibernateFacade.updateOnly(project, entityManager);
     }
 }

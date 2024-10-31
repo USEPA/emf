@@ -18,7 +18,6 @@ import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.QAStep;
 import gov.epa.emissions.framework.services.data.QAStepResult;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.io.File;
 import java.sql.ResultSet;
@@ -30,10 +29,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class ExportShapeFileQAStepTask implements Runnable {
 
@@ -47,7 +47,7 @@ public class ExportShapeFileQAStepTask implements Runnable {
 
     private File file;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private QAStepResult result;
 
@@ -81,7 +81,7 @@ public class ExportShapeFileQAStepTask implements Runnable {
     
     public ExportShapeFileQAStepTask(String dirName, String fileName, 
             boolean overide, QAStep qaStep,
-            User user, HibernateSessionFactory sessionFactory, 
+            User user, EntityManagerFactory entityManagerFactory, 
             DbServerFactory dbServerFactory, ProjectionShapeFile projectionShapeFile, 
             boolean verboseStatusLogging, String rowFilter, 
             PivotConfiguration pivotConfiguration) throws EmfException {
@@ -90,8 +90,8 @@ public class ExportShapeFileQAStepTask implements Runnable {
         this.overide = overide;
         this.qastep = qaStep;
         this.user = user;
-        this.sessionFactory = sessionFactory;
-        this.statusDao = new StatusDAO(sessionFactory);
+        this.entityManagerFactory = entityManagerFactory;
+        this.statusDao = new StatusDAO(entityManagerFactory);
         this.fileDownloadDao = new FileDownloadDAO();
         this.dbServerFactory = dbServerFactory;
         this.projectionShapeFile = projectionShapeFile;
@@ -106,13 +106,13 @@ public class ExportShapeFileQAStepTask implements Runnable {
 
     public ExportShapeFileQAStepTask(String dirName, String fileName, 
             boolean overide, QAStep qaStep,
-            User user, HibernateSessionFactory sessionFactory, 
+            User user, EntityManagerFactory entityManagerFactory, 
             DbServerFactory dbServerFactory, ProjectionShapeFile projectionShapeFile, 
             boolean verboseStatusLogging, String rowFilter, 
             PivotConfiguration pivotConfiguration, boolean download) throws EmfException {
         this(dirName, fileName, 
             overide, qaStep,
-            user, sessionFactory, 
+            user, entityManagerFactory, 
             dbServerFactory, projectionShapeFile, 
             verboseStatusLogging, rowFilter, 
             pivotConfiguration);
@@ -123,13 +123,13 @@ public class ExportShapeFileQAStepTask implements Runnable {
         
         String suffix = "";
         DbServer dbServer = dbServerFactory.getDbServer();
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             getStepResult();
             file = exportFile(dirName);
             PostgresSQLToShapeFile exporter = new PostgresSQLToShapeFile(dbServer);
             // Exporter exporter = new DatabaseTableCSVExporter(result.getTable(), dbServer.getEmissionsDatasource(),
-            // batchSize(sessionFactory));
+            // batchSize(entityManagerFactory));
             suffix = suffix();
             prepare(suffix);
             if (projectionShapeFile == null)
@@ -142,7 +142,7 @@ public class ExportShapeFileQAStepTask implements Runnable {
                 for (File f : getShapefiles(file.getName())) {
                     //lets add shapefiles (remember there are multiple files to worry about prj, dbf, etc...) 
                     //for the user to download
-                    fileDownloadDao.add(user, new Date(), f.getName(), "QA Step - Shapefile", overide, session);
+                    fileDownloadDao.add(user, new Date(), f.getName(), "QA Step - Shapefile", overide, entityManager);
                 }
             }
             complete(suffix);
@@ -150,7 +150,7 @@ public class ExportShapeFileQAStepTask implements Runnable {
             logError("Failed to export QA step : " + qastep.getName() + suffix, e);
             setStatus("Failed to export QA step " + qastep.getName() + suffix + ". Reason: " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
             if (dbServer != null)
                 try {
                     dbServer.disconnect();
@@ -162,12 +162,12 @@ public class ExportShapeFileQAStepTask implements Runnable {
     }
 
     private String getProperty(String propertyName) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            EmfProperty property = new EmfPropertiesDAO().getProperty(propertyName, session);
+            EmfProperty property = new EmfPropertiesDAO().getProperty(propertyName, entityManager);
             return property.getValue();
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -610,32 +610,32 @@ public class ExportShapeFileQAStepTask implements Runnable {
     }
 
     private String versionName() {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return new Versions().get(qastep.getDatasetId(), qastep.getVersion(), session).getName();
+            return new Versions().get(qastep.getDatasetId(), qastep.getVersion(), entityManager).getName();
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private String datasetName() {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             DatasetDAO dao = new DatasetDAO();
-            return dao.getDataset(session, qastep.getDatasetId()).getName();
+            return dao.getDataset(entityManager, qastep.getDatasetId()).getName();
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private void getStepResult() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            result = new QADAO().qaStepResult(qastep, session);
+            result = new QADAO().qaStepResult(qastep, entityManager);
             if (result == null || result.getTable() == null)
                 throw new EmfException("You have to first run the QA Step before export");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 

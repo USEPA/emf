@@ -25,7 +25,6 @@ import gov.epa.emissions.framework.services.data.DataServiceImpl;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.GeoRegion;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 import gov.epa.emissions.framework.tasks.ExportClientSubmitter;
 import gov.epa.emissions.framework.tasks.ExportJobSubmitter;
@@ -38,9 +37,11 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 public class ManagedExportService {
     private static Log log = LogFactory.getLog(ManagedExportService.class);
@@ -69,15 +70,15 @@ public class ManagedExportService {
 
     private ArrayList<Runnable> eximTasks = new ArrayList<Runnable>();
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private DbServerFactory dbFactory;
 
-    public ManagedExportService(DbServerFactory dbFactory, HibernateSessionFactory sessionFactory) {
+    public ManagedExportService(DbServerFactory dbFactory, EntityManagerFactory entityManagerFactory) {
         myTag();
         if (DebugLevels.DEBUG_9())
             System.out.println(">>>> " + myTag());
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.dbFactory = dbFactory;
 
         if (System.getProperty("IMPORT_EXPORT_TEMP_DIR") == null)
@@ -98,9 +99,9 @@ public class ManagedExportService {
 
     public Services services() {
         Services services = new Services();
-        services.setLoggingService(new LoggingServiceImpl(sessionFactory));
-        services.setStatusService(new StatusDAO(sessionFactory));
-        services.setDataService(new DataServiceImpl(sessionFactory));
+        services.setLoggingService(new LoggingServiceImpl(entityManagerFactory));
+        services.setStatusService(new StatusDAO(entityManagerFactory));
+        services.setDataService(new DataServiceImpl(entityManagerFactory));
 
         return services;
     }
@@ -216,7 +217,7 @@ public class ManagedExportService {
 
         ExportJobSubmitter exportJobTaskSubmitter = null;
 
-        // The service instance (one per session) will have only one submitter for the type of service
+        // The service instance (one per entityManager) will have only one submitter for the type of service
         // Here the TaskManagerExportService has one reference to the ExportJobSubmitter
         if (exportJobTaskSubmitter == null) {
             exportJobTaskSubmitter = new ExportJobSubmitter();
@@ -230,12 +231,12 @@ public class ManagedExportService {
 
         // FIXME: Any checks for CaseInputs or Jobs needs to happen here
 
-        // FIXME: Moved here to see if session problem is solved.
+        // FIXME: Moved here to see if entityManager problem is solved.
         Services services = services();
 
         // get expanded input directory name
         String fileSeparator = System.getProperty("file.separator");
-        CaseDAO caseDao = new CaseDAO(this.sessionFactory);
+        CaseDAO caseDao = new CaseDAO(this.entityManagerFactory);
         String inputDir = caseObj.getInputFileDir();
         if ((inputDir == null) || (inputDir.length() == 0))
             throw new EmfException("Please specify an Input Folder on the Inputs tab");
@@ -398,7 +399,7 @@ public class ManagedExportService {
         if (DebugLevels.DEBUG_9())
             System.out.println(">>## In export service:export() " + myTag() + " for datasets: " + datasets.toString());
 
-        // The service instance (one per session) will have only one submitter for the type of service
+        // The service instance (one per entityManager) will have only one submitter for the type of service
         // Here the TaskManagerExportService has one reference to the ExportClientSubmitter
         if (exportTaskSubmitter == null) {
             exportTaskSubmitter = new ExportClientSubmitter();
@@ -426,7 +427,7 @@ public class ManagedExportService {
         if (DebugLevels.DEBUG_9())
             System.out.println("# of datasets= " + datasets.length);
 
-        // FIXME: Moved here to see if session problem is solved.
+        // FIXME: Moved here to see if entityManager problem is solved.
         Services services = services();
 
         try {
@@ -508,7 +509,7 @@ public class ManagedExportService {
         if (DebugLevels.DEBUG_9())
             System.out.println(">>## In export service:export() " + myTag() + " for datasets: " + datasets.toString());
 
-        // The service instance (one per session) will have only one submitter for the type of service
+        // The service instance (one per entityManager) will have only one submitter for the type of service
         // Here the TaskManagerExportService has one reference to the ExportClientSubmitter
         if (exportTaskSubmitter == null) {
             exportTaskSubmitter = new ExportClientSubmitter();
@@ -536,7 +537,7 @@ public class ManagedExportService {
         if (DebugLevels.DEBUG_9())
             System.out.println("# of datasets= " + datasets.length);
 
-        // FIXME: Moved here to see if session problem is solved.
+        // FIXME: Moved here to see if entityManager problem is solved.
         Services services = services();
 
         try {
@@ -619,7 +620,7 @@ public class ManagedExportService {
         if (DebugLevels.DEBUG_9())
             System.out.println(">>## In export service:export() " + myTag() + " for datasets: " + datasets.toString());
 
-        // The service instance (one per session) will have only one submitter for the type of service
+        // The service instance (one per entityManager) will have only one submitter for the type of service
         // Here the TaskManagerExportService has one reference to the ExportClientSubmitter
         if (exportTaskSubmitter == null) {
             exportTaskSubmitter = new ExportClientSubmitter();
@@ -647,7 +648,7 @@ public class ManagedExportService {
         if (DebugLevels.DEBUG_9())
             System.out.println("# of datasets= " + datasets.length);
 
-        // FIXME: Moved here to see if session problem is solved.
+        // FIXME: Moved here to see if entityManager problem is solved.
         Services services = services();
 
         try {
@@ -720,7 +721,7 @@ public class ManagedExportService {
         if (DebugLevels.DEBUG_9())
             System.out.println("ManagedExportService: right before creating export task: dbFactory null? "
                     + (dbFactory == null) + " dataset: " + dataset.getName());
-        ExportTask eximTask = new ExportTask(user, file, dataset, services, accesslog, dbFactory, sessionFactory,
+        ExportTask eximTask = new ExportTask(user, file, dataset, services, accesslog, dbFactory, entityManagerFactory,
                 version);
         // eximTask.setSubmitterId(exportTaskSubmitter.getSubmitterId());
 
@@ -752,7 +753,7 @@ public class ManagedExportService {
             System.out.println("ManagedExportService: right before creating export task: dbFactory null? "
                     + (dbFactory == null) + " dataset: " + dataset.getName());
         ExportTask eximTask = new ExportTask(user, file, dataset, services, accesslog, 
-                rowFilters, colOrders,dbFactory, sessionFactory, version, filterDataset, filterDatasetVersion,
+                rowFilters, colOrders,dbFactory, entityManagerFactory, version, filterDataset, filterDatasetVersion,
                 filterDatasetJoinCondition, colsToExport);
         // eximTask.setSubmitterId(exportTaskSubmitter.getSubmitterId());
 
@@ -773,7 +774,7 @@ public class ManagedExportService {
         accesslog.setDatasetname(datasets[0].getName());
 
         ExportTask eximTask = new ExportTask(user, file, datasets, services, accesslog,
-                rowFilters, colOrders, dbFactory, sessionFactory, versions, filterDataset, filterDatasetVersion,
+                rowFilters, colOrders, dbFactory, entityManagerFactory, versions, filterDataset, filterDatasetVersion,
                 filterDatasetJoinCondition, false, colsToExport);
         return eximTask;
     }
@@ -803,7 +804,7 @@ public class ManagedExportService {
             System.out.println("ManagedExportService: right before creating export task: dbFactory null? "
                     + (dbFactory == null) + " dataset: " + dataset.getName());
         ExportTask eximTask = new ExportTask(user, file, dataset, services, accesslog, 
-                rowFilters, colOrders,dbFactory, sessionFactory, version, filterDataset, filterDatasetVersion,
+                rowFilters, colOrders,dbFactory, entityManagerFactory, version, filterDataset, filterDatasetVersion,
                 filterDatasetJoinCondition, true, colsToExport);
         // eximTask.setSubmitterId(exportTaskSubmitter.getSubmitterId());
 
@@ -824,7 +825,7 @@ public class ManagedExportService {
         accesslog.setDatasetname(datasets[0].getName());
 
         ExportTask eximTask = new ExportTask(user, file, datasets, services, accesslog,
-                rowFilters, colOrders, dbFactory, sessionFactory, versions, filterDataset, filterDatasetVersion,
+                rowFilters, colOrders, dbFactory, entityManagerFactory, versions, filterDataset, filterDatasetVersion,
                 filterDatasetJoinCondition, true, colsToExport);
         return eximTask;
     }
@@ -848,13 +849,13 @@ public class ManagedExportService {
 
         // NOTE: want to check if accesslog exists for the same dataset, version, and description.
         // If it is there, don't set accesslog.
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         
         try {
             String query = "SELECT obj.id from " + AccessLog.class.getSimpleName() + " obj WHERE obj.datasetId = "
                     + accesslog.getDatasetId() + " AND obj.version = '" + accesslog.getVersion() + "' "
                     + "AND obj.description = '" + accesslog.getDescription() + "'";
-            List<?> list = session.createQuery(query).list();
+            List<?> list = entityManager.createQuery(query).getResultList();
 
             if (list == null || list.size() == 0) {
                 logSvr.setAccessLog(accesslog); // BUG3589
@@ -863,22 +864,22 @@ public class ManagedExportService {
             log.error("Errror logging exported task for dataset: " + dataset.getName() + ".", e);
             throw new EmfException(e.getMessage());
         } finally {
-            if (session != null && session.isConnected())
-                session.close();
+            if (entityManager != null)
+                entityManager.close();
         }
     }
 
     public Version getVersion(Dataset dataset, int version) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             Versions versions = new Versions();
-            return versions.get(dataset.getId(), version, session);
+            return versions.get(dataset.getId(), version, entityManager);
         } catch (Exception e) {
             log.error("Retrieve version error - can't retrieve Version object for dataset: " + dataset.getName(), e);
             throw new EmfException("Retrieve version error - can't retrieve Version object for dataset: "
                     + dataset.getName() + " " + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -887,10 +888,10 @@ public class ManagedExportService {
     }
 
     private void setProperties() {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            EmfProperty batchSize = new EmfPropertiesDAO().getProperty("export-batch-size", session);
-            EmfProperty eximTempDir = new EmfPropertiesDAO().getProperty("ImportExportTempDir", session);
+            EmfProperty batchSize = new EmfPropertiesDAO().getProperty("export-batch-size", entityManager);
+            EmfProperty eximTempDir = new EmfPropertiesDAO().getProperty("ImportExportTempDir", entityManager);
 
             if (eximTempDir != null)
                 System.setProperty("IMPORT_EXPORT_TEMP_DIR", eximTempDir.getValue());
@@ -898,7 +899,7 @@ public class ManagedExportService {
             if (batchSize != null)
                 System.setProperty("EXPORT_BATCH_SIZE", batchSize.getValue());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 

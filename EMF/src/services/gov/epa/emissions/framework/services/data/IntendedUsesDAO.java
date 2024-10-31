@@ -9,7 +9,7 @@ import java.util.List;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Root;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
 
 public class IntendedUsesDAO {
 
@@ -19,20 +19,20 @@ public class IntendedUsesDAO {
         hibernateFacade = new HibernateFacade();
     }
 
-    public List getAll(Session session) {
-        CriteriaBuilderQueryRoot<IntendedUse> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(IntendedUse.class, session);
+    public List getAll(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<IntendedUse> criteriaBuilderQueryRoot = hibernateFacade.getCriteriaBuilderQueryRoot(IntendedUse.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<IntendedUse> root = criteriaBuilderQueryRoot.getRoot();
 
-        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), session);
+        return hibernateFacade.getAll(criteriaBuilderQueryRoot, builder.asc(root.get("name")), entityManager);
     }
     
-    public IntendedUse getIntendedUse(String name, Session session) {
-        return hibernateFacade.load(IntendedUse.class, "name", name, session);
+    public IntendedUse getIntendedUse(String name, EntityManager entityManager) {
+        return hibernateFacade.load(IntendedUse.class, "name", name, entityManager);
     }
     
-    public void add(IntendedUse intendedUse, Session session) {
-        hibernateFacade.add(intendedUse, session);
+    public void add(IntendedUse intendedUse, EntityManager entityManager) {
+        hibernateFacade.add(intendedUse, entityManager);
     }
     
 }

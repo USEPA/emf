@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
 
 import gov.epa.emissions.commons.data.InternalSource;
 import gov.epa.emissions.commons.db.DbServer;
@@ -36,7 +36,7 @@ class SimpleModuleRunner extends ModuleRunner {
         Connection connection = getConnection();
         DatasetDAO datasetDAO = getDatasetDAO();
         ModulesDAO modulesDAO = getModulesDAO();
-        Session session = getSession();
+        EntityManager entityManager = getEntityManager();
         
         Module module = getModule();
         ModuleTypeVersion moduleTypeVersion = getModuleTypeVersion();
@@ -87,7 +87,7 @@ class SimpleModuleRunner extends ModuleRunner {
                     int versionNumber = datasetVersion.getVersion();
                     InternalSource internalSource = getInternalSource(dataset);
                     if (!moduleTypeVersionDataset.getMode().equals(ModuleTypeVersionDataset.IN)) {
-                        Version version = getVersion(dataset, versionNumber, session);
+                        Version version = getVersion(dataset, versionNumber, entityManager);
                         outputDatasetVersions.add(version);
                         outputDatasetTables.add(datasetTablesSchema + "." + internalSource.getTable());
                     }
@@ -182,7 +182,7 @@ class SimpleModuleRunner extends ModuleRunner {
                 
                 history.addLogMessage(History.INFO, "Starting setup script.");
                 
-                history = modulesDAO.updateHistory(history, session);
+                history = modulesDAO.updateHistory(history, entityManager);
 
                 statement = connection.createStatement();
                 statement.execute(setupScript);
@@ -211,7 +211,7 @@ class SimpleModuleRunner extends ModuleRunner {
                 
                 history.addLogMessage(History.INFO, "Starting user script (algorithm).");
                 
-                history = modulesDAO.updateHistory(history, session);
+                history = modulesDAO.updateHistory(history, entityManager);
                 
                 userConnection = getUserConnection(userTimeStamp, tempUserPassword);
                 userConnection.setAutoCommit(true);
@@ -237,8 +237,8 @@ class SimpleModuleRunner extends ModuleRunner {
                 if (outputDatasetVersions.size() > 0) {
                     history.addLogMessage(History.INFO, "Updating the number of records for the OUT and INOUT datasets:");
                     for(Version version : outputDatasetVersions) {
-                        EmfDataset dataset = datasetDAO.getDataset(session, version.getDatasetId());
-                        int recordCount = updateVersion(dataset, version, dbServer, session, datasetDAO, user);
+                        EmfDataset dataset = datasetDAO.getDataset(entityManager, version.getDatasetId());
+                        int recordCount = updateVersion(dataset, version, dbServer, entityManager, datasetDAO, user);
                         String message = String.format("Dataset \"%s\" version %d has %d records.", dataset.getName(), version.getVersion(), recordCount);
                         history.addLogMessage(History.INFO, message);
                     }
@@ -315,7 +315,7 @@ class SimpleModuleRunner extends ModuleRunner {
             history.addLogMessage(History.ERROR, getFinalStatusMessage());
             
         } finally {
-            history = modulesDAO.updateHistory(history, session);
+            history = modulesDAO.updateHistory(history, entityManager);
             if (statement != null) {
                 try {
                     statement.close();

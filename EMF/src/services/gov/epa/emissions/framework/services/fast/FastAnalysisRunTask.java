@@ -6,14 +6,15 @@ import gov.epa.emissions.framework.services.Services;
 import gov.epa.emissions.framework.services.basic.EmfProperty;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 public class FastAnalysisRunTask implements Runnable {
 
@@ -27,16 +28,16 @@ public class FastAnalysisRunTask implements Runnable {
 
     private FastService ssService;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     public FastAnalysisRunTask(FastAnalysisTask fastRunTask, User user, 
             Services services, FastService service,
-            HibernateSessionFactory sessionFactory) {
+            EntityManagerFactory entityManagerFactory) {
         this.user = user;
         this.services = services;
         this.fastAnalysisTask = fastRunTask;
         this.ssService = service;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     public void run() {
@@ -130,12 +131,12 @@ public class FastAnalysisRunTask implements Runnable {
 //    }
 
     private Long strategyPoolSize() {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            EmfProperty property = new EmfPropertiesDAO().getProperty("strategy-pool-size", session);
+            EmfProperty property = new EmfPropertiesDAO().getProperty("strategy-pool-size", entityManager);
             return Long.parseLong(property.getValue());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 

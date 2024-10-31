@@ -9,13 +9,13 @@ import gov.epa.emissions.framework.services.cost.ControlMeasureDAO;
 import gov.epa.emissions.framework.services.cost.ControlMeasureEquation;
 import gov.epa.emissions.framework.services.cost.EquationType;
 import gov.epa.emissions.framework.services.cost.EquationTypeVariable;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class CMEquationRecordReader {
 
@@ -32,17 +32,17 @@ public class CMEquationRecordReader {
 
     private int errorLimit = 100;
     
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private Pollutants pollutants;
 
-    public CMEquationRecordReader(CMEquationFileFormat fileFormat, User user, HibernateSessionFactory sessionFactory) throws EmfException {
+    public CMEquationRecordReader(CMEquationFileFormat fileFormat, User user, EntityManagerFactory entityManagerFactory) throws EmfException {
         this.fileFormat = fileFormat;
-        this.status = new CMAddImportStatus(user, sessionFactory);
-        this.sessionFactory = sessionFactory;
+        this.status = new CMAddImportStatus(user, entityManagerFactory);
+        this.entityManagerFactory = entityManagerFactory;
         this.equationTypeMap = new EquationTypeMap(getEquationTypes());
         this.equList= new ArrayList();
-        this.pollutants = new Pollutants(sessionFactory);
+        this.pollutants = new Pollutants(entityManagerFactory);
     }
 
     public void parse(Map controlMeasures, Record record, int lineNo) throws ImporterException {
@@ -160,14 +160,14 @@ public class CMEquationRecordReader {
     }
     
     private EquationType[] getEquationTypes() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            List<EquationType> all = new ControlMeasureDAO().getEquationTypes(session);
+            List<EquationType> all = new ControlMeasureDAO().getEquationTypes(entityManager);
             return all.toArray(new EquationType[0]);
         } catch (RuntimeException e) {
             throw new EmfException("Could not retrieve control measures Equation Types.");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 }

@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
 
 import gov.epa.emissions.commons.db.Datasource;
 import gov.epa.emissions.commons.db.SqlDataTypes;
@@ -57,7 +57,7 @@ public class DataUpdatesCacheImpl implements DataUpdatesCache {
      * Keeps a two-level mapping. First map, ChangeSetMap is a map of tokens and PageChangeSetMap. PageChangeSetMap maps
      * Page Number to Change Sets (of that Page)
      */
-    public ChangeSets changesets(DataAccessToken token, int pageNumber, Session session) throws Exception {
+    public ChangeSets changesets(DataAccessToken token, int pageNumber, EntityManager entityManager) throws Exception {
         Map map = pageChangesetsMap(token);
         Integer pageKey = pageChangesetsKey(pageNumber);
         if (!map.containsKey(pageKey)) {
@@ -67,18 +67,18 @@ public class DataUpdatesCacheImpl implements DataUpdatesCache {
         return (ChangeSets) map.get(pageKey);
     }
 
-    public void submitChangeSet(DataAccessToken token, ChangeSet changeset, int pageNumber, Session session)
+    public void submitChangeSet(DataAccessToken token, ChangeSet changeset, int pageNumber, EntityManager entityManager)
             throws Exception {
-        ChangeSets sets = changesets(token, pageNumber, session);
+        ChangeSets sets = changesets(token, pageNumber, entityManager);
         sets.add(changeset);
     }
 
-    public void discardChangeSets(DataAccessToken token, Session session) throws SQLException {
+    public void discardChangeSets(DataAccessToken token, EntityManager entityManager) throws SQLException {
         Map pageChangsetsMap = pageChangesetsMap(token);
         pageChangsetsMap.clear();
     }
 
-    public ChangeSets changesets(DataAccessToken token, Session session) throws SQLException {
+    public ChangeSets changesets(DataAccessToken token, EntityManager entityManager) throws SQLException {
         ChangeSets all = new ChangeSets();
 
         Map pageChangesetsMap = pageChangesetsMap(token);
@@ -91,12 +91,12 @@ public class DataUpdatesCacheImpl implements DataUpdatesCache {
         return all;
     }
 
-    public int defaultPageSize(Session session) {
-        EmfProperty pageSize = properties.getProperty("page-size", session);
+    public int defaultPageSize(EntityManager entityManager) {
+        EmfProperty pageSize = properties.getProperty("page-size", entityManager);
         return Integer.parseInt(pageSize.getValue());
     }
 
-    public void init(DataAccessToken token, Session session) throws SQLException {
+    public void init(DataAccessToken token, EntityManager entityManager) throws SQLException {
         initChangesetsMap(token);
         initWriter(token);
     }
@@ -106,13 +106,13 @@ public class DataUpdatesCacheImpl implements DataUpdatesCache {
         changesetsMap.clear();
     }
 
-    public void reload(DataAccessToken token, Session session) throws SQLException {
-        close(token, session);
-        init(token, session);
+    public void reload(DataAccessToken token, EntityManager entityManager) throws SQLException {
+        close(token, entityManager);
+        init(token, entityManager);
     }
 
-    public void close(DataAccessToken token, Session session) throws SQLException {
-        removeChangesets(token, session);
+    public void close(DataAccessToken token, EntityManager entityManager) throws SQLException {
+        removeChangesets(token, entityManager);
         closeWriter(token);
     }
 
@@ -121,8 +121,8 @@ public class DataUpdatesCacheImpl implements DataUpdatesCache {
         writer.close();
     }
 
-    private void removeChangesets(DataAccessToken token, Session session) throws SQLException {
-        discardChangeSets(token, session);
+    private void removeChangesets(DataAccessToken token, EntityManager entityManager) throws SQLException {
+        discardChangeSets(token, entityManager);
         changesetsMap.remove(token.key());
     }
 
@@ -158,19 +158,19 @@ public class DataUpdatesCacheImpl implements DataUpdatesCache {
         }
     }
 
-    public void save(DataAccessToken token, Session session) throws Exception {
+    public void save(DataAccessToken token, EntityManager entityManager) throws Exception {
         VersionedRecordsWriter writer = writer(token);
-        ChangeSets sets = changesets(token, session);
+        ChangeSets sets = changesets(token, entityManager);
         for (ChangeSetsIterator iter = sets.iterator(); iter.hasNext();) {
             ChangeSet element = iter.next();
             writer.update(element);
         }
 
-        reload(token, session);
+        reload(token, entityManager);
     }
 
-    public boolean hasChanges(DataAccessToken token, Session session) throws Exception {
-        return changesets(token, session).hasChanges();
+    public boolean hasChanges(DataAccessToken token, EntityManager entityManager) throws Exception {
+        return changesets(token, entityManager).hasChanges();
     }
 
 }

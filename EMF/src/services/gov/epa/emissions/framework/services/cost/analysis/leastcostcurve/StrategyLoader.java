@@ -9,18 +9,19 @@ import gov.epa.emissions.framework.services.cost.analysis.leastcost.LeastCostAbs
 import gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyResult;
 import gov.epa.emissions.framework.services.cost.controlStrategy.StrategyResultType;
 import gov.epa.emissions.framework.services.data.EmfDataset;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.tasks.DebugLevels;
 
 import java.sql.SQLException;
 import java.util.Date;
 
+import javax.persistence.EntityManagerFactory;
+
 public class StrategyLoader extends LeastCostAbstractStrategyLoader {
     
     public StrategyLoader(User user, DbServerFactory dbServerFactory, 
-            HibernateSessionFactory sessionFactory, ControlStrategy controlStrategy) throws EmfException {
+            EntityManagerFactory entityManagerFactory, ControlStrategy controlStrategy) throws EmfException {
         super(user, dbServerFactory, 
-                sessionFactory, controlStrategy);
+                entityManagerFactory, controlStrategy);
     }
 
     public ControlStrategyResult loadStrategyResult(ControlStrategyInputDataset controlStrategyInputDataset) throws Exception {
@@ -97,7 +98,7 @@ public class StrategyLoader extends LeastCostAbstractStrategyLoader {
             //finalize status
             result.setCompletionTime(new Date());
             result.setRunStatus("Completed.");
-            saveControlStrategyResult(result);
+            updateControlStrategyResult(result);
 
             //create strategy messages result
             strategyMessagesResult = createStrategyMessagesResult("pct_" + pctRed, inputDataset, controlStrategyInputDataset.getVersion());
@@ -118,7 +119,7 @@ public class StrategyLoader extends LeastCostAbstractStrategyLoader {
             } else {
                 strategyMessagesResult.setCompletionTime(new Date());
                 strategyMessagesResult.setRunStatus("Completed.");
-                saveControlStrategyResult(strategyMessagesResult);
+                addControlStrategyResult(strategyMessagesResult);
                 creator.updateVersionZeroRecordCount((EmfDataset)strategyMessagesResult.getDetailedResultDataset());
             }
 
@@ -152,7 +153,7 @@ public class StrategyLoader extends LeastCostAbstractStrategyLoader {
             for (int j = 0; j < results.length; j++) {
                 if (results[j].getStrategyResultType().getName().equals(StrategyResultType.detailedStrategyResult)) {
                     setResultCount(results[j]);
-                    saveControlStrategyResult(results[j]);
+                    updateControlStrategyResult(results[j]);
                 }
             }
         }

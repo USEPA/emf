@@ -9,13 +9,13 @@ import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
 import gov.epa.emissions.framework.services.basic.UserDAO;
 import gov.epa.emissions.framework.services.data.DatasetDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 // import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 
@@ -31,9 +31,9 @@ public class ModuleRunnerTask {
 
     private ModulesDAO modulesDAO;
     
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
     
-    private Session session;
+    private EntityManager entityManager;
 
     private DbServerFactory dbServerFactory;
 
@@ -47,24 +47,24 @@ public class ModuleRunnerTask {
     private boolean verboseStatusLogging = true;
 
     public ModuleRunnerTask(int[] moduleIds, User user, 
-            DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory,
+            DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory,
             boolean verboseStatusLogging) {
-        this(moduleIds, user, dbServerFactory, sessionFactory);
+        this(moduleIds, user, dbServerFactory, entityManagerFactory);
         this.verboseStatusLogging = verboseStatusLogging;
     }
 
     public ModuleRunnerTask(int[] moduleIds, User user, 
-            DbServerFactory dbServerFactory, HibernateSessionFactory sessionFactory) {
+            DbServerFactory dbServerFactory, EntityManagerFactory entityManagerFactory) {
         this.moduleIds = moduleIds;
         this.dbServerFactory = dbServerFactory;
         this.datasource = dbServerFactory.getDbServer().getEmissionsDatasource();
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.datasetDAO = new DatasetDAO(dbServerFactory);
-        this.statusDAO = new StatusDAO(sessionFactory);
+        this.statusDAO = new StatusDAO(entityManagerFactory);
         this.modulesDAO = new ModulesDAO();
         // this.threadPool = createThreadPool();
         UserDAO userDAO = new UserDAO();
-        this.user = userDAO.get(user.getId(), sessionFactory.getSession());
+        this.user = userDAO.get(user.getId(), entityManagerFactory.createEntityManager());
     }
 
 //    private synchronized PooledExecutor createThreadPool() {
@@ -83,9 +83,9 @@ public class ModuleRunnerTask {
 
     private void runModule(int moduleId) {
         try {
-            session = sessionFactory.getSession();
+            entityManager = entityManagerFactory.createEntityManager();
 
-            Module module = modulesDAO.getModule(moduleId, session);
+            Module module = modulesDAO.getModule(moduleId, entityManager);
             if (module == null) {
                 throw new EmfException("Module not found.");
             }
@@ -95,7 +95,7 @@ public class ModuleRunnerTask {
             setStatus("Failed to run module (ID = " + moduleId + "). " + e.getMessage());
             
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
@@ -116,7 +116,7 @@ public class ModuleRunnerTask {
                     throw new EmfException("Module " + module.getName() + " locked by " + module.getLockOwner());
                 }
             } else {
-                module = modulesDAO.obtainLockedModule(user, module.getId(), session);
+                module = modulesDAO.obtainLockedModule(user, module.getId(), entityManager);
                 if (!module.isLocked(user)) {
                     throw new EmfException("Failed to lock module " + module.getName());
                 }
@@ -143,7 +143,7 @@ public class ModuleRunnerTask {
         } finally {
             if (must_unlock_module) {
                 try {
-                    module = modulesDAO.releaseLockedModule(user, module.getId(), session);
+                    module = modulesDAO.releaseLockedModule(user, module.getId(), entityManager);
                     must_unlock_module = false;
                 } catch (Exception e) {
                     // ignore
@@ -211,12 +211,12 @@ public class ModuleRunnerTask {
         return modulesDAO;
     }
     
-    public HibernateSessionFactory getHibernateSessionFactory() {
-        return sessionFactory;
+    public EntityManagerFactory getEntityManagerFactory() {
+        return entityManagerFactory;
     }
 
-    public Session getSession() {
-        return session;
+    public EntityManager getEntityManager() {
+        return entityManager;
     }
 
     public DbServerFactory getDbServerFactory() {

@@ -10,7 +10,6 @@ import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.DatasetVersion;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.data.QAStep;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.services.qa.SQLQAProgramQuery;
 import gov.epa.emissions.framework.services.qa.SQLQueryParser;
 
@@ -25,6 +24,8 @@ import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.persistence.EntityManagerFactory;
 
 public class SQLCompareDatasetFieldsProgramQuery extends SQLQAProgramQuery{
     
@@ -88,8 +89,8 @@ poll|poll
         
     private Datasource datasource;
     
-    public SQLCompareDatasetFieldsProgramQuery(HibernateSessionFactory sessionFactory, Datasource datasource, String emissioDatasourceName, String tableName, QAStep qaStep) {
-        super(sessionFactory,emissioDatasourceName,tableName,qaStep);
+    public SQLCompareDatasetFieldsProgramQuery(EntityManagerFactory entityManagerFactory, Datasource datasource, String emissioDatasourceName, String tableName, QAStep qaStep) {
+        super(entityManagerFactory,emissioDatasourceName,tableName,qaStep);
         this.datasource = datasource;    
     }
 
@@ -574,7 +575,7 @@ poll|poll
 //        System.out.println(sql);
 
         
-        SQLQueryParser parser = new SQLQueryParser(sessionFactory, emissionDatasourceName, tableName );
+        SQLQueryParser parser = new SQLQueryParser(entityManagerFactory, emissionDatasourceName, tableName );
 //return the built query
         return parser.createTableQuery() + " " + sql;
     }

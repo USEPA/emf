@@ -3,9 +3,10 @@ package gov.epa.emissions.framework.services.qa;
 import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.QAStep;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.lang.reflect.Constructor;
+
+import javax.persistence.EntityManagerFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,12 +19,12 @@ public class RunQAProgramFactory {
 
     private Log log = LogFactory.getLog(RunQAProgramFactory.class);
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
-    public RunQAProgramFactory(QAStep qaStep, DbServer dbServer, HibernateSessionFactory sessionFactory) {
+    public RunQAProgramFactory(QAStep qaStep, DbServer dbServer, EntityManagerFactory entityManagerFactory) {
         this.qaStep = qaStep;
         this.dbServer = dbServer;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     public QAProgramRunner create() throws EmfException {
@@ -41,9 +42,9 @@ public class RunQAProgramFactory {
             throw new Exception("A program should be specified to run a QA Step");
         String runClassName = qaStep.getProgram().getRunClassName();
         Class clazz = Class.forName(runClassName);
-        Class[] classParams = { DbServer.class, HibernateSessionFactory.class, QAStep.class };
+        Class[] classParams = { DbServer.class, EntityManagerFactory.class, QAStep.class };
         Constructor declaredConstructor = clazz.getDeclaredConstructor(classParams);
-        Object[] objectParams = { dbServer, sessionFactory, qaStep };
+        Object[] objectParams = { dbServer, entityManagerFactory, qaStep };
         return (QAProgramRunner) declaredConstructor.newInstance(objectParams);
     }
 

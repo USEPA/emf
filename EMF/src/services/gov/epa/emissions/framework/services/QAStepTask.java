@@ -21,13 +21,14 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class QAStepTask {
 
     private static Log LOG = LogFactory.getLog(QAStepTask.class);
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private EmfDataset dataset;
 
@@ -37,9 +38,9 @@ public class QAStepTask {
 
     private DbServerFactory dbServerFactory;
 
-    public QAStepTask(EmfDataset dataset, int version, User user, HibernateSessionFactory sessionFactory,
+    public QAStepTask(EmfDataset dataset, int version, User user, EntityManagerFactory entityManagerFactory,
             DbServerFactory dbServerFactory) {
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         this.dataset = dataset;
         this.user = user;
         this.version = version;
@@ -84,7 +85,7 @@ public class QAStepTask {
     private void runQASteps(QAStep[] summarySteps) throws EmfException {
         try {
             RunQAStepTask runner = new RunQAStepTask(removeUpToDateSteps(summarySteps), user, 
-                    dbServerFactory, sessionFactory);
+                    dbServerFactory, entityManagerFactory);
             runner.run();
         } catch (Exception e) {
             e.printStackTrace();
@@ -95,7 +96,7 @@ public class QAStepTask {
     private void runQAStepsAndExport(QAStep[] summarySteps, String exportDirectory, String[] exportFiles) throws EmfException {
         try {
             RunQAStepTask runner = new RunQAStepTask(removeUpToDateSteps(summarySteps), user, 
-                    dbServerFactory, sessionFactory, 
+                    dbServerFactory, entityManagerFactory, 
                     exportDirectory, false, exportFiles);
             runner.run();
         } catch (Exception e) {
@@ -130,10 +131,10 @@ public class QAStepTask {
     }
 
     private void updateSteps(QAStep[] steps) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             QADAO dao = new QADAO();
-            dao.update(steps, session);
+            dao.update(steps, entityManager);
         } catch (RuntimeException e) {
             throw new EmfException("Could not update QA Steps");
         }
@@ -142,11 +143,11 @@ public class QAStepTask {
     private QAStep[] getNonExistingSteps(QAStep[] steps) throws EmfException {
         List stepsList = new ArrayList();
 
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             QADAO dao = new QADAO();
             for (int i = 0; i < steps.length; i++) {
-                if (!dao.exists(steps[i], session))
+                if (!dao.exists(steps[i], entityManager))
                     stepsList.add(steps[i]);
             }
         } catch (RuntimeException e) {
@@ -157,23 +158,23 @@ public class QAStepTask {
     }
 
     private QAStepResult getQAStepResult(QAStep step) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             QADAO dao = new QADAO();
-            QAStepResult qaStepResult = dao.qaStepResult(step, session);
+            QAStepResult qaStepResult = dao.qaStepResult(step, entityManager);
             if (qaStepResult != null)
-                qaStepResult.setCurrentTable(isCurrentTable(qaStepResult, session));
+                qaStepResult.setCurrentTable(isCurrentTable(qaStepResult, entityManager));
             return qaStepResult;
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve QA Step Result", e);
             throw new EmfException("Could not retrieve QA Step Result");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
-    private boolean isCurrentTable(QAStepResult qaStepResult, Session session) {
-        Version version = new Versions().get(qaStepResult.getDatasetId(), qaStepResult.getVersion(), session);
+    private boolean isCurrentTable(QAStepResult qaStepResult, EntityManager entityManager) {
+        Version version = new Versions().get(qaStepResult.getDatasetId(), qaStepResult.getVersion(), entityManager);
         Date versionDate = version.getLastModifiedDate();
         Date date = qaStepResult.getTableCreationDate();
         if (date == null || versionDate == null)
@@ -186,11 +187,11 @@ public class QAStepTask {
     }
 
     public String[] getDefaultSummaryQANames() {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         List summaryQAList = new ArrayList();
 
         try {
-            EmfProperty property = new EmfPropertiesDAO().getProperty("defaultQASummaries", session);
+            EmfProperty property = new EmfPropertiesDAO().getProperty("defaultQASummaries", entityManager);
             String qaString = property.getValue().trim();
             StringTokenizer st = new StringTokenizer(qaString, "|");
 
@@ -199,7 +200,7 @@ public class QAStepTask {
 
             return (String[]) summaryQAList.toArray(new String[0]);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 

@@ -3,20 +3,21 @@ package gov.epa.emissions.framework.services.qa;
 import gov.epa.emissions.commons.db.DbServer;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.QAStep;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+
+import javax.persistence.EntityManagerFactory;
 
 public class SQLAnnualQueryRunner extends SQLQAProgramRunner {
     
     private String emissioDatasourceName;
 
-    public SQLAnnualQueryRunner(DbServer dbServer, HibernateSessionFactory sessionFactory, QAStep qaStep) {
-        super(dbServer, sessionFactory, qaStep);
+    public SQLAnnualQueryRunner(DbServer dbServer, EntityManagerFactory entityManagerFactory, QAStep qaStep) {
+        super(dbServer, entityManagerFactory, qaStep);
         this.emissioDatasourceName = dbServer.getEmissionsDatasource().getName();
         
     }
     
     protected String query(DbServer dbServer, QAStep qaStep, String tableName) throws EmfException {
-        SQLQAAnnualQuery parser = new SQLQAAnnualQuery(sessionFactory, emissioDatasourceName, tableName, qaStep);
+        SQLQAAnnualQuery parser = new SQLQAAnnualQuery(entityManagerFactory, emissioDatasourceName, tableName, qaStep);
         return parser.createAnnualQuery();
     }
     

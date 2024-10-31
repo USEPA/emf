@@ -8,10 +8,11 @@ import gov.epa.emissions.framework.services.cost.analysis.common.EfficiencyRecor
 import gov.epa.emissions.framework.services.cost.analysis.common.RegionFilter;
 import gov.epa.emissions.framework.services.cost.controlStrategy.CostYearTable;
 import gov.epa.emissions.framework.services.cost.data.EfficiencyRecord;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.EntityManagerFactory;
 
 public class RetrieveBestMeasures {
 
@@ -24,11 +25,11 @@ public class RetrieveBestMeasures {
     private RegionFilter regionFilter;
     
     public RetrieveBestMeasures(ControlStrategy controlStrategy, CostYearTable costYearTable,
-            DbServer dbServer, HibernateSessionFactory sessionFactory) {
+            DbServer dbServer, EntityManagerFactory entityManagerFactory) {
         this.controlStrategy = controlStrategy;
         this.costYearTable = costYearTable;
         this.effRecordUtil = new EfficiencyRecordUtil();
-        this.regionFilter = new RegionFilter(dbServer, sessionFactory);
+        this.regionFilter = new RegionFilter(dbServer, entityManagerFactory);
     }
 
     //get the best measures for the TARGET POLLUTANT

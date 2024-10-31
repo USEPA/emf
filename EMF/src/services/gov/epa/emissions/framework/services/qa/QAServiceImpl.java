@@ -1,6 +1,5 @@
 package gov.epa.emissions.framework.services.qa;
 
-import gov.epa.emissions.commons.data.InternalSource;
 import gov.epa.emissions.commons.data.PivotConfiguration;
 import gov.epa.emissions.commons.data.ProjectionShapeFile;
 import gov.epa.emissions.commons.data.QAProgram;
@@ -17,17 +16,25 @@ import gov.epa.emissions.framework.services.basic.EmfProperty;
 import gov.epa.emissions.framework.services.basic.RemoteCommand;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
-import gov.epa.emissions.framework.services.data.*;
+import gov.epa.emissions.framework.services.data.DatasetDAO;
+import gov.epa.emissions.framework.services.data.EmfDataset;
+import gov.epa.emissions.framework.services.data.QAStep;
+import gov.epa.emissions.framework.services.data.QAStepResult;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import gov.epa.emissions.framework.services.persistence.JpaEntityManagerFactory;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.util.Date;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
 
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 
@@ -35,30 +42,30 @@ public class QAServiceImpl implements QAService {
 
     private static Log LOG = LogFactory.getLog(QAServiceImpl.class);
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private DbServerFactory dbServerFactory;
 
     private QADAO dao;
     
-    private StatusDAO statusDAO; // = new StatusDAO(sessionFactory);
+    private StatusDAO statusDAO; // = new StatusDAO(entityManagerFactory);
 
     private PooledExecutor threadPool;
 
     public QAServiceImpl() {
-        this(HibernateSessionFactory.get(), DbServerFactory.get());
+        this(JpaEntityManagerFactory.get(), DbServerFactory.get());
     }
 
-    public QAServiceImpl(HibernateSessionFactory sessionFactory) {
-        this(sessionFactory, DbServerFactory.get());
+    public QAServiceImpl(EntityManagerFactory entityManagerFactory) {
+        this(entityManagerFactory, DbServerFactory.get());
     }
 
-    public QAServiceImpl(HibernateSessionFactory sessionFactory, DbServerFactory dbServerFactory) {
-        this.sessionFactory = sessionFactory;
+    public QAServiceImpl(EntityManagerFactory entityManagerFactory, DbServerFactory dbServerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
         this.dbServerFactory = dbServerFactory;
         this.threadPool = createThreadPool();
         dao = new QADAO();
-        statusDAO = new StatusDAO(sessionFactory);
+        statusDAO = new StatusDAO(entityManagerFactory);
     }
 
     private synchronized PooledExecutor createThreadPool() {
@@ -70,40 +77,40 @@ public class QAServiceImpl implements QAService {
     }
 
     public synchronized QAStep[] getQASteps(EmfDataset dataset) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            QAStep[] results = dao.steps(dataset, session);
+            QAStep[] results = dao.steps(dataset, entityManager);
             return results;
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve QA Steps for dataset: " + dataset.getName(), e);
             throw new EmfException("Could not retrieve QA Steps for dataset: " + dataset.getName());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized QAStepResult[] getQAStepResults(EmfDataset dataset) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            QAStepResult[] results = dao.qaRsults(dataset, session);
+            QAStepResult[] results = dao.qaRsults(dataset, entityManager);
             return results;
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve QA Step Results for dataset: " + dataset.getName(), e);
             throw new EmfException("Could not retrieve QA Step Results for dataset: " + dataset.getName());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized QAProgram[] getQAPrograms() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getQAPrograms(session);
+            return dao.getQAPrograms(entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not get QA Programs", e);
             throw new EmfException("Could not get QA Programs");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -122,7 +129,7 @@ public class QAServiceImpl implements QAService {
             throw new EmfException(e.getMessage());
         }
 
-        RunQAStep runner = new RunQAStep(new QAStep[] { step }, user, dbServerFactory, sessionFactory);
+        RunQAStep runner = new RunQAStep(new QAStep[] { step }, user, dbServerFactory, entityManagerFactory);
         try {
             threadPool.execute(new GCEnforcerTask("Running QA Steps", runner));
         } catch (Exception e) {
@@ -194,10 +201,10 @@ public class QAServiceImpl implements QAService {
     }
 
     private synchronized void removeQAResultTable(QAStep step, DbServer dbServer) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
-            QAStepResult result = dao.qaStepResult(step, session);
+            QAStepResult result = dao.qaStepResult(step, entityManager);
 
             if (result == null)
                 return;
@@ -212,13 +219,13 @@ public class QAServiceImpl implements QAService {
                 }
             }
 
-            dao.removeQAStepResult(result, session);
+            dao.removeQAStepResult(result, entityManager);
         } catch (Exception e) {
             LOG.error("Cannot drop result table for QA step: " + step.getName(), e);
             throw new EmfException("Cannot drop result table for QA step: " + step.getName());
         } finally {
             try {
-                session.close();
+                entityManager.close();
 
                 if (dbServer != null && dbServer.isConnected())
                     dbServer.disconnect();
@@ -229,23 +236,23 @@ public class QAServiceImpl implements QAService {
     }
 
     private synchronized void updateResultStatus(QAStep qaStep, String status) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            QAStepResult result = dao.qaStepResult(qaStep, session);
+            QAStepResult result = dao.qaStepResult(qaStep, entityManager);
 
             if (result == null)
                 return;
 
             result.setTableCreationStatus(status);
-            dao.updateQAStepResult(result, session);
+            dao.updateQAStepResult(result, entityManager);
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized void exportQAStep(QAStep step, User user, String dirName, String fileName, boolean overide, String rowFilter) throws EmfException {
         try {
-            ExportQAStep exportQATask = new ExportQAStep(step, dbServerFactory, user, sessionFactory, threadPool, rowFilter);
+            ExportQAStep exportQATask = new ExportQAStep(step, dbServerFactory, user, entityManagerFactory, threadPool, rowFilter);
             exportQATask.export(dirName, fileName, overide);
         } catch (Exception e) {
             LOG.error("Could not export QA step", e);
@@ -255,7 +262,7 @@ public class QAServiceImpl implements QAService {
 
     public synchronized void downloadQAStep(QAStep step, User user, String fileName, boolean overwrite, String rowFilter) throws EmfException {
         try {
-            ExportQAStep exportQATask = new ExportQAStep(step, dbServerFactory, user, sessionFactory, threadPool, rowFilter);
+            ExportQAStep exportQATask = new ExportQAStep(step, dbServerFactory, user, entityManagerFactory, threadPool, rowFilter);
             exportQATask.download(fileName, overwrite);
         } catch (Exception e) {
             LOG.error("Could not export QA step", e);
@@ -266,7 +273,7 @@ public class QAServiceImpl implements QAService {
     public synchronized void exportShapeFileQAStep(QAStep step, User user, String dirName,
             String fileName, boolean overide, ProjectionShapeFile projectionShapeFile, String rowFilter, PivotConfiguration pivotConfiguration) throws EmfException {
         try {
-            ExportShapeFileQAStep exportQATask = new ExportShapeFileQAStep(step, dbServerFactory, user, sessionFactory,
+            ExportShapeFileQAStep exportQATask = new ExportShapeFileQAStep(step, dbServerFactory, user, entityManagerFactory,
                     threadPool, true);
             exportQATask.export(dirName, fileName, projectionShapeFile, overide, rowFilter, pivotConfiguration);
         } catch (Exception e) {
@@ -280,7 +287,7 @@ public class QAServiceImpl implements QAService {
             String rowFilter, PivotConfiguration pivotConfiguration, 
             boolean overwrite) throws EmfException {
         try {
-            ExportShapeFileQAStep exportQATask = new ExportShapeFileQAStep(step, dbServerFactory, user, sessionFactory,
+            ExportShapeFileQAStep exportQATask = new ExportShapeFileQAStep(step, dbServerFactory, user, entityManagerFactory,
                     threadPool, true);
             exportQATask.download(fileName, projectionShapeFile, rowFilter, pivotConfiguration, overwrite);
         } catch (Exception e) {
@@ -290,12 +297,12 @@ public class QAServiceImpl implements QAService {
     }
 
     private String getProperty(String propertyName) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            EmfProperty property = new EmfPropertiesDAO().getProperty(propertyName, session);
+            EmfProperty property = new EmfPropertiesDAO().getProperty(propertyName, entityManager);
             return property.getValue();
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
@@ -384,42 +391,42 @@ public class QAServiceImpl implements QAService {
     }
 
     private synchronized void updateIds(QAStep[] steps) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dao.updateQAStepsIds(steps, session);
+            dao.updateQAStepsIds(steps, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not set the ids", e);
             throw new EmfException("Could not set the ids");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     private synchronized void updateSteps(QAStep[] steps) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            dao.update(steps, session);
+            dao.update(steps, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not update QA Steps", e);
             throw new EmfException("Could not update QA Steps");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public synchronized QAStep update(QAStep step) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            if (dao.exists(step, session)) {
+            if (dao.exists(step, entityManager)) {
                 throw new EmfException("The selected QA Step name is already in use");
             }
-            dao.update(new QAStep[] { step }, session);
+            dao.update(new QAStep[] { step }, entityManager);
             return step;
         } catch (RuntimeException e) {
             LOG.error("Could not update QA Step", e);
             throw new EmfException("Could not update QA Step -" + e.getMessage());
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
     
@@ -441,22 +448,22 @@ public class QAServiceImpl implements QAService {
     }
 
     public synchronized QAStepResult getQAStepResult(QAStep step) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            QAStepResult qaStepResult = dao.qaStepResult(step, session);
+            QAStepResult qaStepResult = dao.qaStepResult(step, entityManager);
             if (qaStepResult != null)
-                qaStepResult.setCurrentTable(isCurrentTable(qaStepResult, session));
+                qaStepResult.setCurrentTable(isCurrentTable(qaStepResult, entityManager));
             return qaStepResult;
         } catch (RuntimeException e) {
             LOG.error("Could not retrieve QA Step Result", e);
             throw new EmfException("Could not retrieve QA Step Result");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
-    private synchronized boolean isCurrentTable(QAStepResult qaStepResult, Session session) {
-        Version version = new Versions().get(qaStepResult.getDatasetId(), qaStepResult.getVersion(), session);
+    private synchronized boolean isCurrentTable(QAStepResult qaStepResult, EntityManager entityManager) {
+        Version version = new Versions().get(qaStepResult.getDatasetId(), qaStepResult.getVersion(), entityManager);
         Date versionDate = version.getLastModifiedDate();
         Date date = qaStepResult.getTableCreationDate();
         if (date == null || versionDate == null)
@@ -470,31 +477,31 @@ public class QAServiceImpl implements QAService {
     }
 
     public synchronized QAProgram addQAProgram(QAProgram program) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.addQAProgram(program, session);
+            return dao.addQAProgram(program, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not add QA Program " + program.getName() + ". ", e);
             throw new EmfException("Could not add QA Program " + program.getName() + ".");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public ProjectionShapeFile[] getProjectionShapeFiles() throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            return dao.getProjectionShapeFiles(session);
+            return dao.getProjectionShapeFiles(entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not get Projection Shape Files", e);
             throw new EmfException("Could not get Projection Shape Files");
         } finally {
-            session.close();
+            entityManager.close();
         }
     }
 
     public void copyQAStepsToDatasets(User user, QAStep[] steps, int[] datasetIds, boolean replace) throws EmfException {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         DatasetDAO datasetDAO = new DatasetDAO();
         DbServer dbServer = dbServerFactory.getDbServer();
         // store locked datasets in this array, some could be null, if their locked by someone else
@@ -505,7 +512,7 @@ public class QAServiceImpl implements QAService {
             for (int i = 0; i < datasetIds.length; i++) {
                 int datasetId = datasetIds[i];
                 // get lock on dataset type so we can update it...
-                EmfDataset dataset = datasetDAO.obtainLocked(user, datasetDAO.getDataset(session, datasetId), session);
+                EmfDataset dataset = datasetDAO.obtainLocked(user, datasetDAO.getDataset(entityManager, datasetId), entityManager);
                 if (!dataset.isLocked(user))
                     throw new EmfException("Could not copy QA Steps to " + dataset.getName() + " its locked by "
                             + dataset.getLockOwner() + ".");
@@ -514,7 +521,7 @@ public class QAServiceImpl implements QAService {
             int i = 0;
             for (EmfDataset dataset : datasets) {
                 ++i;
-                QAStep[] existingQaSteps = dao.steps(dataset, session);
+                QAStep[] existingQaSteps = dao.steps(dataset, entityManager);
                 boolean exists = false;
                 // add qa step to dataset
                 for (QAStep step : steps) {
@@ -535,7 +542,7 @@ public class QAServiceImpl implements QAService {
                             // if replacing, then remove existing template
                             if (replace) {
                                 removeQAResultTable(existingQAStep, dbServer);
-                                dao.removeQAStep(existingQAStep, session);
+                                dao.removeQAStep(existingQAStep, entityManager);
                             }
                         }
                     }
@@ -551,7 +558,7 @@ public class QAServiceImpl implements QAService {
                         }
                         tmpStep.setName(newName);
                     }
-                    dao.add(new QAStep[] { tmpStep }, session);
+                    dao.add(new QAStep[] { tmpStep }, entityManager);
                 }
                 datasetNameList += (i > 1 ? ", " : "") + dataset.getName();
             }
@@ -561,7 +568,7 @@ public class QAServiceImpl implements QAService {
             endStatus.setMessage("Copied " + steps.length + " QA Steps to Datasets: " + datasetNameList + ".");
             endStatus.setTimestamp(new Date());
 
-            new StatusDAO(sessionFactory).add(endStatus);
+            new StatusDAO(entityManagerFactory).add(endStatus);
 
         } catch (RuntimeException e) {
             LOG.error("Could not copy QA Steps to Datasets.", e);
@@ -571,9 +578,9 @@ public class QAServiceImpl implements QAService {
             for (EmfDataset dataset : datasets) {
                 // release lock on datasets
                 if (dataset != null)
-                    datasetDAO.releaseLocked(user, dataset, session);
+                    datasetDAO.releaseLocked(user, dataset, entityManager);
             }
-            session.close();
+            entityManager.close();
             try {
                 dbServer.disconnect();
             } catch (Exception e) {
@@ -586,7 +593,7 @@ public class QAServiceImpl implements QAService {
     public synchronized void deleteQASteps(User user, QAStep[] steps, int datasetId) throws EmfException { //BUG3615
         
         try {
-            DeleteQASteps task = new DeleteQASteps(steps, datasetId, dbServerFactory, user, sessionFactory, threadPool);
+            DeleteQASteps task = new DeleteQASteps(steps, datasetId, dbServerFactory, user, entityManagerFactory, threadPool);
             task.delete();
         } catch (Exception e) {
             LOG.error("Could not delete QA steps", e);
@@ -594,7 +601,7 @@ public class QAServiceImpl implements QAService {
         }
         
         /*
-        StatusDAO statusDAO = new StatusDAO(sessionFactory);
+        StatusDAO statusDAO = new StatusDAO(entityManagerFactory);
         Status status = new Status();
         status.setUsername(user.getUsername());
         status.setType("DeleteQASteps");
@@ -602,9 +609,9 @@ public class QAServiceImpl implements QAService {
         status.setTimestamp(new Date());
         statusDAO.add(status);
         
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         DatasetDAO datasetDAO = new DatasetDAO();
-        EmfDataset dataset = datasetDAO.obtainLocked(user, datasetDAO.getDataset(session, datasetId), session);
+        EmfDataset dataset = datasetDAO.obtainLocked(user, datasetDAO.getDataset(entityManager, datasetId), entityManager);
         
         DbServer dbServer = dbServerFactory.getDbServer();
         Datasource emfDatasource = dbServer.getEmfDatasource();
@@ -646,12 +653,12 @@ public class QAServiceImpl implements QAService {
 
                 if ( rs.next()) { // not empty
                     stepsReferenced += "\"" + step.getName() + "\" referenced by QA step \"" + rs.getString("name") + "\" for dataset \""; 
-                    EmfDataset qaDataset = datasetDAO.obtainLocked(user, datasetDAO.getDataset(session, rs.getInt("dataset_id")), session);
+                    EmfDataset qaDataset = datasetDAO.obtainLocked(user, datasetDAO.getDataset(entityManager, rs.getInt("dataset_id")), entityManager);
                     stepsReferenced += qaDataset.getName() + "\'";
                     while ( rs.next()) {
                         stepsReferenced += ", ";
                         stepsReferenced += " \"" + rs.getString("name") + "\" for dataset \""; 
-                        qaDataset = datasetDAO.obtainLocked(user, datasetDAO.getDataset(session, rs.getInt("dataset_id")), session);
+                        qaDataset = datasetDAO.obtainLocked(user, datasetDAO.getDataset(entityManager, rs.getInt("dataset_id")), entityManager);
                         stepsReferenced += qaDataset.getName() + "\"";
                     }
                     stepsReferenced +=". ";
@@ -701,7 +708,7 @@ public class QAServiceImpl implements QAService {
                 dbServer = dbServerFactory.getDbServer();
                 this.removeQAResultTable(step, dbServer);
                 try {
-                    dao.deleteQAStep(step, session);
+                    dao.deleteQAStep(step, entityManager);
                     succeeded++;
                 } catch (RuntimeException e) {
                     failed++;
@@ -720,7 +727,7 @@ public class QAServiceImpl implements QAService {
             
         }
         
-        session.close();
+        entityManager.close();
         
         msg = "Completed deleting the QA steps: \n";
         msg += "Total number of steps: " + total + "\n"; 
@@ -750,7 +757,7 @@ public class QAServiceImpl implements QAService {
 
         try {
 
-            ArchiveQAStepTask archiveQAStepTask = new ArchiveQAStepTask(dbServerFactory, sessionFactory, qaStepResultId, username);
+            ArchiveQAStepTask archiveQAStepTask = new ArchiveQAStepTask(dbServerFactory, entityManagerFactory, qaStepResultId, username);
             threadPool.execute(new GCEnforcerTask("Run ArchiveQAStepTask", archiveQAStepTask));
 
         } catch (Exception e) {
@@ -766,7 +773,7 @@ public class QAServiceImpl implements QAService {
 
         try {
 
-            RestoreQAStepTask restoreQAStepTask = new RestoreQAStepTask(dbServerFactory, sessionFactory, qaStepResultId, username);
+            RestoreQAStepTask restoreQAStepTask = new RestoreQAStepTask(dbServerFactory, entityManagerFactory, qaStepResultId, username);
             threadPool.execute(new GCEnforcerTask("Run RestoreQAStepTask", restoreQAStepTask));
 
         } catch (Exception e) {

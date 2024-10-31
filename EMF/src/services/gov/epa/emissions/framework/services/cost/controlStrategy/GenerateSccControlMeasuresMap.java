@@ -10,12 +10,12 @@ import gov.epa.emissions.framework.services.cost.ControlStrategy;
 import gov.epa.emissions.framework.services.cost.ControlStrategyMeasure;
 import gov.epa.emissions.framework.services.cost.LightControlMeasure;
 import gov.epa.emissions.framework.services.cost.data.EfficiencyRecord;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class GenerateSccControlMeasuresMap {
 
@@ -29,7 +29,7 @@ public class GenerateSccControlMeasuresMap {
 
     private String qualifiedEmissionTableName;
 
-    private HibernateSessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     private String classFilterIds;
     
@@ -38,12 +38,12 @@ public class GenerateSccControlMeasuresMap {
     private String[] pollutants;
 
     public GenerateSccControlMeasuresMap(DbServer dbServer, String qualifiedEmissionTableName, ControlStrategy controlStrategy,
-            HibernateSessionFactory sessionFactory, String[] pollutants) {
+            EntityManagerFactory entityManagerFactory, String[] pollutants) {
         this.emissionDatasource = dbServer.getEmissionsDatasource();
         this.emfDatasource = dbServer.getEmfDatasource();
         this.qualifiedEmissionTableName = qualifiedEmissionTableName;
         this.controlStrategy = controlStrategy;
-        this.sessionFactory = sessionFactory;
+        this.entityManagerFactory = entityManagerFactory;
         //add additional class filter, if necessary, when selecting control measure for the calculations...
         this.classFilterIds = classIdList();
         this.controlMeasureFilterIds = controlMeasureIdList();
@@ -99,11 +99,11 @@ public class GenerateSccControlMeasuresMap {
     }
 
     private ControlMeasure controlMeasure(int id) {
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         ControlMeasure measure = null;
         try {
             ControlMeasureDAO dao = new ControlMeasureDAO();
-            measure = dao.current(id, session);
+            measure = dao.current(id, entityManager);
 
             //override the Rule Penetration and Effectiveness, that was set during the strat setup...
             ControlStrategyMeasure[] controlStrategyMeasures = controlStrategy.getControlMeasures();
@@ -119,15 +119,15 @@ public class GenerateSccControlMeasuresMap {
                 }
             }
 
-//            EfficiencyRecord[] ers = (EfficiencyRecord[]) dao.getEfficiencyRecords(measure.getId(), session).toArray(new EfficiencyRecord[0]);
+//            EfficiencyRecord[] ers = (EfficiencyRecord[]) dao.getEfficiencyRecords(measure.getId(), entityManager).toArray(new EfficiencyRecord[0]);
             EfficiencyRecord[] ers = (EfficiencyRecord[]) dao.getEfficiencyRecords(measure.getId(), controlStrategy.getInventoryYear(), 
-                    pollutants, session).toArray(new EfficiencyRecord[0]);
+                    pollutants, entityManager).toArray(new EfficiencyRecord[0]);
             //no need to keep these in the hibernate cache
-            session.clear();
+            entityManager.clear();
 //            log.error("Measure = " + measure.getName() + " EfficiencyRecord length = " + ers.length);
             measure.setEfficiencyRecords(ers);
         } finally {
-            session.close();
+            entityManager.close();
         }
         return measure;
     }

@@ -9,12 +9,13 @@ import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
 import gov.epa.emissions.framework.services.cost.ControlMeasure;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.persistence.EntityManagerFactory;
 
 public class ControlMeasuresExporter implements Exporter {
 
@@ -26,7 +27,7 @@ public class ControlMeasuresExporter implements Exporter {
     
     private User user;
 
-    private HibernateSessionFactory factory;
+    private EntityManagerFactory entityManagerFactory;
     
 //    private String delimiter;
 //    
@@ -41,12 +42,12 @@ public class ControlMeasuresExporter implements Exporter {
     private String idList = "-9999"; //add some unknown id, makes it easier when building the delimited list.
 
     public ControlMeasuresExporter(File folder, String prefix, ControlMeasure[] controlMeasures, String[] sccs,
-            User user, HibernateSessionFactory factory, DbServerFactory dbServerFactory) {
+            User user, EntityManagerFactory entityManagerFactory, DbServerFactory dbServerFactory) {
         this.controlMeasures = controlMeasures;
         this.folder = folder;
         this.prefix = prefix;
         this.user = user;
-        this.factory = factory;
+        this.entityManagerFactory = entityManagerFactory;
 //        this.cmAbbrevSccs = sccs;
 //        this.delimiter = ",";
         this.dbServer = dbServerFactory.getDbServer();
@@ -340,7 +341,7 @@ public class ControlMeasuresExporter implements Exporter {
 //        CMEfficiencyFileFormatv3 fileFormat = new CMEfficiencyFileFormatv3();
 //        String[] colNames = fileFormat.cols();
 //        ControlMeasureDAO dao = new ControlMeasureDAO();
-//        Session session = factory.getSession();
+//        EntityManager entityManager = factory.getSession();
 //        
 //        for (int i = 0; i < colNames.length; i++) {
 //            if (i == colNames.length - 1) {
@@ -354,12 +355,12 @@ public class ControlMeasuresExporter implements Exporter {
 //        efficienciesWriter.write(System.getProperty("line.separator"));
 //        try {
 //            for (int j = 0; j < controlMeasures.length; j++) {
-//                EfficiencyRecord[] records = (EfficiencyRecord[]) dao.getEfficiencyRecords(controlMeasures[j].getId(), session).toArray(new EfficiencyRecord[0]);
+//                EfficiencyRecord[] records = (EfficiencyRecord[]) dao.getEfficiencyRecords(controlMeasures[j].getId(), entityManager).toArray(new EfficiencyRecord[0]);
 //                writeEfficiencyRecords(efficienciesWriter, controlMeasures[j].getAbbreviation(), records);
 //            }
-//            session.clear();
+//            entityManager.clear();
 //        } finally {
-//            session.close();
+//            entityManager.close();
 //        }
 //        efficienciesWriter.close();
     }
@@ -486,7 +487,7 @@ public class ControlMeasuresExporter implements Exporter {
         endStatus.setMessage(message + "\n");
         endStatus.setTimestamp(new Date());
 
-        new StatusDAO(factory).add(endStatus);
+        new StatusDAO(entityManagerFactory).add(endStatus);
     }
     
     public void setDelimiter(String delimiter) {

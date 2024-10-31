@@ -1,42 +1,45 @@
 package gov.epa.emissions.framework.tasks;
 
+import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
+import gov.epa.emissions.framework.services.persistence.JpaEntityManagerFactory;
+
 import java.util.Date;
 
-import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
 
 public class DebugLevels {
     
     private static Date previousTime = new Date();
     
-    private static final HibernateSessionFactory sessionFactory  = HibernateSessionFactory.get();
+    private static final EntityManagerFactory entityManagerFactory  = JpaEntityManagerFactory.get();;
     private static final EmfPropertiesDAO propDAO = new EmfPropertiesDAO();
     private static boolean getProperty(String name) {
         boolean debugLevel = false;
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            debugLevel = propDAO.getProperty(name, session).getValue().trim().equalsIgnoreCase("true");
+            debugLevel = propDAO.getProperty(name, entityManager).getValue().trim().equalsIgnoreCase("true");
         } catch (HibernateException e) {
             e.printStackTrace();
         } finally {
-            session.close();
+            entityManager.close();
         }
         return debugLevel;
     }
 
     private static int getDebugLevelRefreshRate() {
         int debugLevelRefreshRate = 100;
-        Session session = sessionFactory.getSession();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            debugLevelRefreshRate = Integer.parseInt(propDAO.getProperty("DEBUG_LEVEL_REFRESH_RATE", session).getValue().trim());
+            debugLevelRefreshRate = Integer.parseInt(propDAO.getProperty("DEBUG_LEVEL_REFRESH_RATE", entityManager).getValue().trim());
         } catch (NumberFormatException e) {
             e.printStackTrace();
         } catch (HibernateException e) {
             e.printStackTrace();
         } finally {
-            session.close();
+            entityManager.close();
         }
         return debugLevelRefreshRate;
     }

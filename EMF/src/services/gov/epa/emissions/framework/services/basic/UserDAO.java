@@ -12,7 +12,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
 
 public class UserDAO {
 
@@ -25,67 +25,67 @@ public class UserDAO {
         facade = new HibernateFacade();
     }
 
-    public List<User> all(Session session) {
-        CriteriaBuilderQueryRoot<User> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(User.class, session);
-        return facade.getAll(criteriaBuilderQueryRoot, session);
+    public List<User> all(EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<User> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(User.class, entityManager);
+        return facade.getAll(criteriaBuilderQueryRoot, entityManager);
     }
 
-    public void add(User user, Session session) {
-        facade.add(user, session);
+    public void add(User user, EntityManager entityManager) {
+        facade.add(user, entityManager);
     }
 
-    public void remove(User user, Session session) {
-        User loaded = get(user.getUsername(), session);
+    public void remove(User user, EntityManager entityManager) {
+        User loaded = get(user.getUsername(), entityManager);
         if (!loaded.isLocked(user.getLockOwner()))
             throw new RuntimeException("Cannot remove user unless locked");
 
-        facade.remove(loaded, session);
+        facade.remove(loaded, entityManager);
     }
 
-    public User get(String username, Session session) {
-        CriteriaBuilderQueryRoot<User> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(User.class, session);
+    public User get(String username, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<User> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(User.class, entityManager);
         
-        List<User> list = facade.get(session, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("username"), username));
+        List<User> list = facade.get(entityManager, criteriaBuilderQueryRoot, criteriaBuilderQueryRoot.getBuilder().equal(criteriaBuilderQueryRoot.getRoot().get("username"), username));
         if (list.isEmpty())
             return null;
         return list.get(0);
     }
     
-    public User getUserByEmail(int id, String email, Session session) {
-        CriteriaBuilderQueryRoot<User> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(User.class, session);
+    public User getUserByEmail(int id, String email, EntityManager entityManager) {
+        CriteriaBuilderQueryRoot<User> criteriaBuilderQueryRoot = facade.getCriteriaBuilderQueryRoot(User.class, entityManager);
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<User> root = criteriaBuilderQueryRoot.getRoot();
 
         Predicate crit1 = builder.equal(root.get("email"), email);
         Predicate crit2 = builder.notEqual(root.get("id"), Integer.valueOf(id));
         
-        List list = facade.get(criteriaBuilderQueryRoot, new Predicate[]{crit1, crit2}, session);
+        List list = facade.get(criteriaBuilderQueryRoot, new Predicate[]{crit1, crit2}, entityManager);
         if (list.isEmpty())
             return null;
         return (User) list.get(0);
     }
 
-    public User get(int userId, Session session) {
-        return facade.load(User.class, "id", new Integer(userId), session);
+    public User get(int userId, EntityManager entityManager) {
+        return facade.load(User.class, "id", new Integer(userId), entityManager);
     }
 
-    public boolean contains(String username, Session session) {
-        return get(username, session) != null;
+    public boolean contains(String username, EntityManager entityManager) {
+        return get(username, entityManager) != null;
     }
 
-    public User obtainLocked(User lockOwner, User user, Session session) {
-        return (User) lockingScheme.getLocked(lockOwner, current(user, session), session);
+    public User obtainLocked(User lockOwner, User user, EntityManager entityManager) {
+        return (User) lockingScheme.getLocked(lockOwner, current(user, entityManager), entityManager);
     }
 
-    public User update(User user, Session session) throws EmfException {
-        return (User) lockingScheme.releaseLockOnUpdate(user, current(user, session), session);
+    public User update(User user, EntityManager entityManager) throws EmfException {
+        return (User) lockingScheme.releaseLockOnUpdate(user, current(user, entityManager), entityManager);
     }
 
-    public User releaseLocked(User user, User locked, Session session) {
-        return (User) lockingScheme.releaseLock(user, current(locked, session), session);
+    public User releaseLocked(User user, User locked, EntityManager entityManager) {
+        return (User) lockingScheme.releaseLock(user, current(locked, entityManager), entityManager);
     }
 
-    private User current(User user, Session session) {
-        return facade.current(user.getId(), User.class, session);
+    private User current(User user, EntityManager entityManager) {
+        return facade.current(user.getId(), User.class, entityManager);
     }
 }

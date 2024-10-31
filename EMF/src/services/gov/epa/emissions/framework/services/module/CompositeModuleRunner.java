@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.hibernate.Session;
+import javax.persistence.EntityManager;
 
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.data.EmfDataset;
@@ -36,7 +36,7 @@ class CompositeModuleRunner extends ModuleRunner {
     protected void execute() {
         Connection connection = getConnection();
         ModulesDAO modulesDAO = getModulesDAO();
-        Session session = getSession();
+        EntityManager entityManager = getEntityManager();
         
         Module module = getModule();
         ModuleTypeVersion moduleTypeVersion = getModuleTypeVersion();
@@ -103,7 +103,7 @@ class CompositeModuleRunner extends ModuleRunner {
                 
                 history.addLogMessage(History.INFO, "Starting setup script.");
                 
-                history = modulesDAO.updateHistory(history, session);
+                history = modulesDAO.updateHistory(history, entityManager);
 
                 statement = connection.createStatement();
                 statement.execute(setupScript);
@@ -124,7 +124,7 @@ class CompositeModuleRunner extends ModuleRunner {
             // execute submodules
             history.setStatus(History.SUBMODULES);
             history.addLogMessage(History.INFO, "Started executing submodules.");
-            history = modulesDAO.updateHistory(history, session);
+            history = modulesDAO.updateHistory(history, entityManager);
             
             TreeMap<Integer, SubmoduleRunner>  todoSubmoduleRunners = new TreeMap<Integer, SubmoduleRunner>();
             TreeMap<Integer, SubmoduleRunner> readySubmoduleRunners = new TreeMap<Integer, SubmoduleRunner>();
@@ -282,7 +282,7 @@ class CompositeModuleRunner extends ModuleRunner {
             
             history.addLogMessage(History.SUCCESS, getFinalStatusMessage());
             
-            history = modulesDAO.updateHistory(history, session);
+            history = modulesDAO.updateHistory(history, entityManager);
             
         } catch (Exception e) {
             
@@ -320,7 +320,7 @@ class CompositeModuleRunner extends ModuleRunner {
             
             history.addLogMessage(History.ERROR, getFinalStatusMessage());
             
-            history = modulesDAO.updateHistory(history, session);
+            history = modulesDAO.updateHistory(history, entityManager);
             
         } finally {
             if (statement != null) {
@@ -343,16 +343,16 @@ class CompositeModuleRunner extends ModuleRunner {
                 }
                 
                 history.addLogMessage(History.INFO, message.toString());
-                history = modulesDAO.updateHistory(history, session);
+                history = modulesDAO.updateHistory(history, entityManager);
                 
                 try {
                     EmfDataset[] datasetsArray = datasets.values().toArray(new EmfDataset[]{});
                     deleteDatasets(datasetsArray);
                     history.addLogMessage(History.INFO, "Successfully deleted all temporary datasets.");
-                    history = modulesDAO.updateHistory(history, session);
+                    history = modulesDAO.updateHistory(history, entityManager);
                 } catch (EmfException e) {
                     history.addLogMessage(History.INFO, "Failed to delete a temporary dataset:\n" + e.getMessage());
-                    history = modulesDAO.updateHistory(history, session);
+                    history = modulesDAO.updateHistory(history, entityManager);
                 }
             }
         }

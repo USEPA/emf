@@ -1,17 +1,16 @@
 package gov.epa.emissions.framework.services.qa.flatFile2010Pnt;
 
-import java.sql.SQLException;
-import java.util.Date;
-
 import gov.epa.emissions.commons.db.DbServer;
-import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
 import gov.epa.emissions.framework.services.data.QAStep;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 import gov.epa.emissions.framework.services.qa.SQLQAProgramRunner;
-import gov.epa.emissions.framework.services.qa.comparedatasets.SQLCompareDatasetsProgramQuery;
+
+import java.sql.SQLException;
+import java.util.Date;
+
+import javax.persistence.EntityManagerFactory;
 
 public class SQLEnhanceFlatFile2010PointQueryRunner extends SQLQAProgramRunner{
     
@@ -19,14 +18,14 @@ public class SQLEnhanceFlatFile2010PointQueryRunner extends SQLQAProgramRunner{
     
     private StatusDAO statusDao;
     
-    public SQLEnhanceFlatFile2010PointQueryRunner(DbServer dbServer, HibernateSessionFactory sessionFactory, QAStep qaStep) {
-        super(dbServer, sessionFactory, qaStep);
+    public SQLEnhanceFlatFile2010PointQueryRunner(DbServer dbServer, EntityManagerFactory entityManagerFactory, QAStep qaStep) {
+        super(dbServer, entityManagerFactory, qaStep);
         this.emissioDatasourceName = dbServer.getEmissionsDatasource().getName();
-        this.statusDao = new StatusDAO(sessionFactory);
+        this.statusDao = new StatusDAO(entityManagerFactory);
     }
     
     protected String query(DbServer dbServer, QAStep qaStep, String tableName) throws EmfException {
-        SQLEnhanceFlatFile2010PointQuery parser = new SQLEnhanceFlatFile2010PointQuery(sessionFactory, emissioDatasourceName, tableName, qaStep, dbServer.getEmissionsDatasource());
+        SQLEnhanceFlatFile2010PointQuery parser = new SQLEnhanceFlatFile2010PointQuery(entityManagerFactory, emissioDatasourceName, tableName, qaStep, dbServer.getEmissionsDatasource());
         String sql = "";
         try {
             sql = parser.createProgramQuery();

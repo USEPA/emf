@@ -1,11 +1,12 @@
 package gov.epa.emissions.framework.services.cost.controlmeasure.io;
 
-import java.util.Date;
-
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.basic.Status;
 import gov.epa.emissions.framework.services.basic.StatusDAO;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+
+import java.util.Date;
+
+import javax.persistence.EntityManagerFactory;
 
 public class CMAddImportStatus {
 
@@ -13,9 +14,9 @@ public class CMAddImportStatus {
 
     private User user;
 
-    public CMAddImportStatus(User user, HibernateSessionFactory sessionFactory) {
+    public CMAddImportStatus(User user, EntityManagerFactory entityManagerFactory) {
         this.user = user;
-        this.statusDao = new StatusDAO(sessionFactory);
+        this.statusDao = new StatusDAO(entityManagerFactory);
     }
 
     public void addStatus(int lineNo, StringBuffer sb) {

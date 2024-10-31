@@ -5,11 +5,12 @@ import gov.epa.emissions.commons.io.importer.ImporterException;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.cost.ControlMeasure;
 import gov.epa.emissions.framework.services.cost.controlmeasure.Scc;
-import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.persistence.EntityManagerFactory;
 
 public class CMSCCRecordReader {
 
@@ -23,9 +24,9 @@ public class CMSCCRecordReader {
 
     private int errorLimit = 100;
 
-    public CMSCCRecordReader(CMFileFormat fileFormat, User user, HibernateSessionFactory sessionFactory) {
+    public CMSCCRecordReader(CMFileFormat fileFormat, User user, EntityManagerFactory entityManagerFactory) {
         this.fileFormat = fileFormat;
-        this.status = new CMAddImportStatus(user, sessionFactory);
+        this.status = new CMAddImportStatus(user, entityManagerFactory);
  //       this.sccSet = new HashSet();
         this.sccList=new ArrayList();
     }
