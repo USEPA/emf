@@ -18,7 +18,6 @@ import gov.epa.emissions.framework.tasks.DebugLevels;
 import java.util.Date;
 
 import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class ExImServiceImpl extends EmfServiceImpl implements ExImService {
     private static int svcCount = 0;
