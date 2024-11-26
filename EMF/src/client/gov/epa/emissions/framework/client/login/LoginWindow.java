@@ -305,10 +305,7 @@ public class LoginWindow extends EmfFrame implements LoginView {
              * don't update gui here
              */
             @Override
-            public Void doInBackground() throws EmfException {
-                EmfConsole console = new EmfConsole(new DefaultEmfSession(user, serviceLocator));
-                EmfConsolePresenter presenter = new EmfConsolePresenter();
-                presenter.display(console);
+            public Void doInBackground() {
                 return null;
             }
 
@@ -319,6 +316,14 @@ public class LoginWindow extends EmfFrame implements LoginView {
             public void done() {
                 try {
                     get();
+                    try {
+                        EmfConsole console = new EmfConsole(new DefaultEmfSession(user, serviceLocator));
+                        EmfConsolePresenter presenter = new EmfConsolePresenter();
+                        presenter.display(console);
+                    } catch (EmfException e) {
+                        // NOTE Auto-generated catch block
+                        e.printStackTrace();
+                    }
                     disposeView();
                 } catch (InterruptedException e1) {
                     // ignore
