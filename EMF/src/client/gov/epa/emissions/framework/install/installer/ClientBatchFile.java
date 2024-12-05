@@ -26,7 +26,7 @@ public class ClientBatchFile {
         writer.println("::  add bin directory to search path" + sep); 
         writer.println("set PATH=%PATH%;%R_HOME%" + sep);
         writer.println(":: set needed jar files in CLASSPATH" + sep);
-        writer.println("set CLASSPATH=%EMF_HOME%\\lib*;%EMF_HOME%\\emf-client.jar");
+        writer.println("set CLASSPATH=%EMF_HOME%\\lib\\*;%EMF_HOME%\\emf-client.jar");
         writer.println(sep + sep + "@echo on" + sep + sep);
         writer.println("java -Xmx1024M -DUSER_PREFERENCES=" +
                 "\"" + System.getProperty("user.home") + "\\" + preference + "\" " +
