@@ -1,21 +1,5 @@
 package gov.epa.emissions.framework.services.module;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
-import org.hibernate.Session;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-
 import gov.epa.emissions.commons.data.DatasetType;
 import gov.epa.emissions.commons.data.InternalSource;
 import gov.epa.emissions.commons.data.KeyVal;
@@ -40,6 +24,22 @@ import gov.epa.emissions.framework.services.data.DatasetDAO;
 import gov.epa.emissions.framework.services.data.EmfDataset;
 import gov.epa.emissions.framework.services.persistence.DataSourceFactory;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
+import org.hibernate.Session;
 
 abstract class ModuleRunner {
     
@@ -1078,13 +1078,12 @@ abstract class ModuleRunner {
         String jdbcDriverClassName = basicDataSource.getDriverClassName();
         String jdbcURL = basicDataSource.getUrl();
 
-        DriverManagerDataSource ds = new DriverManagerDataSource();
-        ds.setDriverClassName(jdbcDriverClassName); 
-        ds.setUsername(username); 
-        ds.setPassword(password);
-        ds.setUrl(jdbcURL + "&ApplicationName=Module%20Runner&logUnclosedConnections=true&loglevel=2");
+        DriverManager.registerDriver(basicDataSource.getDriver());
+        Connection ds = DriverManager.getConnection(jdbcURL + "&ApplicationName=Module%20Runner&logUnclosedConnections=true&loglevel=2", 
+                username, 
+                password);
         
-        return ds.getConnection();
+        return ds;
     }
 
     protected static String getLineNumberedScript(String script) {

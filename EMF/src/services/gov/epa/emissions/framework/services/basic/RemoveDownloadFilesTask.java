@@ -2,16 +2,11 @@ package gov.epa.emissions.framework.services.basic;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.Arrays;
 import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
-@Component
-@Scope("prototype")
 public class RemoveDownloadFilesTask implements Runnable {
 
     private Log log = LogFactory.getLog(RemoveDownloadFilesTask.class);
@@ -24,7 +19,7 @@ public class RemoveDownloadFilesTask implements Runnable {
     }
 
    public void run() {
-        
+       log.info("RemoveDownloadFilesTask.run() started");
         try {
             //TODO:  make it work...
             File downloadExportFolderObj = new File(downloadExportFolder);

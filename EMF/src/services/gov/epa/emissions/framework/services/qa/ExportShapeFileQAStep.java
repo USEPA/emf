@@ -13,7 +13,6 @@ import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 

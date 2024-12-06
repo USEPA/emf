@@ -18,6 +18,8 @@ public class InstallPreferences {
     private static final String R_HOME = "r.home";
 
     private static final String EMF_SERVER_ADDRESS = "server.address";
+    
+    private static final String CMD_ARGUMENTS = "cmd.arguments";
 
     private static final String WEB_SITE = "web.site";
     
@@ -123,6 +125,10 @@ public class InstallPreferences {
 
     public String emfServer() {
         return property(EMF_SERVER_ADDRESS);
+    }
+    
+    public String cmdArguments() {
+        return property(CMD_ARGUMENTS);
     }
     
     public String localTempDir() {

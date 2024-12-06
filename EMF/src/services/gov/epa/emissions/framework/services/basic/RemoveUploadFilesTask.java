@@ -2,21 +2,16 @@ package gov.epa.emissions.framework.services.basic;
 
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Date;
 
-@Component
-public class RemoveUploadFilesTask {
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.Session;
+
+public class RemoveUploadFilesTask implements Runnable {
 
     private Log log = LogFactory.getLog(RemoveUploadFilesTask.class);
 
@@ -27,8 +22,8 @@ public class RemoveUploadFilesTask {
         this.sessionFactory = HibernateSessionFactory.get();
     }
 
-    @Scheduled(cron="0 0 0/12 * * ?")//kick off task at 12 AM and 12 PM
-    public void removeUploadedFilesTask() {
+    public void run() {
+        log.info("RemoveUploadFilesTask.run() started");
         try {
             File tempDirectoryObj = new File(getTempDirectory() + File.separatorChar + "upload");
 
@@ -46,6 +41,7 @@ public class RemoveUploadFilesTask {
                     @Override
                     public boolean accept(File dir, String name) {
                         //only get files, not directories (really which there shouldn't be any subdirs here)
+                        if (name == null) return false;
                         File userFile = new File(dir, name);
                         if (userFile.isFile() && userFile.lastModified() <= (new Date().getTime() - fileHoursToExpire * 60 * 60 * 1000))
                             userFile.delete();

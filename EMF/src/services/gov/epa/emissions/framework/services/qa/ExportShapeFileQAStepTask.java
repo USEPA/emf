@@ -33,7 +33,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class ExportShapeFileQAStepTask implements Runnable {
 

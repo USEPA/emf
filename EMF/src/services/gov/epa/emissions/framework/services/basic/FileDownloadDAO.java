@@ -2,9 +2,10 @@ package gov.epa.emissions.framework.services.basic;
 
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.EmfException;
+import gov.epa.emissions.framework.services.GCEnforcerTask;
 import gov.epa.emissions.framework.services.persistence.EmfPropertiesDAO;
+import gov.epa.emissions.framework.services.persistence.HibernateFacade;
 import gov.epa.emissions.framework.services.persistence.HibernateSessionFactory;
-import gov.epa.emissions.framework.services.spring.AppConfig;
 
 import java.io.File;
 import java.util.Date;
@@ -12,17 +13,16 @@ import java.util.List;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Repository;
 
-@Repository
-//@Scope("prototype")
+import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
+
 public class FileDownloadDAO {
 
+    private PooledExecutor threadPool;
+    
     private HibernateSessionFactory sessionFactory;
 
     public FileDownloadDAO() {
@@ -31,11 +31,22 @@ public class FileDownloadDAO {
 
     public FileDownloadDAO(HibernateSessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
+        this.threadPool = createThreadPool();
     }
 
-//    public void setSessionFactory(SessionFactory sessionFactory) {
-//        this.sessionFactory = sessionFactory;
-//      }
+    protected synchronized void finalize() throws Throwable {
+        threadPool.shutdownAfterProcessingCurrentlyQueuedTasks();
+        threadPool.awaitTerminationAfterShutdown();
+        super.finalize();
+    }
+
+    private synchronized PooledExecutor createThreadPool() {
+        PooledExecutor threadPool = new PooledExecutor(20);
+        threadPool.setMinimumPoolSize(1);
+        threadPool.setKeepAliveTime(1000 * 60 * 3);// terminate after 3 (unused) minutes
+
+        return threadPool;
+    }
 
     private String getPropertyValue(String name) throws EmfException {
         Session session = sessionFactory.getSession();
@@ -86,13 +97,16 @@ public class FileDownloadDAO {
         }
          
         try {
-            ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-            ThreadPoolTaskExecutor taskExecutor = (ThreadPoolTaskExecutor) context.getBean("poolTaskExecutor");
-
-//                PrintTask2 printTask1 = (PrintTask2) context.getBean("printTask2");
-//                printTask1.setName("Thread 1");
-            taskExecutor.execute(new RemoveDownloadFilesTask(getDownloadExportFolder(), getDownloadExportFileHoursToExpire()));
-
+            RemoveDownloadFilesTask task = new RemoveDownloadFilesTask(getDownloadExportFolder(), getDownloadExportFileHoursToExpire());
+            threadPool.execute(new GCEnforcerTask("Remove Downloaded Files Task", task));
+            try {
+                RemoveUploadFilesTask task2 = new RemoveUploadFilesTask();
+                threadPool.execute(new GCEnforcerTask("Remove Uploaded Files Task", task2));
+            } catch (Exception e) {
+                //suppress all errors this shouldn't stop the process from working....
+                //throw new EmfException(e.getMessage());
+                e.printStackTrace();
+            }
         } catch (Exception e) {
             //suppress all errors this shouldn't stop the process from working....
             //throw new EmfException(e.getMessage());
@@ -174,5 +188,4 @@ public class FileDownloadDAO {
             tx.rollback();
             throw e;
         }
-    }
-}
+    }}

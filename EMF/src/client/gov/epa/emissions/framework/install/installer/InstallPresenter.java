@@ -65,9 +65,9 @@ public class InstallPresenter {
     }
 
     public void writePreference(String website, String input, String output, String javahome, String rhome, String emfhome,
-            String tmpDir, String server) {
+            String tmpDir, String server, String cmdArguments) {
         try {
-            Tools.writePreference(website, input, output, javahome, rhome, emfhome, tmpDir, server);
+            Tools.writePreference(website, input, output, javahome, rhome, emfhome, tmpDir, server, cmdArguments);
         } catch (Exception e) {
             view.displayErr("Creating EMF client preference file failed.");
         }
@@ -89,9 +89,9 @@ public class InstallPresenter {
         view.setFinish();
     }
 
-    public void createBatchFile(String filename, String preference, String javahome, String rhome, String server) {
+    public void createBatchFile(String filename, String preference, String javahome, String rhome, String server, String cmdArguments) {
         try {
-            new ClientBatchFile(filename).create(preference, javahome, rhome, server);
+            new ClientBatchFile(filename).create(preference, javahome, rhome, server, cmdArguments);
         } catch (Exception e) {
             view.displayErr("Creating EMF client batch file failed.");
         }
