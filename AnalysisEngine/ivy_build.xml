@@ -69,7 +69,7 @@
 	</target>
 
 	<target name="compile-src" depends="clean, init, retrieve">
-		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="on">
+		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="on" source="1.8" target="1.8">
 			<classpath>
 				<path refid="build.path" />
 				<path refid="test.build.path" />

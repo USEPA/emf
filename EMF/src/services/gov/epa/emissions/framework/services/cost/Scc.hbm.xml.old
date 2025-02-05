@@ -8,10 +8,9 @@
         <id name="id" type="integer" column="id">
             <generator class="identity"/>
         </id>
-        <property name="controlMeasureId" column="control_measures_id" not-null="true"/>
+        <property name="controlMeasureId" column="control_measures_id" type="integer" not-null="true"/>
     	<property name="code" column="name" type="string" not-null="true"/>
 		<property name="status" column="status" type="string" not-null="false"/>
 		<property name="combustionEfficiency" column="combustion_efficiency" type="float" not-null="false"/>
     </class>
-</hibernate-mapping>  
-
+</hibernate-mapping>

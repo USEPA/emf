@@ -88,7 +88,9 @@ public abstract class AbstractDao<T extends Lockable> implements Dao<T> {
 
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            executeInsideTransaction(em -> entityManager.remove(t), entityManager);
+            executeInsideTransaction(em -> {
+                em.remove(em.contains(t) ? t : em.merge(t));
+            }, entityManager);
         } catch (RuntimeException e) {
             e.printStackTrace();
         } finally {

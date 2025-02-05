@@ -7,11 +7,11 @@
 	    <description>Hibernate EntityManager Demo</description>
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		<jta-data-source>java:comp/env/jdbc/EMFDB</jta-data-source>
-	    <class>gov.epa.emissions.framework.services.data.Note</class>
-	    <class>gov.epa.emissions.framework.services.data.DatasetNote</class>
-	    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+	    <class>gov.epa.emissions.framework.services.cost.controlmeasure.Scc</class>
+	    <class>gov.epa.emissions.framework.services.basic.Status</class>
+	    <!--exclude-unlisted-classes>true</exclude-unlisted-classes-->
 	    <properties>
-	    	<property name="hibernate.ejb.cfgfile" value="/hibernate.cfg.xml" />
+	    	<property name="hibernate.cfg_xml_file" value="/hibernate.cfg.xml" />
 	        <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
 	        <property name="hibernate.hbm2ddl.auto" value="none"/>
 	        <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>

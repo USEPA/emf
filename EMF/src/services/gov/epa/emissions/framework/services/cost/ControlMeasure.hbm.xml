@@ -7,8 +7,13 @@
 	<class name="gov.epa.emissions.framework.services.cost.ControlMeasure" table="control_measures" schema="emf">
         <id name="id" type="integer" column="id">
             <generator class="identity"/>
+			<!--generator class="org.hibernate.id.enhanced.SequenceStyleGenerator">
+			    <param name="optimizer">none</param>
+			    <param name="increment_size">1</param>
+			    <param name="sequence_name">emf.control_measures_id_seq</param>
+			</generator-->
         </id>
-          
+
         <property name="name" column="name" type="java.lang.String" not-null="true"/>
         <property name="description" column="description" type="java.lang.String" not-null="false"/>
         <property name="abbreviation" column="abbreviation" type="java.lang.String" not-null="false"/>

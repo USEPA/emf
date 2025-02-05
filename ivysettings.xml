@@ -46,6 +46,6 @@
     </resolvers>
     <modules>
         <module organisation="epa" name="analysis-engine" revision="0.1.1" resolver="local"/>
-        <module organisation="epa" name="epa-commons" revision="0.5" resolver="local"/>
+        <module organisation="epa" name="epa-commons" revision="0.6" resolver="local"/>
     </modules>
 </ivysettings>

@@ -324,8 +324,8 @@ public class DataCommonsDAO {
         }
     }
 
-    public void add(Status status, EntityManager entityManager) {
-        hibernateFacade.add(status, entityManager);
+    public Status add(Status status, EntityManager entityManager) {
+        return hibernateFacade.add(status, entityManager);
     }
 
     private void removeReadStatus(String username, EntityManager entityManager) {

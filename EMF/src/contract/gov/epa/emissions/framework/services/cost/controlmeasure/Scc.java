@@ -1,37 +1,61 @@
 package gov.epa.emissions.framework.services.cost.controlmeasure;
 
-public class Scc {
+import java.io.Serializable;
 
-    private int id;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
-    private int controlMeasureId;
+@Entity
+@Table(name="control_measure_sccs", schema="emf")
+public class Scc implements Serializable  {
 
+    @Id
+//    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "control_measure_scc_generator")
+    @SequenceGenerator(name="control_measure_scc_generator", sequenceName = "control_measure_sccs_id_seq", allocationSize=1)
+    private Integer id;
+
+    @Column(name="control_measures_id", nullable=false, unique=false)
+    private Integer controlMeasureId;
+
+    @Column(name="name", nullable=false, unique=false)
     private String code;
 
+    @Transient
     private String description;
 
+    @Column(name="status", nullable=true, unique=false)
     private String status;
+    
+    @Transient
     private String sector,ei_category,scc_l1,scc_l2,scc_l3,scc_l4,last_inventory_year,map_to,created_date,revised_date,option_group,option_set,short_name;
     
+    @Column(name="combustion_efficiency", nullable=true, unique=false)
     private Float combustionEfficiency;
     		
     public Scc() {
         // Empty
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getControlMeasureId() {
+    public Integer getControlMeasureId() {
         return controlMeasureId;
     }
 
-    public void setControlMeasureId(int controlMeasureId) {
+    public void setControlMeasureId(Integer controlMeasureId) {
         this.controlMeasureId = controlMeasureId;
     }
 
@@ -89,7 +113,8 @@ public class Scc {
         if (obj == null || !(obj instanceof Scc))
             return false;
         Scc other = (Scc) obj;
-        return code.equals(other.getCode()) && controlMeasureId == other.getControlMeasureId();
+        return id == other.getId() 
+                || (code.equals(other.getCode()) && controlMeasureId == other.getControlMeasureId());
     }
 
     public int hashCode() {

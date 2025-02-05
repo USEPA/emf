@@ -400,7 +400,7 @@ public class DataCommonsServiceImpl implements DataCommonsService {
         list = entityManager.createQuery(
                 "select DS.id from EmfDataset as DS " + "where (lower(DS.status) like '%deleted%')"
                  + "and DS.datasetType.id = "
-                        + type.getId()+ ")").getResultList();
+                        + type.getId()).getResultList();
 
         if (list != null && list.size() > 0) {
             EmfDataset deletedDS = dao.get(EmfDataset.class, "id", list.get(0), entityManager).get(0);

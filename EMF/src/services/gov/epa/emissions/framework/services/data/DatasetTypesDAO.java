@@ -56,7 +56,7 @@ public class DatasetTypesDAO {
             
             SearchDAOUtility.buildSearchCriterion(aSubquery, builder, aSubRoot, new DatasetTypeFilter(), searchFilter);
 
-            criteriaQuery.where(builder.in(aSubquery));
+            criteriaQuery.where(builder.in(root.get("id")).value(aSubquery));
         }
 
         return entityManager.createQuery(criteriaQuery).getResultList();

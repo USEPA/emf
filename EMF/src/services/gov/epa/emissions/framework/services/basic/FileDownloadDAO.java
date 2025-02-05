@@ -12,6 +12,8 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.apache.commons.lang3.StringUtils;
+
 import EDU.oswego.cs.dl.util.concurrent.PooledExecutor;
 
 public class FileDownloadDAO {
@@ -70,7 +72,8 @@ public class FileDownloadDAO {
     }
 
     public int getDownloadExportFileHoursToExpire(EntityManager entityManager) throws EmfException {
-        return Integer.parseInt(getPropertyValue(EmfProperty.DOWNLOAD_EXPORT_FILE_HOURS_TO_EXPIRE, entityManager));
+        final String propertyValue = getPropertyValue(EmfProperty.DOWNLOAD_EXPORT_FILE_HOURS_TO_EXPIRE, entityManager);
+        return StringUtils.isNotBlank(propertyValue) ? Integer.parseInt(propertyValue) : 30 * 24;
     }
 
     public void add(FileDownload fileDownload, EntityManager entityManager) throws EmfException  {

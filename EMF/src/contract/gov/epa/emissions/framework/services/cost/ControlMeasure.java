@@ -319,6 +319,7 @@ public class ControlMeasure implements Lockable, Serializable {
     public void addEfficiencyRecord(EfficiencyRecord efficiencyRecord) {
         List<EfficiencyRecord> efficiencyRecordList = new ArrayList<EfficiencyRecord>();
         efficiencyRecordList.addAll(Arrays.asList(efficiencyRecords));
+        efficiencyRecord.setControlMeasureId(id);
         efficiencyRecordList.add(efficiencyRecord);
         this.efficiencyRecords = efficiencyRecordList.toArray(new EfficiencyRecord[0]);
     }
@@ -326,6 +327,7 @@ public class ControlMeasure implements Lockable, Serializable {
     public void addScc(Scc scc) {
         List<Scc> sccList = new ArrayList<Scc>();
         sccList.addAll(Arrays.asList(sccs));
+        scc.setControlMeasureId(id);
         sccList.add(scc);
         this.sccs = sccList.toArray(new Scc[0]);
     }

@@ -83,8 +83,8 @@ public class SearchDAOUtility {
 //agregate fields are dealt with differently
             if (!filterField.isAggregrateField()) {
                 if (filterField.getFieldDataType().equals(String.class)) {
-                    predicates.add(builder.like(subRoot.get(filterField.getAssociationPath()),
-                            "%" + searchFilter.getFieldValue() + "%"));
+                    predicates.add(builder.like(builder.lower(subRoot.get(filterField.getAssociationPath())),
+                            "%" + searchFilter.getFieldValue().toLowerCase() + "%"));
                 } else if (filterField.getFieldDataType().equals(Integer.class)) {
                     try {
                         predicates.add(builder.equal(subRoot.get(filterField.getAssociationPath()),

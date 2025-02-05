@@ -91,13 +91,13 @@
                      resolver="local"
                      pubrevision="${app.version}"
                      pubdate="${now}"
-                     status="integration"
+                     status="release"
                      forcedeliver="true"
                      overwrite="true"
         			publishivy="true"
         	merge="true"
         	update="true"
-                />
+	        />
     	<!--ivy:retrieve  
     				inline="true"
     				overwritemode="always"

@@ -3,18 +3,37 @@ package gov.epa.emissions.framework.services.basic;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="status", schema="emf")
 public class Status implements Serializable {
 
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "status_generator")
+    @SequenceGenerator(name="status_generator", sequenceName = "status_id_seq", allocationSize=1)
+    @Column(name = "id")
+    private Integer id;
 
+    @Column(name="username", nullable=false, unique=false)
     private String username;
 
+    @Column(name="type", nullable=false, unique=false, length = 255)
     private String type;
 
+    @Column(name="message", nullable=true, unique=false)
     private String message;
 
-    private boolean isRead;
+    @Column(name="is_read", nullable=false, unique=false)
+    private boolean read;
 
+    @Column(name="date", nullable=false, unique=false)
     private Date timestamp;
 
     public Status() {// needed for serialization
@@ -28,15 +47,15 @@ public class Status implements Serializable {
     }
 
     public boolean isRead() {
-        return isRead;
+        return read;
     }
 
     public void markRead() {
-        this.isRead = true;
+        this.read = true;
     }
 
     public void setRead(boolean read) {
-        this.isRead = read;
+        this.read = read;
     }
 
     public String getUsername() {
@@ -75,11 +94,31 @@ public class Status implements Serializable {
         return "Message : " + message + " for user: " + username;
     }
 
-    public int getId() {
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        final Status that = (Status) o;
+
+        return !(id != null ? !id.equals(that.id) : that.id != null);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 }

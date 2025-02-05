@@ -2,7 +2,6 @@ package gov.epa.emissions.framework.services.persistence;
 
 import gov.epa.emissions.commons.data.Lockable;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -18,22 +17,47 @@ import javax.persistence.criteria.Root;
 public class HibernateFacade {
 
     public <T extends Lockable> Integer add(T t, EntityManager entityManager) {
-        executeInsideTransaction(em -> {
-            em.persist(t);
-            em.flush();
-        }, entityManager);
+        final EntityTransaction tx = entityManager.getTransaction();
+        try {
+            tx.begin();
+            t = entityManager.contains(t) ? t : entityManager.merge(t);
+            entityManager.persist(t);
+            entityManager.flush();
+            tx.commit(); 
+        }
+        catch (RuntimeException e) {
+            tx.rollback();
+            throw e;
+        } finally {
+            //
+        }
         return t.getId();
     }
 
     public <T> T add(T t, EntityManager entityManager) {
-        executeInsideTransaction(em -> {
-            em.persist(t);
-            em.flush();
-        }, entityManager);
+        final EntityTransaction tx = entityManager.getTransaction();
+        try {
+            tx.begin();
+            t = entityManager.contains(t) ? t : entityManager.merge(t);
+            entityManager.persist(t);
+            entityManager.flush();
+            tx.commit(); 
+        }
+        catch (RuntimeException e) {
+            tx.rollback();
+            throw e;
+        } finally {
+            //
+        }
         return t;
     }
 
     public <T extends Lockable> void add(T[] objects, EntityManager entityManager) {
+        for (int i = 0; i < objects.length; i++)
+            add(objects[i], entityManager);
+    }
+
+    public <T> void add(T[] objects, EntityManager entityManager) {
         for (int i = 0; i < objects.length; i++)
             add(objects[i], entityManager);
     }
@@ -47,7 +71,7 @@ public class HibernateFacade {
 
         criteriaQuery.where(builder.equal(root.get("id"), Integer.valueOf(id)));
 
-        return entityManager.createQuery(criteriaQuery).getSingleResult() != null;
+        return entityManager.createQuery(criteriaQuery).getResultList().size() > 0;
     }
 
     public <C> boolean exists(CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Predicate[] predicates, EntityManager entityManager) {
@@ -55,7 +79,7 @@ public class HibernateFacade {
 
         criteriaBuilderQueryRoot.getCriteriaQuery().where(predicates);
 
-        return entityManager.createQuery(criteriaBuilderQueryRoot.getCriteriaQuery()).getSingleResult() != null;
+        return entityManager.createQuery(criteriaBuilderQueryRoot.getCriteriaQuery()).getResultList().size() > 0;
     }
 
     public <C> C current(int id, Class<C> clazz, EntityManager entityManager) {

@@ -4,6 +4,7 @@ import gov.epa.emissions.commons.data.Reference;
 import gov.epa.emissions.commons.data.Sector;
 import gov.epa.emissions.commons.data.SourceGroup;
 import gov.epa.emissions.commons.db.DbServer;
+import gov.epa.emissions.commons.io.ExporterException;
 import gov.epa.emissions.commons.security.User;
 import gov.epa.emissions.framework.services.DbServerFactory;
 import gov.epa.emissions.framework.services.EmfException;
@@ -118,6 +119,8 @@ public class ControlMeasuresPDFReport implements Runnable {
     private DbServer dbServer;
 
     private SumEffRec[] aggEfficiencyRecords;
+
+    private boolean windowsOS;
     
     public ControlMeasuresPDFReport(User user, int[] controlMeasureIds, 
             ControlMeasureService service, EntityManagerFactory entityManagerFactory, 
@@ -130,8 +133,26 @@ public class ControlMeasuresPDFReport implements Runnable {
         this.fileDownloadDao = new FileDownloadDAO();
         this.aggregateEfficiencyRecordDao = new AggregateEfficiencyRecordDAO();
         this.dbServerFactory = dbServerFactory;
+        if (System.getProperty("os.name").toUpperCase().startsWith("WINDOWS"))
+            this.windowsOS = true;
         this.outputFile = new File(temporaryFile());
-        
+        createNewFile(this.outputFile);
+    }
+
+    private void createNewFile(File file) {
+        try {
+            if (windowsOS) {
+                // AME: Updates for EPA's system
+                file.createNewFile();
+                Runtime.getRuntime().exec("CACLS " + file.getAbsolutePath() + " /E /G \"Users\":W");
+                file.setWritable(true, false);
+                Thread.sleep(1000); // for the system to refresh the file access permissions
+            }
+            // for now, do nothing from Linux
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+//            throw new ExporterException("Could not create export file: " + file.getAbsolutePath());
+        }
     }
 
     private String temporaryFile() {

@@ -117,7 +117,6 @@ public class ControlMeasureDAO {
         checkForConstraints(measure, entityManager);
         updateReferenceIds(measure, entityManager);
         int cmId = hibernateFacade.add(measure, entityManager);
-        measure.setId(cmId);
 //        int cmId = controlMeasureIds(measure, sccs, entityManager);
         for (int i = 0; i < sccs.length; i++) {
             sccs[i].setControlMeasureId(cmId);
@@ -482,7 +481,7 @@ public class ControlMeasureDAO {
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<ControlMeasure> root = criteriaBuilderQueryRoot.getRoot();
 
-        Predicate id = builder.notEqual(root.get("id"), Integer.valueOf(controlMeasure.getId()));
+        Predicate id = builder.notEqual(root.get("id"), controlMeasure.getId());
         Predicate name = builder.equal(root.get("name"), controlMeasure.getName());
         Predicate abbrev = builder.equal(root.get("abbreviation"), controlMeasure.getAbbreviation());
 

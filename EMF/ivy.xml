@@ -75,6 +75,8 @@
 		<!--dependency org="org.postgresql" name="postgresql" rev="42.5.0" conf="server->default" /-->
         <dependency org="org.slf4j" name="slf4j-api" rev="1.7.36" conf="server->default" />
         <dependency org="org.slf4j" name="slf4j-simple" rev="1.7.36" conf="server->default" />
+		<!--dependency org="log4j" name="log4j" rev="1.2.8" conf="server->default" /-->
+
 		
         <!--dependency org="org.apache.httpcomponents" name="httpasyncclient" rev="4.0-beta3" conf="client->default"/--><!--Client only-->
         <!--dependency org="org.apache.httpcomponents" name="httpasyncclient" rev="4.1.5" conf="client->default"/-->
@@ -123,6 +125,10 @@
 
         <!--dependency org="org.apache.tomcat" name="tomcat-dbcp" rev="7.0.50" /-->
         <dependency org="org.apache.tomcat" name="tomcat-dbcp" rev="9.0.1" conf="server->default" />
+<!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-juli -->
+<dependency org="org.apache.tomcat" name="tomcat-juli" rev="11.0.2"/>
+<!-- https://mvnrepository.com/artifact/org.apache.tomcat.extras/tomcat-extras-juli-adapters -->
+<dependency org="org.apache.tomcat.extras" name="tomcat-extras-juli-adapters" rev="8.5.2"/>
         <dependency org="javax.servlet" name="javax.servlet-api" rev="4.0.1" conf="server->default" />
         <dependency org="javax.servlet" name="jstl" rev="1.2" conf="server->default" />
         

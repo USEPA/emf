@@ -12,7 +12,7 @@
              name="pollutant" 
          	 class="gov.epa.emissions.commons.data.Pollutant"
          	 column="pollutant_id"/> 
-        <property name="controlMeasureId" column="control_measures_id" not-null="true"/>
+        <property name="controlMeasureId" column="control_measures_id" type="integer" not-null="true"/>
      	<property name="recordId" column="record_id" type="integer" not-null="false"/> 
 		<property name="existingMeasureAbbr" column="existing_measure_abbr" type="java.lang.String" not-null="false"/>
 		<property name="existingDevCode" column="existing_dev_code" type="integer" not-null="false"/>
