@@ -209,6 +209,9 @@ public class InstallWindow extends JFrame implements InstallView {
             String localTmpDir = up.localTempDir();
             String rhome = up.rHome();
             String cmdArguments = up.cmdArguments();
+            if (cmdArguments == null || cmdArguments.isEmpty()) {
+              cmdArguments = Constants.CMD_ARGUMENTS;
+            }
 
             url.setText(urlString);
             inputDirField.setText(inputString);

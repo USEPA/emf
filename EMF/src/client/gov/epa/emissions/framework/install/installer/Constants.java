@@ -2,7 +2,7 @@ package gov.epa.emissions.framework.install.installer;
 
 
 public class Constants {
-    public static final String VERSION = "12/5/2024";
+    public static final String VERSION = "2/6/2025";
     public static final String SEPARATOR = System.getProperty("line.separator");
     public static final String WORK_DIR = System.getProperty("user.dir");
     public static final String USER_HOME = System.getProperty("user.home");
