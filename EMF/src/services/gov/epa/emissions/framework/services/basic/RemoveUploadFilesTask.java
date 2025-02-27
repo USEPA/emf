@@ -37,19 +37,21 @@ public class RemoveUploadFilesTask implements Runnable {
                     return new File(dir, name).isDirectory();
                 }
             });
-            for (String userFolder : userFolders) {
-                File userFolderObj = new File(tempDirectoryObj.getAbsolutePath() + File.separatorChar + userFolder);
-                userFolderObj.list(new FilenameFilter() {
-                    @Override
-                    public boolean accept(File dir, String name) {
-                        //only get files, not directories (really which there shouldn't be any subdirs here)
-                        if (name == null) return false;
-                        File userFile = new File(dir, name);
-                        if (userFile.isFile() && userFile.lastModified() <= (new Date().getTime() - fileHoursToExpire * 60 * 60 * 1000))
-                            userFile.delete();
-                        return true;
-                    }
-                });
+            if (userFolders != null) {
+                for (String userFolder : userFolders) {
+                    File userFolderObj = new File(tempDirectoryObj.getAbsolutePath() + File.separatorChar + userFolder);
+                    userFolderObj.list(new FilenameFilter() {
+                        @Override
+                        public boolean accept(File dir, String name) {
+                            //only get files, not directories (really which there shouldn't be any subdirs here)
+                            if (name == null) return false;
+                            File userFile = new File(dir, name);
+                            if (userFile.isFile() && userFile.lastModified() + fileHoursToExpire * 60 * 60 * 1000 >= (new Date().getTime()))
+                                userFile.delete();
+                            return true;
+                        }
+                    });
+                }
             }
 
 
