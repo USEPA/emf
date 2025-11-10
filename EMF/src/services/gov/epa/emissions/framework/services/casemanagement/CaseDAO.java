@@ -1804,10 +1804,10 @@ public class CaseDAO {
     }
 
     public String[] getAllCaseNameIDs(EntityManager entityManager) {
-        List<Case> names = entityManager.createQuery(
-                "SELECT obj.name from " + Case.class.getSimpleName() + " as obj ORDER BY obj.name", Case.class).getResultList();
-        List<Case> ids = entityManager.createQuery(
-                "SELECT obj.id from " + Case.class.getSimpleName() + " as obj ORDER BY obj.name", Case.class).getResultList();
+        List<String> names = entityManager.createQuery(
+                "SELECT obj.name from " + Case.class.getSimpleName() + " as obj ORDER BY obj.name", String.class).getResultList();
+        List<Integer> ids = entityManager.createQuery(
+                "SELECT obj.id from " + Case.class.getSimpleName() + " as obj ORDER BY obj.name", Integer.class).getResultList();
         int size = names.size();
 
         if (size != ids.size())
