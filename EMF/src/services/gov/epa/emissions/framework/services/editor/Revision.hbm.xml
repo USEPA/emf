@@ -17,7 +17,7 @@
     <property name="lockOwner" column="lock_owner" type="java.lang.String" not-null="false"/>
     <property name="lockDate" column="lock_date" type="java.util.Date" not-null="false" length="4"/>
 
-  <many-to-one cascade="save-update"
+  <many-to-one cascade="merge"
             name="creator" 
             class="gov.epa.emissions.commons.security.User"
             column="creator"/> 

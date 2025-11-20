@@ -19,12 +19,12 @@
         <property name="lockDate" column="lock_date" type="java.util.Date" not-null="false" length="4"/>
         <property name="numberRecords" column="number_records" type="integer" not-null="false"/> 
 
-    <many-to-one cascade="save-update"
+    <many-to-one cascade="merge"
             name="creator" 
             class="gov.epa.emissions.commons.security.User"
             column="creator"/> 
 
-    <many-to-one cascade="save-update"
+    <many-to-one cascade="merge"
             name="intendedUse" 
             class="gov.epa.emissions.commons.db.intendeduse.IntendedUse"
             column="intended_use"/> 

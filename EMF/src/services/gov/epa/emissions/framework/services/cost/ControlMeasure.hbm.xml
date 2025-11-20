@@ -27,7 +27,7 @@
         <property name="dateReviewed" column="date_reviewed" type="java.util.Date" not-null="false" length="4"/>
         <property name="lastModifiedBy" column="last_modified_by" type="java.lang.String" not-null="true"/>
 
-        <many-to-one cascade="save-update"
+        <many-to-one cascade="merge"
             name="creator" 
             class="gov.epa.emissions.commons.security.User"
             column="creator"/> 
@@ -37,12 +37,12 @@
             class="gov.epa.emissions.commons.data.Pollutant"
             column="major_pollutant"/> 
             
-        <many-to-one cascade="save-update"
+        <many-to-one cascade="merge"
             name="sourceGroup" 
             class="gov.epa.emissions.commons.data.SourceGroup"
             column="source_group"/> 
             
-        <many-to-one cascade="save-update"
+        <many-to-one cascade="merge"
             name="controlTechnology" 
             class="gov.epa.emissions.framework.services.cost.data.ControlTechnology"
             column="control_technology"/> 
@@ -52,13 +52,13 @@
             class="gov.epa.emissions.framework.services.cost.ControlMeasureClass"
             column="cm_class_id"/> 
   
- 		<array name="sectors" table="control_measure_sectors" cascade="save-update">
+ 		<array name="sectors" table="control_measure_sectors" cascade="merge">
     		<key column="control_measure_id" not-null="true"/>
     		<list-index column="list_index"/>
     		<many-to-many class="gov.epa.emissions.commons.data.Sector" column="sector_id"/>
   		</array>
 
- 		<array name="references" table="control_measure_references" cascade="save-update">
+ 		<array name="references" table="control_measure_references" cascade="merge">
     		<key column="control_measure_id" not-null="true"/>
     		<list-index column="list_index"/>
     		<many-to-many class="gov.epa.emissions.commons.data.Reference" column="reference_id"/>

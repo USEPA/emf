@@ -64,7 +64,7 @@
         	class="gov.epa.emissions.commons.security.User"
         	column="running_user_id"/> 
         	
-  		<array name="dependentJobs" table="cases.job_dependencies" cascade="save-update">
+  		<array name="dependentJobs" table="cases.job_dependencies" cascade="merge">
     		<key column="job_id"/>
     		<list-index column="list_index"/>
     		<composite-element class="gov.epa.emissions.framework.services.casemanagement.jobs.DependentJob">

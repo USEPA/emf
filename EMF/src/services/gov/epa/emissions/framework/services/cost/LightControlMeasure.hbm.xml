@@ -18,12 +18,12 @@
             class="gov.epa.emissions.commons.data.Pollutant"
             column="major_pollutant"/> 
             
-        <many-to-one cascade="save-update"
+        <many-to-one cascade="merge"
             name="controlTechnology" 
             class="gov.epa.emissions.framework.services.cost.data.ControlTechnology"
             column="control_technology"/> 
             
-        <many-to-one cascade="save-update"
+        <many-to-one cascade="merge"
             name="creator" 
             class="gov.epa.emissions.commons.security.User"
             column="creator"/> 
@@ -35,4 +35,3 @@
 
     </class>
 </hibernate-mapping>  
-

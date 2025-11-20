@@ -45,9 +45,9 @@
 
 	<one-to-one 
 		name="constraint" 
-		class="gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyConstraint" cascade="save-update"/>
+		class="gov.epa.emissions.framework.services.cost.controlStrategy.ControlStrategyConstraint" cascade="merge"/>
 
-	<many-to-one cascade="save-update"
+	<many-to-one cascade="merge"
             name="region" 
             class="gov.epa.emissions.commons.data.Region"
             column="region_id"/> 
@@ -57,7 +57,7 @@
             class="gov.epa.emissions.commons.data.Pollutant"
             column="pollutant_id"/> 
             
-	<many-to-one cascade="save-update"
+	<many-to-one cascade="merge"
             name="project" 
             class="gov.epa.emissions.commons.data.Project"
             column="project_id"/> 
@@ -86,7 +86,7 @@
 
     	<composite-element class="gov.epa.emissions.framework.services.data.EmfDataset">
 			<property name="version" column="dataset_version" type="integer" not-null="true"/>
-        	<many-to-one name="controlMeasure" class="gov.epa.emissions.framework.services.data.EmfDataset" column="dataset_id" not-null="true" cascade="save-update"/>
+        	<many-to-one name="controlMeasure" class="gov.epa.emissions.framework.services.data.EmfDataset" column="dataset_id" not-null="true" cascade="merge"/>
     	</composite-element>
 	</array>-->
 

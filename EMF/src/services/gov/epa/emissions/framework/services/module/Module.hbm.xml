@@ -14,7 +14,7 @@
         <many-to-one name="liteModuleTypeVersion" class="gov.epa.emissions.framework.services.module.LiteModuleTypeVersion" fetch="select">
             <column name="module_type_version_id" not-null="true" />
         </many-to-one>
-        <many-to-one cascade="save-update"
+        <many-to-one cascade="merge"
             name="project" 
             class="gov.epa.emissions.commons.data.Project"
             column="project"
@@ -48,7 +48,7 @@
         <many-to-one name="moduleTypeVersion" class="gov.epa.emissions.framework.services.module.ModuleTypeVersion" fetch="select">
             <column name="module_type_version_id" not-null="true" />
         </many-to-one>
-        <many-to-one cascade="save-update"
+        <many-to-one cascade="merge"
             name="project" 
             class="gov.epa.emissions.commons.data.Project"
             column="project"

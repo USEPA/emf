@@ -32,17 +32,17 @@
             class="gov.epa.emissions.commons.io.XFileFormat"
         	column="file_format"/> 
         
-       	<array name="keyVals" table="dataset_types_keywords" cascade="save-update">
+       	<array name="keyVals" table="dataset_types_keywords" cascade="merge">
       		<key column="dataset_type_id"/>
       		<list-index column="list_index"/>
 		    <composite-element class="gov.epa.emissions.commons.data.KeyVal">
 	        	<property name="value" column="value" not-null="false"/>
 	        	<property name="kwname" column="kwname" not-null="true"/>	
-	    		<many-to-one  name="keyword" column="keyword_id" class="gov.epa.emissions.commons.data.Keyword" cascade="save-update"/>
+	    		<many-to-one  name="keyword" column="keyword_id" class="gov.epa.emissions.commons.data.Keyword" cascade="merge"/>
       		</composite-element>
  		</array>
 
-       	<array name="qaStepTemplates" table="dataset_types_qa_step_templates" cascade="save-update">
+       	<array name="qaStepTemplates" table="dataset_types_qa_step_templates" cascade="merge">
       		<key column="dataset_type_id"/>
       		<list-index column="list_index"/>
 		    <composite-element class="gov.epa.emissions.commons.data.QAStepTemplate">

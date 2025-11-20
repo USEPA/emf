@@ -18,22 +18,22 @@
             class="gov.epa.emissions.commons.data.DatasetType"
             column="dataset_type"/> 
 
-  <many-to-one cascade="save-update"
+  <many-to-one cascade="merge"
             name="intendedUse" 
             class="gov.epa.emissions.commons.db.intendeduse.IntendedUse"
             column="intended_use"/> 
 
-  <many-to-one cascade="save-update"
+  <many-to-one cascade="merge"
             name="project" 
             class="gov.epa.emissions.commons.data.Project"
             column="project"/> 
 
-  <many-to-one cascade="save-update"
+  <many-to-one cascade="merge"
             name="country" 
             class="gov.epa.emissions.commons.data.Country"
             column="country"/> 
 
-  <many-to-one cascade="save-update"
+  <many-to-one cascade="merge"
             name="region" 
             class="gov.epa.emissions.commons.data.Region"
             column="region"/> 
@@ -51,13 +51,13 @@
   <property name="lockOwner" column="lock_owner" type="java.lang.String" not-null="false"/>
   <property name="lockDate" column="lock_date" type="java.util.Date" not-null="false" length="4"/>
 
-  <array name="sectors" table="datasets_sectors" cascade="save-update">
+  <array name="sectors" table="datasets_sectors" cascade="merge">
     <key column="dataset_id" not-null="true"/>
     <list-index column="list_index"/>
     <many-to-many class="gov.epa.emissions.commons.data.Sector" column="sector_id"/>
   </array>
 
-  <array name="internalSources" table="internal_sources" cascade="save-update">
+  <array name="internalSources" table="internal_sources" cascade="merge">
     <key column="dataset_id"/>
     <list-index column="list_index"/>
     <composite-element class="gov.epa.emissions.commons.data.InternalSource">
@@ -69,14 +69,14 @@
     </composite-element>
   </array>
 
-	<array name="keyVals" table="datasets_keywords" cascade="save-update">
+	<array name="keyVals" table="datasets_keywords" cascade="merge">
       <key column="dataset_id"/>
       <list-index column="list_index"/>
       <composite-element class="gov.epa.emissions.commons.data.KeyVal">
 	    <property name="value" column="value" not-null="true"/>	
 	    <property name="kwname" column="kwname" not-null="true"/>	
 	    <many-to-one  name="keyword" column="keyword_id" 
-	     class="gov.epa.emissions.commons.data.Keyword" cascade="save-update"/>
+	     class="gov.epa.emissions.commons.data.Keyword" cascade="merge"/>
       </composite-element>
  	</array>
 

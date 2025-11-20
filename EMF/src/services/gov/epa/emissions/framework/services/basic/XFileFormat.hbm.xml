@@ -20,7 +20,7 @@
             class="gov.epa.emissions.commons.security.User"
             column="creator"/> 
 
-        <array name="columns" table="fileformat_columns" cascade="save-update">
+        <array name="columns" table="fileformat_columns" cascade="merge">
       		<key column="file_format_id"/>
       		<list-index column="list_index"/>
 		    <composite-element class="gov.epa.emissions.commons.io.Column">
