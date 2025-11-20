@@ -125,6 +125,7 @@ public class TemporalAllocationServiceImpl implements TemporalAllocationService 
             }
             
             TemporalAllocation copy = (TemporalAllocation) DeepCopy.copy(element);
+            copy.setId(0);
             copy.setName(name);
             copy.setCreator(creator);
             copy.setLastModifiedDate(new Date());

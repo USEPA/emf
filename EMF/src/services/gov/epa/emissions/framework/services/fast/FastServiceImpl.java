@@ -503,6 +503,7 @@ public class FastServiceImpl implements FastService {
 
                 // do a deep copy
                 FastRun copied = (FastRun) DeepCopy.copy(fastRun);
+                copied.setId(0);
                 // change to applicable values
                 copied.setName(name);
                 copied.setAbbreviation(CustomDateFormat.format_YYYYMMDDHHMMSSSS(new Date()));
@@ -1161,6 +1162,7 @@ public class FastServiceImpl implements FastService {
 
                 // do a deep copy
                 FastAnalysis copied = (FastAnalysis) DeepCopy.copy(fastAnalysis);
+                copied.setId(0);
                 // change to applicable values
                 copied.setName(name);
                 copied.setAbbreviation(CustomDateFormat.format_YYYYMMDDHHMMSSSS(new Date()));

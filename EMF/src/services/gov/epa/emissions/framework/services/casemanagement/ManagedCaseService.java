@@ -4896,6 +4896,7 @@ public class ManagedCaseService {
 
         for (int i = 0; i < jobs.length; i++) {
             CaseJob job = (CaseJob) DeepCopy.copy(jobs[i]);
+            job.setId(0);
             job.setName(jobPrefix + job.getName());
             job.setCaseId(targetCaseId);
             job.setParentCaseId(parentCaseId);
@@ -4918,6 +4919,7 @@ public class ManagedCaseService {
 
         for (int i = 0; i < inputs.length; i++) {
             CaseInput tempInput = (CaseInput) DeepCopy.copy(inputs[i]);
+            tempInput.setId(0);
             
             if (tempInput.getRegion() != null)
                 tempInput.setRegion(region);
@@ -4973,6 +4975,7 @@ public class ManagedCaseService {
 
         for (int i = 0; i < params.length; i++) {
             CaseParameter tempParam = (CaseParameter) DeepCopy.copy(params[i]);
+            tempParam.setId(0);
             
             if (tempParam.getRegion() != null)
                 tempParam.setRegion(senRegion);

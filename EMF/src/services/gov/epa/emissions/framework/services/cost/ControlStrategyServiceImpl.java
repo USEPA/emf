@@ -494,6 +494,7 @@ public class ControlStrategyServiceImpl implements ControlStrategyService {
 
             // do a deep copy
             ControlStrategy copied = (ControlStrategy) DeepCopy.copy(cs);
+            copied.setId(0);
             // change to applicable values
             copied.setName(name);
             copied.setCreator(creator);

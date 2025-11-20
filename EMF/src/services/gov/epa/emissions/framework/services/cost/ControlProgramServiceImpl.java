@@ -300,6 +300,7 @@ public class ControlProgramServiceImpl implements ControlProgramService {
 
             //do a deep copy
             ControlProgram coppied = (ControlProgram)DeepCopy.copy(cs);
+            coppied.setId(0);
             //change to applicable values
             coppied.setName(name);
             coppied.setCreator(creator);

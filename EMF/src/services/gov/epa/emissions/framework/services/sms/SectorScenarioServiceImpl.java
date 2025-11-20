@@ -350,6 +350,7 @@ public class SectorScenarioServiceImpl implements SectorScenarioService {
 
             // do a deep copy
             SectorScenario copied = (SectorScenario) DeepCopy.copy(cs);
+            copied.setId(0);
             // change to applicable values
             copied.setName(name);
             // make up the abbreviation for now...

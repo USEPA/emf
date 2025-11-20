@@ -156,6 +156,7 @@ public class EditJobsTabPresenterImpl implements EditJobsTabPresenter {
 
     public CaseJob setJobValuesB4Copy(int caseId, CaseJob job) throws Exception {
         CaseJob newJob = (CaseJob) DeepCopy.copy(job);
+        newJob.setId(0);
         newJob.setCaseId(caseId);
         newJob.setName(getUniqueNewName("Copy of " + job.getName()));
         newJob.setJobkey(null); // jobkey supposedly generated when it is run

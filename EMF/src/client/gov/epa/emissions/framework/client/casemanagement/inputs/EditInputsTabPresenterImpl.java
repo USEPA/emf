@@ -107,6 +107,7 @@ public class EditInputsTabPresenterImpl implements EditInputsTabPresenter {
     
     public void copyInput(CaseInput input, NewInputView dialog) throws Exception {
         CaseInput newInput = (CaseInput) DeepCopy.copy(input);
+        newInput.setId(0);
         addNewInputDialog(dialog, newInput);
     }
 
@@ -122,6 +123,7 @@ public class EditInputsTabPresenterImpl implements EditInputsTabPresenter {
 
     public void copyInput(int caseId, CaseInput input) throws Exception {
         CaseInput newInput = (CaseInput) DeepCopy.copy(input);
+        newInput.setId(0);
         newInput.setCaseID(caseId);
         addNewInput(newInput);
     }

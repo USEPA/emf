@@ -77,6 +77,7 @@ public class EditParametersTabPresenterImpl implements EditParametersTabPresente
     
     public void copyParameter(NewCaseParameterDialog dialog, CaseParameter param) throws Exception {
         CaseParameter newParam = (CaseParameter) DeepCopy.copy(param);
+        newParam.setId(0);
         addNewParameterDialog(dialog, newParam);
     }
 

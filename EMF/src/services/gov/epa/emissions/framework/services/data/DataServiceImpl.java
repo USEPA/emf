@@ -1320,6 +1320,7 @@ public class DataServiceImpl implements DataService {
                         + type.getName() + ".");
             
             EmfDataset copied = (EmfDataset) DeepCopy.copy(dataset);
+            copied.setId(0);
             
             String newName = dataset.getName();
             if ( newName != null) {

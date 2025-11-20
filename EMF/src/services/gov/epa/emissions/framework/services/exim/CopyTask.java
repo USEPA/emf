@@ -226,6 +226,7 @@ public class CopyTask extends Task {
     
     private synchronized void copySingleCaseObj(Case toCopy, User user) throws Exception {
         Case copied = (Case) DeepCopy.copy(toCopy);
+        copied.setId(0);
         copied.setName(getUniqueNewName("Copy of " + toCopy.getName()));
         copied.setTemplateUsed(toCopy.getName());
         copied.setAbbreviation(null);
@@ -348,6 +349,7 @@ public class CopyTask extends Task {
 
     private synchronized CaseInput copySingleInput(User user, CaseInput input, int copiedCaseId) throws Exception {
         CaseInput copied = (CaseInput) DeepCopy.copy(input);
+        copied.setId(0);
         copied.setCaseID(copiedCaseId);
 
         EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -380,6 +382,7 @@ public class CopyTask extends Task {
         job.setRunCompletionDate(new Date());
         job.setRunStartDate(new Date());
         CaseJob copied = (CaseJob) DeepCopy.copy(job);
+        copied.setId(0);
         copied.setCaseId(copiedCaseId);
         copied.setJobkey(null); // jobkey supposedly generated when it is run
         copied.setRunstatus(null);
@@ -396,6 +399,7 @@ public class CopyTask extends Task {
     private synchronized CaseParameter copySingleParameter(User user, CaseParameter parameter, int copiedCaseId)
     throws Exception {
         CaseParameter copied = (CaseParameter) DeepCopy.copy(parameter);
+        copied.setId(0);
         copied.setCaseID(copiedCaseId);
 
         EntityManager entityManager = entityManagerFactory.createEntityManager();
