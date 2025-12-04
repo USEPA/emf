@@ -244,6 +244,7 @@ public class ControlMeasureDAO {
     public int copy(int controlMeasureId, User creator, EntityManager entityManager, DbServer dbServer) throws EmfException {
         ControlMeasure cm = current(controlMeasureId, entityManager);
         entityManager.clear();//must do this
+        cm.setId(0);
         
         //set the name and give a random abbrev...
         cm.setName("Copy of " + cm.getName() + " " + creator.getName() + " " + CustomDateFormat.format_HHMM(new Date()));
@@ -273,12 +274,18 @@ public class ControlMeasureDAO {
         //copy measure SCCs
         Scc[] sccs = getSccs(controlMeasureId, entityManager);
         entityManager.clear();//must do this
+        for (int i = 0; i < sccs.length; i++) {
+            sccs[i].setId(null);
+        }
         updateSccsControlMeasureIds(sccs, cmId);
         hibernateFacade.add(sccs, entityManager);
         
         //copy measure Efficiecny Records
         EfficiencyRecord[] records = (EfficiencyRecord[]) getEfficiencyRecords(controlMeasureId, entityManager).toArray(new EfficiencyRecord[0]);
         entityManager.clear();//must do this
+        for (int i = 0; i < records.length; i++) {
+            records[i].setId(0);
+        }
         updateEfficiencyRecordControlMeasureIds(records, cmId);
         hibernateFacade.add(records, entityManager);
         
