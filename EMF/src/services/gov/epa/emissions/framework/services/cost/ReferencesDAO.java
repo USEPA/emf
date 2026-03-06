@@ -47,7 +47,7 @@ public class ReferencesDAO {
         Root<Reference> root = criteriaQuery.from(Reference.class);
 
         criteriaQuery.select(root);
-        criteriaQuery.where(builder.like(builder.lower(root.get("description")), textContains.toLowerCase()));
+        criteriaQuery.where(builder.like(builder.lower(root.get("description")), "%" + textContains.toLowerCase() + "%"));
         criteriaQuery.orderBy(builder.asc(root.get("description")));
 
         return entityManager.createQuery(criteriaQuery).getResultList();
