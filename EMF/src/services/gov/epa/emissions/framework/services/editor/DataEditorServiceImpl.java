@@ -289,15 +289,6 @@ public class DataEditorServiceImpl extends EmfServiceImpl implements DataEditorS
         }
     }
 
-    void updateVersion(Version version) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        try {
-            versions.save(version, entityManager);
-        } finally {
-            entityManager.close();
-        }
-    }
-
     Version doMarkFinal(Version derived) throws EmfException {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {

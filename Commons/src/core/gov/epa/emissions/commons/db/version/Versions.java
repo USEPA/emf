@@ -127,10 +127,20 @@ public class Versions {
     public Version markFinal(Version derived, EntityManager entityManager) {
         derived.markFinal();
         derived.setLastModifiedDate(new Date());
+        
+        Version marked = derived;
+        final EntityTransaction tx = entityManager.getTransaction();
+        try {
+            tx.begin();
+            marked = entityManager.merge(derived);
+            tx.commit();
+        }
+        catch (RuntimeException e) {
+            tx.rollback();
+            throw e;
+        }
 
-        executeInsideTransaction(em -> entityManager.merge(derived), entityManager);
-
-        return derived;
+        return marked;
     }
 
     private String path(Version base) {
