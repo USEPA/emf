@@ -2165,10 +2165,9 @@ public class CaseDAO {
         CriteriaBuilder builder = criteriaBuilderQueryRoot.getBuilder();
         Root<CaseJob> root = criteriaBuilderQueryRoot.getRoot();
 
-        Predicate c1 = builder.isNotNull(root.get("dependentJobs"));
-        Predicate c2 = builder.isNotEmpty(root.get("dependentJobs"));
+        Predicate c1 = builder.isNotEmpty(root.get("dependentJobs"));
 
-        List<CaseJob> jobsDeps = hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { c1, c2 }, entityManager);
+        List<CaseJob> jobsDeps = hibernateFacade.get(criteriaBuilderQueryRoot, new Predicate[] { c1 }, entityManager);
 
         for (Iterator<CaseJob> iter = jobsDeps.iterator(); iter.hasNext();) {
             CaseJob jobDeps = iter.next();
