@@ -160,7 +160,11 @@ public class HibernateFacade {
 
         criteriaQuery.where(builder.equal(root.get("name"), name));
 
-        return entityManager.createQuery(criteriaQuery).getSingleResult() != null;
+        try {
+            return entityManager.createQuery(criteriaQuery).getSingleResult() != null;
+        } catch (NoResultException e) {
+            return false;
+        }
     }
 
     public <C> List<C> get(CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Predicate predicate, javax.persistence.criteria.Order order, EntityManager entityManager) {
@@ -272,6 +276,7 @@ public class HibernateFacade {
 
         criteriaBuilderQueryRoot.getCriteriaQuery().where(predicate);
 
+        // TODO: change to getSingleResultOrNull() after upgrading to JPA 3.2
         try {
             return entityManager.createQuery(criteriaBuilderQueryRoot.getCriteriaQuery()).getSingleResult();
         } catch (NoResultException e) {
@@ -316,8 +321,13 @@ public class HibernateFacade {
         criteriaBuilderQueryRoot.getCriteriaQuery().select(criteriaBuilderQueryRoot.getRoot());
 
         criteriaBuilderQueryRoot.getCriteriaQuery().where(predicate);
-
-        return entityManager.createQuery(criteriaBuilderQueryRoot.getCriteriaQuery()).getSingleResult();
+        
+        // TODO: change to getSingleResultOrNull() after upgrading to JPA 3.2
+        try {
+            return entityManager.createQuery(criteriaBuilderQueryRoot.getCriteriaQuery()).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
 //    public Object load(Class clazz, Criterion[] criterions, EntityManager entityManager) {
