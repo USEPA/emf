@@ -68,22 +68,12 @@ public class HibernateFacade {
         return this.isUsed("name", name, clazz, entityManager);
     }
 
-
-    public void updateOnly(Object object, EntityManager entityManager) {
-        executeInsideTransaction(em -> em.merge(object), entityManager);
-    }
-
-    public void update(Object[] objects, EntityManager entityManager) {
-        for (int i = 0; i < objects.length; i++)
-            saveOrUpdate(objects[i], entityManager);
-    }
-
-    public void removeObjects(Object[] objects, EntityManager entityManager) {
+    public <T> T updateOnly(T object, EntityManager entityManager) {
+        T updated = object;
         final EntityTransaction tx = entityManager.getTransaction();
         try {
             tx.begin();
-            for (Object obj : objects)
-                entityManager.remove(entityManager.contains(obj) ? obj : entityManager.merge(obj));
+            updated = entityManager.merge(object);
             tx.commit(); 
         }
         catch (RuntimeException e) {
@@ -92,11 +82,12 @@ public class HibernateFacade {
         } finally {
             //
         }
+        return updated;
     }
 
     public void remove(Object[] objects, EntityManager entityManager) {
-        for (int i = 0; i < objects.length; i++)
-            remove(objects[i], entityManager);
+        for (Object obj : objects)
+            remove(obj, entityManager);
     }
 
     public void remove(Object obj, EntityManager entityManager) {
@@ -279,10 +270,6 @@ public class HibernateFacade {
 //            throw e;
 //        }
 //    }
-
-    public void delete(Object object, EntityManager entityManager) {
-        executeInsideTransaction(em -> em.remove(em.contains(object) ? object : em.merge(object)), entityManager);
-    }
 
     public <C> C load(EntityManager entityManager, CriteriaBuilderQueryRoot<C> criteriaBuilderQueryRoot, Predicate[] predicate) {
         criteriaBuilderQueryRoot.getCriteriaQuery().select(criteriaBuilderQueryRoot.getRoot());

@@ -343,7 +343,7 @@ public class CaseDAO {
     }
 
     public void removeCaseOutputs(CaseOutput[] outputs, EntityManager entityManager) {
-        hibernateFacade.removeObjects(outputs, entityManager);
+        hibernateFacade.remove(outputs, entityManager);
     }
 
     public Case obtainLocked(User owner, Case element, EntityManager entityManager) {
@@ -1533,7 +1533,7 @@ public class CaseDAO {
         try {
             for (int i = 0; i < pwTasks.length; i++) {
                 entityManager.clear();
-                hibernateFacade.delete(pwTasks[i], entityManager);
+                hibernateFacade.remove(pwTasks[i], entityManager);
             }
         } catch (Exception ex) {
             ex.printStackTrace();

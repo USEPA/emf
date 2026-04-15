@@ -249,7 +249,7 @@ public class DatasetDAO {
             extSrcs = getExternalSrcs(dataset.getId(), -1, null, entityManager);
 
         if (extSrcs != null && extSrcs.length > 0)
-            hibernateFacade.removeObjects(extSrcs, entityManager);
+            hibernateFacade.remove(extSrcs, entityManager);
 
         hibernateFacade.remove(dataset, entityManager);
     }
@@ -1917,7 +1917,9 @@ public class DatasetDAO {
 
     public void updateExternalSrcsWithoutLocking(ExternalSource[] srcs, EntityManager entityManager) {
         // NOTE: update without locking objects
-        hibernateFacade.update(srcs, entityManager);
+        for (ExternalSource src : srcs) {
+            hibernateFacade.updateOnly(src, entityManager);
+        }
     }
 
     public String[] getTableColumnDistinctValues(int datasetId, int datasetVersion, String columnName,
