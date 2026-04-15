@@ -158,15 +158,14 @@ public class QAServiceTransport implements QAService {
 
     }
 
-    public synchronized QAStep update(QAStep step) throws EmfException {
+    public synchronized void add(QAStep step) throws EmfException {
         EmfCall call = call();
 
-        call.setOperation("update");
-        call.addParam("steps", mappings.qaStep());
-        //call.setVoidReturnType();
-        call.setReturnType(mappings.qaStep());
+        call.setOperation("add");
+        call.addParam("step", mappings.qaStep());
+        call.setVoidReturnType();
 
-        return (QAStep) call.requestResponse(new Object[] { step });
+        call.requestResponse(new Object[] { step });
 
     }
 

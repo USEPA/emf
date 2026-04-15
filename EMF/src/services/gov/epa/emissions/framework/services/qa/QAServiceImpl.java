@@ -414,14 +414,13 @@ public class QAServiceImpl implements QAService {
         }
     }
 
-    public synchronized QAStep update(QAStep step) throws EmfException {
+    public synchronized void add(QAStep step) throws EmfException {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             if (dao.exists(step, entityManager)) {
                 throw new EmfException("The selected QA Step name is already in use");
             }
-            dao.update(new QAStep[] { step }, entityManager);
-            return step;
+            dao.add(new QAStep[] { step }, entityManager);
         } catch (RuntimeException e) {
             LOG.error("Could not update QA Step", e);
             throw new EmfException("Could not update QA Step -" + e.getMessage());

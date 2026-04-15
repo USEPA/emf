@@ -169,7 +169,7 @@ public class NewCustomQAStepWindow extends DisposableInteralFrame implements New
         this.presenter = presenter;
     }
 
-    public QAStep save() throws EmfException {
+    public QAStep createNew() throws EmfException {
         if ( versionsSelection.getSelectedItem() == null ){
             throw new EmfException("Please select a version" );
         }

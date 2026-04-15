@@ -13,6 +13,6 @@ public interface NewCustomQAStepView {
 
     void observe(NewCustomQAStepPresenter presenter);
 
-    QAStep save() throws EmfException;
+    QAStep createNew() throws EmfException;
 
 }
