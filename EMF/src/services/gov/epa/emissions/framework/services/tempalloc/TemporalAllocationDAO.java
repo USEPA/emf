@@ -46,11 +46,7 @@ public class TemporalAllocationDAO {
     }
 
     public int add(TemporalAllocation element, EntityManager entityManager) {
-        return addObject(element, entityManager);
-    }
-
-    private int addObject(Object obj, EntityManager entityManager) {
-        return (Integer)hibernateFacade.add(obj, entityManager);
+        return hibernateFacade.add(element, entityManager);
     }
 
     public List<TemporalAllocation> all(EntityManager entityManager) {

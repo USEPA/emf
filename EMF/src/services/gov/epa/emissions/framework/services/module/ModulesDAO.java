@@ -219,11 +219,8 @@ public class ModulesDAO {
         return module;
     }
     
-    public History add(History history, EntityManager entityManager) {
-        Serializable serializable = hibernateFacade.add(history, entityManager);
-        Integer id = (Integer)serializable;
-        history.setId(id);
-        return history;
+    public void add(History history, EntityManager entityManager) {
+        hibernateFacade.add(history, entityManager);
     }
 
     public boolean canUpdate(Module module, EntityManager entityManager) {

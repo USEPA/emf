@@ -24,7 +24,7 @@ public class StatusDAO {
     public void add(Status status) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
-            status = dao.add(status, entityManager);
+            dao.add(status, entityManager);
 //            entityManager.flush();
             entityManager.clear();
         } finally {

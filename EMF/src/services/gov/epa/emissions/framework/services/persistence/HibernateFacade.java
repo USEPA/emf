@@ -17,49 +17,23 @@ import javax.persistence.criteria.Root;
 public class HibernateFacade {
 
     public <T extends Lockable> Integer add(T t, EntityManager entityManager) {
-        final EntityTransaction tx = entityManager.getTransaction();
-        try {
-            tx.begin();
-            t = entityManager.contains(t) ? t : entityManager.merge(t);
-            entityManager.persist(t);
-            entityManager.flush();
-            tx.commit(); 
-        }
-        catch (RuntimeException e) {
-            tx.rollback();
-            throw e;
-        } finally {
-            //
-        }
+        executeInsideTransaction(em -> {
+            em.persist(t);
+            em.flush();
+        }, entityManager);
         return t.getId();
     }
-
-    public <T> T add(T t, EntityManager entityManager) {
-        final EntityTransaction tx = entityManager.getTransaction();
-        try {
-            tx.begin();
-            t = entityManager.contains(t) ? t : entityManager.merge(t);
-            entityManager.persist(t);
-            entityManager.flush();
-            tx.commit(); 
-        }
-        catch (RuntimeException e) {
-            tx.rollback();
-            throw e;
-        } finally {
-            //
-        }
-        return t;
-    }
-
-    public <T extends Lockable> void add(T[] objects, EntityManager entityManager) {
-        for (int i = 0; i < objects.length; i++)
-            add(objects[i], entityManager);
+    
+    public <T> void add(T t, EntityManager entityManager) {
+        executeInsideTransaction(em -> {
+            em.persist(t);
+            em.flush();
+        }, entityManager);
     }
 
     public <T> void add(T[] objects, EntityManager entityManager) {
-        for (int i = 0; i < objects.length; i++)
-            add(objects[i], entityManager);
+        for (T obj : objects)
+            add(obj, entityManager);
     }
 
     public <C> boolean exists(int id, Class<C> clazz, EntityManager entityManager) {

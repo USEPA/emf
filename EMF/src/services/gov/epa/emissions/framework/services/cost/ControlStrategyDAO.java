@@ -62,8 +62,7 @@ public class ControlStrategyDAO {
     }
 
     public int add(ControlStrategy element, EntityManager entityManager) {
-        hibernateFacade.add(element, entityManager);
-        return element.getId();
+        return hibernateFacade.add(element, entityManager);
     }
 
     public void add(ControlStrategyConstraint element, EntityManager entityManager) {
@@ -645,8 +644,7 @@ public class ControlStrategyDAO {
     }
 
     public int addGroup(StrategyGroup group, EntityManager entityManager) {
-        hibernateFacade.add(group, entityManager);
-        return group.getId();
+        return hibernateFacade.add(group, entityManager);
     }
 
     public boolean canUpdateGroup(StrategyGroup strategyGroup, EntityManager entityManager) {

@@ -324,8 +324,8 @@ public class DataCommonsDAO {
         }
     }
 
-    public Status add(Status status, EntityManager entityManager) {
-        return hibernateFacade.add(status, entityManager);
+    public void add(Status status, EntityManager entityManager) {
+        hibernateFacade.add(status, entityManager);
     }
 
     private void removeReadStatus(String username, EntityManager entityManager) {
@@ -397,10 +397,6 @@ public class DataCommonsDAO {
 
     public void add(Revision revision, EntityManager entityManager) {
         hibernateFacade.add(revision, entityManager);
-    }
-
-    public void add1(DatasetNote note, EntityManager entityManager) {
-        hibernateFacade.add(note, entityManager);
     }
 
     public void add(Pollutant pollutant, EntityManager entityManager) {

@@ -22,12 +22,8 @@ public class ReferencesDAO {
         hibernateFacade = new HibernateFacade();
     }
 
-    private void addObject(Object obj, EntityManager entityManager) {
-        hibernateFacade.add(obj, entityManager);
-    }
-
     public void addReference(Reference reference, EntityManager entityManager) {
-        addObject(reference, entityManager);
+        hibernateFacade.add(reference, entityManager);
     }
 
     public List<Reference> getReferences(EntityManager entityManager) {

@@ -19,12 +19,8 @@ public class ControlTechnologiesDAO {
         hibernateFacade = new HibernateFacade();
     }
 
-    private void addObject(Object obj, EntityManager entityManager) {
-        hibernateFacade.add(obj, entityManager);
-    }
-
     public void addControlTechnology(ControlTechnology technology, EntityManager entityManager) {
-        addObject(technology, entityManager);
+        hibernateFacade.add(technology, entityManager);
     }
 
     public List<ControlTechnology> getAll(EntityManager entityManager) {

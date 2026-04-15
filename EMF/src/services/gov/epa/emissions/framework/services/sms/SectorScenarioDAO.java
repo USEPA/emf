@@ -56,15 +56,12 @@ public class SectorScenarioDAO {
     }
 
     public int add(SectorScenario element, EntityManager entityManager) {
-        return addObject(element, entityManager);
+        return hibernateFacade.add(element, entityManager);
     }
 
     public int add(SectorScenarioOutput element, EntityManager entityManager) {
-        return addObject(element, entityManager);
-    }
-
-    private int addObject(Object obj, EntityManager entityManager) {
-        return (Integer)hibernateFacade.add(obj, entityManager);
+        hibernateFacade.add(element, entityManager);
+        return element.getId();
     }
 
     public String getSectorScenarioRunStatus(int sectorScenarioId, EntityManager entityManager) {
