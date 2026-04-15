@@ -49,7 +49,13 @@ public class QADAO {
     }
 
     public void update(QAStep[] steps, EntityManager entityManager) {
-        hibernateFacade.update(steps, entityManager);
+        for (QAStep step : steps) {
+            if (step.getId() == 0) {
+                hibernateFacade.add(step, entityManager);
+            } else {
+                hibernateFacade.updateOnly(step, entityManager);
+            }
+        }
     }
 
     public void updateQAStepsIds(QAStep[] steps, EntityManager entityManager) {
@@ -168,7 +174,11 @@ public class QADAO {
     }
 
     public void updateQAStepResult(QAStepResult result, EntityManager entityManager) {
-        hibernateFacade.saveOrUpdate(result, entityManager);
+        if (result.getId() == 0) {
+            hibernateFacade.add(result, entityManager);
+        } else {
+            hibernateFacade.updateOnly(result, entityManager);
+        }
     }
 
     public boolean exists(QAStep step, EntityManager entityManager) {

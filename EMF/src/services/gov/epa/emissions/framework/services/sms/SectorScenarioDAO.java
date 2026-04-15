@@ -207,7 +207,11 @@ public class SectorScenarioDAO {
 //    }
 //
     public void updateSectorScenarioOutput(SectorScenarioOutput result, EntityManager entityManager) {
-        hibernateFacade.saveOrUpdate(result, entityManager);
+        if (result.getId() == 0) {
+            hibernateFacade.add(result, entityManager);
+        } else {
+            hibernateFacade.updateOnly(result, entityManager);
+        }
     }
 
     public String sectorScenarioRunStatus(int id, EntityManager entityManager) {

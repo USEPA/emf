@@ -219,11 +219,19 @@ public class ControlStrategyDAO {
     }
 
     public void updateWithoutLock(ControlStrategy controlStrategy, EntityManager entityManager) throws EmfException {
-        hibernateFacade.saveOrUpdate(controlStrategy, entityManager);
+        if (controlStrategy.getId() == 0) {
+            hibernateFacade.add(controlStrategy, entityManager);
+        } else {
+            hibernateFacade.updateOnly(controlStrategy, entityManager);
+        }
     }
     
     public void updateWithoutLock(ControlStrategyResult controlStrategyResult, EntityManager entityManager) throws EmfException {
-        hibernateFacade.saveOrUpdate(controlStrategyResult, entityManager);
+        if (controlStrategyResult.getId() == 0) {
+            hibernateFacade.add(controlStrategyResult, entityManager);
+        } else {
+            hibernateFacade.updateOnly(controlStrategyResult, entityManager);
+        }
     }
     
     public ControlStrategy updateWithLock(ControlStrategy locked, EntityManager entityManager) throws EmfException {
@@ -320,7 +328,11 @@ public class ControlStrategyDAO {
 //    }
 //
     public void updateControlStrategyResult(ControlStrategyResult result, EntityManager entityManager) {
-        hibernateFacade.saveOrUpdate(result, entityManager);
+        if (result.getId() == 0) {
+            hibernateFacade.add(result, entityManager);
+        } else {
+            hibernateFacade.updateOnly(result, entityManager);
+        }
     }
 
     public String controlStrategyRunStatus(int id, EntityManager entityManager) {

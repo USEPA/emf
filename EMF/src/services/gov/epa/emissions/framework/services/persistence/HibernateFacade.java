@@ -68,13 +68,6 @@ public class HibernateFacade {
         return this.isUsed("name", name, clazz, entityManager);
     }
 
-    // save- new object, updates if the objects already exist
-    public void saveOrUpdate(Object object, EntityManager entityManager) {
-        executeInsideTransaction(em -> {
-            em.merge(object);
-            em.flush();
-        }, entityManager);
-    }
 
     public void updateOnly(Object object, EntityManager entityManager) {
         executeInsideTransaction(em -> em.merge(object), entityManager);

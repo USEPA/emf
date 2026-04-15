@@ -815,7 +815,11 @@ public class ControlMeasureDAO {
 
     public void updateEfficiencyRecord(EfficiencyRecord efficiencyRecord, EntityManager entityManager, DbServer dbServer) throws EmfException {
         checkForDuplicateEfficiencyRecord(efficiencyRecord, entityManager);
-        hibernateFacade.saveOrUpdate(efficiencyRecord, entityManager);
+        if (efficiencyRecord.getId() == 0) {
+            hibernateFacade.add(efficiencyRecord, entityManager);
+        } else {
+            hibernateFacade.updateOnly(efficiencyRecord, entityManager);
+        }
         updateAggregateEfficiencyRecords(efficiencyRecord.getControlMeasureId(), dbServer);
     }
 

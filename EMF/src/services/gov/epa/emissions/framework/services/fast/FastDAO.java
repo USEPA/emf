@@ -245,7 +245,11 @@ public class FastDAO {
 //    }
 //
     public void updateFastRunOutput(FastRunOutput result, EntityManager entityManager) {
-        hibernateFacade.saveOrUpdate(result, entityManager);
+        if (result.getId() == 0) {
+            hibernateFacade.add(result, entityManager);
+        } else {
+            hibernateFacade.updateOnly(result, entityManager);
+        }
     }
 
     public String fastRunRunStatus(int id, EntityManager entityManager) {
@@ -656,7 +660,11 @@ public class FastDAO {
 //    }
 //
     public void updateFastAnalysisOutput(FastAnalysisOutput result, EntityManager entityManager) {
-        hibernateFacade.saveOrUpdate(result, entityManager);
+        if (result.getId() == 0) {
+            hibernateFacade.add(result, entityManager);
+        } else {
+            hibernateFacade.updateOnly(result, entityManager);
+        }
     }
 
     public String fastAnalysisRunStatus(int id, EntityManager entityManager) {

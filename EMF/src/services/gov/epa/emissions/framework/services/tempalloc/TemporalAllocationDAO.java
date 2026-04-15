@@ -136,7 +136,11 @@ public class TemporalAllocationDAO {
     }
     
     public void updateTemporalAllocationOutput(TemporalAllocationOutput output, EntityManager entityManager) {
-        hibernateFacade.saveOrUpdate(output, entityManager);
+        if (output.getId() == 0) {
+            hibernateFacade.add(output, entityManager);
+        } else {
+            hibernateFacade.updateOnly(output, entityManager);
+        }
     }
     
     public TemporalAllocationOutputType getTemporalAllocationOutputType(String name, EntityManager entityManager) {
