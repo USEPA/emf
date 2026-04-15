@@ -340,8 +340,7 @@ public class ControlMeasureDAO {
 
     public ControlMeasure grabLocked(User user, int controlMeasureId, EntityManager entityManager) {
         ControlMeasure controlMeasure = current(controlMeasureId, entityManager);
-        lockingScheme.grabLock(user, controlMeasure, entityManager);
-        return controlMeasure;
+        return (ControlMeasure) lockingScheme.grabLock(user, controlMeasure, entityManager);
     }
 
     public ControlMeasure obtainLocked(User user, int controlMeasureId, EntityManager entityManager) {

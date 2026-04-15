@@ -102,14 +102,13 @@ public abstract class AbstractDao<T extends Lockable> implements Dao<T> {
     //
     public T getLocked(User user, T current) {
         if (!current.isLocked()) {
-            grabLock(user, current);
-            return current;
+            return grabLock(user, current);
         }
 
         long elapsed = new Date().getTime() - current.getLockDate().getTime();
 
         if ((user.getUsername().equals(current.getLockOwner())) || (elapsed > timeInterval())) {
-            grabLock(user, current);
+            return grabLock(user, current);
         }
 
         return current;
@@ -135,31 +134,18 @@ public abstract class AbstractDao<T extends Lockable> implements Dao<T> {
         return 0;
     }
 
-    public void grabLock(User user, T lockable) {
+    public T grabLock(User user, T lockable) {
         lockable.setLockOwner(user.getUsername());
         lockable.setLockDate(new Date());
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        try {
-            executeInsideTransaction(em -> entityManager.merge(lockable), entityManager);
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        } finally {
-            entityManager.close();
-        }
+        return updateDb(lockable, entityManager);
     }
 
     public T releaseLock(T current) {
         current.setLockOwner(null);
         current.setLockDate(null);
         EntityManager entityManager = entityManagerFactory.createEntityManager();
-        try {
-            executeInsideTransaction(em -> entityManager.merge(current), entityManager);
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        } finally {
-            entityManager.close();
-        }
-        return current;
+        return updateDb(current, entityManager);
     }
 
     public T releaseLock(User owner, T current) {
@@ -170,36 +156,53 @@ public abstract class AbstractDao<T extends Lockable> implements Dao<T> {
     }
 
     public T releaseLockOnUpdate(T target, T current) throws EmfException {
-        doUpdate(target, current);
-        return releaseLock(target);
+        T updated = doUpdate(target, current);
+        return releaseLock(updated);
     }
 
-    private void doUpdate(T target, T current) throws EmfException {
+    private T doUpdate(T target, T current) throws EmfException {
         if (target.getLockOwner() == null || !current.isLocked(target.getLockOwner()))
             throw new EmfException("Cannot update without owning lock");
 
 //        entityManager.clear();// clear 'loaded' locked object - to make way for updated object
-        doUpdate(target);
+        return doUpdate(target);
     }
 
     public T renewLockOnUpdate(T target, T current) throws EmfException {
-        doUpdate(target, current);
-        return target;
+        return doUpdate(target, current);
     }
 
-    private void doUpdate(T target) {
+    private T doUpdate(T target) {
         target.setLockDate(new Date());
+        T updated = target;
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
             // clear 'loaded' locked object - to make way for updated object
             entityManager.clear();
-            
-            executeInsideTransaction(em -> entityManager.merge(target), entityManager);
+            updated = updateDb(target, entityManager);
         } catch (RuntimeException e) {
             e.printStackTrace();
         } finally {
             entityManager.close();
         }
+        return updated;
+    }
+    
+    private T updateDb(T target, EntityManager entityManager) {
+        T updated = target;
+        final EntityTransaction tx = entityManager.getTransaction();
+        try {
+            tx.begin();
+            updated = entityManager.merge(target);
+            tx.commit();
+        }
+        catch (RuntimeException e) {
+            tx.rollback();
+            throw e;
+        } finally {
+            //
+        }
+        return updated;
     }
 
     protected void executeInsideTransaction(Consumer<EntityManager> action, EntityManager entityManager) {

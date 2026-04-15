@@ -8,6 +8,7 @@ import gov.epa.emissions.framework.services.basic.EmfProperty;
 import java.util.Date;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
 public class LockingScheme {
 
@@ -23,14 +24,13 @@ public class LockingScheme {
     //
     public Lockable getLocked(User user, Lockable current, EntityManager entityManager) {
         if (!current.isLocked()) {
-            grabLock(user, current, entityManager);
-            return current;
+            return grabLock(user, current, entityManager);
         }
 
         long elapsed = new Date().getTime() - current.getLockDate().getTime();
 
         if ((user.getName().equals(current.getLockOwner())) || (elapsed > timeInterval(entityManager))) {
-            grabLock(user, current, entityManager);
+            return grabLock(user, current, entityManager);
         }
 
         return current;
@@ -41,25 +41,16 @@ public class LockingScheme {
         return Long.parseLong(timeInterval.getValue());
     }
 
-    public void grabLock(User user, Lockable lockable, EntityManager entityManager) {
+    public Lockable grabLock(User user, Lockable lockable, EntityManager entityManager) {
         lockable.setLockOwner(user.getUsername());
         lockable.setLockDate(new Date());
-
-        hibernateFacade.executeInsideTransaction(em -> {
-            em.merge(lockable);
-            em.flush();
-        }, entityManager);
+        return hibernateFacade.updateOnly(lockable, entityManager);
     }
 
     public Lockable releaseLock(Lockable current, EntityManager entityManager) {
         current.setLockOwner(null);
         current.setLockDate(null);
-        hibernateFacade.executeInsideTransaction(em -> {
-            em.merge(current);
-            em.flush();
-        }, entityManager);
-
-        return current;
+        return hibernateFacade.updateOnly(current, entityManager);
     }
 
     public Lockable releaseLock(User owner, Lockable current, EntityManager entityManager) {
@@ -70,28 +61,24 @@ public class LockingScheme {
     }
 
     public Lockable releaseLockOnUpdate(Lockable target, Lockable current, EntityManager entityManager) throws EmfException {
-        doUpdate(target, current, entityManager);
-        return releaseLock(target, entityManager);
+        Lockable updated = doUpdate(target, current, entityManager);
+        return releaseLock(updated, entityManager);
     }
 
-    private void doUpdate(Lockable target, Lockable current, EntityManager entityManager) throws EmfException {
+    private Lockable doUpdate(Lockable target, Lockable current, EntityManager entityManager) throws EmfException {
         if (target.getLockOwner() == null || !current.isLocked(target.getLockOwner()))
             throw new EmfException("Cannot update without owning lock");
 
         entityManager.clear();// clear 'loaded' locked object - to make way for updated object
-        doUpdate(entityManager, target);
+        return doUpdate(entityManager, target);
     }
 
     public Lockable renewLockOnUpdate(Lockable target, Lockable current, EntityManager entityManager) throws EmfException {
-        doUpdate(target, current, entityManager);
-        return target;
+        return doUpdate(target, current, entityManager);
     }
-
-    private void doUpdate(EntityManager entityManager, Lockable target) {
+    
+    private Lockable doUpdate(EntityManager entityManager, Lockable target) {
         target.setLockDate(new Date());
-        hibernateFacade.executeInsideTransaction(em -> {
-            em.merge(target);
-            em.flush();
-        }, entityManager);
+        return hibernateFacade.updateOnly(target, entityManager);
     }
 }
