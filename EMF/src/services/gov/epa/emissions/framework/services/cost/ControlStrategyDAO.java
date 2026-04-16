@@ -270,7 +270,10 @@ public class ControlStrategyDAO {
     }
 
     public void remove(ControlStrategy strategy, EntityManager entityManager) {
-        if (strategy.getConstraint() != null) hibernateFacade.remove(strategy.getConstraint(), entityManager);
+        if (strategy.getConstraint() != null) {
+            hibernateFacade.remove(strategy.getConstraint(), entityManager);
+            strategy.setConstraint(null);
+        }
         hibernateFacade.remove(strategy, entityManager);
     }
 
