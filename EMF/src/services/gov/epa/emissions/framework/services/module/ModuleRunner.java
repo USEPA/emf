@@ -42,6 +42,22 @@ import javax.persistence.EntityManagerFactory;
 
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
+import org.hibernate.Session;
+
 abstract class ModuleRunner {
     
     private ModuleRunnerContext moduleRunnerContext;

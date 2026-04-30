@@ -11,6 +11,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.FileChannel;
 import java.net.URL;
 
 public class Download extends Thread {
@@ -223,14 +226,10 @@ public class Download extends Thread {
     public void saveFile(File file, HttpURLConnection conn) throws IOException {
         if (!file.isDirectory()) {
             InputStream is = conn.getInputStream();
-            BufferedInputStream bis = new BufferedInputStream(is);
+            ReadableByteChannel readableByteChannel = Channels.newChannel(is);
             FileOutputStream fos = new FileOutputStream(file);
-
-            int res = 0;
-            while ((res = bis.read()) != -1) {
-                fos.write(res);
-            }
-
+            FileChannel fileChannel = fos.getChannel();
+            fileChannel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
             is.close();
             fos.close();
         }

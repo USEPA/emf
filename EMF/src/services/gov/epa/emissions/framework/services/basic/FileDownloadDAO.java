@@ -41,14 +41,6 @@ public class FileDownloadDAO {
         return threadPool;
     }
 
-//    public FileDownloadDAO(EntityManagerFactory entityManagerFactory) {
-//        this.entityManagerFactory = entityManagerFactory;
-//    }
-
-//    public void setSessionFactory(SessionFactory entityManagerFactory) {
-//        this.entityManagerFactory = entityManagerFactory;
-//      }
-
     private String getPropertyValue(String name, EntityManager entityManager) throws EmfException {
 //        EntityManager entityManager = entityManagerFactory.createEntityManager();
 //

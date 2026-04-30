@@ -60,7 +60,7 @@ public class Tools {
     }
 
     public static void writePreference(String website, String input, String output, String javahome, String rhome,
-            String emfhome, String tmpDir, String server) throws Exception {
+            String emfhome, String tmpDir, String server, String cmdArguments) throws Exception {
         InstallPreferences up = Tools.getUserPreference();
         up.setPreference("web.site", website);
         up.setPreference("emf.install.folder", emfhome.replace('\\', '/'));
@@ -70,6 +70,7 @@ public class Tools {
         up.setPreference("java.home", javahome.replace('\\', '/'));
         up.setPreference("local.temp.dir", tmpDir.replace('\\', '/'));
         up.setPreference("r.home", rhome.replace('\\', '/'));
+        up.setPreference("cmd.arguments", cmdArguments);
 
         FileOutputStream outStream = new FileOutputStream(System.getProperty("user.home")
                 + File.separatorChar + Constants.EMF_PREFERENCES_FILE);
