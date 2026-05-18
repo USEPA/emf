@@ -206,6 +206,9 @@ public class InstallWindow extends JFrame implements InstallView {
             String inputString = up.inputFolder();
             String outputString = up.outputFolder();
             String installString = up.emfInstallFolder();
+            if (installString == null || installString.isEmpty()) {
+              installString = Constants.USER_HOME + File.separatorChar + "EMF Client";
+            }
             String localTmpDir = up.localTempDir();
             String rhome = up.rHome();
             String cmdArguments = up.cmdArguments();

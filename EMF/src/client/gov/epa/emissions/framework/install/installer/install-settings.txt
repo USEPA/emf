@@ -69,6 +69,6 @@ On Windows, launch iexpress as an administrator. Here are the options for each s
 - Install Program: cmd /c runinstaller.bat
 - Show window: Hidden
 - Finished message: No message.
-- Package Name and Options: EMF Client Installer, check "Store files using Long File Name inside Package"
+- Package Name and Options: Browse to Downloads, name: EMF Client Installer, check "Store files using Long File Name inside Package"
 - Configure restart: No restart
 - Save Self Extraction Directive: can save or not

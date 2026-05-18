@@ -7,7 +7,7 @@
 #Use '/' for path separator for file names
 
 web.site=https://www.cmascenter.org/emf/install/
-emf.install.folder=C:/Program Files/EMF Client
+emf.install.folder=
 server.import.folder=
 server.export.folder=
 server.address=https://sage.hesc.epa.gov:8443/emf/services
