@@ -119,8 +119,10 @@ public class ViewableInputsTabPresenterImpl extends EditInputsTabPresenterImpl {
     public void copyInput(int caseId, List<CaseInput> inputs) throws Exception {
         CaseInput[] inputsArray = inputs.toArray(new CaseInput[0]);
         
-        for (int i = 0; i < inputs.size(); i++)
+        for (int i = 0; i < inputs.size(); i++) {
+            inputsArray[i].setId(0);
             inputsArray[i].setParentCaseId(this.caseObj.getId());
+        }
         
         service().addCaseInputs(session.user(), caseId, inputsArray);
     }

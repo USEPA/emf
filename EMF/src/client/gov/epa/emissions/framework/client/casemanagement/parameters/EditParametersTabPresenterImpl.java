@@ -85,8 +85,10 @@ public class EditParametersTabPresenterImpl implements EditParametersTabPresente
     public void copyParameter(int caseID, List<CaseParameter> params) throws Exception {
         CaseParameter[] paramsArray = params.toArray(new CaseParameter[0]);
         
-        for (int i = 0; i < params.size(); i++)
+        for (int i = 0; i < params.size(); i++) {
+            paramsArray[i].setId(0);
             paramsArray[i].setParentCaseId(this.caseObj.getId());
+        }
         
         service().addCaseParameters(session.user(), caseID, paramsArray);
     }

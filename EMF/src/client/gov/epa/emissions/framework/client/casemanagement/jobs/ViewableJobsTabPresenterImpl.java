@@ -188,6 +188,7 @@ public class ViewableJobsTabPresenterImpl implements EditJobsTabPresenter{
         User user = session.user();
 
         for (int i = 0; i < jobs.size(); i++) {
+            jobsArray[i].setId(0);
             jobsArray[i].setParentCaseId(this.caseObj.getId());
             jobsArray[i].setRunJobUser(null); // not running at this moment
             jobsArray[i].setUser(user); // job owner changes

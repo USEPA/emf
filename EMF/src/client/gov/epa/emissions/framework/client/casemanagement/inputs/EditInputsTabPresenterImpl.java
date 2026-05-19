@@ -115,23 +115,16 @@ public class EditInputsTabPresenterImpl implements EditInputsTabPresenter {
     public void copyInput(int caseId, List<CaseInput> inputs) throws Exception {
         CaseInput[] inputsArray = inputs.toArray(new CaseInput[0]);
         
-        for (int i = 0; i < inputs.size(); i++)
+        for (int i = 0; i < inputs.size(); i++) {
+            inputsArray[i].setId(0);
             inputsArray[i].setParentCaseId(this.caseObj.getId());
+        }
         
         service().addCaseInputs(session.user(), caseId, inputsArray);
     }
 
-    public void copyInput(int caseId, CaseInput input) throws Exception {
-        CaseInput newInput = (CaseInput) DeepCopy.copy(input);
-        newInput.setId(0);
-        newInput.setCaseID(caseId);
-        addNewInput(newInput);
-    }
-
     public void doAddInputFields(JComponent container, InputFieldsPanelView inputFields, CaseInput newInput)
             throws EmfException {
-        newInput.setId(view.numberOfRecord());
-
         InputFieldsPanelPresenter inputFieldsPresenter = new InputFieldsPanelPresenter(caseObj, inputFields,
                 session);
         inputFieldsPresenter.display(newInput, container, caseObj.getModel().getId());

@@ -140,13 +140,17 @@ public class EditJobsTabPresenterImpl implements EditJobsTabPresenter {
                 if (!copyAll) continue;
                 int[] origJobId = { job.getId() };
                 CaseInput[] inputsArray = service().getCaseInputs(caseId, origJobId);
-                for (int i = 0; i < inputsArray.length; i++)
+                for (int i = 0; i < inputsArray.length; i++) {
+                    inputsArray[i].setId(0);
                     inputsArray[i].setCaseJobID(newJob.getId());
+                }
                 service().addCaseInputs(session.user(), caseId, inputsArray);
                 
                 CaseParameter[] paramsArray = service().getCaseParameters(caseId, origJobId);
-                for (int i = 0; i < paramsArray.length; i++)
+                for (int i = 0; i < paramsArray.length; i++) {
+                    paramsArray[i].setId(0);
                     paramsArray[i].setJobId(newJob.getId());
+                }
                 service().addCaseParameters(session.user(), caseId, paramsArray);
             }
         }
@@ -173,6 +177,7 @@ public class EditJobsTabPresenterImpl implements EditJobsTabPresenter {
         User user = session.user();
 
         for (int i = 0; i < jobs.size(); i++) {
+            jobsArray[i].setId(0);
             jobsArray[i].setParentCaseId(this.caseObj.getId());
             jobsArray[i].setRunJobUser(null); // not running at this moment
             jobsArray[i].setUser(user); // job owner changes
