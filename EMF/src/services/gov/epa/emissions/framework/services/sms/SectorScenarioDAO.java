@@ -56,10 +56,12 @@ public class SectorScenarioDAO {
     }
 
     public int add(SectorScenario element, EntityManager entityManager) {
+        element.setId(0);
         return hibernateFacade.add(element, entityManager);
     }
 
     public int add(SectorScenarioOutput element, EntityManager entityManager) {
+        element.setId(0);
         hibernateFacade.add(element, entityManager);
         return element.getId();
     }

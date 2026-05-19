@@ -200,6 +200,7 @@ public class QADAO {
     }
 
     public QAProgram addQAProgram(QAProgram program, EntityManager entityManager) {
+        program.setId(0);
         hibernateFacade.add(program, entityManager);
         
         return (QAProgram)load(QAProgram.class, program.getName(), entityManager);

@@ -63,6 +63,7 @@ public class SourceGroups {
     private void save(SourceGroup sourceGroup) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
+            sourceGroup.setId(0);
             facade.add(sourceGroup, entityManager);
         } finally {
             entityManager.close();

@@ -63,6 +63,7 @@ public class ControlTechnologies {
     private void save(ControlTechnology controlTechnology) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
+            controlTechnology.setId(0);
             facade.add(controlTechnology, entityManager);
         } finally {
             entityManager.close();

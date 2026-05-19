@@ -31,6 +31,7 @@ public class UserDAO {
     }
 
     public void add(User user, EntityManager entityManager) {
+        user.setId(0);
         facade.add(user, entityManager);
     }
 

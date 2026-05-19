@@ -68,21 +68,23 @@ public class FastDAO {
     }
 
     public int add(FastRun element, EntityManager entityManager) {
-        hibernateFacade.add(element, entityManager);
-        return element.getId();
+        element.setId(0);
+        return hibernateFacade.add(element, entityManager);
     }
 
     public int add(FastRunOutput element, EntityManager entityManager) {
+        element.setId(0);
         hibernateFacade.add(element, entityManager);
         return element.getId();
     }
 
     public int add(FastAnalysis element, EntityManager entityManager) {
-        hibernateFacade.add(element, entityManager);
-        return element.getId();
+        element.setId(0);
+        return hibernateFacade.add(element, entityManager);
     }
 
     public int add(FastAnalysisOutput element, EntityManager entityManager) {
+        element.setId(0);
         hibernateFacade.add(element, entityManager);
         return element.getId();
     }
@@ -441,6 +443,7 @@ public class FastDAO {
     }
 
     public int addFastDataset(FastDataset fastDataset, EntityManager entityManager) {
+        fastDataset.setId(0);
         hibernateFacade.add(fastDataset, entityManager);
         return fastDataset.getId();
     }
@@ -469,6 +472,7 @@ public class FastDAO {
     }
 
     public int addFastNonPointDataset(FastNonPointDataset fastNonPointDataset, EntityManager entityManager) {
+        fastNonPointDataset.setId(0);
         hibernateFacade.add(fastNonPointDataset, entityManager);
         return fastNonPointDataset.getId();
     }

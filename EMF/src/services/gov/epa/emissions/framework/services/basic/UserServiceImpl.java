@@ -110,6 +110,7 @@ public class UserServiceImpl implements UserService {
             throw new EmfException("The same email address has already been used by user '"
                     + existingUser.getUsername() + "'.");
 
+        user.setId(0);
         dao.add(user);
         return dao.get(user.getUsername());
     }

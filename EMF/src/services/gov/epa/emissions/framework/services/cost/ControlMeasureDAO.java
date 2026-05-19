@@ -116,6 +116,7 @@ public class ControlMeasureDAO {
 
         checkForConstraints(measure, entityManager);
         updateReferenceIds(measure, entityManager);
+        measure.setId(0);
         int cmId = hibernateFacade.add(measure, entityManager);
 //        int cmId = controlMeasureIds(measure, sccs, entityManager);
         for (int i = 0; i < sccs.length; i++) {
@@ -746,6 +747,7 @@ public class ControlMeasureDAO {
 
     public int addEfficiencyRecord(EfficiencyRecord efficiencyRecord, EntityManager entityManager, DbServer dbServer) throws EmfException {
         checkForDuplicateEfficiencyRecord(efficiencyRecord, entityManager);
+        efficiencyRecord.setId(0);
         hibernateFacade.add(efficiencyRecord, entityManager);
         updateAggregateEfficiencyRecords(efficiencyRecord.getControlMeasureId(), dbServer);
         return efficiencyRecord.getId();

@@ -68,14 +68,17 @@ public class DataCommonsDAO {
     }
 
     public void add(Region region, EntityManager entityManager) {
+        region.setId(0);
         hibernateFacade.add(region, entityManager);
     }
     
     public void add(DatasetNote note, EntityManager entityManager) {
+        note.setId(0);
         hibernateFacade.add(note, entityManager);
     }
 
     public void add(Project project, EntityManager entityManager) {
+        project.setId(0);
         hibernateFacade.add(project, entityManager);
     }
 
@@ -325,6 +328,7 @@ public class DataCommonsDAO {
     }
 
     public void add(Status status, EntityManager entityManager) {
+        status.setId(0);
         hibernateFacade.add(status, entityManager);
     }
 
@@ -360,18 +364,22 @@ public class DataCommonsDAO {
     }
 
     public void add(IntendedUse intendedUse, EntityManager entityManager) {
+        intendedUse.setId(0);
         hibernateFacade.add(intendedUse, entityManager);
     }
 
     public void add(Country country, EntityManager entityManager) {
+        country.setId(0);
         hibernateFacade.add(country, entityManager);
     }
 
     public void add(DatasetType datasetType, EntityManager entityManager) {
+        datasetType.setId(0);
         hibernateFacade.add(datasetType, entityManager);
     }
 
     public void add(XFileFormat format, EntityManager entityManager) {
+        format.setId(0);
         hibernateFacade.add(format, entityManager);
     }
 
@@ -380,10 +388,12 @@ public class DataCommonsDAO {
     }
 
     public void add(Sector sector, EntityManager entityManager) {
+        sector.setId(0);
         hibernateFacade.add(sector, entityManager);
     }
     
     public void add(GeoRegion grid, EntityManager entityManager) {
+        grid.setId(0);
         hibernateFacade.add(grid, entityManager);
     }
 
@@ -396,14 +406,17 @@ public class DataCommonsDAO {
     }
 
     public void add(Revision revision, EntityManager entityManager) {
+        revision.setId(0);
         hibernateFacade.add(revision, entityManager);
     }
 
     public void add(Pollutant pollutant, EntityManager entityManager) {
+        pollutant.setId(0);
         hibernateFacade.add(pollutant, entityManager);
     }
 
     public void add(SourceGroup sourcegrp, EntityManager entityManager) {
+        sourcegrp.setId(0);
         hibernateFacade.add(sourcegrp, entityManager);
     }
 

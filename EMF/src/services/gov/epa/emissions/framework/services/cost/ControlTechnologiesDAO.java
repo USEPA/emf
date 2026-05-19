@@ -20,6 +20,7 @@ public class ControlTechnologiesDAO {
     }
 
     public void addControlTechnology(ControlTechnology technology, EntityManager entityManager) {
+        technology.setId(0);
         hibernateFacade.add(technology, entityManager);
     }
 

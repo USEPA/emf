@@ -32,6 +32,7 @@ public class RegionsDAO {
     }
     
     public Region addRegion(Region region, EntityManager entityManager) {
+        region.setId(0);
         hibernateFacade.add(region, entityManager);
         return getRegion(region.getName(), entityManager);
     }

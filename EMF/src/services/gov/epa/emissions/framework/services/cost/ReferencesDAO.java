@@ -23,6 +23,7 @@ public class ReferencesDAO {
     }
 
     public void addReference(Reference reference, EntityManager entityManager) {
+        reference.setId(0);
         hibernateFacade.add(reference, entityManager);
     }
 

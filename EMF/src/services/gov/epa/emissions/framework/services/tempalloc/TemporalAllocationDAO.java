@@ -46,6 +46,7 @@ public class TemporalAllocationDAO {
     }
 
     public int add(TemporalAllocation element, EntityManager entityManager) {
+        element.setId(0);
         return hibernateFacade.add(element, entityManager);
     }
 

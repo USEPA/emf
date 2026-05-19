@@ -213,13 +213,13 @@ public class ModulesDAO {
     }
 
     public Module add(Module module, EntityManager entityManager) {
-        Serializable serializable = hibernateFacade.add(module, entityManager);
-        Integer id = (Integer)serializable;
-        module.setId(id);
+        module.setId(0);
+        hibernateFacade.add(module, entityManager);
         return module;
     }
     
     public void add(History history, EntityManager entityManager) {
+        history.setId(0);
         hibernateFacade.add(history, entityManager);
     }
 

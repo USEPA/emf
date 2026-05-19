@@ -32,6 +32,7 @@ public class IntendedUsesDAO {
     }
     
     public void add(IntendedUse intendedUse, EntityManager entityManager) {
+        intendedUse.setId(0);
         hibernateFacade.add(intendedUse, entityManager);
     }
     

@@ -29,6 +29,7 @@ public class ProjectsDAO {
     }
     
     public Project addProject(Project project, EntityManager entityManager) {
+        project.setId(0);
         hibernateFacade.add(project, entityManager);
         return loadProject(project.getName(), entityManager);
     }

@@ -353,6 +353,7 @@ public class CaseAssistanceService {
             ((Abbreviation) obj).setName(uniqueName);
             entityManager.clear();
             //entityManager.flush();
+            ((Abbreviation) obj).setId(0);
             caseDao.addObject(obj, entityManager);
             entityManager.clear();
             //entityManager.flush();

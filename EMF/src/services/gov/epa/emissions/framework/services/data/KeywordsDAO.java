@@ -25,6 +25,7 @@ public class KeywordsDAO {
         if (exist != null)
             return exist;
 
+        keyword.setId(0);
         hibernateFacade.add(keyword, entityManager);
 
         return getKeyword(keyword.getName(), entityManager);

@@ -64,6 +64,7 @@ public class Sectors {
     private void save(Sector sector) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
+            sector.setId(0);
             facade.add(sector, entityManager);
         } finally {
             entityManager.close();

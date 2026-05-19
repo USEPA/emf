@@ -70,6 +70,7 @@ public class CaseDAO {
     public void add(JobMessage message) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
+            message.setId(0);
             hibernateFacade.add(message, entityManager);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -82,6 +83,7 @@ public class CaseDAO {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
 
         try {
+            output.setId(0);
             hibernateFacade.add(output, entityManager);
             return getCaseOutput(output, entityManager);
         } catch (Exception ex) {
@@ -141,66 +143,82 @@ public class CaseDAO {
     }
 
     public void add(Executable exe, EntityManager entityManager) {
+        exe.setId(0);
         addObject(exe, entityManager);
     }
 
     public void add(SubDir subdir, EntityManager entityManager) {
+        subdir.setId(0);
         addObject(subdir, entityManager);
     }
 
     public void add(AirQualityModel object, EntityManager entityManager) {
+        object.setId(0);
         addObject(object, entityManager);
     }
 
     public void add(CaseCategory object, EntityManager entityManager) {
+        object.setId(0);
         addObject(object, entityManager);
     }
 
     public void add(EmissionsYear object, EntityManager entityManager) {
+        object.setId(0);
         addObject(object, entityManager);
     }
 
     public void add(GeoRegion object, EntityManager entityManager) {
+        object.setId(0);
         addObject(object, entityManager);
     }
 
     public void add(MeteorlogicalYear object, EntityManager entityManager) {
+        object.setId(0);
         addObject(object, entityManager);
     }
 
     public void add(Speciation object, EntityManager entityManager) {
+        object.setId(0);
         addObject(object, entityManager);
     }
 
     public void add(CaseProgram object, EntityManager entityManager) {
+        object.setId(0);
         addObject(object, entityManager);
     }
 
     public void add(InputName object, EntityManager entityManager) {
+        object.setId(0);
         addObject(object, entityManager);
     }
 
     public void add(InputEnvtVar object, EntityManager entityManager) {
+        object.setId(0);
         addObject(object, entityManager);
     }
 
     public void add(ModelToRun object, EntityManager entityManager) {
+        object.setId(0);
         addObject(object, entityManager);
     }
 
     public void add(Case object, EntityManager entityManager) {
+        object.setId(0);
         addObject(object, entityManager);
     }
 
     public void add(CaseInput object, EntityManager entityManager) {
+        object.setId(0);
         addObject(object, entityManager);
     }
 
     public void add(CaseOutput object, EntityManager entityManager) {
+        object.setId(0);
         addObject(object, entityManager);
     }
 
     public void add(Host object, EntityManager entityManager) {
+        object.setId(0);
         addObject(object, entityManager);
     }
 
@@ -847,6 +865,7 @@ public class CaseDAO {
     }
 
     public void add(CaseJob job, EntityManager entityManager) {
+        job.setId(0);
         addObject(job, entityManager);
     }
 
@@ -1063,10 +1082,12 @@ public class CaseDAO {
     }
 
     public void add(Abbreviation element, EntityManager entityManager) {
+        element.setId(0);
         addObject(element, entityManager);
     }
 
     public void add(ParameterEnvVar envVar, EntityManager entityManager) {
+        envVar.setId(0);
         addObject(envVar, entityManager);
     }
 
@@ -1076,6 +1097,7 @@ public class CaseDAO {
     }
 
     public void addValueType(ValueType type, EntityManager entityManager) {
+        type.setId(0);
         addObject(type, entityManager);
     }
 
@@ -1085,6 +1107,7 @@ public class CaseDAO {
     }
 
     public void addParameterName(ParameterName name, EntityManager entityManager) {
+        name.setId(0);
         addObject(name, entityManager);
     }
 
@@ -1094,6 +1117,7 @@ public class CaseDAO {
     }
 
     public void addParameter(CaseParameter param, EntityManager entityManager) {
+        param.setId(0);
         addObject(param, entityManager);
     }
 
@@ -1564,6 +1588,7 @@ public class CaseDAO {
             if (existedTask != null)
                 hibernateFacade.remove(existedTask, entityManager);
 
+            persistedWaitTask.setId(0);
             hibernateFacade.add(persistedWaitTask, entityManager);
             if (DebugLevels.DEBUG_15())
                 System.out.println("Adding job to persisted table, jobID: " + persistedWaitTask.getJobId());
@@ -1796,6 +1821,7 @@ public class CaseDAO {
     }
 
     public void addQueueCaseOutput(QueueCaseOutput output, EntityManager entityManager) {
+        output.setId(0);
         hibernateFacade.add(output, entityManager);
     }
 

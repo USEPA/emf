@@ -62,14 +62,17 @@ public class ControlStrategyDAO {
     }
 
     public int add(ControlStrategy element, EntityManager entityManager) {
+        element.setId(0);
         return hibernateFacade.add(element, entityManager);
     }
 
     public void add(ControlStrategyConstraint element, EntityManager entityManager) {
+        element.setId(0);
         hibernateFacade.add(element, entityManager);
     }
 
     public int add(ControlStrategyResult element, EntityManager entityManager) {
+        element.setId(0);
         hibernateFacade.add(element, entityManager);
         return element.getId();
     }
@@ -659,6 +662,7 @@ public class ControlStrategyDAO {
     }
 
     public int addGroup(StrategyGroup group, EntityManager entityManager) {
+        group.setId(0);
         return hibernateFacade.add(group, entityManager);
     }
 

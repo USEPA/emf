@@ -75,6 +75,7 @@ public class FileDownloadDAO {
             throw new EmfException("File to download doesn't exist on the server.");
         fileDownload.setSize(file.length());
 
+        fileDownload.setId(0);
         hibernateFacade.executeInsideTransaction(em -> {
             em.persist(fileDownload);
         }, entityManager);

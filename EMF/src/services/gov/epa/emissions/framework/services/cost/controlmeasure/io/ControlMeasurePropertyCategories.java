@@ -68,6 +68,7 @@ public class ControlMeasurePropertyCategories {
     private void save(ControlMeasurePropertyCategory category) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
+            category.setId(0);
             facade.add(category, entityManager);
         } finally {
             entityManager.close();

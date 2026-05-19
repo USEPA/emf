@@ -64,6 +64,7 @@ public class Pollutants {
     private void save(Pollutant pollutant) {
         EntityManager entityManager = entityManagerFactory.createEntityManager();
         try {
+            pollutant.setId(0);
             facade.add(pollutant, entityManager);
         } finally {
             entityManager.close();

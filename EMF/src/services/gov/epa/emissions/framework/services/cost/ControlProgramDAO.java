@@ -49,6 +49,7 @@ public class ControlProgramDAO {
     }
 
     public int add(ControlProgram element, EntityManager entityManager) {
+        element.setId(0);
         return hibernateFacade.add(element, entityManager);
     }
 

@@ -214,10 +214,12 @@ public class DatasetDAO {
         }
         dataset.setName(newName);
         
+        dataset.setId(0);
         hibernateFacade.add(dataset, entityManager);
     }
 
     public void add(Version version, EntityManager entityManager) {
+        version.setId(0);
         hibernateFacade.add(version, entityManager);
     }
 

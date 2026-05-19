@@ -38,6 +38,7 @@ public class SectorsDAO {
     }
     
     public void addSector(Sector sector, EntityManager entityManager) {
+        sector.setId(0);
         hibernateFacade.add(sector, entityManager);
     }
 

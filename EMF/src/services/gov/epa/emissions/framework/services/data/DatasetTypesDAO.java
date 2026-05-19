@@ -86,6 +86,7 @@ public class DatasetTypesDAO {
     }
 
     public void add(DatasetType datasetType, EntityManager entityManager) {
+        datasetType.setId(0);
         hibernateFacade.add(datasetType, entityManager);
     }
 

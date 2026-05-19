@@ -74,6 +74,7 @@ public class ModuleTypesDAO {
     }
 
     public void addModuleType(ModuleType moduleType, EntityManager entityManager) {
+        moduleType.setId(0);
         hibernateFacade.add(moduleType, entityManager);
     }
 
@@ -120,6 +121,7 @@ public class ModuleTypesDAO {
     }
 
     public ModuleTypeVersion addModuleTypeVersion(ModuleTypeVersion moduleTypeVersion, EntityManager entityManager) {
+        moduleTypeVersion.setId(0);
         hibernateFacade.add(moduleTypeVersion, entityManager);
         return currentModuleTypeVersion(moduleTypeVersion.getId(), entityManager);
     }
@@ -148,6 +150,7 @@ public class ModuleTypesDAO {
     }
     
     public void addTag(Tag tag, EntityManager entityManager) {
+        tag.setId(0);
         hibernateFacade.add(tag, entityManager);
     }
 }

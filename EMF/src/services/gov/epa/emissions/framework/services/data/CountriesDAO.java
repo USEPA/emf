@@ -32,6 +32,7 @@ public class CountriesDAO {
     }
     
     public Country addCountry(Country country, EntityManager entityManager) {
+        country.setId(0);
         hibernateFacade.add(country, entityManager);
         return getCountry(country.getName(), entityManager);
     }
