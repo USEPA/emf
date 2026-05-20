@@ -328,7 +328,7 @@ public class DataCommonsDAO {
     }
 
     public void add(Status status, EntityManager entityManager) {
-        status.setId(0);
+        status.setId(null);
         hibernateFacade.add(status, entityManager);
     }
 
