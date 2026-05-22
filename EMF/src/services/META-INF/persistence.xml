@@ -18,7 +18,6 @@
    	        <!--property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/emf"/>
 	        <property name="javax.persistence.jdbc.user" value="emf"/>
 	        <property name="javax.persistence.jdbc.password" value="emf"/-->
-			<property name="hibernate.jdbc.time_zone" value="UTC"/>
 			<!--property name="hibernate.transaction.jta.platform" value="bitronix.tm.jndi.BitronixJndiPlatform"/-->
 	    </properties>
 	</persistence-unit>
